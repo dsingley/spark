@@ -29,6 +29,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,14 +77,35 @@ public class EmbeddedJettyServer implements EmbeddedServer {
      * {@inheritDoc}
      */
     @Override
-
     public int ignite(String host,
                       int port,
                       SslStores sslStores,
                       int maxThreads,
                       int minThreads,
                       int threadIdleTimeoutMillis) throws Exception {
+        return ignite(host, port, sslStores, null, maxThreads, minThreads, threadIdleTimeoutMillis);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int ignite(String host,
+                      int port,
+                      SslContextFactory sslContextFactory,
+                      int maxThreads,
+                      int minThreads,
+                      int threadIdleTimeoutMillis) throws Exception {
+        return ignite(host, port, null, sslContextFactory, maxThreads, minThreads, threadIdleTimeoutMillis);
+    }
+
+    private int ignite(String host,
+                       int port,
+                       SslStores sslStores,
+                       SslContextFactory sslContextFactory,
+                       int maxThreads,
+                       int minThreads,
+                       int threadIdleTimeoutMillis) throws Exception {
         boolean hasCustomizedConnectors = false;
 
         if (port == 0) {
@@ -104,10 +126,12 @@ public class EmbeddedJettyServer implements EmbeddedServer {
 
         ServerConnector connector;
 
-        if (sslStores == null) {
-            connector = SocketConnectorFactory.createSocketConnector(server, host, port);
-        } else {
+        if (sslContextFactory != null) {
+            connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslContextFactory);
+        } else if (sslStores != null) {
             connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores);
+        } else {
+            connector = SocketConnectorFactory.createSocketConnector(server, host, port);
         }
 
         Connector previousConnectors[] = server.getConnectors();

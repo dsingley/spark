@@ -14,6 +14,7 @@ import org.junit.rules.TemporaryFolder;
 import spark.Spark;
 import spark.embeddedserver.jetty.EmbeddedJettyFactory;
 import spark.embeddedserver.jetty.JettyServerFactory;
+import spark.ssl.SslStores;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +43,7 @@ public class EmbeddedServersTest {
         EmbeddedServers.add(id, new EmbeddedJettyFactory(serverFactory));
         EmbeddedServer embeddedServer = EmbeddedServers.create(id, null, null, null, false);
         assertNotNull(embeddedServer);
-        embeddedServer.ignite("localhost", 0, null, 0, 0, 0);
+        embeddedServer.ignite("localhost", 0, (SslStores) null, 0, 0, 0);
 
         assertTrue(requestLogFile.exists());
         embeddedServer.extinguish();

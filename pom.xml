@@ -7,7 +7,7 @@
         <version>7</version>
     </parent>
     <groupId>com.sparkjava</groupId>
-    <artifactId>spark-core</artifactId>
+    <artifactId>dsingley-spark-core</artifactId>
     <packaging>bundle</packaging>
     <version>2.9.2</version>
     <name>Spark</name>

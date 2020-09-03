@@ -25,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +65,7 @@ public final class Service extends Routable {
     protected String ipAddress = "0.0.0.0";
 
     protected SslStores sslStores;
+    protected SslContextFactory sslContextFactory;
 
     protected Map<String, WebSocketHandlerWrapper> webSocketHandlers = null;
 
@@ -270,6 +272,28 @@ public final class Service extends Routable {
         }
 
         sslStores = SslStores.create(keystoreFile, keystorePassword, certAlias, truststoreFile, truststorePassword, needsClientCert);
+        return this;
+    }
+
+    /**
+     * Set the connection to be secure, using the specified {@link SslContextFactory}.
+     *
+     * The SslContextFactory should already be configured with keystore, truststore,
+     * and client certificate options.
+     *
+     * This method is only relevant when using embedded Jetty servers. It should
+     * not be used if you are using Servlets, where you will need to secure the
+     * connection in the servlet container
+     *
+     * @param sslContextFactory     a configured SslContextFactory
+     * @return the object with connection set to be secure
+     */
+    public synchronized Service secure(SslContextFactory sslContextFactory) {
+        if (initialized) {
+            throwBeforeRouteMappingException();
+        }
+
+        this.sslContextFactory = sslContextFactory;
         return this;
     }
 
@@ -571,13 +595,23 @@ public final class Service extends Routable {
 
                     server.configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis);
 
-                    port = server.ignite(
+                    if (sslContextFactory != null) {
+                        port = server.ignite(
+                            ipAddress,
+                            port,
+                            sslContextFactory,
+                            maxThreads,
+                            minThreads,
+                            threadIdleTimeoutMillis);
+                    } else {
+                        port = server.ignite(
                             ipAddress,
                             port,
                             sslStores,
                             maxThreads,
                             minThreads,
                             threadIdleTimeoutMillis);
+                    }
                   } catch (Exception e) {
                     initExceptionHandler.accept(e);
                   }

@@ -52,8 +52,7 @@ public class SocketConnectorFactory {
     }
 
     /**
-     * Creates a ssl jetty socket jetty. Keystore required, truststore
-     * optional. If truststore not specified keystore will be reused.
+     * Creates a ssl jetty socket jetty based on the provided {@link SslStores}.
      *
      * @param server    Jetty server
      * @param sslStores the security sslStores.
@@ -69,27 +68,57 @@ public class SocketConnectorFactory {
         Assert.notNull(host, "'host' must not be null");
         Assert.notNull(sslStores, "'sslStores' must not be null");
 
-        SslContextFactory sslContextFactory = new SslContextFactory(sslStores.keystoreFile());
+        return createSecureSocketConnector(server, host, port, sslStores, null);
+    }
 
-        if (sslStores.keystorePassword() != null) {
-            sslContextFactory.setKeyStorePassword(sslStores.keystorePassword());
-        }
+    /**
+     * Creates a ssl jetty socket jetty using the provided {@link SslContextFactory}.
+     *
+     * @param server    Jetty server
+     * @param sslContextFactory the SslContextFactory
+     * @param host      host
+     * @param port      port
+     * @return a ssl socket jetty
+     */
+    public static ServerConnector createSecureSocketConnector(Server server,
+                                                              String host,
+                                                              int port,
+                                                              SslContextFactory sslContextFactory) {
+        Assert.notNull(server, "'server' must not be null");
+        Assert.notNull(host, "'host' must not be null");
+        Assert.notNull(sslContextFactory, "'sslContextFactory' must not be null");
 
-        if (sslStores.certAlias() != null) {
-            sslContextFactory.setCertAlias(sslStores.certAlias());
-        }
+        return createSecureSocketConnector(server, host, port, null, sslContextFactory);
+    }
 
-        if (sslStores.trustStoreFile() != null) {
-            sslContextFactory.setTrustStorePath(sslStores.trustStoreFile());
-        }
+    private static ServerConnector createSecureSocketConnector(Server server,
+                                                               String host,
+                                                               int port,
+                                                               SslStores sslStores,
+                                                               SslContextFactory sslContextFactory) {
+        if (sslContextFactory == null) {
+            sslContextFactory = new SslContextFactory(sslStores.keystoreFile());
 
-        if (sslStores.trustStorePassword() != null) {
-            sslContextFactory.setTrustStorePassword(sslStores.trustStorePassword());
-        }
+            if (sslStores.keystorePassword() != null) {
+                sslContextFactory.setKeyStorePassword(sslStores.keystorePassword());
+            }
 
-        if (sslStores.needsClientCert()) {
-            sslContextFactory.setNeedClientAuth(true);
-            sslContextFactory.setWantClientAuth(true);
+            if (sslStores.certAlias() != null) {
+                sslContextFactory.setCertAlias(sslStores.certAlias());
+            }
+
+            if (sslStores.trustStoreFile() != null) {
+                sslContextFactory.setTrustStorePath(sslStores.trustStoreFile());
+            }
+
+            if (sslStores.trustStorePassword() != null) {
+                sslContextFactory.setTrustStorePassword(sslStores.trustStorePassword());
+            }
+
+            if (sslStores.needsClientCert()) {
+                sslContextFactory.setNeedClientAuth(true);
+                sslContextFactory.setWantClientAuth(true);
+            }
         }
 
         HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory();

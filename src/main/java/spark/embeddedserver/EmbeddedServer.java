@@ -19,6 +19,7 @@ package spark.embeddedserver;
 import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
 import spark.ssl.SslStores;
 
@@ -42,6 +43,25 @@ public interface EmbeddedServer {
     int ignite(String host,
                int port,
                SslStores sslStores,
+               int maxThreads,
+               int minThreads,
+               int threadIdleTimeoutMillis) throws Exception;
+
+    /**
+     * Ignites the embedded server, listening on the specified port, running SSL secured with the specified
+     * {@link SslContextFactory}
+     *
+     * @param host                    The address to listen on
+     * @param port                    - the port
+     * @param sslContextFactory       - the SslContextFactory
+     * @param maxThreads              - max nbr of threads.
+     * @param minThreads              - min nbr of threads.
+     * @param threadIdleTimeoutMillis - idle timeout (ms).
+     * @return The port number the server was launched on.
+     */
+    int ignite(String host,
+               int port,
+               SslContextFactory sslContextFactory,
                int maxThreads,
                int minThreads,
                int threadIdleTimeoutMillis) throws Exception;

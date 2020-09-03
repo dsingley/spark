@@ -16,12 +16,6 @@
  */
 package spark;
 
-import java.io.IOException;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
-
 class Base64 {
 
     //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
@@ -34,8 +28,7 @@ class Base64 {
         if (toEncodeContent == null) {
             return null;
         }
-        BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(toEncodeContent.getBytes());
+        return java.util.Base64.getEncoder().encodeToString(toEncodeContent.getBytes());
     }
 
     //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
@@ -48,13 +41,7 @@ class Base64 {
         if (toDecodeContent == null) {
             return null;
         }
-        byte[] buf = null;
-        try {
-            buf = new BASE64Decoder().decodeBuffer(toDecodeContent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new String(buf);
+        return new String(java.util.Base64.getDecoder().decode(toDecodeContent));
     }
 
 
