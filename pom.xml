@@ -28,6 +28,14 @@
     <developers>
     </developers>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/dsingley/spark</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <java.version>1.8</java.version>
         <jetty.version>9.4.30.v20200611</jetty.version>
