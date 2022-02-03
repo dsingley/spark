@@ -43,6 +43,7 @@ public class EmbeddedServersTest {
         EmbeddedServers.add(id, new EmbeddedJettyFactory(serverFactory));
         EmbeddedServer embeddedServer = EmbeddedServers.create(id, null, null, null, false);
         assertNotNull(embeddedServer);
+        embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 0, (SslStores) null, 0, 0, 0);
 
         assertTrue(requestLogFile.exists());

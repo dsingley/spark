@@ -37,11 +37,11 @@ public class SocketConnectorFactory {
      * @param port   port
      * @return - a server jetty
      */
-    public static ServerConnector createSocketConnector(Server server, String host, int port) {
+    public static ServerConnector createSocketConnector(Server server, String host, int port, boolean trustForwardHeaders) {
         Assert.notNull(server, "'server' must not be null");
         Assert.notNull(host, "'host' must not be null");
 
-        HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory();
+        HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory(trustForwardHeaders);
         ServerConnector connector = new ServerConnector(server, httpConnectionFactory);
         initializeConnector(connector, host, port);
         return connector;
@@ -59,12 +59,13 @@ public class SocketConnectorFactory {
     public static ServerConnector createSecureSocketConnector(Server server,
                                                               String host,
                                                               int port,
-                                                              SslStores sslStores) {
+                                                              SslStores sslStores,
+                                                              boolean trustForwardHeaders) {
         Assert.notNull(server, "'server' must not be null");
         Assert.notNull(host, "'host' must not be null");
         Assert.notNull(sslStores, "'sslStores' must not be null");
 
-        return createSecureSocketConnector(server, host, port, sslStores, null);
+        return createSecureSocketConnector(server, host, port, sslStores, null, trustForwardHeaders);
     }
 
     /**
@@ -79,19 +80,21 @@ public class SocketConnectorFactory {
     public static ServerConnector createSecureSocketConnector(Server server,
                                                               String host,
                                                               int port,
-                                                              SslContextFactory sslContextFactory) {
+                                                              SslContextFactory sslContextFactory,
+                                                              boolean trustForwardHeaders) {
         Assert.notNull(server, "'server' must not be null");
         Assert.notNull(host, "'host' must not be null");
         Assert.notNull(sslContextFactory, "'sslContextFactory' must not be null");
 
-        return createSecureSocketConnector(server, host, port, null, sslContextFactory);
+        return createSecureSocketConnector(server, host, port, null, sslContextFactory, trustForwardHeaders);
     }
 
     private static ServerConnector createSecureSocketConnector(Server server,
                                                                String host,
                                                                int port,
                                                                SslStores sslStores,
-                                                               SslContextFactory sslContextFactory) {
+                                                               SslContextFactory sslContextFactory,
+                                                               boolean trustForwardHeaders) {
         if (sslContextFactory == null) {
             sslContextFactory = new SslContextFactory(sslStores.keystoreFile());
 
@@ -117,7 +120,7 @@ public class SocketConnectorFactory {
             }
         }
 
-        HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory();
+        HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory(trustForwardHeaders);
 
         ServerConnector connector = new ServerConnector(server, sslContextFactory, httpConnectionFactory);
         initializeConnector(connector, host, port);
@@ -132,10 +135,12 @@ public class SocketConnectorFactory {
         connector.addFirstConnectionFactory(new ProxyConnectionFactory());
     }
 
-    private static HttpConnectionFactory createHttpConnectionFactory() {
+    private static HttpConnectionFactory createHttpConnectionFactory(boolean trustForwardHeaders) {
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSecureScheme("https");
-        httpConfig.addCustomizer(new ForwardedRequestCustomizer());
+        if (trustForwardHeaders) {
+            httpConfig.addCustomizer(new ForwardedRequestCustomizer());
+        }
         return new HttpConnectionFactory(httpConfig);
     }
 

@@ -20,6 +20,9 @@ class Base64 {
 
     //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
 
+    private static final java.util.Base64.Encoder urlEncoder = java.util.Base64.getUrlEncoder();
+    private static final java.util.Base64.Decoder decoder = java.util.Base64.getDecoder();
+
     /**
      * @param toEncodeContent the String to be encode
      * @return String after encode
@@ -28,7 +31,7 @@ class Base64 {
         if (toEncodeContent == null) {
             return null;
         }
-        return java.util.Base64.getEncoder().encodeToString(toEncodeContent.getBytes());
+        return urlEncoder.encodeToString(toEncodeContent.getBytes());
     }
 
     //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
@@ -41,7 +44,13 @@ class Base64 {
         if (toDecodeContent == null) {
             return null;
         }
-        return new String(java.util.Base64.getDecoder().decode(toDecodeContent));
+        byte[] buf = null;
+        try {
+            buf = decoder.decode(toDecodeContent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new String(buf);
     }
 
 

@@ -56,9 +56,10 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Map<String, WebSocketHandlerWrapper> webSocketHandlers;
-    private Optional<Integer> webSocketIdleTimeoutMillis;
+    private Optional<Long> webSocketIdleTimeoutMillis;
 
     private ThreadPool threadPool = null;
+    private boolean trustForwardHeaders = true; // true by default
 
     public EmbeddedJettyServer(JettyServerFactory serverFactory, Handler handler) {
         this.serverFactory = serverFactory;
@@ -67,10 +68,15 @@ public class EmbeddedJettyServer implements EmbeddedServer {
 
     @Override
     public void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
-                                    Optional<Integer> webSocketIdleTimeoutMillis) {
+                                    Optional<Long> webSocketIdleTimeoutMillis) {
 
         this.webSocketHandlers = webSocketHandlers;
         this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis;
+    }
+
+    @Override
+    public void trustForwardHeaders(boolean trust) {
+        this.trustForwardHeaders = trust;
     }
 
     /**
@@ -127,11 +133,11 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         ServerConnector connector;
 
         if (sslContextFactory != null) {
-            connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslContextFactory);
+            connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslContextFactory, trustForwardHeaders);
         } else if (sslStores != null) {
-            connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores);
+            connector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores, trustForwardHeaders);
         } else {
-            connector = SocketConnectorFactory.createSocketConnector(server, host, port);
+            connector = SocketConnectorFactory.createSocketConnector(server, host, port, trustForwardHeaders);
         }
 
         Connector previousConnectors[] = server.getConnectors();
