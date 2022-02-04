@@ -308,7 +308,7 @@ public final class Service extends Routable {
      *
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
-     * connection in the servlet container
+     * connection in the servlet container.
      *
      * @param sslContextFactory     a configured SslContextFactory
      * @return the object with connection set to be secure

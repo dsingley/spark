@@ -18,7 +18,12 @@ package spark.embeddedserver.jetty;
 
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.ForwardedRequestCustomizer;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.ProxyConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import spark.ssl.SslStores;
