@@ -46,8 +46,8 @@
         <slf4j.version>1.7.35</slf4j.version>
         <jetty.version>9.4.44.v20210927</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <powermock.version>1.7.4</powermock.version>
-        <mockito.version>4.3.1</mockito.version>
+        <powermock.version>2.0.9</powermock.version>
+        <mockito.version>3.3.3</mockito.version>
     </properties>
 
     <dependencies>
@@ -110,7 +110,7 @@
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
+            <artifactId>powermock-api-mockito2</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
