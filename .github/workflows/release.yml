@@ -1,4 +1,4 @@
-name: Publish to GitHub Packages
+name: Publish to GitHub Packages and Maven Central via OSSHR
 on:
     workflow_dispatch:
     release:
@@ -9,6 +9,7 @@ jobs:
         steps:
             -   name: Checkout
                 uses: actions/checkout@v3
+
             -   name: Setup Java
                 uses: actions/setup-java@v3
                 with:
@@ -16,7 +17,28 @@ jobs:
                     java-version: 8
                     architecture: x64
                     cache: maven
-            -   name: Maven Deploy
-                run: mvn -B deploy
+
+            -   name: Maven Deploy to Gitlab
+                run: mvn --batch-mode deploy
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Setup Java for OSSHR
+                uses: actions/setup-java@v3
+                with:
+                    distribution: zulu
+                    java-version: 8
+                    architecture: x64
+                    cache: maven
+                    server-id: osshr
+                    server-username: OSSRH_MAVEN_PASSWORD
+                    server-password: OSSRH_MAVEN_USERNAME
+                    gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+                    gpg-passphrase: GPG_PASSPHRASE
+
+            -   name: Maven Deploy to OSSHR
+                run: mvn --batch-mode --activate-profiles release deploy
+                env:
+                    OSSRH_MAVEN_PASSWORD: ${{ secrets.OSSRH_MAVEN_PASSWORD }}
+                    OSSRH_MAVEN_USERNAME: ${{ secrets.OSSRH_MAVEN_USERNAME }}
+                    GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
