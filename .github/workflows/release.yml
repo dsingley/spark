@@ -1,4 +1,4 @@
-name: Publish to GitHub Packages and Maven Central via OSSHR
+name: Publish to Maven Central via OSSHR
 on:
     workflow_dispatch:
     release:
@@ -9,19 +9,6 @@ jobs:
         steps:
             -   name: Checkout
                 uses: actions/checkout@v3
-
-            -   name: Setup Java
-                uses: actions/setup-java@v3
-                with:
-                    distribution: zulu
-                    java-version: 8
-                    architecture: x64
-                    cache: maven
-
-            -   name: Maven Deploy to Gitlab
-                run: mvn --batch-mode deploy
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             -   name: Setup Java for OSSHR
                 uses: actions/setup-java@v3
