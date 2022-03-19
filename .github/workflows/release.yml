@@ -23,6 +23,9 @@ jobs:
                     gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
                     gpg-passphrase: GPG_PASSPHRASE
 
+            -   name: Debug
+                run: cat /home/runner/.m2/settings.xml && env | sort | awk 'BEGIN{FS="="}{printf("%s=%d\n",$1,length($2))}'
+
             -   name: Maven Deploy to OSSHR
                 run: mvn --batch-mode --activate-profiles release deploy
                 env:
