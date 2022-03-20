@@ -17,14 +17,14 @@ jobs:
                     java-version: 8
                     architecture: x64
                     cache: maven
-                    server-id: osshr
+                    server-id: ossrh
                     server-username: OSSRH_MAVEN_PASSWORD
                     server-password: OSSRH_MAVEN_USERNAME
                     gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
                     gpg-passphrase: GPG_PASSPHRASE
 
             -   name: Maven Deploy
-                run: env | sort | awk 'BEGIN{FS="="}{printf("%s=%d\n",$1,length($2))}' && mvn --batch-mode --activate-profiles release deploy
+                run: mvn --batch-mode --activate-profiles release deploy
                 env:
                     OSSRH_MAVEN_PASSWORD: ${{ secrets.OSSRH_MAVEN_PASSWORD }}
                     OSSRH_MAVEN_USERNAME: ${{ secrets.OSSRH_MAVEN_USERNAME }}
