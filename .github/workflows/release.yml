@@ -24,7 +24,12 @@ jobs:
                     gpg-passphrase: GPG_PASSPHRASE
 
             -   name: Maven Deploy
-                run: mvn --batch-mode --activate-profiles release deploy
+                run: |
+                    mvn --batch-mode \
+                        --errors \
+                        --debug \
+                        --activate-profiles release \
+                        deploy
                 env:
                     OSSRH_MAVEN_PASSWORD: ${{ secrets.OSSRH_MAVEN_PASSWORD }}
                     OSSRH_MAVEN_USERNAME: ${{ secrets.OSSRH_MAVEN_USERNAME }}
