@@ -1,4 +1,4 @@
-name: Run Tests
+name: Test
 on: [ push ]
 jobs:
     test:
@@ -6,6 +6,7 @@ jobs:
         steps:
             -   name: Checkout
                 uses: actions/checkout@v3
+
             -   name: Setup Java
                 uses: actions/setup-java@v3
                 with:
@@ -13,5 +14,6 @@ jobs:
                     java-version: 8
                     architecture: x64
                     cache: maven
+
             -   name: Maven Test
-                run: mvn -B test
+                run: mvn --batch-mode test

@@ -1,4 +1,4 @@
-name: Publish to Maven Central via OSSHR
+name: Publish
 on:
     workflow_dispatch:
     release:
@@ -10,7 +10,7 @@ jobs:
             -   name: Checkout
                 uses: actions/checkout@v3
 
-            -   name: Setup Java for OSSHR
+            -   name: Setup Java
                 uses: actions/setup-java@v3
                 with:
                     distribution: zulu
@@ -23,11 +23,8 @@ jobs:
                     gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
                     gpg-passphrase: GPG_PASSPHRASE
 
-            -   name: Debug
-                run: cat /home/runner/.m2/settings.xml && env | sort | awk 'BEGIN{FS="="}{printf("%s=%d\n",$1,length($2))}'
-
-            -   name: Maven Deploy to OSSHR
-                run: mvn --batch-mode --activate-profiles release deploy
+            -   name: Maven Deploy
+                run: env | sort | awk 'BEGIN{FS="="}{printf("%s=%d\n",$1,length($2))}' && mvn --batch-mode --activate-profiles release deploy
                 env:
                     OSSRH_MAVEN_PASSWORD: ${{ secrets.OSSRH_MAVEN_PASSWORD }}
                     OSSRH_MAVEN_USERNAME: ${{ secrets.OSSRH_MAVEN_USERNAME }}
