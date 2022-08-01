@@ -39,14 +39,14 @@
         <jetty.version>9.4.48.v20220622</jetty.version>
 
         <freemarker.version>2.3.31</freemarker.version>
-        <gson.version>2.9.0</gson.version>
+        <gson.version>2.9.1</gson.version>
         <httpcomponents.version>4.5.13</httpcomponents.version>
         <junit.version>4.13.2</junit.version>
         <mockito.version>4.6.1</mockito.version>
         <powermock.version>2.0.9</powermock.version>
 
         <java.version>1.8</java.version>
-        <maven-bundle.version>5.1.7</maven-bundle.version>
+        <maven-bundle.version>5.1.8</maven-bundle.version>
         <maven-compiler.version>3.10.1</maven-compiler.version>
         <maven-enforcer.version>3.1.0</maven-enforcer.version>
         <maven-gpg.version>3.0.1</maven-gpg.version>
