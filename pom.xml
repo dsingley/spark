@@ -35,7 +35,7 @@
     </distributionManagement>
 
     <properties>
-        <slf4j.version>2.0.2</slf4j.version>
+        <slf4j.version>2.0.3</slf4j.version>
         <jetty.version>9.4.49.v20220914</jetty.version>
 
         <freemarker.version>2.3.31</freemarker.version>
