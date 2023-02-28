@@ -36,7 +36,7 @@
 
     <properties>
         <slf4j.version>2.0.6</slf4j.version>
-        <jetty.version>9.4.50.v20221201</jetty.version>
+        <jetty.version>9.4.51.v20230217</jetty.version>
 
         <freemarker.version>2.3.32</freemarker.version>
         <gson.version>2.9.1</gson.version>
