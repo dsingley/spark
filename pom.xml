@@ -43,7 +43,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <slf4j.version>2.0.10</slf4j.version>
+        <slf4j.version>2.0.11</slf4j.version>
         <jetty.version>9.4.53.v20231009</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>2.0.9</powermock.version>
