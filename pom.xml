@@ -76,22 +76,18 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
             <artifactId>websocket-server</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
             <artifactId>websocket-servlet</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
 
         <!-- JUNIT DEPENDENCY FOR TESTING -->
@@ -140,10 +136,21 @@
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
             <artifactId>websocket-client</artifactId>
-            <version>${jetty.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+   <dependencyManagement>
+       <dependencies>
+           <dependency>
+               <groupId>org.eclipse.jetty</groupId>
+               <artifactId>jetty-bom</artifactId>
+               <version>${jetty.version}</version>
+               <type>pom</type>
+               <scope>import</scope>
+           </dependency>
+       </dependencies>
+   </dependencyManagement>
 
     <build>
         <resources>
