@@ -20,7 +20,7 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:dsingley/spark.git</connection>
+        <connection>scm:git:https://github.com/dsingley/spark.git</connection>
         <developerConnection>scm:git:git@github.com:dsingley/spark.git</developerConnection>
         <url>https://github.com/dsingley/spark</url>
     </scm>
@@ -47,7 +47,7 @@
 
         <java.version>1.8</java.version>
         <maven-bundle.version>5.1.9</maven-bundle.version>
-        <maven-compiler.version>3.13.0</maven-compiler.version>
+        <maven-compiler.version>3.14.0</maven-compiler.version>
         <maven-enforcer.version>3.5.0</maven-enforcer.version>
         <maven-gpg.version>3.0.1</maven-gpg.version>
         <maven-javadoc.version>3.11.2</maven-javadoc.version>
