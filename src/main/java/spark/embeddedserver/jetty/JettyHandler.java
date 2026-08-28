@@ -39,8 +39,8 @@ public class JettyHandler extends Handler.Wrapper {
     private final ServletContextHandler context;
 
     public JettyHandler(Filter filter) {
-        super(newContext(filter));
-        this.context = (ServletContextHandler) getHandler();
+        context = newContext(filter);
+        setHandler(context);
     }
 
     private static ServletContextHandler newContext(Filter filter) {
