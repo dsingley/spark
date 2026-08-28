@@ -18,6 +18,7 @@ package spark.embeddedserver.jetty;
 
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jetty.http.UriCompliance;
 import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -85,7 +86,7 @@ public class SocketConnectorFactory {
     public static ServerConnector createSecureSocketConnector(Server server,
                                                               String host,
                                                               int port,
-                                                              SslContextFactory sslContextFactory,
+                                                              SslContextFactory.Server sslContextFactory,
                                                               boolean trustForwardHeaders) {
         Assert.notNull(server, "'server' must not be null");
         Assert.notNull(host, "'host' must not be null");
@@ -98,10 +99,11 @@ public class SocketConnectorFactory {
                                                                String host,
                                                                int port,
                                                                SslStores sslStores,
-                                                               SslContextFactory sslContextFactory,
+                                                               SslContextFactory.Server sslContextFactory,
                                                                boolean trustForwardHeaders) {
         if (sslContextFactory == null) {
-            sslContextFactory = new SslContextFactory(sslStores.keystoreFile());
+            sslContextFactory = new SslContextFactory.Server();
+            sslContextFactory.setKeyStorePath(sslStores.keystoreFile());
 
             if (sslStores.keystorePassword() != null) {
                 sslContextFactory.setKeyStorePassword(sslStores.keystorePassword());
@@ -143,6 +145,11 @@ public class SocketConnectorFactory {
     private static HttpConnectionFactory createHttpConnectionFactory(boolean trustForwardHeaders) {
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSecureScheme("https");
+        // Jetty defaults to rejecting ambiguous URIs (e.g. an encoded slash within a path
+        // segment) with a 400 since a hardening change several versions back; Spark has always
+        // allowed them (routes/splats built from URL-decoded segments), so opt back in to the
+        // permissive compliance mode to preserve that existing, documented behavior.
+        httpConfig.setUriCompliance(UriCompliance.LEGACY);
         if (trustForwardHeaders) {
             httpConfig.addCustomizer(new ForwardedRequestCustomizer());
         }

@@ -1,8 +1,7 @@
 package spark;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -247,22 +246,20 @@ public class ServiceTest {
         service.webSocketIdleTimeoutMillis(100);
     }
 
-    @Test
-    public void testWebSocket_whenInitializedTrue_thenThrowIllegalStateException() {
-        thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("This must be done before route mapping has begun");
+    // testWebSocket_whenInitializedTrue_thenThrowIllegalStateException and
+    // testWebSocket_whenPathNull_thenThrowNullPointerException temporarily removed here:
+    // WebSocketHandlerWrapper.validateHandlerClass() now throws UnsupportedOperationException
+    // unconditionally (see its class javadoc), which fires during handler-wrapper construction —
+    // before either the "initialized" or "path null" checks in addWebSocketHandler() are reached.
+    // See testWebSocket_whenWebSocketsUnavailable_thenThrowUnsupportedOperationException below,
+    // and the Phase 3 tracking issue for the EE11 restoration.
 
-        Whitebox.setInternalState(service, "initialized", true);
-        service.webSocket("/", DummyWebSocketListener.class);
-    }
-    
     @Test
-    public void testWebSocket_whenPathNull_thenThrowNullPointerException() {
-        thrown.expect(NullPointerException.class);
-        thrown.expectMessage("WebSocket path cannot be null");
-        service.webSocket(null, new DummyWebSocketListener());
+    public void testWebSocket_whenWebSocketsUnavailable_thenThrowUnsupportedOperationException() {
+        thrown.expect(UnsupportedOperationException.class);
+        service.webSocket("/", new DummyWebSocketListener());
     }
-    
+
     @Test
     public void testWebSocket_whenHandlerNull_thenThrowNullPointerException() {
         thrown.expect(NullPointerException.class);
@@ -304,7 +301,6 @@ public class ServiceTest {
         assertFalse(service.initialized);
     }
     
-    @WebSocket
     protected static class DummyWebSocketListener {
     }
 }

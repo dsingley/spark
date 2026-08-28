@@ -66,6 +66,8 @@ public class ResponseWrapperDelegationTest {
         UrlResponse response = testUtil.get("/json");
         Assert.assertEquals(200, response.status);
         Assert.assertEquals("{\"status\": \"ok\"}", response.body);
-        Assert.assertEquals("text/plain", response.headers.get("Content-Type"));
+        // Jetty 12 echoes MimeTypes' assumed charset for text/plain into the Content-Type
+        // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
+        Assert.assertEquals("text/plain;charset=iso-8859-1", response.headers.get("Content-Type"));
     }
 }

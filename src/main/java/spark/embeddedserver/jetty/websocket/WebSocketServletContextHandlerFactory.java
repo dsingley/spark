@@ -19,53 +19,32 @@ package spark.embeddedserver.jetty.websocket;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.jetty.http.pathmap.ServletPathSpec;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.websocket.server.NativeWebSocketConfiguration;
-import org.eclipse.jetty.websocket.server.WebSocketUpgradeFilter;
-import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 
 /**
  * Creates websocket servlet context handlers.
+ *
+ * <p><b>Temporarily stubbed during the Jetty 9 → 12 migration.</b> {@link WebSocketHandlerWrapper}
+ * now fails fast on any attempt to register a WebSocket handler, so {@code webSocketHandlers} is
+ * always {@code null} here in practice. See the Phase 3 tracking issue for the EE11 restoration.
  */
 public class WebSocketServletContextHandlerFactory {
-
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketServletContextHandlerFactory.class);
 
     /**
      * Creates a new websocket servlet context handler.
      *
      * @param webSocketHandlers          webSocketHandlers
      * @param webSocketIdleTimeoutMillis webSocketIdleTimeoutMillis
-     * @return a new websocket servlet context handler or 'null' if creation failed.
+     * @return {@code null} — WebSocket support is temporarily unavailable; see class javadoc.
      */
     public static ServletContextHandler create(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
                                                Optional<Long> webSocketIdleTimeoutMillis) {
-        ServletContextHandler webSocketServletContextHandler = null;
         if (webSocketHandlers != null) {
-            try {
-                webSocketServletContextHandler = new ServletContextHandler(null, "/", true, false);
-                WebSocketUpgradeFilter webSocketUpgradeFilter = WebSocketUpgradeFilter.configureContext(webSocketServletContextHandler);
-                if (webSocketIdleTimeoutMillis.isPresent()) {
-                    webSocketUpgradeFilter.getFactory().getPolicy().setIdleTimeout(webSocketIdleTimeoutMillis.get());
-                }
-                // Since we are configuring WebSockets before the ServletContextHandler and WebSocketUpgradeFilter is
-                // even initialized / started, then we have to pre-populate the configuration that will eventually
-                // be used by Jetty's WebSocketUpgradeFilter.
-                NativeWebSocketConfiguration webSocketConfiguration = (NativeWebSocketConfiguration) webSocketServletContextHandler
-                    .getServletContext().getAttribute(NativeWebSocketConfiguration.class.getName());
-                for (String path : webSocketHandlers.keySet()) {
-                    WebSocketCreator webSocketCreator = WebSocketCreatorFactory.create(webSocketHandlers.get(path));
-                    webSocketConfiguration.addMapping(new ServletPathSpec(path), webSocketCreator);
-                }
-            } catch (Exception ex) {
-                logger.error("creation of websocket context handler failed.", ex);
-                webSocketServletContextHandler = null;
-            }
+            throw new UnsupportedOperationException(
+                    "WebSocket support is being migrated to Jetty 12's EE11 websocket API and is "
+                            + "temporarily unavailable. See the Phase 3 tracking issue in the Jetty 12 migration.");
         }
-        return webSocketServletContextHandler;
+        return null;
     }
 
 }

@@ -23,12 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.slf4j.Logger;
@@ -98,7 +97,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     @Override
     public int ignite(String host,
                       int port,
-                      SslContextFactory sslContextFactory,
+                      SslContextFactory.Server sslContextFactory,
                       int maxThreads,
                       int minThreads,
                       int threadIdleTimeoutMillis) throws Exception {
@@ -108,7 +107,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private int ignite(String host,
                        int port,
                        SslStores sslStores,
-                       SslContextFactory sslContextFactory,
+                       SslContextFactory.Server sslContextFactory,
                        int maxThreads,
                        int minThreads,
                        int threadIdleTimeoutMillis) throws Exception {
@@ -164,9 +163,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
                 handlersInList.add(webSocketServletContextHandler);
             }
 
-            HandlerList handlers = new HandlerList();
-            handlers.setHandlers(handlersInList.toArray(new Handler[handlersInList.size()]));
-            server.setHandler(handlers);
+            server.setHandler(new Handler.Sequence(handlersInList));
         }
 
         logger.info("== {} has ignited ...", NAME);

@@ -93,14 +93,16 @@ public class StaticFilesTest {
 
     @Test
     public void testMimeTypes() throws Exception {
-        Assert.assertEquals("text/html", doGet("/pages/index.html").headers.get("Content-Type"));
+        // Jetty 12 echoes MimeTypes' assumed charset for text/html into the Content-Type
+        // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
+        Assert.assertEquals("text/html;charset=utf-8", doGet("/pages/index.html").headers.get("Content-Type"));
         Assert.assertEquals("application/javascript", doGet("/js/scripts.js").headers.get("Content-Type"));
         Assert.assertEquals("text/css", doGet("/css/style.css").headers.get("Content-Type"));
         Assert.assertEquals("image/png", doGet("/img/sparklogo.png").headers.get("Content-Type"));
         Assert.assertEquals("image/svg+xml", doGet("/img/sparklogo.svg").headers.get("Content-Type"));
         Assert.assertEquals("application/octet-stream", doGet("/img/sparklogoPng").headers.get("Content-Type"));
         Assert.assertEquals("application/octet-stream", doGet("/img/sparklogoSvg").headers.get("Content-Type"));
-        Assert.assertEquals("text/html", doGet("/externalFile.html").headers.get("Content-Type"));
+        Assert.assertEquals("text/html;charset=utf-8", doGet("/externalFile.html").headers.get("Content-Type"));
     }
 
     @Test

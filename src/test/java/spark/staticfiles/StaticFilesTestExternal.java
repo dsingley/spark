@@ -110,7 +110,9 @@ public class StaticFilesTestExternal {
     public void testExternalStaticFile() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/externalFile.html");
         Assert.assertEquals(200, response.status);
-        Assert.assertEquals("text/html", response.headers.get("Content-Type"));
+        // Jetty 12 echoes MimeTypes' assumed charset for text/html into the Content-Type
+        // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
+        Assert.assertEquals("text/html;charset=utf-8", response.headers.get("Content-Type"));
         Assert.assertEquals(CONTENT_OF_EXTERNAL_FILE, response.body);
 
         testGet();

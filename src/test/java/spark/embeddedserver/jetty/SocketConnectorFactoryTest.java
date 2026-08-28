@@ -104,9 +104,14 @@ public class SocketConnectorFactoryTest {
         final String host = "localhost";
         final int port = 8888;
 
-        final String keystoreFile = "keystoreFile.jks";
+        // Jetty 12 validates that the keystore/truststore paths are accessible as soon as
+        // they're set (Jetty 9 deferred this until the SslContextFactory actually started),
+        // so this needs a real file rather than a placeholder name.
+        final String keystoreFileName = "keystore.jks";
+        final String keystoreFile = "src/test/resources/" + keystoreFileName;
         final String keystorePassword = "keystorePassword";
-        final String truststoreFile = "truststoreFile.jks";
+        final String truststoreFileName = keystoreFileName;
+        final String truststoreFile = keystoreFile;
         final String trustStorePassword = "trustStorePassword";
 
         SslStores sslStores = SslStores.create(keystoreFile, keystorePassword, truststoreFile, trustStorePassword);
@@ -129,11 +134,11 @@ public class SocketConnectorFactoryTest {
         SslConnectionFactory sslConnectionFactory = (SslConnectionFactory) factories.get("ssl");
         SslContextFactory sslContextFactory = sslConnectionFactory.getSslContextFactory();
 
-        assertEquals("Should return the Keystore file specified", keystoreFile,
-                sslContextFactory.getKeyStoreResource().getFile().getName());
+        assertEquals("Should return the Keystore file specified", keystoreFileName,
+                sslContextFactory.getKeyStoreResource().getFileName());
 
-        assertEquals("Should return the Truststore file specified", truststoreFile,
-                sslContextFactory.getTrustStoreResource().getFile().getName());
+        assertEquals("Should return the Truststore file specified", truststoreFileName,
+                sslContextFactory.getTrustStoreResource().getFileName());
 
     }
 

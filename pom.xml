@@ -36,7 +36,7 @@
 
     <properties>
         <slf4j.version>2.0.18</slf4j.version>
-        <jetty.version>9.4.58.v20250814</jetty.version>
+        <jetty.version>12.1.12</jetty.version>
 
         <freemarker.version>2.3.34</freemarker.version>
         <gson.version>2.14.0</gson.version>
@@ -78,17 +78,19 @@
             <artifactId>jetty-server</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
+            <groupId>org.eclipse.jetty.ee11</groupId>
+            <artifactId>jetty-ee11-webapp</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-server</artifactId>
+            <groupId>org.eclipse.jetty.ee11</groupId>
+            <artifactId>jetty-ee11-servlet</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-servlet</artifactId>
-        </dependency>
+        <!--
+            WebSocket support is being ported to Jetty 12's EE11 websocket API; the old
+            Jetty 9 websocket-server/websocket-servlet coordinates have no managed version
+            under jetty-bom 12.x and are removed here. See spark.embeddedserver.jetty.websocket
+            for the temporary stub and the tracking issue for the Phase 3 restoration.
+        -->
 
         <!-- JUNIT DEPENDENCY FOR TESTING -->
         <dependency>
@@ -133,11 +135,8 @@
             <version>${gson.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-client</artifactId>
-            <scope>test</scope>
-        </dependency>
+        <!-- WebSocket test client removed with the other Jetty 9 websocket coordinates above;
+             restored in Phase 3 against the EE11 websocket API. -->
     </dependencies>
 
    <dependencyManagement>
@@ -145,6 +144,13 @@
            <dependency>
                <groupId>org.eclipse.jetty</groupId>
                <artifactId>jetty-bom</artifactId>
+               <version>${jetty.version}</version>
+               <type>pom</type>
+               <scope>import</scope>
+           </dependency>
+           <dependency>
+               <groupId>org.eclipse.jetty.ee11</groupId>
+               <artifactId>jetty-ee11-bom</artifactId>
                <version>${jetty.version}</version>
                <type>pom</type>
                <scope>import</scope>
