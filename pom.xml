@@ -45,7 +45,7 @@
         <mockito.version>4.11.0</mockito.version>
         <powermock.version>2.0.9</powermock.version>
 
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven-bundle.version>5.1.9</maven-bundle.version>
         <maven-compiler.version>3.14.1</maven-compiler.version>
         <maven-enforcer.version>3.6.3</maven-enforcer.version>
@@ -209,6 +209,22 @@
                 <configuration>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
+                    <!--
+                        Required under JDK 17+ for PowerMock and Mockito's inline mock maker:
+                        - java.lang/java.util opens: PowerMock's Whitebox reflects into JDK internals
+                          that are no longer open by default since JDK 9.
+                        - jdk.attach.allowAttachSelf: Mockito's inline mock maker self-attaches a
+                          Byte Buddy java agent at runtime.
+                        - net.bytebuddy.experimental: the Byte Buddy version bundled with the
+                          current Mockito 4.x line predates official JDK 21 class file support.
+                        Revisit when Mockito and PowerMock are modernized (tracked separately).
+                    -->
+                    <argLine>
+                        -Djdk.attach.allowAttachSelf=true
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        -Dnet.bytebuddy.experimental=true
+                    </argLine>
                 </configuration>
             </plugin>
             <plugin>
