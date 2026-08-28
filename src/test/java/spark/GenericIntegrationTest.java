@@ -4,12 +4,17 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.util.URIUtil;
+import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
+import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -17,6 +22,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import spark.embeddedserver.jetty.websocket.WebSocketTestClient;
+import spark.embeddedserver.jetty.websocket.WebSocketTestHandler;
 import spark.examples.exception.BaseException;
 import spark.examples.exception.JWGmeligMeylingException;
 import spark.examples.exception.NotFoundException;
@@ -35,6 +42,7 @@ import static spark.Spark.patch;
 import static spark.Spark.path;
 import static spark.Spark.post;
 import static spark.Spark.staticFileLocation;
+import static spark.Spark.webSocket;
 
 public class GenericIntegrationTest {
 
@@ -66,8 +74,7 @@ public class GenericIntegrationTest {
 
         staticFileLocation("/public");
         externalStaticFileLocation(System.getProperty("java.io.tmpdir"));
-        // WebSocket registration temporarily removed here — see WebSocketHandlerWrapper's
-        // class javadoc; restored in Phase 3 of the Jetty 12 migration.
+        webSocket("/ws", WebSocketTestHandler.class);
 
         before("/secretcontent/*", (q, a) -> {
             halt(401, "Go Away!");
@@ -482,8 +489,26 @@ public class GenericIntegrationTest {
         Assert.assertEquals(new JWGmeligMeylingException().trustButVerify(), response.body);
     }
 
-    // testWebSocketConversation temporarily removed here — see WebSocketHandlerWrapper's
-    // class javadoc; restored in Phase 3 of the Jetty 12 migration.
+    @Test
+    public void testWebSocketConversation() throws Exception {
+        String uri = "ws://localhost:4567/ws";
+        WebSocketClient client = new WebSocketClient();
+        WebSocketTestClient ws = new WebSocketTestClient();
+
+        try {
+            client.start();
+            client.connect(ws, URI.create(uri), new ClientUpgradeRequest());
+            ws.awaitClose(30, TimeUnit.SECONDS);
+        } finally {
+            client.stop();
+        }
+
+        List<String> events = WebSocketTestHandler.events;
+        Assert.assertEquals(3, events.size());
+        Assert.assertEquals("onConnect", events.get(0));
+        Assert.assertEquals("onMessage: Hi Spark!", events.get(1));
+        Assert.assertEquals("onClose: 1000 Bye!", events.get(2));
+    }
 
     @Test
     public void path_should_prefix_routes() throws Exception {

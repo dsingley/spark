@@ -85,12 +85,10 @@
             <groupId>org.eclipse.jetty.ee11</groupId>
             <artifactId>jetty-ee11-servlet</artifactId>
         </dependency>
-        <!--
-            WebSocket support is being ported to Jetty 12's EE11 websocket API; the old
-            Jetty 9 websocket-server/websocket-servlet coordinates have no managed version
-            under jetty-bom 12.x and are removed here. See spark.embeddedserver.jetty.websocket
-            for the temporary stub and the tracking issue for the Phase 3 restoration.
-        -->
+        <dependency>
+            <groupId>org.eclipse.jetty.ee11.websocket</groupId>
+            <artifactId>jetty-ee11-websocket-jetty-server</artifactId>
+        </dependency>
 
         <!-- JUNIT DEPENDENCY FOR TESTING -->
         <dependency>
@@ -135,8 +133,11 @@
             <version>${gson.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- WebSocket test client removed with the other Jetty 9 websocket coordinates above;
-             restored in Phase 3 against the EE11 websocket API. -->
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>jetty-websocket-jetty-client</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
    <dependencyManagement>

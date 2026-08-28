@@ -1,13 +1,9 @@
 package spark.embeddedserver.jetty.websocket;
 
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+
 /**
  * A wrapper for web socket handler classes/instances.
- *
- * <p><b>Temporarily stubbed during the Jetty 9 → 12 migration.</b> Jetty 12 removed the
- * websocket API this validation used to check against ({@code org.eclipse.jetty.websocket.api});
- * the EE11 replacement is being ported separately (see the Phase 3 tracking issue). Until
- * that lands, any attempt to register a WebSocket handler fails fast here rather than
- * silently doing nothing.
  */
 public interface WebSocketHandlerWrapper {
 
@@ -19,9 +15,12 @@ public interface WebSocketHandlerWrapper {
     Object getHandler();
 
     static void validateHandlerClass(Class<?> handlerClass) {
-        throw new UnsupportedOperationException(
-                "WebSocket support is being migrated to Jetty 12's EE11 websocket API and is "
-                        + "temporarily unavailable. See the Phase 3 tracking issue in the Jetty 12 migration.");
+        // Jetty 12 removed the WebSocketListener interface entirely (see
+        // https://github.com/sleberknight/spark/issues/12); the annotated style is now the
+        // only supported way to write a WebSocket handler.
+        if (!handlerClass.isAnnotationPresent(WebSocket.class)) {
+            throw new IllegalArgumentException("WebSocket handler must be annotated as '@WebSocket'");
+        }
     }
 
 }

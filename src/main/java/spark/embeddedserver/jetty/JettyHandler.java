@@ -24,6 +24,8 @@ import jakarta.servlet.SessionCookieConfig;
 
 import org.eclipse.jetty.ee11.servlet.FilterHolder;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
+import org.eclipse.jetty.ee11.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import org.eclipse.jetty.server.Handler;
 
 /**
@@ -45,6 +47,12 @@ public class JettyHandler extends Handler.Wrapper {
 
     private static ServletContextHandler newContext(Filter filter) {
         ServletContextHandler context = new ServletContextHandler("/", ServletContextHandler.SESSIONS);
+        // Installs Jetty's WebSocketUpgradeFilter, which prepends itself to the front of the
+        // filter chain (ServletHandler.prependFilter) regardless of registration order, so it
+        // always gets first look at upgrade requests and lets everything else fall through to
+        // the filter added below. No mappings are registered here; EmbeddedJettyServer adds
+        // them via getWebSocketContainer() once Spark's registered handlers are known.
+        JettyWebSocketServletContainerInitializer.configure(context, null);
         context.addFilter(new FilterHolder(filter), "/*", EnumSet.of(DispatcherType.REQUEST));
         // Jetty 12 rejects an encoded slash (%2F) within a path segment by default at the
         // servlet layer, independently of the connector's UriCompliance (see
@@ -56,6 +64,10 @@ public class JettyHandler extends Handler.Wrapper {
 
     public SessionCookieConfig getSessionCookieConfig() {
         return context.getSessionHandler().getSessionCookieConfig();
+    }
+
+    public JettyWebSocketServerContainer getWebSocketContainer() {
+        return JettyWebSocketServerContainer.getContainer(context.getServletContext());
     }
 
 }

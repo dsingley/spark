@@ -18,14 +18,12 @@ package spark.embeddedserver.jetty;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -34,8 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import spark.embeddedserver.EmbeddedServer;
+import spark.embeddedserver.jetty.websocket.WebSocketCreatorFactory;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
-import spark.embeddedserver.jetty.websocket.WebSocketServletContextHandlerFactory;
 import spark.ssl.SslStores;
 
 /**
@@ -49,7 +47,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private static final String NAME = "Spark";
 
     private final JettyServerFactory serverFactory;
-    private final Handler handler;
+    private final JettyHandler handler;
     private Server server;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -60,7 +58,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private ThreadPool threadPool = null;
     private boolean trustForwardHeaders = true; // true by default
 
-    public EmbeddedJettyServer(JettyServerFactory serverFactory, Handler handler) {
+    public EmbeddedJettyServer(JettyServerFactory serverFactory, JettyHandler handler) {
         this.serverFactory = serverFactory;
         this.handler = handler;
     }
@@ -148,23 +146,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
             server.setConnectors(new Connector[] {connector});
         }
 
-        ServletContextHandler webSocketServletContextHandler =
-            WebSocketServletContextHandlerFactory.create(webSocketHandlers, webSocketIdleTimeoutMillis);
-
-        // Handle web socket routes
-        if (webSocketServletContextHandler == null) {
-            server.setHandler(handler);
-        } else {
-            List<Handler> handlersInList = new ArrayList<>();
-            handlersInList.add(handler);
-
-            // WebSocket handler must be the last one
-            if (webSocketServletContextHandler != null) {
-                handlersInList.add(webSocketServletContextHandler);
-            }
-
-            server.setHandler(new Handler.Sequence(handlersInList));
-        }
+        server.setHandler(handler);
 
         logger.info("== {} has ignited ...", NAME);
         if (hasCustomizedConnectors) {
@@ -174,6 +156,17 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         }
 
         server.start();
+
+        // The JettyWebSocketServerContainer is only created once the ServletContextHandler
+        // inside JettyHandler actually starts (it's wired up via a ServletContainerInitializer),
+        // so mappings can only be registered after server.start() returns, not before.
+        if (webSocketHandlers != null) {
+            JettyWebSocketServerContainer container = handler.getWebSocketContainer();
+            webSocketIdleTimeoutMillis.ifPresent(millis -> container.setIdleTimeout(Duration.ofMillis(millis)));
+            webSocketHandlers.forEach((path, handlerWrapper) ->
+                    container.addMapping(path, WebSocketCreatorFactory.create(handlerWrapper)));
+        }
+
         return port;
     }
 
