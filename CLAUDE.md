@@ -26,7 +26,7 @@ micro web framework for Java. Published as `com.dsingley.sparkjava:spark-core`.
 
 This repo is mid-migration from Jetty 9.4 (javax.servlet, Java 8) to Jetty 12.1
 (jakarta.servlet, EE11, Java 17). Full plan, phase breakdown, and rationale:
-[Jetty 12 Migration Roadmap](https://claude.ai/code/artifact/384020d7-0444-4273-9d79-39160689aba8).
+[Jetty 12 Migration Roadmap](docs/jetty12-migration-roadmap.md).
 
 Working conventions for this migration:
 - One GitHub issue per roadmap item, titled `[Jetty 12 · Phase N.M] <description>`.
