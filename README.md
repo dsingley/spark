@@ -5,7 +5,7 @@ Spark - a tiny web framework for Java
 <dependency>
     <groupId>com.dsingley.sparkjava</groupId>
     <artifactId>spark-core</artifactId>
-    <version>2.9.4-SNAPSHOT</version>
+    <version>[current-version]</version>
 </dependency>
 ```
 
