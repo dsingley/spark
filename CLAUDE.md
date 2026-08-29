@@ -18,6 +18,11 @@ micro web framework for Java. Published as `com.dsingley.sparkjava:spark-core`.
   `master` as its default branch — that's independent of this fork's setting, so keep
   it in mind when eventually opening a PR back upstream (the base branch there may
   not be `ossrh`).
+- **Actually cutting an OSSRH/Maven Central release can only happen from upstream**,
+  not this fork — the `com.dsingley.sparkjava` groupId and OSSRH publishing rights
+  belong to dsingley's account. This fork can prepare everything short of that (version
+  bumps, changelogs, verifying the release plugin config), but the real `mvn deploy`
+  to Central has to run after this fork's work merges back upstream.
 - This repo is configured for **squash merges only**, with the squash commit message
   defaulting to "PR title and description" — so PR titles and descriptions should be
   written as the commit message they'll become.
