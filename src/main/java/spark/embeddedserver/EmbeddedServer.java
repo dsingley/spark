@@ -70,7 +70,7 @@ public interface EmbeddedServer {
      */
     int ignite(String host,
                int port,
-               SslContextFactory sslContextFactory,
+               SslContextFactory.Server sslContextFactory,
                int maxThreads,
                int minThreads,
                int threadIdleTimeoutMillis) throws Exception;

@@ -1,6 +1,6 @@
 package spark;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.junit.Before;
@@ -253,16 +253,23 @@ public class ServiceTest {
         thrown.expectMessage("This must be done before route mapping has begun");
 
         Whitebox.setInternalState(service, "initialized", true);
-        service.webSocket("/", DummyWebSocketListener.class);
+        service.webSocket("/", new DummyWebSocketHandler());
     }
-    
+
     @Test
     public void testWebSocket_whenPathNull_thenThrowNullPointerException() {
         thrown.expect(NullPointerException.class);
         thrown.expectMessage("WebSocket path cannot be null");
-        service.webSocket(null, new DummyWebSocketListener());
+        service.webSocket(null, new DummyWebSocketHandler());
     }
-    
+
+    @Test
+    public void testWebSocket_whenHandlerNotAnnotated_thenThrowIllegalArgumentException() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("WebSocket handler must be annotated as '@WebSocket'");
+        service.webSocket("/", new DummyWebSocketListener());
+    }
+
     @Test
     public void testWebSocket_whenHandlerNull_thenThrowNullPointerException() {
         thrown.expect(NullPointerException.class);
@@ -304,7 +311,10 @@ public class ServiceTest {
         assertFalse(service.initialized);
     }
     
-    @WebSocket
     protected static class DummyWebSocketListener {
+    }
+
+    @WebSocket
+    protected static class DummyWebSocketHandler {
     }
 }

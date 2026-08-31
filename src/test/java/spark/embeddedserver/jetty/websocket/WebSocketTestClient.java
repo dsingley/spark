@@ -1,13 +1,13 @@
 package spark.embeddedserver.jetty.websocket;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jetty.websocket.api.Callback;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.StatusCode;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 @WebSocket
@@ -27,9 +27,10 @@ public class WebSocketTestClient {
         closeLatch.countDown();
     }
 
-    @OnWebSocketConnect
-    public void onConnect(Session session) throws IOException{
-	session.getRemote().sendString("Hi Spark!");
-	session.close(StatusCode.NORMAL, "Bye!");
+    @OnWebSocketOpen
+    public void onOpen(Session session) {
+        session.sendText("Hi Spark!", Callback.from(
+                () -> session.close(StatusCode.NORMAL, "Bye!", Callback.NOOP),
+                Throwable::printStackTrace));
     }
 }

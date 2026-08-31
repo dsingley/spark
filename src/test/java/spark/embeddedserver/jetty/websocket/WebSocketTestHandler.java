@@ -7,27 +7,27 @@ import java.util.List;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 @WebSocket
 public class WebSocketTestHandler {
     public static final List<String> events = synchronizedList(new ArrayList<>());
 
-    @OnWebSocketConnect
+    @OnWebSocketOpen
     public void connected(Session session) {
-	events.add("onConnect");
+        events.add("onConnect");
     }
 
     @OnWebSocketClose
     public void closed(int statusCode, String reason) {
-	events.add(String.format("onClose: %s %s", statusCode, reason));
+        events.add(String.format("onClose: %s %s", statusCode, reason));
     }
 
     @OnWebSocketMessage
     public void message(String message) {
-	events.add("onMessage: " + message);
+        events.add("onMessage: " + message);
     }
 
 }

@@ -67,7 +67,7 @@ public final class Service extends Routable {
     protected String ipAddress = "0.0.0.0";
 
     protected SslStores sslStores;
-    protected SslContextFactory sslContextFactory;
+    protected SslContextFactory.Server sslContextFactory;
 
     protected Map<String, WebSocketHandlerWrapper> webSocketHandlers = null;
 
@@ -313,7 +313,7 @@ public final class Service extends Routable {
      * @param sslContextFactory     a configured SslContextFactory
      * @return the object with connection set to be secure
      */
-    public synchronized Service secure(SslContextFactory sslContextFactory) {
+    public synchronized Service secure(SslContextFactory.Server sslContextFactory) {
         if (initialized) {
             throwBeforeRouteMappingException();
         }

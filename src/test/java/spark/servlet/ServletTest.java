@@ -5,7 +5,7 @@ import java.util.concurrent.CountDownLatch;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.ee11.webapp.WebAppContext;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -43,7 +43,6 @@ public class ServletTest {
 
         // Set some timeout options to make debugging easier.
         connector.setIdleTimeout(1000 * 60 * 60);
-        connector.setSoLingerTime(-1);
         connector.setPort(PORT);
         server.setConnectors(new Connector[] {connector});
 

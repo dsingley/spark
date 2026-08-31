@@ -4,7 +4,7 @@
 
     <groupId>com.dsingley.sparkjava</groupId>
     <artifactId>spark-core</artifactId>
-    <version>2.9.4-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Spark</name>
@@ -36,7 +36,7 @@
 
     <properties>
         <slf4j.version>2.0.18</slf4j.version>
-        <jetty.version>9.4.58.v20250814</jetty.version>
+        <jetty.version>12.1.12</jetty.version>
 
         <freemarker.version>2.3.34</freemarker.version>
         <gson.version>2.14.0</gson.version>
@@ -45,7 +45,7 @@
         <mockito.version>4.11.0</mockito.version>
         <powermock.version>2.0.9</powermock.version>
 
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven-bundle.version>5.1.9</maven-bundle.version>
         <maven-compiler.version>3.14.1</maven-compiler.version>
         <maven-enforcer.version>3.6.3</maven-enforcer.version>
@@ -78,16 +78,16 @@
             <artifactId>jetty-server</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
+            <groupId>org.eclipse.jetty.ee11</groupId>
+            <artifactId>jetty-ee11-webapp</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-server</artifactId>
+            <groupId>org.eclipse.jetty.ee11</groupId>
+            <artifactId>jetty-ee11-servlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-servlet</artifactId>
+            <groupId>org.eclipse.jetty.ee11.websocket</groupId>
+            <artifactId>jetty-ee11-websocket-jetty-server</artifactId>
         </dependency>
 
         <!-- JUNIT DEPENDENCY FOR TESTING -->
@@ -135,7 +135,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-client</artifactId>
+            <artifactId>jetty-websocket-jetty-client</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -145,6 +145,13 @@
            <dependency>
                <groupId>org.eclipse.jetty</groupId>
                <artifactId>jetty-bom</artifactId>
+               <version>${jetty.version}</version>
+               <type>pom</type>
+               <scope>import</scope>
+           </dependency>
+           <dependency>
+               <groupId>org.eclipse.jetty.ee11</groupId>
+               <artifactId>jetty-ee11-bom</artifactId>
                <version>${jetty.version}</version>
                <type>pom</type>
                <scope>import</scope>
@@ -209,6 +216,22 @@
                 <configuration>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
+                    <!--
+                        Required under JDK 17+ for PowerMock and Mockito's inline mock maker:
+                        - java.lang/java.util opens: PowerMock's Whitebox reflects into JDK internals
+                          that are no longer open by default since JDK 9.
+                        - jdk.attach.allowAttachSelf: Mockito's inline mock maker self-attaches a
+                          Byte Buddy java agent at runtime.
+                        - net.bytebuddy.experimental: the Byte Buddy version bundled with the
+                          current Mockito 4.x line predates official JDK 21 class file support.
+                        Revisit when Mockito and PowerMock are modernized (tracked separately).
+                    -->
+                    <argLine>
+                        -Djdk.attach.allowAttachSelf=true
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        -Dnet.bytebuddy.experimental=true
+                    </argLine>
                 </configuration>
             </plugin>
             <plugin>

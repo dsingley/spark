@@ -4,7 +4,7 @@
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -16,19 +16,18 @@
  */
 package spark.examples.websocket;
 
-import java.io.IOException;
-
+import org.eclipse.jetty.websocket.api.Callback;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 @WebSocket
 public class PingWebSocket {
     private Session session;
 
-    @OnWebSocketConnect
+    @OnWebSocketOpen
     public void connected(Session session) {
         this.session = session;
     }
@@ -39,10 +38,10 @@ public class PingWebSocket {
     }
 
     @OnWebSocketMessage
-    public void message(String message) throws IOException {
+    public void message(String message) {
         System.out.println("Got: " + message);
         if (message.equals("PING")) {
-            session.getRemote().sendString("PONG");
+            session.sendText("PONG", Callback.from(() -> { }, Throwable::printStackTrace));
         }
     }
 }

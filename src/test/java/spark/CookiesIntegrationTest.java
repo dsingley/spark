@@ -6,6 +6,8 @@ import static spark.Spark.*;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.AfterClass;
@@ -20,7 +22,14 @@ import org.junit.Test;
 public class CookiesIntegrationTest {
 
     private static final String DEFAULT_HOST_URL = "http://localhost:4567";
-    private HttpClient httpClient = HttpClientBuilder.create().build();
+    // Jetty 12 renders a deleted cookie's Expires attribute in standard RFC 1123 form
+    // (space-separated, e.g. "Thu, 01 Jan 1970 00:00:00 GMT"); Apache HttpClient's default
+    // cookie spec only accepts the legacy Netscape/RFC 2109 hyphenated form and silently
+    // discards the header otherwise, so the client-side cookie store never sees the
+    // deletion. Both forms are RFC 6265-compliant; opt into the RFC6265-aware STANDARD spec.
+    private HttpClient httpClient = HttpClientBuilder.create()
+            .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
+            .build();
 
     @BeforeClass
     public static void initRoutes() throws InterruptedException {
@@ -78,6 +87,7 @@ public class CookiesIntegrationTest {
             return "";
         });
 
+        Spark.awaitInitialization();
     }
 
     @AfterClass
