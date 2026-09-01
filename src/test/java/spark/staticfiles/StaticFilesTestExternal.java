@@ -57,6 +57,7 @@ public class StaticFilesTestExternal {
 
     private static SparkTestUtil testUtil;
 
+    private static File directoryRoot;
     private static File tmpExternalFile1;
     private static File tmpExternalFile2;
     private static File folderOutsideStaticFiles;
@@ -65,8 +66,8 @@ public class StaticFilesTestExternal {
     public static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(4567);
 
-        String directoryRoot = System.getProperty("java.io.tmpdir") + "sparkish";
-        new File(directoryRoot).mkdirs();
+        directoryRoot = new File(System.getProperty("java.io.tmpdir"), "sparkish");
+        directoryRoot.mkdirs();
 
         tmpExternalFile1 = new File(directoryRoot, EXTERNAL_FILE_NAME_HTML);
 
@@ -75,16 +76,14 @@ public class StaticFilesTestExternal {
         writer.flush();
         writer.close();
 
-        File root = new File(directoryRoot);
-
-        folderOutsideStaticFiles = new File(root.getAbsolutePath() + "/../dumpsterstuff");
+        folderOutsideStaticFiles = new File(directoryRoot.getAbsolutePath() + "/../dumpsterstuff");
         folderOutsideStaticFiles.mkdirs();
 
-        String newFilePath = root.getAbsolutePath() + "/../dumpsterstuff/Spark.class";
+        String newFilePath = directoryRoot.getAbsolutePath() + "/../dumpsterstuff/Spark.class";
         tmpExternalFile2 = new File(newFilePath);
         tmpExternalFile2.createNewFile();
 
-        staticFiles.externalLocation(directoryRoot);
+        staticFiles.externalLocation(directoryRoot.getPath());
 
         get("/hello", (q, a) -> FO_SHIZZY);
 
@@ -108,6 +107,7 @@ public class StaticFilesTestExternal {
             tmpExternalFile1.delete();
             tmpExternalFile2.delete();
             folderOutsideStaticFiles.delete();
+            directoryRoot.delete();
         }
     }
 
