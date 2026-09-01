@@ -5,26 +5,26 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.junit.Test;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.reflect.Whitebox;
+import org.junit.jupiter.api.Test;
+import org.kiwiproject.reflect.KiwiReflection;
+import org.kiwiproject.reflect.RuntimeReflectionException;
 import spark.ssl.SslStores;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class SocketConnectorFactoryTest {
 
     @Test
     public void testCreateSocketConnector_whenServerIsNull_thenThrowException() {
 
-        try {
-            SocketConnectorFactory.createSocketConnector(null, "host", 80, true);
-            fail("SocketConnector creation should have thrown an IllegalArgumentException");
-        } catch(IllegalArgumentException ex) {
-            assertEquals("'server' must not be null", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SocketConnectorFactory.createSocketConnector(null, "host", 80, true))
+                .withMessage("'server' must not be null");
     }
 
 
@@ -33,12 +33,9 @@ public class SocketConnectorFactoryTest {
 
         Server server = new Server();
 
-        try {
-            SocketConnectorFactory.createSocketConnector(server, null, 80, true);
-            fail("SocketConnector creation should have thrown an IllegalArgumentException");
-        } catch(IllegalArgumentException ex) {
-            assertEquals("'host' must not be null", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SocketConnectorFactory.createSocketConnector(server, null, 80, true))
+                .withMessage("'host' must not be null");
     }
 
     @Test
@@ -50,24 +47,23 @@ public class SocketConnectorFactoryTest {
         Server server = new Server();
         ServerConnector serverConnector = SocketConnectorFactory.createSocketConnector(server, "localhost", 8888, true);
 
-        String internalHost = Whitebox.getInternalState(serverConnector, "_host");
-        int internalPort = Whitebox.getInternalState(serverConnector, "_port");
-        Server internalServerConnector = Whitebox.getInternalState(serverConnector, "_server");
+        String internalHost = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_host"), String.class);
+        int internalPort = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_port"), Integer.class);
+        Server internalServerConnector = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_server"), Server.class);
 
-        assertEquals("Server Connector Host should be set to the specified server", host, internalHost);
-        assertEquals("Server Connector Port should be set to the specified port", port, internalPort);
-        assertEquals("Server Connector Server should be set to the specified server", internalServerConnector, server);
+        assertAll(
+                () -> assertThat(internalHost).isEqualTo(host),
+                () -> assertThat(internalPort).isEqualTo(port),
+                () -> assertThat(server).isEqualTo(internalServerConnector)
+        );
     }
 
     @Test
     public void testCreateSecureSocketConnector_whenServerIsNull() {
 
-        try {
-            SocketConnectorFactory.createSecureSocketConnector(null, "localhost", 80, (SslStores) null, true);
-            fail("SocketConnector creation should have thrown an IllegalArgumentException");
-        } catch(IllegalArgumentException ex) {
-            assertEquals("'server' must not be null", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SocketConnectorFactory.createSecureSocketConnector(null, "localhost", 80, (SslStores) null, true))
+                .withMessage("'server' must not be null");
     }
 
     @Test
@@ -75,12 +71,9 @@ public class SocketConnectorFactoryTest {
 
         Server server = new Server();
 
-        try {
-            SocketConnectorFactory.createSecureSocketConnector(server, null, 80, (SslStores) null, true);
-            fail("SocketConnector creation should have thrown an IllegalArgumentException");
-        } catch(IllegalArgumentException ex) {
-            assertEquals("'host' must not be null", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SocketConnectorFactory.createSecureSocketConnector(server, null, 80, (SslStores) null, true))
+                .withMessage("'host' must not be null");
     }
 
     @Test
@@ -88,18 +81,14 @@ public class SocketConnectorFactoryTest {
 
         Server server = new Server();
 
-        try {
-            SocketConnectorFactory.createSecureSocketConnector(server, "localhost", 80, (SslStores) null, true);
-            fail("SocketConnector creation should have thrown an IllegalArgumentException");
-        } catch(IllegalArgumentException ex) {
-            assertEquals("'sslStores' must not be null", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SocketConnectorFactory.createSecureSocketConnector(server, "localhost", 80, (SslStores) null, true))
+                .withMessage("'sslStores' must not be null");
     }
 
 
     @Test
-    @PrepareForTest({ServerConnector.class})
-    public void testCreateSecureSocketConnector() throws  Exception {
+    public void testCreateSecureSocketConnector() {
 
         final String host = "localhost";
         final int port = 8888;
@@ -120,26 +109,42 @@ public class SocketConnectorFactoryTest {
 
         ServerConnector serverConnector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores, true);
 
-        String internalHost = Whitebox.getInternalState(serverConnector, "_host");
-        int internalPort = Whitebox.getInternalState(serverConnector, "_port");
+        String internalHost = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_host"), String.class);
+        int internalPort = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_port"), Integer.class);
 
-        assertEquals("Server Connector Host should be set to the specified server", host, internalHost);
-        assertEquals("Server Connector Port should be set to the specified port", port, internalPort);
+        assertAll(
+                () -> assertThat(internalHost).isEqualTo(host),
+                () -> assertThat(internalPort).isEqualTo(port)
+        );
 
-        Map<String, ConnectionFactory> factories = Whitebox.getInternalState(serverConnector, "_factories");
-
-        assertTrue("Should return true because factory for SSL should have been set",
-                factories.containsKey("ssl") && factories.get("ssl") != null);
+        @SuppressWarnings("unchecked")
+        Map<String, ConnectionFactory> factories = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_factories"), Map.class);
 
         SslConnectionFactory sslConnectionFactory = (SslConnectionFactory) factories.get("ssl");
+        assertThat(sslConnectionFactory).isNotNull();
+
         SslContextFactory sslContextFactory = sslConnectionFactory.getSslContextFactory();
 
-        assertEquals("Should return the Keystore file specified", keystoreFileName,
-                sslContextFactory.getKeyStoreResource().getFileName());
+        assertAll(
+                () -> assertThat(sslContextFactory.getKeyStoreResource().getFileName()).isEqualTo(keystoreFileName),
+                () -> assertThat(sslContextFactory.getTrustStoreResource().getFileName()).isEqualTo(truststoreFileName)
+        );
 
-        assertEquals("Should return the Truststore file specified", truststoreFileName,
-                sslContextFactory.getTrustStoreResource().getFileName());
+    }
 
+    // _host/_port/_server/_factories are declared on AbstractConnector, a superclass of
+    // ServerConnector, so KiwiReflection's own field lookup (which only looks at the target's
+    // exact runtime class) can't find them; nonStaticFieldsInHierarchy() walks the hierarchy
+    // for us, though it doesn't set accessibility, so that's still on us.
+    private static Field declaredField(Class<?> type, String fieldName) {
+        Field field = KiwiReflection.nonStaticFieldsInHierarchy(type).stream()
+                .filter(f -> f.getName().equals(fieldName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeReflectionException(
+                        "Cannot find field [%s] in hierarchy of %s".formatted(fieldName, type),
+                        new NoSuchFieldException(fieldName)));
+        field.setAccessible(true);
+        return field;
     }
 
 }

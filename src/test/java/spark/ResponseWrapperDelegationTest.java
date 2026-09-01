@@ -1,27 +1,26 @@
 package spark;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
+
 import spark.util.SparkTestUtil.UrlResponse;
 
 import java.io.IOException;
 
-import static spark.Spark.*;
+import static spark.Spark.after;
+import static spark.Spark.exception;
+import static spark.Spark.get;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class ResponseWrapperDelegationTest {
 
     static SparkTestUtil testUtil;
 
-    @AfterClass
-    public static void tearDown() {
-        Spark.stop();
-    }
-
-    @BeforeClass
-    public static void setup() throws IOException {
+    @BeforeAll
+    public static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(4567);
 
         get("/204", (q, a) -> {
@@ -54,20 +53,29 @@ public class ResponseWrapperDelegationTest {
         Spark.awaitInitialization();
     }
 
+    @AfterAll
+    public static void afterAll() {
+        Spark.stop();
+    }
+
     @Test
     public void filters_can_detect_response_status() throws Exception {
         UrlResponse response = testUtil.get("/204");
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("ok", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("ok")
+        );
     }
 
     @Test
     public void filters_can_detect_content_type() throws Exception {
         UrlResponse response = testUtil.get("/json");
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("{\"status\": \"ok\"}", response.body);
-        // Jetty 12 echoes MimeTypes' assumed charset for text/plain into the Content-Type
-        // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
-        Assert.assertEquals("text/plain;charset=iso-8859-1", response.headers.get("Content-Type"));
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("{\"status\": \"ok\"}"),
+                // Jetty 12 echoes MimeTypes' assumed charset for text/plain into the Content-Type
+                // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
+                () -> assertThat(response.headers.get("Content-Type")).isEqualTo("text/plain;charset=iso-8859-1")
+        );
     }
 }

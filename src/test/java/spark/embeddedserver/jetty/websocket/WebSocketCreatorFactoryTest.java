@@ -2,14 +2,12 @@ package spark.embeddedserver.jetty.websocket;
 
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketCreator;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import spark.embeddedserver.jetty.websocket.WebSocketCreatorFactory.SparkWebSocketCreator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class WebSocketCreatorFactoryTest {
 
@@ -17,8 +15,10 @@ public class WebSocketCreatorFactoryTest {
     public void testCreateWebSocketHandler() {
         JettyWebSocketCreator creator =
                 WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(AnnotatedHandler.class));
-        assertTrue(creator instanceof SparkWebSocketCreator);
-        assertTrue(SparkWebSocketCreator.class.cast(creator).getHandler() instanceof AnnotatedHandler);
+        assertAll(
+                () -> assertThat(creator).isInstanceOf(SparkWebSocketCreator.class),
+                () -> assertThat(SparkWebSocketCreator.class.cast(creator).getHandler()).isInstanceOf(AnnotatedHandler.class)
+        );
     }
 
     @Test
@@ -27,18 +27,17 @@ public class WebSocketCreatorFactoryTest {
                 WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(AnnotatedHandler.class));
         Object handler = SparkWebSocketCreator.class.cast(creator).getHandler();
 
-        assertSame(handler, creator.createWebSocket(null, null));
-        assertSame(handler, creator.createWebSocket(null, null));
+        assertAll(
+                () -> assertThat(creator.createWebSocket(null, null)).isSameAs(handler),
+                () -> assertThat(creator.createWebSocket(null, null)).isSameAs(handler)
+        );
     }
 
     @Test
     public void testCannotCreateInvalidHandlers() {
-        try {
-            WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(InvalidHandler.class));
-            fail("Handler creation should have thrown an IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
-            assertEquals("WebSocket handler must be annotated as '@WebSocket'", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(InvalidHandler.class)))
+                .withMessage("WebSocket handler must be annotated as '@WebSocket'");
     }
 
     @WebSocket

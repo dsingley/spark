@@ -1,12 +1,14 @@
 package spark;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import spark.util.SparkTestUtil;
 
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.get;
+
 import static spark.Spark.unmap;
 
 public class UnmapTest {
@@ -19,23 +21,27 @@ public class UnmapTest {
         awaitInitialization();
 
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/tobeunmapped", null);
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("tobeunmapped", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("tobeunmapped")
+        );
 
         unmap("/tobeunmapped");
 
-        response = testUtil.doMethod("GET", "/tobeunmapped", null);
-        Assert.assertEquals(404, response.status);
+        SparkTestUtil.UrlResponse afterUnmap = testUtil.doMethod("GET", "/tobeunmapped", null);
+        assertThat(afterUnmap.status).isEqualTo(404);
 
         get("/tobeunmapped", (q, a) -> "tobeunmapped");
 
-        response = testUtil.doMethod("GET", "/tobeunmapped", null);
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("tobeunmapped", response.body);
+        SparkTestUtil.UrlResponse afterRemap = testUtil.doMethod("GET", "/tobeunmapped", null);
+        assertAll(
+                () -> assertThat(afterRemap.status).isEqualTo(200),
+                () -> assertThat(afterRemap.body).isEqualTo("tobeunmapped")
+        );
 
         unmap("/tobeunmapped", "get");
 
-        response = testUtil.doMethod("GET", "/tobeunmapped", null);
-        Assert.assertEquals(404, response.status);
+        SparkTestUtil.UrlResponse afterUnmapByMethod = testUtil.doMethod("GET", "/tobeunmapped", null);
+        assertThat(afterUnmapByMethod.status).isEqualTo(404);
     }
 }

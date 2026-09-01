@@ -16,18 +16,17 @@
  */
 package spark;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import spark.route.HttpMethod;
 import spark.routematch.RouteMatch;
 import spark.util.SparkTestUtil;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static spark.Service.ignite;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * Created by Per Wendel on 2016-02-18.
@@ -40,8 +39,8 @@ public class MultipleServicesTest {
     private static SparkTestUtil firstClient;
     private static SparkTestUtil secondClient;
 
-    @BeforeClass
-    public static void setup() throws Exception {
+    @BeforeAll
+    public static void beforeAll() throws Exception {
         firstClient = new SparkTestUtil(4567);
         secondClient = new SparkTestUtil(1234);
 
@@ -52,8 +51,8 @@ public class MultipleServicesTest {
         second.awaitInitialization();
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @AfterAll
+    public static void afterAll() {
         first.stop();
         second.stop();
     }
@@ -61,60 +60,68 @@ public class MultipleServicesTest {
     @Test
     public void testGetHello() throws Exception {
         SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/hello", null);
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("Hello World!", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("Hello World!")
+        );
     }
 
     @Test
     public void testGetRedirectedHi() throws Exception {
         SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/hi", null);
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("Hello World!", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("Hello World!")
+        );
     }
 
     @Test
     public void testGetUniqueForSecondWithFirst() throws Exception {
         SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/uniqueforsecond", null);
-        Assert.assertEquals(404, response.status);
+        assertThat(response.status).isEqualTo(404);
     }
 
     @Test
     public void testGetUniqueForSecondWithSecond() throws Exception {
         SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/uniqueforsecond", null);
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("Bompton", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("Bompton")
+        );
     }
 
     @Test
     public void testStaticFileCssStyleCssWithFirst() throws Exception {
         SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/css/style.css", null);
-        Assert.assertEquals(404, response.status);
+        assertThat(response.status).isEqualTo(404);
     }
 
     @Test
     public void testStaticFileCssStyleCssWithSecond() throws Exception {
         SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/css/style.css", null);
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("Content of css file", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("Content of css file")
+        );
     }
 
     @Test
     public void testGetAllRoutesFromBothServices(){
         for(RouteMatch routeMatch : first.routes()){
-            Assert.assertEquals(routeMatch.getAcceptType(), "*/*");
-            Assert.assertEquals(routeMatch.getHttpMethod(), HttpMethod.get);
-            Assert.assertEquals(routeMatch.getMatchUri(), "/hello");
-            Assert.assertEquals(routeMatch.getRequestURI(), "ALL_ROUTES");
-            Assert.assertThat(routeMatch.getTarget(), instanceOf(RouteImpl.class));
+            assertThat(routeMatch.getAcceptType()).isEqualTo("*/*");
+            assertThat(routeMatch.getHttpMethod()).isEqualTo(HttpMethod.get);
+            assertThat(routeMatch.getMatchUri()).isEqualTo("/hello");
+            assertThat(routeMatch.getRequestURI()).isEqualTo("ALL_ROUTES");
+            assertThat(routeMatch.getTarget()).isInstanceOf(RouteImpl.class);
         }
 
         for(RouteMatch routeMatch : second.routes()){
-            Assert.assertEquals(routeMatch.getAcceptType(), "*/*");
-            Assert.assertThat(routeMatch.getHttpMethod(), instanceOf(HttpMethod.class));
+            assertThat(routeMatch.getAcceptType()).isEqualTo("*/*");
+            assertThat(routeMatch.getHttpMethod()).isInstanceOf(HttpMethod.class);
             boolean isUriOnList = ("/hello/hi/uniqueforsecond").contains(routeMatch.getMatchUri());
-            Assert.assertTrue(isUriOnList);
-            Assert.assertEquals(routeMatch.getRequestURI(), "ALL_ROUTES");
-            Assert.assertThat(routeMatch.getTarget(), instanceOf(RouteImpl.class));
+            assertThat(isUriOnList).isTrue();
+            assertThat(routeMatch.getRequestURI()).isEqualTo("ALL_ROUTES");
+            assertThat(routeMatch.getTarget()).isInstanceOf(RouteImpl.class);
         }
     }
 

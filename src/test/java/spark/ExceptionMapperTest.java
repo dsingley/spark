@@ -1,9 +1,11 @@
 package spark;
 
-import org.junit.Test;
-import org.powermock.reflect.Whitebox;
+import java.lang.reflect.Field;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.kiwiproject.reflect.KiwiReflection;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExceptionMapperTest {
 
@@ -12,11 +14,14 @@ public class ExceptionMapperTest {
     public void testGetInstance_whenDefaultInstanceIsNull() {
         //given
         ExceptionMapper exceptionMapper = null;
-        Whitebox.setInternalState(ExceptionMapper.class, "servletInstance", exceptionMapper);
+        Field servletInstanceField = servletInstanceField();
+        KiwiReflection.setFieldValue(null, servletInstanceField, exceptionMapper);
 
         //then
         exceptionMapper = ExceptionMapper.getServletInstance();
-        assertEquals("Should be equals because ExceptionMapper is a singleton", Whitebox.getInternalState(ExceptionMapper.class, "servletInstance"), exceptionMapper);
+        assertThat(exceptionMapper)
+                .describedAs("Should be same because ExceptionMapper is a singleton")
+                .isSameAs(KiwiReflection.getTypedFieldValue(null, servletInstanceField, ExceptionMapper.class));
     }
 
     @Test
@@ -26,6 +31,12 @@ public class ExceptionMapperTest {
 
         //then
         ExceptionMapper exceptionMapper = ExceptionMapper.getServletInstance();
-        assertEquals("Should be equals because ExceptionMapper is a singleton", Whitebox.getInternalState(ExceptionMapper.class, "servletInstance"), exceptionMapper);
+        assertThat(exceptionMapper)
+                .describedAs("Should be same because ExceptionMapper is a singleton")
+                .isSameAs(KiwiReflection.getTypedFieldValue(null, servletInstanceField(), ExceptionMapper.class));
+    }
+
+    private static Field servletInstanceField() {
+        return KiwiReflection.findField(new ExceptionMapper(), "servletInstance");
     }
 }

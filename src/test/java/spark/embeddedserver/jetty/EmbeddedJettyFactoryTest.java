@@ -2,26 +2,33 @@ package spark.embeddedserver.jetty;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.junit.After;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 import spark.ExceptionMapper;
 import spark.embeddedserver.EmbeddedServer;
 import spark.route.Routes;
 import spark.ssl.SslStores;
+
 import spark.staticfiles.StaticFilesConfiguration;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import static org.mockito.Mockito.when;
 
 public class EmbeddedJettyFactoryTest {
 
     private EmbeddedServer embeddedServer;
+
+    @AfterEach
+    public void tearDown() {
+        if (embeddedServer != null) {
+            embeddedServer.extinguish();
+        }
+    }
 
     @Test
     public void create() throws Exception {
@@ -41,7 +48,7 @@ public class EmbeddedJettyFactoryTest {
 
         verify(jettyServerFactory, times(1)).create(100, 10, 10000);
         verifyNoMoreInteractions(jettyServerFactory);
-        assertTrue(((JettyHandler) server.getHandler()).getSessionCookieConfig().isHttpOnly());
+        assertThat(((JettyHandler) server.getHandler()).getSessionCookieConfig().isHttpOnly()).isTrue();
     }
 
     @Test
@@ -97,13 +104,7 @@ public class EmbeddedJettyFactoryTest {
         embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 6759, (SslStores) null, 100, 10, 10000);
 
-        assertFalse(((JettyHandler) server.getHandler()).getSessionCookieConfig().isHttpOnly());
+        assertThat(((JettyHandler) server.getHandler()).getSessionCookieConfig().isHttpOnly()).isFalse();
     }
 
-    @After
-    public void tearDown() {
-        if (embeddedServer != null) {
-            embeddedServer.extinguish();
-        }
-    }
 }

@@ -1,10 +1,8 @@
 package spark;
 
-import org.junit.Test;
-
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class RouteImplTest {
 
@@ -21,28 +19,34 @@ public class RouteImplTest {
                 return null;
             }
         };
-        assertEquals("Should return path specified", PATH_TEST, route.getPath());
+        assertThat(route.getPath()).isEqualTo(PATH_TEST);
     }
 
     @Test
     public void testGets_thenReturnGetPathAndGetAcceptTypeSuccessfully() throws Exception {
         route = RouteImpl.create(PATH_TEST, ACCEPT_TYPE_TEST, null);
-        assertEquals("Should return path specified", PATH_TEST, route.getPath());
-        assertEquals("Should return accept type specified", ACCEPT_TYPE_TEST, route.getAcceptType());
+        assertAll(
+                () -> assertThat(route.getPath()).isEqualTo(PATH_TEST),
+                () -> assertThat(route.getAcceptType()).isEqualTo(ACCEPT_TYPE_TEST)
+        );
     }
 
     @Test
     public void testCreate_whenOutAssignAcceptTypeInTheParameters_thenReturnPathAndAcceptTypeSuccessfully(){
         route = RouteImpl.create(PATH_TEST, null);
-        assertEquals("Should return path specified", PATH_TEST, route.getPath());
-        assertEquals("Should return the default accept type", RouteImpl.DEFAULT_ACCEPT_TYPE, route.getAcceptType());
+        assertAll(
+                () -> assertThat(route.getPath()).isEqualTo(PATH_TEST),
+                () -> assertThat(route.getAcceptType()).isEqualTo(RouteImpl.DEFAULT_ACCEPT_TYPE)
+        );
     }
 
     @Test
     public void testCreate_whenAcceptTypeNullValueInTheParameters_thenReturnPathAndAcceptTypeSuccessfully(){
         route = RouteImpl.create(PATH_TEST, null, null);
-        assertEquals("Should return path specified", PATH_TEST, route.getPath());
-        assertEquals("Should return the default accept type", RouteImpl.DEFAULT_ACCEPT_TYPE, route.getAcceptType());
+        assertAll(
+                () -> assertThat(route.getPath()).isEqualTo(PATH_TEST),
+                () -> assertThat(route.getAcceptType()).isEqualTo(RouteImpl.DEFAULT_ACCEPT_TYPE)
+        );
     }
 
     @Test
@@ -50,14 +54,16 @@ public class RouteImplTest {
         String finalObjValue = "object_value";
         route = RouteImpl.create(PATH_TEST, null);
         Object value = route.render(finalObjValue);
-        assertNotNull("Should return an Object because we configured it to have one", value);
-        assertEquals("Should return a string object specified", finalObjValue, value.toString());
+        assertAll(
+                () -> assertThat(value).isNotNull(),
+                () -> assertThat(value.toString()).isEqualTo(finalObjValue)
+        );
     }
 
     @Test
     public void testRender_whenElementParameterIsNull_thenReturnNull() throws Exception {
         route = RouteImpl.create(PATH_TEST, null);
         Object value = route.render(null);
-        assertNull("Should return null because the element from render is null", value);
+        assertThat(value).isNull();
     }
 }

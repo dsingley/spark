@@ -19,21 +19,26 @@ package spark.staticfiles;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import java.net.URLEncoder;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import org.slf4j.Logger;
+
 import org.slf4j.LoggerFactory;
 
 import spark.Spark;
 import spark.examples.exception.NotFoundException;
+
 import spark.util.SparkTestUtil;
 
 import static spark.Spark.exception;
 import static spark.Spark.get;
+
 import static spark.Spark.staticFiles;
 
 /**
@@ -54,17 +59,8 @@ public class StaticFilesTest {
 
     private static File tmpExternalFile;
 
-    @AfterClass
-    public static void tearDown() {
-        Spark.stop();
-        if (tmpExternalFile != null) {
-            LOGGER.debug("tearDown().deleting: " + tmpExternalFile);
-            tmpExternalFile.delete();
-        }
-    }
-
-    @BeforeClass
-    public static void setup() throws IOException {
+    @BeforeAll
+    public static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(4567);
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE_NAME_HTML);
@@ -91,32 +87,45 @@ public class StaticFilesTest {
         Spark.awaitInitialization();
     }
 
+    @AfterAll
+    public static void afterAll() {
+        Spark.stop();
+        if (tmpExternalFile != null) {
+            LOGGER.debug("tearDown().deleting: " + tmpExternalFile);
+            tmpExternalFile.delete();
+        }
+    }
+
     @Test
     public void testMimeTypes() throws Exception {
         // Jetty 12 echoes MimeTypes' assumed charset for text/html into the Content-Type
         // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
-        Assert.assertEquals("text/html;charset=utf-8", doGet("/pages/index.html").headers.get("Content-Type"));
-        Assert.assertEquals("application/javascript", doGet("/js/scripts.js").headers.get("Content-Type"));
-        Assert.assertEquals("text/css", doGet("/css/style.css").headers.get("Content-Type"));
-        Assert.assertEquals("image/png", doGet("/img/sparklogo.png").headers.get("Content-Type"));
-        Assert.assertEquals("image/svg+xml", doGet("/img/sparklogo.svg").headers.get("Content-Type"));
-        Assert.assertEquals("application/octet-stream", doGet("/img/sparklogoPng").headers.get("Content-Type"));
-        Assert.assertEquals("application/octet-stream", doGet("/img/sparklogoSvg").headers.get("Content-Type"));
-        Assert.assertEquals("text/html;charset=utf-8", doGet("/externalFile.html").headers.get("Content-Type"));
+        assertAll(
+                () -> assertThat(doGet("/pages/index.html").headers.get("Content-Type")).isEqualTo("text/html;charset=utf-8"),
+                () -> assertThat(doGet("/js/scripts.js").headers.get("Content-Type")).isEqualTo("application/javascript"),
+                () -> assertThat(doGet("/css/style.css").headers.get("Content-Type")).isEqualTo("text/css"),
+                () -> assertThat(doGet("/img/sparklogo.png").headers.get("Content-Type")).isEqualTo("image/png"),
+                () -> assertThat(doGet("/img/sparklogo.svg").headers.get("Content-Type")).isEqualTo("image/svg+xml"),
+                () -> assertThat(doGet("/img/sparklogoPng").headers.get("Content-Type")).isEqualTo("application/octet-stream"),
+                () -> assertThat(doGet("/img/sparklogoSvg").headers.get("Content-Type")).isEqualTo("application/octet-stream"),
+                () -> assertThat(doGet("/externalFile.html").headers.get("Content-Type")).isEqualTo("text/html;charset=utf-8")
+        );
     }
 
     @Test
     public void testCustomMimeType() throws Exception {
         staticFiles.registerMimeType("cxt", "custom-extension-type");
-        Assert.assertEquals("custom-extension-type", doGet("/img/file.cxt").headers.get("Content-Type"));
+        assertThat(doGet("/img/file.cxt").headers.get("Content-Type")).isEqualTo("custom-extension-type");
     }
 
     @Test
     public void testStaticFileCssStyleCss() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/css/style.css");
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("text/css", response.headers.get("Content-Type"));
-        Assert.assertEquals("Content of css file", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.headers.get("Content-Type")).isEqualTo("text/css"),
+                () -> assertThat(response.body).isEqualTo("Content of css file")
+        );
 
         testGet();
     }
@@ -124,8 +133,10 @@ public class StaticFilesTest {
     @Test
     public void testStaticFilePagesIndexHtml() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/pages/index.html");
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("<html><body>Hello Static World!</body></html>", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("<html><body>Hello Static World!</body></html>")
+        );
 
         testGet();
     }
@@ -133,8 +144,10 @@ public class StaticFilesTest {
     @Test
     public void testStaticFilePageHtml() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/page.html");
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals("<html><body>Hello Static Files World!</body></html>", response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("<html><body>Hello Static Files World!</body></html>")
+        );
 
         testGet();
     }
@@ -144,7 +157,7 @@ public class StaticFilesTest {
         String path = "/" + URLEncoder.encode("..\\spark\\", "UTF-8") + "Spark.class";
         SparkTestUtil.UrlResponse response = doGet(path);
 
-        Assert.assertEquals(400, response.status);
+        assertThat(response.status).isEqualTo(400);
 
         testGet();
     }
@@ -152,8 +165,10 @@ public class StaticFilesTest {
     @Test
     public void testExternalStaticFile() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/externalFile.html");
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals(CONTENT_OF_EXTERNAL_FILE, response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo(CONTENT_OF_EXTERNAL_FILE)
+        );
 
         testGet();
     }
@@ -164,16 +179,20 @@ public class StaticFilesTest {
     private static void testGet() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", "");
 
-        Assert.assertEquals(200, response.status);
-        Assert.assertTrue(response.body.contains(FO_SHIZZY));
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).contains(FO_SHIZZY)
+        );
     }
 
     @Test
     public void testExceptionMapping404() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/filethatdoesntexist.html");
 
-        Assert.assertEquals(404, response.status);
-        Assert.assertEquals(NOT_FOUND_BRO, response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(404),
+                () -> assertThat(response.body).isEqualTo(NOT_FOUND_BRO)
+        );
     }
 
     private SparkTestUtil.UrlResponse doGet(String fileName) throws Exception {

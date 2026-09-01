@@ -1,8 +1,8 @@
 package spark;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.powermock.reflect.Whitebox;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kiwiproject.reflect.KiwiReflection;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.Arrays;
@@ -10,9 +10,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class SessionTest {
 
@@ -20,8 +22,8 @@ public class SessionTest {
     HttpSession httpSession;
     Session session;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    public void setUp() {
 
         httpSession = mock(HttpSession.class);
         request = mock(Request.class);
@@ -31,44 +33,30 @@ public class SessionTest {
     @Test
     public void testSession_whenHttpSessionIsNull_thenThrowException() {
 
-        try {
-
-            new Session(null, request);
-            fail("Session instantiation with a null HttpSession should throw an IllegalArgumentException");
-
-        } catch (IllegalArgumentException ex) {
-
-            assertEquals("session cannot be null", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Session(null, request))
+                .withMessage("session cannot be null");
     }
 
     @Test
     public void testSession_whenRequestIsNull_thenThrowException() {
 
-        try {
-
-            new Session(httpSession, null);
-            fail("Session instantiation with a null Request should throw an IllegalArgumentException");
-
-        } catch (IllegalArgumentException ex) {
-
-            assertEquals("request cannot be null", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Session(httpSession, null))
+                .withMessage("request cannot be null");
     }
 
     @Test
     public void testSession() {
 
-        HttpSession internalSession = Whitebox.getInternalState(session, "session");
-        assertEquals("Internal session should be set to the http session provided during instantiation",
-                httpSession, internalSession);
+        HttpSession internalSession = KiwiReflection.getTypedFieldValue(session, "session", HttpSession.class);
+        assertThat(internalSession).isEqualTo(httpSession);
     }
 
     @Test
     public void testRaw() {
 
-        assertEquals("Should return the HttpSession provided during instantiation",
-                httpSession, session.raw());
+        assertThat(session.raw()).isEqualTo(httpSession);
     }
 
     @Test
@@ -76,7 +64,7 @@ public class SessionTest {
 
         when(httpSession.getAttribute("name")).thenReturn("Jett");
 
-        assertEquals("Should return attribute from HttpSession", "Jett", session.attribute("name"));
+        assertThat((String) session.attribute("name")).isEqualTo("Jett");
 
     }
 
@@ -95,7 +83,7 @@ public class SessionTest {
 
         when(httpSession.getAttributeNames()).thenReturn(Collections.enumeration(attributes));
 
-        assertEquals("Should return attributes from the HttpSession", attributes, session.attributes());
+        assertThat(session.attributes()).isEqualTo(attributes);
     }
 
     @Test
@@ -103,7 +91,7 @@ public class SessionTest {
 
         when(httpSession.getCreationTime()).thenReturn(10000000l);
 
-        assertEquals("Should return creationTime from HttpSession", 10000000l, session.creationTime());
+        assertThat(session.creationTime()).isEqualTo(10000000l);
     }
 
     @Test
@@ -111,7 +99,7 @@ public class SessionTest {
 
         when(httpSession.getId()).thenReturn("id");
 
-        assertEquals("Should return session id from HttpSession", "id", session.id());
+        assertThat(session.id()).isEqualTo("id");
     }
 
     @Test
@@ -119,7 +107,7 @@ public class SessionTest {
 
         when(httpSession.getLastAccessedTime()).thenReturn(20000000l);
 
-        assertEquals("Should return lastAccessedTime from HttpSession", 20000000l, session.lastAccessedTime());
+        assertThat(session.lastAccessedTime()).isEqualTo(20000000l);
     }
 
     @Test
@@ -127,7 +115,7 @@ public class SessionTest {
 
         when(httpSession.getMaxInactiveInterval()).thenReturn(100);
 
-        assertEquals("Should return maxInactiveInterval from HttpSession", 100, session.maxInactiveInterval());
+        assertThat(session.maxInactiveInterval()).isEqualTo(100);
     }
 
     @Test
@@ -151,7 +139,7 @@ public class SessionTest {
 
         when(httpSession.isNew()).thenReturn(true);
 
-        assertEquals("Should return isNew status from HttpSession", true, session.isNew());
+        assertThat(session.isNew()).isTrue();
     }
 
     @Test

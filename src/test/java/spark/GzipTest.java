@@ -16,46 +16,47 @@
  */
 package spark;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 import spark.examples.gzip.GzipClient;
 import spark.examples.gzip.GzipExample;
+
 import spark.util.SparkTestUtil;
 
-import static org.junit.Assert.assertEquals;
 import static spark.Spark.awaitInitialization;
+
 import static spark.Spark.stop;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * Tests the GZIP compression support in Spark.
  */
 public class GzipTest {
 
-    @BeforeClass
-    public static void setup() {
+    @BeforeAll
+    public static void beforeAll() {
         GzipExample.addStaticFileLocation();
         GzipExample.addRoutes();
         awaitInitialization();
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @AfterAll
+    public static void afterAll() {
         stop();
     }
 
     @Test
     public void checkGzipCompression() throws Exception {
         String decompressed = GzipExample.getAndDecompress();
-        assertEquals(GzipExample.CONTENT, decompressed);
+        assertThat(decompressed).isEqualTo(GzipExample.CONTENT);
     }
 
     @Test
     public void testStaticFileCssStyleCss() throws Exception {
         String decompressed = GzipClient.getAndDecompress("http://localhost:4567/css/style.css");
-        Assert.assertEquals("Content of css file", decompressed);
+        assertThat(decompressed).isEqualTo("Content of css file");
         testGet();
     }
 
@@ -66,8 +67,10 @@ public class GzipTest {
         SparkTestUtil testUtil = new SparkTestUtil(4567);
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", "");
 
-        Assert.assertEquals(200, response.status);
-        Assert.assertTrue(response.body.contains(GzipExample.FO_SHIZZY));
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).contains(GzipExample.FO_SHIZZY)
+        );
     }
 
 }

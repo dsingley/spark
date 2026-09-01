@@ -2,18 +2,20 @@ package spark.customerrorpages;
 
 import java.io.IOException;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 import spark.CustomErrorPages;
 import spark.Spark;
+
 import spark.util.SparkTestUtil;
 
 import static spark.Spark.get;
 import static spark.Spark.internalServerError;
+
 import static spark.Spark.notFound;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class CustomErrorPagesTest {
 
@@ -25,13 +27,8 @@ public class CustomErrorPagesTest {
 
     static SparkTestUtil testUtil;
 
-    @AfterClass
-    public static void tearDown() {
-        Spark.stop();
-    }
-
-    @BeforeClass
-    public static void setup() throws IOException {
+    @BeforeAll
+    public static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(4567);
 
         get("/hello", (q, a) -> HELLO_WORLD);
@@ -53,33 +50,46 @@ public class CustomErrorPagesTest {
         Spark.awaitInitialization();
     }
 
+    @AfterAll
+    public static void afterAll() {
+        Spark.stop();
+    }
+
     @Test
     public void testGetHi() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null);
-        Assert.assertEquals(200, response.status);
-        Assert.assertEquals(HELLO_WORLD, response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo(HELLO_WORLD)
+        );
     }
 
     @Test
     public void testCustomNotFound() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/othernotmapped", null);
-        Assert.assertEquals(404, response.status);
-        Assert.assertEquals(CUSTOM_NOT_FOUND, response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(404),
+                () -> assertThat(response.body).isEqualTo(CUSTOM_NOT_FOUND)
+        );
     }
 
     @Test
     public void testCustomInternal() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/raiseinternal", null);
-        Assert.assertEquals(500, response.status);
-        Assert.assertEquals(APPLICATION_JSON, response.headers.get("Content-Type"));
-        Assert.assertEquals(CUSTOM_INTERNAL, response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(500),
+                () -> assertThat(response.headers.get("Content-Type")).isEqualTo(APPLICATION_JSON),
+                () -> assertThat(response.body).isEqualTo(CUSTOM_INTERNAL)
+        );
     }
 
     @Test
     public void testCustomInternalFailingRoute() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/raiseinternal?" + QUERY_PARAM_KEY + "=sumthin", null);
-        Assert.assertEquals(500, response.status);
-        Assert.assertEquals(CustomErrorPages.INTERNAL_ERROR, response.body);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(500),
+                () -> assertThat(response.body).isEqualTo(CustomErrorPages.INTERNAL_ERROR)
+        );
     }
 
 }
