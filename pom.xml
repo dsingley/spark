@@ -47,12 +47,16 @@
         <mockito.version>5.23.0</mockito.version>
 
         <java.version>17</java.version>
+        <maven.min.version>3.6.3</maven.min.version>
         <maven-bundle.version>5.1.9</maven-bundle.version>
         <maven-compiler.version>3.14.1</maven-compiler.version>
+        <maven-deploy.version>3.1.4</maven-deploy.version>
         <maven-enforcer.version>3.6.3</maven-enforcer.version>
         <maven-gpg.version>3.0.1</maven-gpg.version>
+        <maven-install.version>3.1.4</maven-install.version>
         <maven-javadoc.version>3.12.0</maven-javadoc.version>
         <maven-release.version>3.0.0-M5</maven-release.version>
+        <maven-resources.version>3.5.0</maven-resources.version>
         <maven-source.version>3.2.1</maven-source.version>
         <maven-surefire.version>3.5.6</maven-surefire.version>
         <nexus-staging.version>1.6.12</nexus-staging.version>
@@ -192,11 +196,26 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>${maven-install.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>${maven-enforcer.version}</version>
                 <executions>
                     <execution>
-                        <id>enforce-java</id>
+                        <id>enforce-versions</id>
                         <goals>
                             <goal>enforce</goal>
                         </goals>
@@ -205,6 +224,9 @@
                                 <requireJavaVersion>
                                     <version>[${java.version},)</version>
                                 </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[${maven.min.version},)</version>
+                                </requireMavenVersion>
                             </rules>
                         </configuration>
                     </execution>
