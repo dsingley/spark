@@ -464,7 +464,7 @@ public class GenericIntegrationTest {
     }
 
     @Test
-    public void testPostViaGetWithMethodOverrideHeader() throws IOException {
+    public void testPostViaGetWithMethodOverrideHeader() throws Exception {
         Map<String, String> map = new HashMap<>();
         map.put("X-HTTP-Method-Override", "POST");
         UrlResponse response = testUtil.doMethod("GET", "/post_via_get", "Fo shizzy", false, "*/*", map);
