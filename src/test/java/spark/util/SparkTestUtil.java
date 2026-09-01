@@ -2,8 +2,8 @@ package spark.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,38 +14,39 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpTrace;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.apache.hc.client5.http.classic.methods.HttpOptions;
+import org.apache.hc.client5.http.classic.methods.HttpPatch;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpTrace;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
 public class SparkTestUtil {
 
     private int port;
 
-    private HttpClient httpClient;
+    private CloseableHttpClient httpClient;
+    private List<Integer> followRedirectCodes;
 
     public SparkTestUtil(int port) {
         this.port = port;
@@ -64,26 +65,16 @@ public class SparkTestUtil {
         return HttpClientBuilder.create().setConnectionManager(connManager);
     }
 
+    // HttpClient 5.x's RedirectStrategy can no longer change the method used for a followed
+    // redirect (that's now hardcoded inside RedirectExec: only POST is downgraded to GET on
+    // 301/302, every other method - including PUT/DELETE - is preserved as-is). To replicate
+    // the old 4.x behavior these tests rely on (a 301/302 redirect is followed as GET, except
+    // HEAD which stays HEAD, regardless of the original method), disable HttpClient's built-in
+    // redirect following entirely and do it ourselves in doMethod().
     public void setFollowRedirectStrategy(Integer... codes) {
-        final List<Integer> redirectCodes = Arrays.asList(codes);
-        DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy() {
-            public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context) {
-                boolean isRedirect = false;
-                try {
-                    isRedirect = super.isRedirected(request, response, context);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (!isRedirect) {
-                    int responseCode = response.getStatusLine().getStatusCode();
-                    if (redirectCodes.contains(responseCode)) {
-                        return true;
-                    }
-                }
-                return isRedirect;
-            }
-        };
-        this.httpClient = httpClientBuilder().setRedirectStrategy(redirectStrategy).build();
+        this.followRedirectCodes = Arrays.asList(codes);
+        RequestConfig requestConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
+        this.httpClient = httpClientBuilder().setDefaultRequestConfig(requestConfig).build();
     }
 
     public UrlResponse get(String path) throws Exception {
@@ -115,21 +106,42 @@ public class SparkTestUtil {
     }
 
     public UrlResponse doMethod(String requestMethod, String path, String body, boolean secureConnection,
-                                String acceptType, Map<String, String> reqHeaders) throws IOException {
+                                String acceptType, Map<String, String> reqHeaders) throws IOException, ParseException {
         HttpUriRequest httpRequest = getHttpRequest(requestMethod, path, body, secureConnection, acceptType, reqHeaders);
-        HttpResponse httpResponse = httpClient.execute(httpRequest);
 
-        UrlResponse urlResponse = new UrlResponse();
-        urlResponse.status = httpResponse.getStatusLine().getStatusCode();
-        HttpEntity entity = httpResponse.getEntity();
-        if (entity != null) {
-            urlResponse.body = EntityUtils.toString(entity);
-        } else {
-            urlResponse.body = "";
+        UrlResponse urlResponse;
+        try (CloseableHttpResponse httpResponse = httpClient.execute(httpRequest)) {
+            urlResponse = toUrlResponse(httpResponse);
         }
+
+        if (followRedirectCodes != null && followRedirectCodes.contains(urlResponse.status)) {
+            String location = urlResponse.headers.get("Location");
+            if (location != null) {
+                URI redirectUri;
+                try {
+                    redirectUri = httpRequest.getUri().resolve(location);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+                HttpUriRequest redirectRequest = "HEAD".equalsIgnoreCase(requestMethod)
+                        ? new HttpHead(redirectUri)
+                        : new HttpGet(redirectUri);
+                try (CloseableHttpResponse redirectResponse = httpClient.execute(redirectRequest)) {
+                    urlResponse = toUrlResponse(redirectResponse);
+                }
+            }
+        }
+
+        return urlResponse;
+    }
+
+    private UrlResponse toUrlResponse(CloseableHttpResponse httpResponse) throws IOException, ParseException {
+        UrlResponse urlResponse = new UrlResponse();
+        urlResponse.status = httpResponse.getCode();
+        HttpEntity entity = httpResponse.getEntity();
+        urlResponse.body = entity != null ? EntityUtils.toString(entity) : "";
         Map<String, String> headers = new HashMap<>();
-        Header[] allHeaders = httpResponse.getAllHeaders();
-        for (Header header : allHeaders) {
+        for (Header header : httpResponse.getHeaders()) {
             headers.put(header.getName(), header.getValue());
         }
         urlResponse.headers = headers;
@@ -138,77 +150,72 @@ public class SparkTestUtil {
 
     private HttpUriRequest getHttpRequest(String requestMethod, String path, String body, boolean secureConnection,
                                           String acceptType, Map<String, String> reqHeaders) {
-        try {
-            String protocol = secureConnection ? "https" : "http";
-            String uri = protocol + "://localhost:" + port + path;
+        String protocol = secureConnection ? "https" : "http";
+        String uri = protocol + "://localhost:" + port + path;
 
-            if (requestMethod.equals("GET")) {
-                HttpGet httpGet = new HttpGet(uri);
-                httpGet.setHeader("Accept", acceptType);
-                addHeaders(reqHeaders, httpGet);
-                return httpGet;
-            }
-
-            if (requestMethod.equals("POST")) {
-                HttpPost httpPost = new HttpPost(uri);
-                httpPost.setHeader("Accept", acceptType);
-                addHeaders(reqHeaders, httpPost);
-                httpPost.setEntity(new StringEntity(body));
-                return httpPost;
-            }
-
-            if (requestMethod.equals("PATCH")) {
-                HttpPatch httpPatch = new HttpPatch(uri);
-                httpPatch.setHeader("Accept", acceptType);
-                addHeaders(reqHeaders, httpPatch);
-                httpPatch.setEntity(new StringEntity(body));
-                return httpPatch;
-            }
-
-            if (requestMethod.equals("DELETE")) {
-                HttpDelete httpDelete = new HttpDelete(uri);
-                addHeaders(reqHeaders, httpDelete);
-                httpDelete.setHeader("Accept", acceptType);
-                return httpDelete;
-            }
-
-            if (requestMethod.equals("PUT")) {
-                HttpPut httpPut = new HttpPut(uri);
-                httpPut.setHeader("Accept", acceptType);
-                addHeaders(reqHeaders, httpPut);
-                httpPut.setEntity(new StringEntity(body));
-                return httpPut;
-            }
-
-            if (requestMethod.equals("HEAD")) {
-                HttpHead httpHead = new HttpHead(uri);
-                addHeaders(reqHeaders, httpHead);
-                return httpHead;
-            }
-
-            if (requestMethod.equals("TRACE")) {
-                HttpTrace httpTrace = new HttpTrace(uri);
-                addHeaders(reqHeaders, httpTrace);
-                return httpTrace;
-            }
-
-            if (requestMethod.equals("OPTIONS")) {
-                HttpOptions httpOptions = new HttpOptions(uri);
-                addHeaders(reqHeaders, httpOptions);
-                return httpOptions;
-            }
-
-            if (requestMethod.equals("LOCK")) {
-                HttpLock httpLock = new HttpLock(uri);
-                addHeaders(reqHeaders, httpLock);
-                return httpLock;
-            }
-
-            throw new IllegalArgumentException("Unknown method " + requestMethod);
-
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+        if (requestMethod.equals("GET")) {
+            HttpGet httpGet = new HttpGet(uri);
+            httpGet.setHeader("Accept", acceptType);
+            addHeaders(reqHeaders, httpGet);
+            return httpGet;
         }
+
+        if (requestMethod.equals("POST")) {
+            HttpPost httpPost = new HttpPost(uri);
+            httpPost.setHeader("Accept", acceptType);
+            addHeaders(reqHeaders, httpPost);
+            httpPost.setEntity(new StringEntity(body));
+            return httpPost;
+        }
+
+        if (requestMethod.equals("PATCH")) {
+            HttpPatch httpPatch = new HttpPatch(uri);
+            httpPatch.setHeader("Accept", acceptType);
+            addHeaders(reqHeaders, httpPatch);
+            httpPatch.setEntity(new StringEntity(body));
+            return httpPatch;
+        }
+
+        if (requestMethod.equals("DELETE")) {
+            HttpDelete httpDelete = new HttpDelete(uri);
+            addHeaders(reqHeaders, httpDelete);
+            httpDelete.setHeader("Accept", acceptType);
+            return httpDelete;
+        }
+
+        if (requestMethod.equals("PUT")) {
+            HttpPut httpPut = new HttpPut(uri);
+            httpPut.setHeader("Accept", acceptType);
+            addHeaders(reqHeaders, httpPut);
+            httpPut.setEntity(new StringEntity(body));
+            return httpPut;
+        }
+
+        if (requestMethod.equals("HEAD")) {
+            HttpHead httpHead = new HttpHead(uri);
+            addHeaders(reqHeaders, httpHead);
+            return httpHead;
+        }
+
+        if (requestMethod.equals("TRACE")) {
+            HttpTrace httpTrace = new HttpTrace(uri);
+            addHeaders(reqHeaders, httpTrace);
+            return httpTrace;
+        }
+
+        if (requestMethod.equals("OPTIONS")) {
+            HttpOptions httpOptions = new HttpOptions(uri);
+            addHeaders(reqHeaders, httpOptions);
+            return httpOptions;
+        }
+
+        if (requestMethod.equals("LOCK")) {
+            HttpLock httpLock = new HttpLock(uri);
+            addHeaders(reqHeaders, httpLock);
+            return httpLock;
+        }
+
+        throw new IllegalArgumentException("Unknown method " + requestMethod);
     }
 
     private void addHeaders(Map<String, String> reqHeaders, HttpRequest req) {
@@ -313,17 +320,11 @@ public class SparkTestUtil {
         }
     }
 
-    static class HttpLock extends HttpRequestBase {
+    static class HttpLock extends HttpUriRequestBase {
         public final static String METHOD_NAME = "LOCK";
 
         public HttpLock(final String uri) {
-            super();
-            setURI(URI.create(uri));
-        }
-
-        @Override
-        public String getMethod() {
-            return METHOD_NAME;
+            super(METHOD_NAME, URI.create(uri));
         }
     }
 

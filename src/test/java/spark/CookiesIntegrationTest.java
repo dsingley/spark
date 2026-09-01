@@ -5,12 +5,12 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static spark.Spark.halt;
 import static spark.Spark.post;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,9 +27,9 @@ public class CookiesIntegrationTest {
     // (space-separated, e.g. "Thu, 01 Jan 1970 00:00:00 GMT"); Apache HttpClient's default
     // cookie spec only accepts the legacy Netscape/RFC 2109 hyphenated form and silently
     // discards the header otherwise, so the client-side cookie store never sees the
-    // deletion. Both forms are RFC 6265-compliant; opt into the RFC6265-aware STANDARD spec.
-    private HttpClient httpClient = HttpClientBuilder.create()
-            .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
+    // deletion. Both forms are RFC 6265-compliant; opt into the more permissive RELAXED spec.
+    private CloseableHttpClient httpClient = HttpClientBuilder.create()
+            .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(StandardCookieSpec.RELAXED).build())
             .build();
 
     @BeforeAll
@@ -134,13 +134,10 @@ public class CookiesIntegrationTest {
 
     private void httpPost(String relativePath) {
         HttpPost request = new HttpPost(DEFAULT_HOST_URL + relativePath);
-        try {
-            assertThatCode(() -> {
-                HttpResponse response = httpClient.execute(request);
-                assertThat(response.getStatusLine().getStatusCode()).isEqualTo(200);
-            }).doesNotThrowAnyException();
-        } finally {
-            request.releaseConnection();
-        }
+        assertThatCode(() -> {
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+                assertThat(response.getCode()).isEqualTo(200);
+            }
+        }).doesNotThrowAnyException();
     }
 }
