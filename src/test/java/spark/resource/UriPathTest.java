@@ -1,8 +1,7 @@
 package spark.resource;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UriPathTest {
     @Test
@@ -57,7 +56,9 @@ public class UriPathTest {
         };
 
         for (String[] aCanonical : canonical) {
-            assertEquals("canonical " + aCanonical[0], aCanonical[1], UriPath.canonical(aCanonical[0]));
+            assertThat(UriPath.canonical(aCanonical[0]))
+                    .describedAs("canonical " + aCanonical[0])
+                    .isEqualTo(aCanonical[1]);
         }
     }
 

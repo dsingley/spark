@@ -3,31 +3,30 @@ package spark.embeddedserver.jetty;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+
 import java.util.Optional;
 
 import jakarta.servlet.Filter;
 
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.junit.After;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 import spark.ExceptionMapper;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerClassWrapper;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
 import spark.http.matching.MatcherFilter;
 import spark.route.Routes;
 import spark.ssl.SslStores;
-import spark.staticfiles.StaticFilesConfiguration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import spark.staticfiles.StaticFilesConfiguration;
 
 public class EmbeddedJettyServerTest {
 
     private EmbeddedJettyServer embeddedJettyServer;
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (embeddedJettyServer != null) {
             embeddedJettyServer.extinguish();
@@ -46,7 +45,7 @@ public class EmbeddedJettyServerTest {
         embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
 
         JettyWebSocketServerContainer container = handler.getWebSocketContainer();
-        assertEquals(Duration.ofMillis(12345L), container.getIdleTimeout());
+        assertThat(container.getIdleTimeout()).isEqualTo(Duration.ofMillis(12345L));
     }
 
     @Test
@@ -62,7 +61,7 @@ public class EmbeddedJettyServerTest {
 
         // No timeout configured: the container comes up using Jetty's own default,
         // untouched by EmbeddedJettyServer.
-        assertNotNull(handler.getWebSocketContainer());
+        assertThat(handler.getWebSocketContainer()).isNotNull();
     }
 
     @Test
@@ -76,7 +75,7 @@ public class EmbeddedJettyServerTest {
 
         // The WebSocketUpgradeFilter and its container are always installed (see JettyHandler),
         // regardless of whether the application registered any WebSocket routes.
-        assertNotNull(handler.getWebSocketContainer());
+        assertThat(handler.getWebSocketContainer()).isNotNull();
     }
 
     private static JettyHandler newHandler() {

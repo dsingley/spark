@@ -1,9 +1,7 @@
 package spark;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class Base64Test {
 
@@ -13,7 +11,7 @@ public class Base64Test {
     public final void test_encode() {
         String in = "hello";
         String encode = Base64.encode(in);
-        Assert.assertFalse(in.equals(encode));
+        assertThat(in.equals(encode)).isFalse();
     }
 
     //CS304 manually Issue link:https://github.com/perwendel/spark/issues/1061
@@ -24,7 +22,7 @@ public class Base64Test {
         String encode = Base64.encode(in);
         String decode = Base64.decode(encode);
 
-        Assert.assertTrue(in.equals(decode));
+        assertThat(in.equals(decode)).isTrue();
     }
 
 }

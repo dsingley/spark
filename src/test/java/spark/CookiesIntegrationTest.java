@@ -1,8 +1,9 @@
 package spark;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static spark.Spark.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static spark.Spark.halt;
+import static spark.Spark.post;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,9 +11,9 @@ import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * System tests for the Cookies support.
@@ -31,8 +32,8 @@ public class CookiesIntegrationTest {
             .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
             .build();
 
-    @BeforeClass
-    public static void initRoutes() throws InterruptedException {
+    @BeforeAll
+    public static void beforeAll() throws InterruptedException {
         post("/assertNoCookies", (request, response) -> {
             if (!request.cookies().isEmpty()) {
                 halt(500);
@@ -90,8 +91,8 @@ public class CookiesIntegrationTest {
         Spark.awaitInitialization();
     }
 
-    @AfterClass
-    public static void stopServer() {
+    @AfterAll
+    public static void afterAll() {
         Spark.stop();
     }
 
@@ -134,10 +135,10 @@ public class CookiesIntegrationTest {
     private void httpPost(String relativePath) {
         HttpPost request = new HttpPost(DEFAULT_HOST_URL + relativePath);
         try {
-            HttpResponse response = httpClient.execute(request);
-            assertEquals(200, response.getStatusLine().getStatusCode());
-        } catch (Exception ex) {
-            fail(ex.toString());
+            assertThatCode(() -> {
+                HttpResponse response = httpClient.execute(request);
+                assertThat(response.getStatusLine().getStatusCode()).isEqualTo(200);
+            }).doesNotThrowAnyException();
         } finally {
             request.releaseConnection();
         }

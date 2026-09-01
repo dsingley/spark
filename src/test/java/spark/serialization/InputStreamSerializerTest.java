@@ -1,9 +1,14 @@
 package spark.serialization;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InputStreamSerializerTest {
 
@@ -17,7 +22,7 @@ public class InputStreamSerializerTest {
 
         serializer.process(output, input);
 
-        Assert.assertArrayEquals(bytes, output.toByteArray());
+        assertThat(output.toByteArray()).containsExactly(bytes);
     }
 
     @Test
@@ -27,7 +32,7 @@ public class InputStreamSerializerTest {
 
         serializer.process(output, input);
 
-        Assert.assertTrue("Expected stream to be closed", input.closed);
+        assertThat(input.closed).isTrue();
     }
 
     private class MockInputStream extends FilterInputStream {

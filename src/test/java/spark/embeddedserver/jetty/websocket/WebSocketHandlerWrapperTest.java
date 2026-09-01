@@ -1,10 +1,8 @@
 package spark.embeddedserver.jetty.websocket;
 
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class WebSocketHandlerWrapperTest {
 
@@ -15,12 +13,9 @@ public class WebSocketHandlerWrapperTest {
 
     @Test
     public void testValidateHandlerClass_whenNotAnnotated_thenThrowIllegalArgumentException() {
-        try {
-            WebSocketHandlerWrapper.validateHandlerClass(PlainHandler.class);
-            fail("Should have thrown an IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
-            assertEquals("WebSocket handler must be annotated as '@WebSocket'", ex.getMessage());
-        }
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> WebSocketHandlerWrapper.validateHandlerClass(PlainHandler.class))
+                .withMessage("WebSocket handler must be annotated as '@WebSocket'");
     }
 
     @WebSocket

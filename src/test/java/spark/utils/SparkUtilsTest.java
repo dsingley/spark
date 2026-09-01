@@ -1,12 +1,11 @@
 package spark.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SparkUtilsTest {
 
@@ -17,25 +16,21 @@ public class SparkUtilsTest {
 
         List<String> actual = SparkUtils.convertRouteToList("/api/person/:id");
 
-        assertThat("Should return route as a list of individual elements that path is made of",
-                actual,
-                is(expected));
+        assertThat(actual).isEqualTo(expected);
 
     }
 
     @Test
     public void testIsParam_whenParameterFormattedAsParm() throws Exception {
 
-        assertTrue("Should return true because parameter follows convention of a parameter (:paramname)",
-                SparkUtils.isParam(":param"));
+        assertThat(SparkUtils.isParam(":param")).isTrue();
 
     }
 
     @Test
     public void testIsParam_whenParameterNotFormattedAsParm() throws Exception {
 
-        assertFalse("Should return false because parameter does not follows convention of a parameter (:paramname)",
-                SparkUtils.isParam(".param"));
+        assertThat(SparkUtils.isParam(".param")).isFalse();
 
     }
 
@@ -43,14 +38,14 @@ public class SparkUtilsTest {
     @Test
     public void testIsSplat_whenParameterIsASplat() throws Exception {
 
-        assertTrue("Should return true because parameter is a splat (*)", SparkUtils.isSplat("*"));
+        assertThat(SparkUtils.isSplat("*")).isTrue();
 
     }
 
     @Test
     public void testIsSplat_whenParameterIsNotASplat() throws Exception {
 
-        assertFalse("Should return true because parameter is not a splat (*)", SparkUtils.isSplat("!"));
+        assertThat(SparkUtils.isSplat("!")).isFalse();
 
     }
 }
