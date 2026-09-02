@@ -6,11 +6,15 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.kiwiproject.reflect.KiwiReflection;
 import org.kiwiproject.reflect.RuntimeReflectionException;
+import org.kiwiproject.test.security.CertificateTestHelpers;
+import org.kiwiproject.test.security.TestKeyStores;
 import spark.ssl.SslStores;
 
 import java.lang.reflect.Field;
+import java.nio.file.Path;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -88,22 +92,19 @@ public class SocketConnectorFactoryTest {
 
 
     @Test
-    public void testCreateSecureSocketConnector() {
+    public void testCreateSecureSocketConnector(@TempDir Path tempDir) {
 
         final String host = "localhost";
         final int port = 8888;
 
         // Jetty 12 validates that the keystore/truststore paths are accessible as soon as
         // they're set (Jetty 9 deferred this until the SslContextFactory actually started),
-        // so this needs a real file rather than a placeholder name.
-        final String keystoreFileName = "keystore.jks";
-        final String keystoreFile = "src/test/resources/" + keystoreFileName;
-        final String keystorePassword = "keystorePassword";
-        final String truststoreFileName = keystoreFileName;
-        final String truststoreFile = keystoreFile;
-        final String trustStorePassword = "trustStorePassword";
+        // so this needs real files rather than placeholder names.
+        TestKeyStores testKeyStores = CertificateTestHelpers.createJKSKeyAndTrustStores(tempDir);
 
-        SslStores sslStores = SslStores.create(keystoreFile, keystorePassword, truststoreFile, trustStorePassword);
+        SslStores sslStores = SslStores.create(
+                testKeyStores.requiredKeyStorePathAsString(), testKeyStores.keyStorePassword(),
+                testKeyStores.requiredTrustStorePathAsString(), testKeyStores.trustStorePassword());
 
         Server server = new Server();
 
@@ -126,8 +127,10 @@ public class SocketConnectorFactoryTest {
         SslContextFactory sslContextFactory = sslConnectionFactory.getSslContextFactory();
 
         assertAll(
-                () -> assertThat(sslContextFactory.getKeyStoreResource().getFileName()).isEqualTo(keystoreFileName),
-                () -> assertThat(sslContextFactory.getTrustStoreResource().getFileName()).isEqualTo(truststoreFileName)
+                () -> assertThat(sslContextFactory.getKeyStoreResource().getFileName())
+                        .isEqualTo(testKeyStores.requiredKeyStorePath().getFileName().toString()),
+                () -> assertThat(sslContextFactory.getTrustStoreResource().getFileName())
+                        .isEqualTo(testKeyStores.requiredTrustStorePath().getFileName().toString())
         );
 
     }
