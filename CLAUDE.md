@@ -46,6 +46,4 @@ Working conventions for this migration:
 
 ## Build
 
-`mvn clean verify` — requires JDK 17+. The surefire plugin's `argLine` in `pom.xml`
-carries JVM flags required for the existing Mockito/PowerMock test stack to run under
-JDK 17+; see the comment there before removing them.
+`mvn clean verify` — requires JDK 17+.
