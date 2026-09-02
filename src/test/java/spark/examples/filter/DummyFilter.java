@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import static spark.Spark.after;
 import static spark.Spark.before;
+import static spark.Spark.get;
 
 
 public class DummyFilter {
@@ -31,6 +32,8 @@ public class DummyFilter {
         before((request, response) -> {
             LOGGER.info("Before");
         });
+
+        get("/hello", (request, response) -> "Hello World!");
 
         after((request, response) -> {
             LOGGER.info("After");

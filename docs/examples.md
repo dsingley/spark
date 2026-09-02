@@ -161,7 +161,7 @@ curl -b /tmp/spark-cookies http://localhost:4567/      # forgotten again
 | | |
 |---|---|
 | Classes | `spark.examples.filter.FilterExample`, `spark.examples.filter.FilterExampleAttributes`, `spark.examples.filter.FilterExampleWildcard`, `spark.examples.filter.DummyFilter` |
-| What they show | `before`/`after` filters: a toy auth check, passing data between filters and a route via request attributes, path-wildcard filters, and (for `DummyFilter`) filters registered with no routes at all. |
+| What they show | `before`/`after` filters: a toy auth check, passing data between filters and a route via request attributes, path-wildcard filters, and (for `DummyFilter`) filters that log on every request regardless of route. |
 
 `FilterExample` — a before-filter checks `user`/`password` query params:
 
@@ -183,12 +183,13 @@ registered there:
 curl http://localhost:4567/protected/anything   # 401
 ```
 
-`DummyFilter` registers global `before`/`after` filters but no routes at all, so every request
-404s — the point of this one is to watch the **server console**, not the response, for the
-"Before"/"After" log lines:
+`DummyFilter` registers global `before`/`after` filters (they run on every request,
+regardless of path or route) alongside a single `/hello` route — watch the **server
+console** for the "Before"/"After" log lines as you curl:
 
 ```
-curl http://localhost:4567/anything   # 404, but check the console for "Before" / "After"
+curl http://localhost:4567/hello      # 200, and check the console for "Before" / "After"
+curl http://localhost:4567/anything   # 404, but the filters still logged
 ```
 
 ## Multiple services
@@ -242,9 +243,13 @@ connect since this server only listens on the IPv4 wildcard address.
 | Class | `spark.examples.gzip.GzipExample` |
 | What it shows | Serving gzip-encoded content. |
 
-Unlike every other example on this page, this one makes a single request to itself, prints the
-decompressed response, and exits — it doesn't stay up for you to curl. There isn't a way to try
-it manually today; see [sleberknight/spark#33](https://github.com/sleberknight/spark/issues/33).
+On startup it makes one request to itself and prints the decompressed response, then stays up
+like every other example so you can try it yourself:
+
+```
+curl http://localhost:4567/hello
+curl -H "Accept-Encoding: gzip" --compressed http://localhost:4567/zipped
+```
 
 ## REST resource (Books)
 
