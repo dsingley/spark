@@ -24,10 +24,24 @@
         <developerConnection>scm:git:git@github.com:dsingley/spark.git</developerConnection>
         <url>https://github.com/dsingley/spark</url>
     </scm>
+    
     <developers>
+        <developer>
+            <name>David Singley</name>
+             <organization>dsingley.com</organization>
+            <organizationUrl>https://github.com/dsingley</organizationUrl>
+            <url>https://github.com/dsingley</url>
+        </developer>
+        <developer>
+            <name>Scott Leberknight</name>
+            <organization>Kiwi Project</organization>
+            <organizationUrl>https://github.com/kiwiproject</organizationUrl>
+            <url>https://github.com/sleberknight</url>
+        </developer>
     </developers>
 
     <distributionManagement>
+        <!-- TODO: I think this can be removed when move to central-publishing-maven-plugin -->
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
@@ -35,11 +49,12 @@
     </distributionManagement>
 
     <properties>
+        <!-- Required dependency versions -->
         <slf4j.version>2.0.18</slf4j.version>
         <jetty.version>12.1.12</jetty.version>
 
+        <!-- Test dependency versions -->
         <assertj.version>3.27.7</assertj.version>
-        <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <freemarker.version>2.3.34</freemarker.version>
         <gson.version>2.14.0</gson.version>
         <httpcomponents-client5.version>5.6.4</httpcomponents-client5.version>
@@ -48,119 +63,32 @@
         <kiwi-test.version>4.3.0</kiwi-test.version>
         <mockito.version>5.23.0</mockito.version>
         <netty-pkitesting.version>4.2.17.Final</netty-pkitesting.version>
-
-        <java.version>17</java.version>
-        <maven.min.version>3.6.3</maven.min.version>
-        <maven-bundle.version>5.1.9</maven-bundle.version>
-        <maven-compiler.version>3.14.1</maven-compiler.version>
+        
+        <!-- Maven plugin versions -->        
+        <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
+        <maven-bundle.version>6.1.2</maven-bundle.version>
+        <maven-compiler.version>3.15.0</maven-compiler.version>
         <maven-deploy.version>3.1.4</maven-deploy.version>
         <maven-enforcer.version>3.6.3</maven-enforcer.version>
-        <maven-gpg.version>3.0.1</maven-gpg.version>
+        <maven-gpg.version>3.2.8</maven-gpg.version>
         <maven-install.version>3.1.4</maven-install.version>
         <maven-javadoc.version>3.12.0</maven-javadoc.version>
-        <maven-release.version>3.0.0-M5</maven-release.version>
+        <maven-release.version>3.3.1</maven-release.version>
         <maven-resources.version>3.5.0</maven-resources.version>
-        <maven-source.version>3.2.1</maven-source.version>
-        <maven-surefire.version>3.5.6</maven-surefire.version>
-        <nexus-staging.version>1.6.12</nexus-staging.version>
+        <maven-source.version>3.4.0</maven-source.version>
+        <maven-surefire.version>3.6.0-M1</maven-surefire.version>
+        <nexus-staging.version>1.7.0</nexus-staging.version>
+        
+        <!-- Project/build infrastructure properties -->
+        <maven.min.version>3.6.3</maven.min.version>
+        <maven-compiler-plugin.encoding>UTF-8</maven-compiler-plugin.encoding>
+
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-    <dependencies>
-        <!-- LOGGING DEPENDENCIES -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- JETTY DEPENDENCIES -->
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.ee11</groupId>
-            <artifactId>jetty-ee11-webapp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.ee11</groupId>
-            <artifactId>jetty-ee11-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.ee11.websocket</groupId>
-            <artifactId>jetty-ee11-websocket-jetty-server</artifactId>
-        </dependency>
-
-        <!-- JUNIT DEPENDENCY FOR TESTING -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit-jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kiwiproject</groupId>
-            <artifactId>kiwi</artifactId>
-            <version>${kiwi.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kiwiproject</groupId>
-            <artifactId>kiwi-test</artifactId>
-            <version>${kiwi-test.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-pkitesting</artifactId>
-            <version>${netty-pkitesting.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <version>${httpcomponents-client5.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>${freemarker.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>jetty-websocket-jetty-client</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-   <dependencyManagement>
+    <dependencyManagement>
        <dependencies>
            <dependency>
                <groupId>org.eclipse.jetty</groupId>
@@ -169,6 +97,7 @@
                <type>pom</type>
                <scope>import</scope>
            </dependency>
+           
            <dependency>
                <groupId>org.eclipse.jetty.ee11</groupId>
                <artifactId>jetty-ee11-bom</artifactId>
@@ -179,51 +108,144 @@
        </dependencies>
    </dependencyManagement>
 
-    <build>
-        <resources>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
+    <dependencies>
+        <!-- Required dependencies -->
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.jetty.ee11</groupId>
+            <artifactId>jetty-ee11-webapp</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.jetty.ee11</groupId>
+            <artifactId>jetty-ee11-servlet</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.jetty.ee11.websocket</groupId>
+            <artifactId>jetty-ee11-websocket-jetty-server</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.kiwiproject</groupId>
+            <artifactId>kiwi</artifactId>
+            <version>${kiwi.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.kiwiproject</groupId>
+            <artifactId>kiwi-test</artifactId>
+            <version>${kiwi-test.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-pkitesting</artifactId>
+            <version>${netty-pkitesting.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>${httpcomponents-client5.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>jetty-websocket-jetty-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler.version}</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <optimize>true</optimize>
-                    <debug>true</debug>
+                    <release>${java.version}</release>
+                    <encoding>${maven-compiler-plugin.encoding}</encoding>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven-resources.version}</version>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <version>${maven-install.version}</version>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>${maven-deploy.version}</version>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -247,6 +269,7 @@
                     </execution>
                 </executions>
             </plugin>
+            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -255,6 +278,7 @@
                     <classpathScope>test</classpathScope>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -264,12 +288,15 @@
                     <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>${maven-bundle.version}</version>
                 <extensions>true</extensions>
             </plugin>
+            
+            <!-- TODO: this will need to change to the central-publishing-maven-plugin -->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -281,6 +308,8 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+            
+            <!-- TODO: check the properties/configuration before trying to release 3.0.0 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -314,6 +343,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -330,10 +360,12 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>${maven-gpg.version}</version>
+                        <!-- TODO: revisit configuration and executions before publishing -->
                         <configuration>
                             <gpgArguments>
                                 <arg>--pinentry-mode</arg>
