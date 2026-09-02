@@ -1,4 +1,4 @@
-package spark;
+package spark.examples.books;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,11 +19,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import spark.examples.books.Books;
+import spark.Spark;
 import spark.utils.IOUtils;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class BooksIntegrationTest {
+public class BooksExampleTest {
 
     private static int PORT = 4567;
 
