@@ -9,6 +9,7 @@ import spark.util.SparkTestUtil;
 
 import static spark.Spark.after;
 import static spark.Spark.awaitInitialization;
+import static spark.Spark.awaitStop;
 import static spark.Spark.before;
 import static spark.Spark.get;
 
@@ -43,6 +44,7 @@ public class MultipleFiltersTest {
     @AfterAll
     public static void afterAll() {
         stop();
+        awaitStop();
     }
 
     @Test

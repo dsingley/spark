@@ -55,6 +55,8 @@ public class MultipleServicesTest {
     public static void afterAll() {
         first.stop();
         second.stop();
+        first.awaitStop();
+        second.awaitStop();
     }
 
     @Test

@@ -94,6 +94,7 @@ public class CookiesIntegrationTest {
     @AfterAll
     public static void afterAll() {
         Spark.stop();
+        Spark.awaitStop();
     }
 
     @Test

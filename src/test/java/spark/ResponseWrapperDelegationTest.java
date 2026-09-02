@@ -56,6 +56,7 @@ public class ResponseWrapperDelegationTest {
     @AfterAll
     public static void afterAll() {
         Spark.stop();
+        Spark.awaitStop();
     }
 
     @Test

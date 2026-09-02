@@ -62,6 +62,7 @@ public class BodyAvailabilityTest {
     @AfterAll
     public static void afterAll() {
         Spark.stop();
+        Spark.awaitStop();
 
         beforeBody = null;
         routeBody = null;

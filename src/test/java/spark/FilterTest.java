@@ -11,6 +11,7 @@ import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
 import static spark.Spark.awaitInitialization;
+import static spark.Spark.awaitStop;
 import static spark.Spark.before;
 
 import static spark.Spark.stop;
@@ -29,6 +30,7 @@ public class FilterTest {
     @AfterAll
     public static void afterAll() {
         stop();
+        awaitStop();
     }
 
     @Test

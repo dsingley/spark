@@ -33,6 +33,7 @@ public class ServicePortIntegrationTest {
     @AfterAll
     public static void afterAll() throws Exception {
         service.stop();
+        service.awaitStop();
     }
 
     @Test

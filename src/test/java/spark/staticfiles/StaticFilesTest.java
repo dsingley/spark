@@ -90,6 +90,7 @@ public class StaticFilesTest {
     @AfterAll
     public static void afterAll() {
         Spark.stop();
+        Spark.awaitStop();
         if (tmpExternalFile != null) {
             LOGGER.debug("tearDown().deleting: " + tmpExternalFile);
             tmpExternalFile.delete();
