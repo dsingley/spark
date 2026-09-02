@@ -37,7 +37,6 @@ public class GzipExample {
 
         String response = getAndDecompress();
         System.out.println("response = " + response);
-        System.exit(0);
     }
 
     public static void addRoutes() {
