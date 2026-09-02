@@ -72,6 +72,7 @@ public class ServletTest {
     @AfterAll
     public static void afterAll() {
         Spark.stop();
+        Spark.awaitStop();
         if (MyApp.tmpExternalFile != null) {
             LOGGER.debug("tearDown().deleting: " + MyApp.tmpExternalFile);
             MyApp.tmpExternalFile.delete();

@@ -56,6 +56,7 @@ public class BooksIntegrationTest {
     @AfterAll
     public static void afterAll() {
         Spark.stop();
+        Spark.awaitStop();
     }
 
     @Test

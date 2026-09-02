@@ -53,6 +53,7 @@ public class CustomErrorPagesTest {
     @AfterAll
     public static void afterAll() {
         Spark.stop();
+        Spark.awaitStop();
     }
 
     @Test

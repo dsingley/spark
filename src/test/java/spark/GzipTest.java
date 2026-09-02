@@ -26,6 +26,7 @@ import spark.examples.gzip.GzipExample;
 import spark.util.SparkTestUtil;
 
 import static spark.Spark.awaitInitialization;
+import static spark.Spark.awaitStop;
 
 import static spark.Spark.stop;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -45,6 +46,7 @@ public class GzipTest {
     @AfterAll
     public static void afterAll() {
         stop();
+        awaitStop();
     }
 
     @Test

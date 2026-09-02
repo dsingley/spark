@@ -212,6 +212,7 @@ public class GenericIntegrationTest {
     @AfterAll
     public static void afterAll() {
         Spark.stop();
+        Spark.awaitStop();
         if (tmpExternalFile != null) {
             tmpExternalFile.delete();
         }

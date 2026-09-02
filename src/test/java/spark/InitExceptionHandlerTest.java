@@ -25,6 +25,7 @@ public class InitExceptionHandlerTest {
     @AfterAll
     public static void afterAll() throws Exception {
         service.stop();
+        service.awaitStop();
     }
 
     @Test
