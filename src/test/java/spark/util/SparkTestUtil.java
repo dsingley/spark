@@ -1,5 +1,6 @@
 package spark.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -17,6 +18,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.kiwiproject.security.KeyStoreType;
 import org.kiwiproject.test.security.CertOptions;
 import org.kiwiproject.test.security.CertificateTestHelpers;
 import org.kiwiproject.test.security.TestKeyStores;
@@ -324,6 +326,20 @@ public class SparkTestUtil {
     }
 
     /**
+     * Return the location of a PEM file containing the CA certificate that issued the
+     * default keystore/truststore. Only meaningful when the default keystore/truststore
+     * are in use, i.e. none of the {@code javax.net.ssl.*} JVM params above are set.
+     * <p/>
+     * Unlike the keystore/truststore (Java {@link KeyStore} formats), this is a plain PEM
+     * file, so it can be handed directly to non-Java TLS clients, e.g. {@code curl --cacert}.
+     *
+     * @return CA certificate location as string
+     */
+    public static String getCaCertificateLocation() {
+        return DefaultCertificate.CA_CERT_FILE.getPath();
+    }
+
+    /**
      * A self-signed CA + leaf certificate generated once per JVM (via kiwi-test's
      * {@link CertificateTestHelpers}) and used as the default keystore/truststore
      * whenever the {@code javax.net.ssl.*} JVM params above aren't set. Replaces a
@@ -333,16 +349,30 @@ public class SparkTestUtil {
     private static final class DefaultCertificate {
 
         private static final TestKeyStores STORES = generate();
+        private static final File CA_CERT_FILE = generateCaCertFile();
 
         private static TestKeyStores generate() {
             try {
                 Path certDir = Files.createTempDirectory("spark-test-default-keystore");
                 certDir.toFile().deleteOnExit();
                 TestKeyStores testKeyStores = CertificateTestHelpers.createKeyAndTrustStores(
-                        CertOptions.builder().certDir(certDir).sanDnsName("localhost").build());
+                        CertOptions.builder()
+                                .certDir(certDir)
+                                .sanDnsName("localhost")
+                                .keyStoreAlgorithm(KeyStoreType.PKCS12.getValue())
+                                .trustStoreAlgorithm(KeyStoreType.PKCS12.getValue())
+                                .build());
                 testKeyStores.requiredKeyStorePath().toFile().deleteOnExit();
                 testKeyStores.requiredTrustStorePath().toFile().deleteOnExit();
                 return testKeyStores;
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        private static File generateCaCertFile() {
+            try {
+                return STORES.issuerBundle().toTempRootCertPem();
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
