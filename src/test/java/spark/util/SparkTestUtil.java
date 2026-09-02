@@ -2,8 +2,11 @@ package spark.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +16,10 @@ import java.util.Map;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
+
+import org.kiwiproject.test.security.CertOptions;
+import org.kiwiproject.test.security.CertificateTestHelpers;
+import org.kiwiproject.test.security.TestKeyStores;
 
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -271,7 +278,7 @@ public class SparkTestUtil {
      */
     public static String getKeyStoreLocation() {
         String keyStoreLoc = System.getProperty("javax.net.ssl.keyStore");
-        return keyStoreLoc == null ? "./src/test/resources/keystore.jks" : keyStoreLoc;
+        return keyStoreLoc == null ? DefaultCertificate.STORES.requiredKeyStorePathAsString() : keyStoreLoc;
     }
 
     /**
@@ -281,29 +288,65 @@ public class SparkTestUtil {
      */
     public static String getKeystorePassword() {
         String password = System.getProperty("javax.net.ssl.keyStorePassword");
-        return password == null ? "password" : password;
+        return password == null ? DefaultCertificate.STORES.keyStorePassword() : password;
     }
 
     /**
-     * Return JVM param set truststore location, or keystore location if not
-     * set. if keystore not set either, returns default
+     * Return JVM param set truststore location, or keystore location if only that is set.
+     * If neither is set, returns the default truststore location.
      *
      * @return truststore location as string
      */
     public static String getTrustStoreLocation() {
         String trustStoreLoc = System.getProperty("javax.net.ssl.trustStore");
-        return trustStoreLoc == null ? getKeyStoreLocation() : trustStoreLoc;
+        if (trustStoreLoc != null) {
+            return trustStoreLoc;
+        }
+        return System.getProperty("javax.net.ssl.keyStore") != null
+                ? getKeyStoreLocation()
+                : DefaultCertificate.STORES.requiredTrustStorePathAsString();
     }
 
     /**
-     * Return JVM param set truststore password or keystore password if not set.
-     * If still not set, will return default password
+     * Return JVM param set truststore password, or keystore password if only that is set.
+     * If neither is set, returns the default truststore password.
      *
      * @return truststore password as string
      */
     public static String getTrustStorePassword() {
         String password = System.getProperty("javax.net.ssl.trustStorePassword");
-        return password == null ? getKeystorePassword() : password;
+        if (password != null) {
+            return password;
+        }
+        return System.getProperty("javax.net.ssl.keyStorePassword") != null
+                ? getKeystorePassword()
+                : DefaultCertificate.STORES.trustStorePassword();
+    }
+
+    /**
+     * A self-signed CA + leaf certificate generated once per JVM (via kiwi-test's
+     * {@link CertificateTestHelpers}) and used as the default keystore/truststore
+     * whenever the {@code javax.net.ssl.*} JVM params above aren't set. Replaces a
+     * checked-in {@code keystore.jks} file, which had a fixed expiration date and was
+     * an unnecessary private key committed to version control.
+     */
+    private static final class DefaultCertificate {
+
+        private static final TestKeyStores STORES = generate();
+
+        private static TestKeyStores generate() {
+            try {
+                Path certDir = Files.createTempDirectory("spark-test-default-keystore");
+                certDir.toFile().deleteOnExit();
+                TestKeyStores testKeyStores = CertificateTestHelpers.createKeyAndTrustStores(
+                        CertOptions.builder().certDir(certDir).sanDnsName("localhost").build());
+                testKeyStores.requiredKeyStorePath().toFile().deleteOnExit();
+                testKeyStores.requiredTrustStorePath().toFile().deleteOnExit();
+                return testKeyStores;
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
     }
 
     public static class UrlResponse {
