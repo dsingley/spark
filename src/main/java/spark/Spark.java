@@ -967,6 +967,7 @@ public class Spark {
      * @param ipAddress The ipAddress
      * @deprecated replaced by {@link #ipAddress(String)}
      */
+    @Deprecated
     public static void setIpAddress(String ipAddress) {
         getInstance().ipAddress(ipAddress);
     }
@@ -999,6 +1000,7 @@ public class Spark {
      * @param port The port number
      * @deprecated replaced by {@link #port(int)}
      */
+    @Deprecated
     public static void setPort(int port) {
         getInstance().port(port);
     }
@@ -1040,6 +1042,7 @@ public class Spark {
      * @param truststorePassword the trust store password
      * @deprecated replaced by {@link #secure(String, String, String, String)}
      */
+    @Deprecated
     public static void setSecure(String keystoreFile,
                                  String keystorePassword,
                                  String truststoreFile,

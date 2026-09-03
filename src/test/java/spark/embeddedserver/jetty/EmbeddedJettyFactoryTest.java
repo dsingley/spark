@@ -100,6 +100,25 @@ public class EmbeddedJettyFactoryTest {
         when(jettyServerFactory.create(100, 10, 10000)).thenReturn(server);
 
         final EmbeddedJettyFactory embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withHttpOnly(false);
+        embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, ExceptionMapper.getServletInstance(), false);
+        embeddedServer.trustForwardHeaders(true);
+        embeddedServer.ignite("localhost", 6759, (SslStores) null, 100, 10, 10000);
+
+        assertThat(((JettyHandler) server.getHandler()).getSessionCookieConfig().isHttpOnly()).isFalse();
+    }
+
+    // this is the same test as above, except it exercises the deprecated EmbeddedServerFactory#create method 
+    @SuppressWarnings("deprecation")
+    @Test
+    public void create_deprecated_withoutHttpOnly() throws Exception {
+        final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
+        final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
+        final Routes routes = mock(Routes.class);
+
+        Server server = new Server();
+        when(jettyServerFactory.create(100, 10, 10000)).thenReturn(server);
+
+        final EmbeddedJettyFactory embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withHttpOnly(false);
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, false);
         embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 6759, (SslStores) null, 100, 10, 10000);
