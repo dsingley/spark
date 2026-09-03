@@ -67,7 +67,7 @@
         <!-- Maven plugin versions -->        
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <maven-bundle.version>6.1.2</maven-bundle.version>
-        <maven-compiler.version>3.15.0</maven-compiler.version>
+        <maven-compiler.version>3.16.0</maven-compiler.version>
         <maven-deploy.version>3.1.4</maven-deploy.version>
         <maven-enforcer.version>3.6.3</maven-enforcer.version>
         <maven-gpg.version>3.2.8</maven-gpg.version>
