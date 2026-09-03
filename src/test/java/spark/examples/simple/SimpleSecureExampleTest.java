@@ -53,4 +53,52 @@ public class SimpleSecureExampleTest {
                 () -> assertThat(response.body).isEqualTo("Selected user: scott")
         );
     }
+
+    @Test
+    public void privateRoute() throws Exception {
+        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/private", null);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(401),
+                () -> assertThat(response.body).isEqualTo("Go Away!!!")
+        );
+    }
+
+    @Test
+    public void newsSection() throws Exception {
+        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/news/world", null);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body)
+                        .isEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?><news>world</news>")
+        );
+    }
+
+    @Test
+    public void protectedRoute() throws Exception {
+        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/protected", null);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(403),
+                () -> assertThat(response.body).isEqualTo("I don't think so!!!")
+        );
+    }
+
+    @Test
+    public void redirect() throws Exception {
+        // the client follows the redirect by default, landing on /news/world
+        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/redirect", null);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body)
+                        .isEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?><news>world</news>")
+        );
+    }
+
+    @Test
+    public void root() throws Exception {
+        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/", null);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("root")
+        );
+    }
 }
