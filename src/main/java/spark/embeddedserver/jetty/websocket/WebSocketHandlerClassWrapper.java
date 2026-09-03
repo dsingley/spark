@@ -14,8 +14,8 @@ public class WebSocketHandlerClassWrapper implements WebSocketHandlerWrapper {
     @Override
     public Object getHandler() {
         try {
-            return handlerClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException ex) {
+            return handlerClass.getDeclaredConstructor().newInstance();
+        } catch (ReflectiveOperationException ex) {
             throw new RuntimeException("Could not instantiate websocket handler", ex);
         }
     }
