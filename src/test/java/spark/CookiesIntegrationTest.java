@@ -9,7 +9,6 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.cookie.StandardCookieSpec;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -136,9 +135,8 @@ public class CookiesIntegrationTest {
     private void httpPost(String relativePath) {
         HttpPost request = new HttpPost(DEFAULT_HOST_URL + relativePath);
         assertThatCode(() -> {
-            try (CloseableHttpResponse response = httpClient.execute(request)) {
-                assertThat(response.getCode()).isEqualTo(200);
-            }
+            int statusCode = httpClient.execute(request, response -> response.getCode());
+            assertThat(statusCode).isEqualTo(200);
         }).doesNotThrowAnyException();
     }
 }

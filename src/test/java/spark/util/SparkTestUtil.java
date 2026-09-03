@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.kiwiproject.security.KeyStoreType;
@@ -35,18 +34,16 @@ import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
-import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
-import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.config.Registry;
-import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
@@ -63,14 +60,11 @@ public class SparkTestUtil {
     }
 
     private HttpClientBuilder httpClientBuilder() {
-        SSLConnectionSocketFactory sslConnectionSocketFactory =
-                new SSLConnectionSocketFactory(getSslFactory(), (paramString, paramSSLSession) -> true);
-        Registry<ConnectionSocketFactory> socketRegistry = RegistryBuilder
-                .<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.INSTANCE)
-                .register("https", sslConnectionSocketFactory)
+        TlsSocketStrategy tlsSocketStrategy =
+                new DefaultClientTlsStrategy(getSslContext(), (paramString, paramSSLSession) -> true);
+        PoolingHttpClientConnectionManager connManager = PoolingHttpClientConnectionManagerBuilder.create()
+                .setTlsSocketStrategy(tlsSocketStrategy)
                 .build();
-        BasicHttpClientConnectionManager connManager = new BasicHttpClientConnectionManager(socketRegistry);
         return HttpClientBuilder.create().setConnectionManager(connManager);
     }
 
@@ -118,10 +112,7 @@ public class SparkTestUtil {
                                 String acceptType, Map<String, String> reqHeaders) throws IOException, ParseException {
         HttpUriRequest httpRequest = getHttpRequest(requestMethod, path, body, secureConnection, acceptType, reqHeaders);
 
-        UrlResponse urlResponse;
-        try (CloseableHttpResponse httpResponse = httpClient.execute(httpRequest)) {
-            urlResponse = toUrlResponse(httpResponse);
-        }
+        UrlResponse urlResponse = httpClient.execute(httpRequest, this::toUrlResponse);
 
         if (followRedirectCodes != null && followRedirectCodes.contains(urlResponse.status)) {
             String location = urlResponse.headers.get("Location");
@@ -135,16 +126,14 @@ public class SparkTestUtil {
                 HttpUriRequest redirectRequest = "HEAD".equalsIgnoreCase(requestMethod)
                         ? new HttpHead(redirectUri)
                         : new HttpGet(redirectUri);
-                try (CloseableHttpResponse redirectResponse = httpClient.execute(redirectRequest)) {
-                    urlResponse = toUrlResponse(redirectResponse);
-                }
+                urlResponse = httpClient.execute(redirectRequest, this::toUrlResponse);
             }
         }
 
         return urlResponse;
     }
 
-    private UrlResponse toUrlResponse(CloseableHttpResponse httpResponse) throws IOException, ParseException {
+    private UrlResponse toUrlResponse(ClassicHttpResponse httpResponse) throws IOException, ParseException {
         UrlResponse urlResponse = new UrlResponse();
         urlResponse.status = httpResponse.getCode();
         HttpEntity entity = httpResponse.getEntity();
@@ -250,10 +239,10 @@ public class SparkTestUtil {
      * <p/>
      * So these can be used to specify other key/trust stores if required.
      *
-     * @return an SSL Socket Factory using either provided keystore OR the
+     * @return an SSL Context using either provided keystore OR the
      * keystore specified in JVM params
      */
-    private SSLSocketFactory getSslFactory() {
+    private SSLContext getSslContext() {
         KeyStore keyStore = null;
         try {
             keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -265,7 +254,7 @@ public class SparkTestUtil {
             tmf.init(keyStore);
             SSLContext ctx = SSLContext.getInstance("TLS");
             ctx.init(null, tmf.getTrustManagers(), null);
-            return ctx.getSocketFactory();
+            return ctx;
         } catch (Exception e) {
             e.printStackTrace();
         }
