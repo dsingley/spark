@@ -66,6 +66,7 @@
         
         <!-- Maven plugin versions -->        
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <maven-bundle.version>6.1.2</maven-bundle.version>
         <maven-compiler.version>3.16.0</maven-compiler.version>
         <maven-deploy.version>3.1.4</maven-deploy.version>
@@ -219,6 +220,12 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler.version}</version>
@@ -295,7 +302,7 @@
                 <version>${maven-bundle.version}</version>
                 <extensions>true</extensions>
             </plugin>
-            
+
             <!-- TODO: this will need to change to the central-publishing-maven-plugin -->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -308,7 +315,7 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
-            
+
             <!-- TODO: check the properties/configuration before trying to release 3.0.0 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
