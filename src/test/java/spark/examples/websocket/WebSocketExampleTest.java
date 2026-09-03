@@ -10,7 +10,6 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -64,7 +63,7 @@ public class WebSocketExampleTest {
         EchoingClient echoingClient = new EchoingClient("hello ws");
         try {
             client.start();
-            client.connect(echoingClient, URI.create("ws://localhost:4567/echo"), new ClientUpgradeRequest());
+            client.connect(echoingClient, URI.create("ws://localhost:4567/echo"));
             assertThat(echoingClient.awaitMessage()).isEqualTo("hello ws");
         } finally {
             client.stop();
@@ -77,7 +76,7 @@ public class WebSocketExampleTest {
         EchoingClient echoingClient = new EchoingClient("PING");
         try {
             client.start();
-            client.connect(echoingClient, URI.create("ws://localhost:4567/ping"), new ClientUpgradeRequest());
+            client.connect(echoingClient, URI.create("ws://localhost:4567/ping"));
             assertThat(echoingClient.awaitMessage()).isEqualTo("PONG");
         } finally {
             client.stop();
