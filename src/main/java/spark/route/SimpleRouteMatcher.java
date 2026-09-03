@@ -25,14 +25,16 @@ import spark.routematch.RouteMatch;
  *
  * @deprecated see {@link spark.route.Routes}
  */
+@Deprecated
 public class SimpleRouteMatcher extends Routes {
 
     /**
      * @param route      the route
      * @param acceptType the accept type
      * @param target     the target
-     * @deprecated
+     * @deprecated see {@link spark.route.Routes}
      */
+    @Deprecated
     public void parseValidateAddRoute(String route, String acceptType, Object target) {
         add(route, acceptType, target);
     }
@@ -42,8 +44,9 @@ public class SimpleRouteMatcher extends Routes {
      * @param path       the path
      * @param acceptType the accept type
      * @return the RouteMatch object
-     * @deprecated
+     * @deprecated see {@link spark.route.Routes}
      */
+    @Deprecated
     public RouteMatch findTargetForRequestedRoute(HttpMethod httpMethod, String path, String acceptType) {
         return find(httpMethod, path, acceptType);
     }
@@ -53,15 +56,17 @@ public class SimpleRouteMatcher extends Routes {
      * @param path       the path
      * @param acceptType the accept type
      * @return list of RouteMatch objects
-     * @deprecated
+     * @deprecated see {@link spark.route.Routes}
      */
+    @Deprecated
     public List<RouteMatch> findTargetsForRequestedRoute(HttpMethod httpMethod, String path, String acceptType) {
         return findMultiple(httpMethod, path, acceptType);
     }
 
     /**
-     * @deprecated
+     * @deprecated see {@link spark.route.Routes}
      */
+    @Deprecated
     public void clearRoutes() {
         clear();
     }
@@ -70,8 +75,9 @@ public class SimpleRouteMatcher extends Routes {
      * @param path       the path
      * @param httpMethod the http method name
      * @return true if route removed, false otherwise
-     * @deprecated
+     * @deprecated see {@link spark.route.Routes}
      */
+    @Deprecated
     public boolean removeRoute(String path, String httpMethod) {
         return remove(path, httpMethod);
     }
@@ -79,8 +85,9 @@ public class SimpleRouteMatcher extends Routes {
     /**
      * @param path   the path
      * @return true if route removed, false otherwise
-     * @deprecated
+     * @deprecated see {@link spark.route.Routes}
      */
+    @Deprecated
     public boolean removeRoute(String path) {
         return remove(path);
     }
