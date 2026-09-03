@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.util.URIUtil;
-import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -549,7 +548,7 @@ public class GenericIntegrationTest {
 
         try {
             client.start();
-            client.connect(ws, URI.create(uri), new ClientUpgradeRequest());
+            client.connect(ws, URI.create(uri));
             ws.awaitClose(30, TimeUnit.SECONDS);
         } finally {
             client.stop();
