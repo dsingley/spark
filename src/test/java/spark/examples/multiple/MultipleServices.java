@@ -31,12 +31,13 @@ public class MultipleServices {
         igniteSecondService();
     }
 
-    private static void igniteFirstService() {
+    public static Service igniteFirstService() {
         Service http = ignite(); // I give the variable the name 'http' for the code to make sense when adding routes.
         http.get("/hello", (q, a) -> "Hello World!");
+        return http;
     }
 
-    private static void igniteSecondService() {
+    public static Service igniteSecondService() {
         Service http = ignite()
                 .port(1234)
                 .staticFileLocation("/public")
@@ -45,6 +46,7 @@ public class MultipleServices {
         http.get("/hello", (q, a) -> "Hello World!");
 
         http.redirect.any("/hi", "/hello");
+        return http;
     }
 
 }
