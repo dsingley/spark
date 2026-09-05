@@ -42,8 +42,8 @@ public abstract class Utf8Appendable {
     private static final int UTF8_ACCEPT = 0;
     private static final int UTF8_REJECT = 12;
 
-    protected final Appendable _appendable;
-    protected int _state = UTF8_ACCEPT;
+    protected final Appendable appendable;
+    protected int state = UTF8_ACCEPT;
 
     private static final byte[] BYTE_TABLE =
         {
@@ -70,32 +70,32 @@ public abstract class Utf8Appendable {
             12, 36, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12
         };
 
-    private int _codep;
+    private int codep;
 
-    public Utf8Appendable(Appendable appendable) {
-        _appendable = appendable;
+    protected Utf8Appendable(Appendable appendable) {
+        this.appendable = appendable;
     }
 
     public abstract int length();
 
     protected void reset() {
-        _state = UTF8_ACCEPT;
+        state = UTF8_ACCEPT;
     }
 
 
     private void checkCharAppend() throws IOException {
-        if (_state != UTF8_ACCEPT) {
-            _appendable.append(REPLACEMENT);
-            int state = _state;
-            _state = UTF8_ACCEPT;
-            throw new NotUtf8Exception("char appended in state " + state);
+        if (state != UTF8_ACCEPT) {
+            appendable.append(REPLACEMENT);
+            int originalState = this.state;
+            this.state = UTF8_ACCEPT;
+            throw new NotUtf8Exception("char appended in state " + originalState);
         }
     }
 
     public void append(char c) {
         try {
             checkCharAppend();
-            _appendable.append(c);
+            appendable.append(c);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -104,7 +104,7 @@ public abstract class Utf8Appendable {
     public void append(String s, int offset, int length) {
         try {
             checkCharAppend();
-            _appendable.append(s, offset, offset + length);
+            appendable.append(s, offset, offset + length);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -121,41 +121,41 @@ public abstract class Utf8Appendable {
 
     protected void appendByte(byte b) throws IOException {
 
-        if (b > 0 && _state == UTF8_ACCEPT) {
-            _appendable.append((char) (b & 0xFF));
+        if (b > 0 && state == UTF8_ACCEPT) {
+            appendable.append((char) (b & 0xFF));
         } else {
             int i = b & 0xFF;
             int type = BYTE_TABLE[i];
-            _codep = _state == UTF8_ACCEPT ? (0xFF >> type) & i : (i & 0x3F) | (_codep << 6);
-            int next = TRANS_TABLE[_state + type];
+            codep = state == UTF8_ACCEPT ? (0xFF >> type) & i : (i & 0x3F) | (codep << 6);
+            int next = TRANS_TABLE[state + type];
 
             switch (next) {
                 case UTF8_ACCEPT:
-                    _state = next;
-                    if (_codep < Character.MIN_HIGH_SURROGATE) {
-                        _appendable.append((char) _codep);
+                    state = next;
+                    if (codep < Character.MIN_HIGH_SURROGATE) {
+                        appendable.append((char) codep);
                     } else {
-                        for (char c : Character.toChars(_codep))
-                            _appendable.append(c);
+                        for (char c : Character.toChars(codep))
+                            appendable.append(c);
                     }
                     break;
 
                 case UTF8_REJECT:
-                    String reason = "byte " + TypeUtil.toHexString(b) + " in state " + (_state / 12);
-                    _codep = 0;
-                    _state = UTF8_ACCEPT;
-                    _appendable.append(REPLACEMENT);
+                    String reason = "byte " + TypeUtil.toHexString(b) + " in state " + (state / 12);
+                    codep = 0;
+                    state = UTF8_ACCEPT;
+                    appendable.append(REPLACEMENT);
                     throw new NotUtf8Exception(reason);
 
                 default:
-                    _state = next;
+                    state = next;
 
             }
         }
     }
 
     public boolean isUtf8SequenceComplete() {
-        return _state == UTF8_ACCEPT;
+        return state == UTF8_ACCEPT;
     }
 
     @SuppressWarnings("serial")
@@ -167,10 +167,10 @@ public abstract class Utf8Appendable {
 
     protected void checkState() {
         if (!isUtf8SequenceComplete()) {
-            _codep = 0;
-            _state = UTF8_ACCEPT;
+            codep = 0;
+            state = UTF8_ACCEPT;
             try {
-                _appendable.append(REPLACEMENT);
+                appendable.append(REPLACEMENT);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

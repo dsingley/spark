@@ -31,32 +31,32 @@ package spark.utils.urldecoding;
  */
 public class Utf8StringBuilder extends Utf8Appendable
 {
-    final StringBuilder _buffer;
+    final StringBuilder buffer;
 
     public Utf8StringBuilder(int capacity)
     {
         super(new StringBuilder(capacity));
-        _buffer=(StringBuilder)_appendable;
+        buffer =(StringBuilder) appendable;
     }
 
     @Override
     public int length()
     {
-        return _buffer.length();
+        return buffer.length();
     }
 
     @Override
     public void reset()
     {
         super.reset();
-        _buffer.setLength(0);
+        buffer.setLength(0);
     }
 
     @Override
     public String toString()
     {
         checkState();
-        return _buffer.toString();
+        return buffer.toString();
     }
 
 
