@@ -16,17 +16,17 @@
  */
 package spark.route;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import spark.FilterImpl;
 import spark.RouteImpl;
 import spark.routematch.RouteMatch;
 import spark.utils.MimeParse;
 import spark.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Holds the routes and performs matching from HTTP requests to routes.
@@ -252,7 +252,10 @@ public class Routes {
             }
 
             if (routeEntry.matches(httpMethodToMatch, path)) {
-                LOG.debug("Removing path {}", path, httpMethod == null ? "" : " with HTTP method " + httpMethod);
+                LOG.atDebug().setMessage("Removing path {}{}")
+                    .addArgument(path)
+                    .addArgument(() -> httpMethod == null ? "" : " with HTTP method " + httpMethod)
+                    .log();
 
                 forRemoval.add(routeEntry);
             }
