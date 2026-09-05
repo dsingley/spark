@@ -61,6 +61,7 @@
         <junit-jupiter.version>6.1.3</junit-jupiter.version>
         <kiwi.version>5.4.0</kiwi.version>
         <kiwi-test.version>4.3.0</kiwi-test.version>
+        <logback.version>1.6.3</logback.version>
         <mockito.version>5.23.0</mockito.version>
         <netty-pkitesting.version>4.2.17.Final</netty-pkitesting.version>
         
@@ -210,9 +211,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
