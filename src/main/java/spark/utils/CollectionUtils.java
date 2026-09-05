@@ -29,7 +29,10 @@ import java.util.Collection;
  * Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
  *
  */
-public abstract class CollectionUtils {
+public class CollectionUtils {
+
+    private CollectionUtils() {
+    }
 
     /**
      * Return {@code true} if the supplied Collection is {@code null} or empty.

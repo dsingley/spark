@@ -35,6 +35,9 @@ import spark.utils.Assert;
  */
 public class SocketConnectorFactory {
 
+    private SocketConnectorFactory() {
+    }
+
     /**
      * Creates an ordinary, non-secured Jetty server jetty.
      *

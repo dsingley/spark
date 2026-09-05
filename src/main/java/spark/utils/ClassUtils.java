@@ -35,7 +35,10 @@ import java.util.Set;
  * Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
  *
  */
-public abstract class ClassUtils {
+public class ClassUtils {
+
+    private ClassUtils() {
+    }
 
     /**
      * Suffix for array class names: "[]"
