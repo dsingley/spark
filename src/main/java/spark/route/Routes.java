@@ -252,7 +252,10 @@ public class Routes {
             }
 
             if (routeEntry.matches(httpMethodToMatch, path)) {
-                LOG.debug("Removing path {}", path, httpMethod == null ? "" : " with HTTP method " + httpMethod);
+                LOG.atDebug().setMessage("Removing path {}{}")
+                    .addArgument(path)
+                    .addArgument(() -> httpMethod == null ? "" : " with HTTP method " + httpMethod)
+                    .log();
 
                 forRemoval.add(routeEntry);
             }
