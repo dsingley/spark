@@ -16,31 +16,30 @@
  */
 package spark;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import spark.util.SparkTestUtil;
+import spark.util.SparkTestUtil.UrlResponse;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-import spark.util.SparkTestUtil;
-
-import spark.util.SparkTestUtil.UrlResponse;
-
-public class StaticFilesFromArchiveTest {
+class StaticFilesFromArchiveTest {
 
     private static SparkTestUtil testUtil;
     private static ClassLoader classLoader;
     private static ClassLoader initialClassLoader;
 
     @BeforeAll
-    public static void beforeAll() throws Exception {
+    static void beforeAll() throws Exception {
         setupClassLoader();
         testUtil = new SparkTestUtil(4567);
 
@@ -57,7 +56,7 @@ public class StaticFilesFromArchiveTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Thread.currentThread().setContextClassLoader(initialClassLoader);
     }
 
@@ -84,7 +83,7 @@ public class StaticFilesFromArchiveTest {
     }
 
     @Test
-    public void testCss() throws Exception {
+    void testCss() throws Exception {
         UrlResponse response = testUtil.doMethod("GET", "/css/style.css", null);
 
         String expectedContentType = response.headers.get("Content-Type");

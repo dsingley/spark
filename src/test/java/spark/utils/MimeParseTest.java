@@ -1,19 +1,20 @@
 package spark.utils;
 
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-import java.util.Arrays;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.List;
 
-public class MimeParseTest {
+class MimeParseTest {
 
     @Test
-    public void testBestMatch() throws Exception {
+    void testBestMatch() {
 
         final String header = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 
-        Collection<String> supported = Arrays.asList("application/xml", "text/html");
+        Collection<String> supported = List.of("application/xml", "text/html");
 
         assertThat(MimeParse.bestMatch(supported, header))
                 .describedAs("""
@@ -25,11 +26,11 @@ public class MimeParseTest {
     }
 
     @Test
-    public void testBestMatch_whenSupportedIsLowQualityFactor() throws Exception {
+    void testBestMatch_whenSupportedIsLowQualityFactor() {
 
         final String header = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 
-        Collection<String> supported = Arrays.asList("application/json");
+        Collection<String> supported = List.of("application/json");
 
         assertThat(MimeParse.bestMatch(supported, header))
                 .describedAs("""

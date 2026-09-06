@@ -1,18 +1,18 @@
 package spark.embeddedserver.jetty.websocket;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketCreator;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
 import spark.embeddedserver.jetty.websocket.WebSocketCreatorFactory.SparkWebSocketCreator;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class WebSocketCreatorFactoryTest {
+class WebSocketCreatorFactoryTest {
 
     @Test
-    public void testCreateWebSocketHandler() {
+    void testCreateWebSocketHandler() {
         JettyWebSocketCreator creator =
                 WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(AnnotatedHandler.class));
         assertAll(
@@ -22,7 +22,7 @@ public class WebSocketCreatorFactoryTest {
     }
 
     @Test
-    public void testCreateWebSocket_alwaysReturnsSameHandlerInstance() throws Exception {
+    void testCreateWebSocket_alwaysReturnsSameHandlerInstance() {
         JettyWebSocketCreator creator =
                 WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(AnnotatedHandler.class));
         Object handler = SparkWebSocketCreator.class.cast(creator).getHandler();
@@ -34,7 +34,7 @@ public class WebSocketCreatorFactoryTest {
     }
 
     @Test
-    public void testCannotCreateInvalidHandlers() {
+    void testCannotCreateInvalidHandlers() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(InvalidHandler.class)))
                 .withMessage("WebSocket handler must be annotated as '@WebSocket'");

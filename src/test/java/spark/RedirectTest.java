@@ -16,30 +16,26 @@
  */
 package spark;
 
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static spark.Spark.get;
+import static spark.Spark.redirect;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import spark.util.SparkTestUtil;
-
-import static spark.Spark.get;
-
-import static spark.Spark.redirect;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * Tests the redirect utility methods in {@link spark.Redirect}
  */
-public class RedirectTest {
+class RedirectTest {
 
     private static final String REDIRECTED = "Redirected";
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() {
         testUtil = new SparkTestUtil(4567);
         testUtil.setFollowRedirectStrategy(301, 302); // don't set the others to be able to verify affect of Redirect.Status
 
@@ -61,7 +57,7 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectGet() throws Exception {
+    void testRedirectGet() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -70,7 +66,7 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectPost() throws Exception {
+    void testRedirectPost() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("POST", "/hi", "");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -79,7 +75,7 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectPut() throws Exception {
+    void testRedirectPut() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("PUT", "/hi", "");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -88,7 +84,7 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectDelete() throws Exception {
+    void testRedirectDelete() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("DELETE", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -97,7 +93,7 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectAnyGet() throws Exception {
+    void testRedirectAnyGet() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/any", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -106,7 +102,7 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectAnyPut() throws Exception {
+    void testRedirectAnyPut() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("PUT", "/any", "");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -115,7 +111,7 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectAnyPost() throws Exception {
+    void testRedirectAnyPost() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("POST", "/any", "");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -124,7 +120,7 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectAnyDelete() throws Exception {
+    void testRedirectAnyDelete() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("DELETE", "/any", "");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -133,49 +129,49 @@ public class RedirectTest {
     }
 
     @Test
-    public void testRedirectGetWithSpecificCode() throws Exception {
+    void testRedirectGetWithSpecificCode() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hiagain", null);
         assertThat(response.status).isEqualTo(Redirect.Status.USE_PROXY.intValue());
     }
 
     @Test
-    public void testRedirectPostWithSpecificCode() throws Exception {
+    void testRedirectPostWithSpecificCode() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("POST", "/hiagain", "");
         assertThat(response.status).isEqualTo(Redirect.Status.USE_PROXY.intValue());
     }
 
     @Test
-    public void testRedirectPutWithSpecificCode() throws Exception {
+    void testRedirectPutWithSpecificCode() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("PUT", "/hiagain", "");
         assertThat(response.status).isEqualTo(Redirect.Status.USE_PROXY.intValue());
     }
 
     @Test
-    public void testRedirectDeleteWithSpecificCode() throws Exception {
+    void testRedirectDeleteWithSpecificCode() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("DELETE", "/hiagain", null);
         assertThat(response.status).isEqualTo(Redirect.Status.USE_PROXY.intValue());
     }
 
     @Test
-    public void testRedirectAnyGetWithSpecificCode() throws Exception {
+    void testRedirectAnyGetWithSpecificCode() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/anyagain", null);
         assertThat(response.status).isEqualTo(Redirect.Status.USE_PROXY.intValue());
     }
 
     @Test
-    public void testRedirectAnyPostWithSpecificCode() throws Exception {
+    void testRedirectAnyPostWithSpecificCode() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("POST", "/anyagain", "");
         assertThat(response.status).isEqualTo(Redirect.Status.USE_PROXY.intValue());
     }
 
     @Test
-    public void testRedirectAnyPutWithSpecificCode() throws Exception {
+    void testRedirectAnyPutWithSpecificCode() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("PUT", "/anyagain", "");
         assertThat(response.status).isEqualTo(Redirect.Status.USE_PROXY.intValue());
     }
 
     @Test
-    public void testRedirectAnyDeleteWithSpecificCode() throws Exception {
+    void testRedirectAnyDeleteWithSpecificCode() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("DELETE", "/anyagain", null);
         assertThat(response.status).isEqualTo(Redirect.Status.USE_PROXY.intValue());
     }

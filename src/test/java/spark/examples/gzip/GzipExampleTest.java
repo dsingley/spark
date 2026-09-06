@@ -16,45 +16,43 @@
  */
 package spark.examples.gzip;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.awaitStop;
+import static spark.Spark.stop;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import spark.util.SparkTestUtil;
-
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.awaitStop;
-
-import static spark.Spark.stop;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * Tests the GZIP compression support in Spark.
  */
-public class GzipExampleTest {
+class GzipExampleTest {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         GzipExample.addStaticFileLocation();
         GzipExample.addRoutes();
         awaitInitialization();
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         stop();
         awaitStop();
     }
 
     @Test
-    public void checkGzipCompression() throws Exception {
+    void checkGzipCompression() throws Exception {
         String decompressed = GzipExample.getAndDecompress();
         assertThat(decompressed).isEqualTo(GzipExample.CONTENT);
     }
 
     @Test
-    public void testStaticFileCssStyleCss() throws Exception {
+    void testStaticFileCssStyleCss() throws Exception {
         String decompressed = GzipClient.getAndDecompress("http://localhost:4567/css/style.css");
         assertThat(decompressed).isEqualTo("Content of css file");
         testGet();

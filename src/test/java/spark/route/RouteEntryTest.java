@@ -1,14 +1,14 @@
 package spark.route;
 
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
 import spark.utils.SparkUtils;
 
-public class RouteEntryTest {
+class RouteEntryTest {
 
     @Test
-    public void testMatches_BeforeAndAllPaths() {
+    void testMatches_BeforeAndAllPaths() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.before;
@@ -23,7 +23,7 @@ public class RouteEntryTest {
     }
 
     @Test
-    public void testMatches_AfterAndAllPaths() {
+    void testMatches_AfterAndAllPaths() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.after;
@@ -36,7 +36,7 @@ public class RouteEntryTest {
     }
 
     @Test
-    public void testMatches_NotAllPathsAndDidNotMatchHttpMethod() {
+    void testMatches_NotAllPathsAndDidNotMatchHttpMethod() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.post;
@@ -46,7 +46,7 @@ public class RouteEntryTest {
     }
 
     @Test
-    public void testMatches_RouteDoesNotEndWithSlash() {
+    void testMatches_RouteDoesNotEndWithSlash() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
@@ -59,7 +59,7 @@ public class RouteEntryTest {
     }
 
     @Test
-    public void testMatches_PathDoesNotEndInSlash() {
+    void testMatches_PathDoesNotEndInSlash() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
@@ -72,7 +72,7 @@ public class RouteEntryTest {
     }
 
     @Test
-    public void testMatches_MatchingPaths() {
+    void testMatches_MatchingPaths() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
@@ -82,7 +82,7 @@ public class RouteEntryTest {
     }
 
     @Test
-    public void testMatches_WithWildcardOnEntryPath() {
+    void testMatches_WithWildcardOnEntryPath() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
@@ -92,7 +92,7 @@ public class RouteEntryTest {
     }
 
     @Test
-    public void testMatches_PathsDoNotMatch() {
+    void testMatches_PathsDoNotMatch() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
@@ -102,7 +102,7 @@ public class RouteEntryTest {
     }
 
     @Test
-    public void testMatches_longRoutePathWildcard() {
+    void testMatches_longRoutePathWildcard() {
 
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;

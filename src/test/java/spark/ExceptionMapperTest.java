@@ -1,17 +1,17 @@
 package spark;
 
-import java.lang.reflect.Field;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.kiwiproject.reflect.KiwiReflection;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.lang.reflect.Field;
 
-public class ExceptionMapperTest {
+class ExceptionMapperTest {
 
 
     @Test
-    public void testGetInstance_whenDefaultInstanceIsNull() {
+    void testGetInstance_whenDefaultInstanceIsNull() {
         //given
         ExceptionMapper exceptionMapper = null;
         Field servletInstanceField = servletInstanceField();
@@ -25,7 +25,7 @@ public class ExceptionMapperTest {
     }
 
     @Test
-    public void testGetInstance_whenDefaultInstanceIsNotNull() {
+    void testGetInstance_whenDefaultInstanceIsNotNull() {
         //given
         ExceptionMapper.getServletInstance(); //initialize Singleton
 

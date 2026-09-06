@@ -1,5 +1,7 @@
 package spark.serialization;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -8,14 +10,12 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class InputStreamSerializerTest {
+class InputStreamSerializerTest {
 
     private InputStreamSerializer serializer = new InputStreamSerializer();
 
     @Test
-    public void testProcess_copiesData() throws IOException {
+    void testProcess_copiesData() throws IOException {
         byte[] bytes = "Hello, Spark!".getBytes();
         ByteArrayInputStream input = new ByteArrayInputStream(bytes);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -26,7 +26,7 @@ public class InputStreamSerializerTest {
     }
 
     @Test
-    public void testProcess_closesStream() throws IOException {
+    void testProcess_closesStream() throws IOException {
         MockInputStream input = new MockInputStream(new ByteArrayInputStream(new byte[0]));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 

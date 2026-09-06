@@ -1,37 +1,35 @@
 package spark.embeddedserver.jetty;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-import spark.ExceptionMapper;
-import spark.embeddedserver.EmbeddedServer;
-import spark.route.Routes;
-import spark.ssl.SslStores;
-
-import spark.staticfiles.StaticFilesConfiguration;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-
 import static org.mockito.Mockito.when;
 
-public class EmbeddedJettyFactoryTest {
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import spark.ExceptionMapper;
+import spark.embeddedserver.EmbeddedServer;
+import spark.route.Routes;
+import spark.ssl.SslStores;
+import spark.staticfiles.StaticFilesConfiguration;
+
+class EmbeddedJettyFactoryTest {
 
     private EmbeddedServer embeddedServer;
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         if (embeddedServer != null) {
             embeddedServer.extinguish();
         }
     }
 
     @Test
-    public void create() throws Exception {
+    void create() throws Exception {
         final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
         final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
         final ExceptionMapper exceptionMapper = mock(ExceptionMapper.class);
@@ -52,7 +50,7 @@ public class EmbeddedJettyFactoryTest {
     }
 
     @Test
-    public void create_withThreadPool() throws Exception {
+    void create_withThreadPool() throws Exception {
         final QueuedThreadPool threadPool = new QueuedThreadPool(100);
         final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
         final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
@@ -72,7 +70,7 @@ public class EmbeddedJettyFactoryTest {
     }
 
     @Test
-    public void create_withNullThreadPool() throws Exception {
+    void create_withNullThreadPool() throws Exception {
         final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
         final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
         final ExceptionMapper exceptionMapper = mock(ExceptionMapper.class);
@@ -91,7 +89,7 @@ public class EmbeddedJettyFactoryTest {
     }
 
     @Test
-    public void create_withoutHttpOnly() throws Exception {
+    void create_withoutHttpOnly() throws Exception {
         final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
         final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
         final Routes routes = mock(Routes.class);
@@ -110,7 +108,7 @@ public class EmbeddedJettyFactoryTest {
     // this is the same test as above, except it exercises the deprecated EmbeddedServerFactory#create method 
     @SuppressWarnings("deprecation")
     @Test
-    public void create_deprecated_withoutHttpOnly() throws Exception {
+    void create_deprecated_withoutHttpOnly() throws Exception {
         final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
         final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
         final Routes routes = mock(Routes.class);

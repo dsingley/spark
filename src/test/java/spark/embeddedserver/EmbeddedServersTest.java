@@ -1,6 +1,9 @@
 package spark.embeddedserver;
 
-import java.io.File;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.RequestLogWriter;
@@ -9,30 +12,26 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
 import spark.Spark;
 import spark.embeddedserver.jetty.EmbeddedJettyFactory;
 import spark.embeddedserver.jetty.JettyServerFactory;
 import spark.ssl.SslStores;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.io.File;
 
-public class EmbeddedServersTest {
+class EmbeddedServersTest {
 
     @TempDir
     File temporaryFolder;
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
     }
 
     @Test
-    public void testAddAndCreate_whenCreate_createsCustomServer() throws Exception {
+    void testAddAndCreate_whenCreate_createsCustomServer() throws Exception {
         // Create custom Server
         Server server = new Server();
         File requestLogFile = new File(temporaryFolder, "request.log");
@@ -55,7 +54,7 @@ public class EmbeddedServersTest {
     }
 
     @Test
-    public void testAdd_whenConfigureRoutes_createsCustomServer() throws Exception {
+    void testAdd_whenConfigureRoutes_createsCustomServer() throws Exception {
         File requestLogFile = new File(temporaryFolder, "request.log");
         // Register custom server
         EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new EmbeddedJettyFactory(new JettyServerFactory() {

@@ -16,33 +16,28 @@
  */
 package spark.staticfiles;
 
-import java.io.File;
-import java.io.FileWriter;
-
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static spark.Spark.get;
+import static spark.Spark.staticFiles;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import org.slf4j.Logger;
-
 import org.slf4j.LoggerFactory;
-
 import spark.Spark;
 import spark.examples.exception.NotFoundException;
-
 import spark.util.SparkTestUtil;
 
-import static spark.Spark.get;
-
-import static spark.Spark.staticFiles;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Test static files
  */
-public class DisableMimeGuessingTest {
+class DisableMimeGuessingTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticFilesTest.class);
 
@@ -55,7 +50,7 @@ public class DisableMimeGuessingTest {
     private static File tmpExternalFile;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(4567);
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE_NAME_HTML);
@@ -79,7 +74,7 @@ public class DisableMimeGuessingTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
         if (tmpExternalFile != null) {
@@ -89,7 +84,7 @@ public class DisableMimeGuessingTest {
     }
 
     @Test
-    public void testMimeTypes() throws Exception {
+    void testMimeTypes() throws Exception {
         assertAll(
                 () -> assertThat(doGet("/pages/index.html").headers.get("Content-Type")).isNull(),
                 () -> assertThat(doGet("/js/scripts.js").headers.get("Content-Type")).isNull(),
@@ -103,7 +98,7 @@ public class DisableMimeGuessingTest {
     }
 
     @Test
-    public void testCustomMimeType() throws Exception {
+    void testCustomMimeType() throws Exception {
         staticFiles.registerMimeType("cxt", "custom-extension-type");
         assertThat(doGet("/img/file.cxt").headers.get("Content-Type")).isNull();
     }

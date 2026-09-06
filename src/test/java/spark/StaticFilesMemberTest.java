@@ -16,34 +16,29 @@
  */
 package spark;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import java.util.HashMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static spark.Spark.exception;
+import static spark.Spark.get;
+import static spark.Spark.staticFiles;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.slf4j.Logger;
-
 import org.slf4j.LoggerFactory;
-
 import spark.examples.exception.NotFoundException;
-
 import spark.util.SparkTestUtil;
 
-import static spark.Spark.exception;
-import static spark.Spark.get;
-
-import static spark.Spark.staticFiles;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Test static files
  */
-public class StaticFilesMemberTest {
+class StaticFilesMemberTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticFilesMemberTest.class);
 
@@ -59,7 +54,7 @@ public class StaticFilesMemberTest {
     private static File tmpExternalFile;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(4567);
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE_NAME_HTML);
@@ -87,7 +82,7 @@ public class StaticFilesMemberTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
         if (tmpExternalFile != null) {
@@ -97,7 +92,7 @@ public class StaticFilesMemberTest {
     }
 
     @Test
-    public void testStaticFileCssStyleCss() throws Exception {
+    void testStaticFileCssStyleCss() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/css/style.css", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -108,7 +103,7 @@ public class StaticFilesMemberTest {
     }
 
     @Test
-    public void testStaticFileMjs() throws Exception {
+    void testStaticFileMjs() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/js/module.mjs", null);
 
         String expectedContentType = response.headers.get("Content-Type");
@@ -119,7 +114,7 @@ public class StaticFilesMemberTest {
     }
 
     @Test
-    public void testStaticFilePagesIndexHtml() throws Exception {
+    void testStaticFilePagesIndexHtml() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/pages/index.html", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -130,7 +125,7 @@ public class StaticFilesMemberTest {
     }
 
     @Test
-    public void testStaticFilePageHtml() throws Exception {
+    void testStaticFilePageHtml() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/page.html", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -141,7 +136,7 @@ public class StaticFilesMemberTest {
     }
 
     @Test
-    public void testExternalStaticFile() throws Exception {
+    void testExternalStaticFile() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/externalFile.html", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -152,7 +147,7 @@ public class StaticFilesMemberTest {
     }
 
     @Test
-    public void testStaticFileHeaders() throws Exception {
+    void testStaticFileHeaders() throws Exception {
         staticFiles.headers(new HashMap() {
             {
                 put("Server", "Microsoft Word");
@@ -169,7 +164,7 @@ public class StaticFilesMemberTest {
     }
 
     @Test
-    public void testStaticFileExpireTime() throws Exception {
+    void testStaticFileExpireTime() throws Exception {
         staticFiles.expireTime(600);
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/pages/index.html", null);
         assertThat(response.headers.get("Cache-Control")).isEqualTo("private, max-age=600");
@@ -190,7 +185,7 @@ public class StaticFilesMemberTest {
     }
 
     @Test
-    public void testExceptionMapping404() throws Exception {
+    void testExceptionMapping404() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/filethatdoesntexist.html", null);
 
         assertAll(

@@ -1,35 +1,35 @@
 package spark;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static spark.Service.ignite;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 
-import static spark.Service.ignite;
+class InitExceptionHandlerTest {
 
-public class InitExceptionHandlerTest {
-
-    private static int NON_VALID_PORT = Integer.MAX_VALUE;
+    private static final int NON_VALID_PORT = Integer.MAX_VALUE;
     private static Service service;
     private static String errorMessage = "";
 
     @BeforeAll
-    public static void beforeAll() throws Exception {
+    static void beforeAll() {
         service = ignite();
         service.port(NON_VALID_PORT);
-        service.initExceptionHandler((e) -> errorMessage = "Custom init error");
+        service.initExceptionHandler(e -> errorMessage = "Custom init error");
         service.init();
         service.awaitInitialization();
     }
 
     @AfterAll
-    public static void afterAll() throws Exception {
+    static void afterAll() {
         service.stop();
         service.awaitStop();
     }
 
     @Test
-    public void testInitExceptionHandler() throws Exception {
+    void testInitExceptionHandler() {
         assertThat(errorMessage).isEqualTo("Custom init error");
     }
 

@@ -16,16 +16,17 @@
  */
 package spark.route;
 
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the HttpMethod.
  */
-public class HttpMethodTest {
+class HttpMethodTest {
 
     @Test
-    public void testSupportedHttpMethod() {
+    void testSupportedHttpMethod() {
         HttpMethod get = HttpMethod.get;
         HttpMethod method = HttpMethod.get(get.name());
 
@@ -33,7 +34,7 @@ public class HttpMethodTest {
     }
 
     @Test
-    public void testNotSupportedHttpMethod() {
+    void testNotSupportedHttpMethod() {
         HttpMethod method = HttpMethod.get("lock");
 
         assertThat(method).isEqualTo(HttpMethod.unsupported);

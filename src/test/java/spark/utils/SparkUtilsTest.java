@@ -1,16 +1,16 @@
 package spark.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class SparkUtilsTest {
+class SparkUtilsTest {
 
     @Test
-    public void testConvertRouteToList() throws Exception {
+    void testConvertRouteToList() {
 
         List<String> expected = Arrays.asList("api", "person", ":id");
 
@@ -21,14 +21,14 @@ public class SparkUtilsTest {
     }
 
     @Test
-    public void testIsParam_whenParameterFormattedAsParm() throws Exception {
+    void testIsParam_whenParameterFormattedAsParm() {
 
         assertThat(SparkUtils.isParam(":param")).isTrue();
 
     }
 
     @Test
-    public void testIsParam_whenParameterNotFormattedAsParm() throws Exception {
+    void testIsParam_whenParameterNotFormattedAsParm() {
 
         assertThat(SparkUtils.isParam(".param")).isFalse();
 
@@ -36,14 +36,14 @@ public class SparkUtilsTest {
 
 
     @Test
-    public void testIsSplat_whenParameterIsASplat() throws Exception {
+    void testIsSplat_whenParameterIsASplat() {
 
         assertThat(SparkUtils.isSplat("*")).isTrue();
 
     }
 
     @Test
-    public void testIsSplat_whenParameterIsNotASplat() throws Exception {
+    void testIsSplat_whenParameterIsNotASplat() {
 
         assertThat(SparkUtils.isSplat("!")).isFalse();
 

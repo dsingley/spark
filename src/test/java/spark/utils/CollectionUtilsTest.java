@@ -1,15 +1,16 @@
 package spark.utils;
 
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-import java.util.ArrayList;
 
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
-public class CollectionUtilsTest {
+class CollectionUtilsTest {
 
     @Test
-    public void testIsEmpty_whenCollectionIsEmpty_thenReturnTrue() {
+    void testIsEmpty_whenCollectionIsEmpty_thenReturnTrue() {
 
         Collection<Object> testCollection = new ArrayList<>();
 
@@ -18,7 +19,7 @@ public class CollectionUtilsTest {
     }
 
     @Test
-    public void testIsEmpty_whenCollectionIsNotEmpty_thenReturnFalse() {
+    void testIsEmpty_whenCollectionIsNotEmpty_thenReturnFalse() {
 
         Collection<Integer> testCollection = new ArrayList<>();
         testCollection.add(1);
@@ -29,7 +30,7 @@ public class CollectionUtilsTest {
     }
 
     @Test
-    public void testIsEmpty_whenCollectionIsNull_thenReturnTrue() {
+    void testIsEmpty_whenCollectionIsNull_thenReturnTrue() {
 
         Collection<Integer> testCollection = null;
 
@@ -38,7 +39,7 @@ public class CollectionUtilsTest {
     }
 
     @Test
-    public void testIsNotEmpty_whenCollectionIsEmpty_thenReturnFalse() {
+    void testIsNotEmpty_whenCollectionIsEmpty_thenReturnFalse() {
 
         Collection<Object> testCollection = new ArrayList<>();
 
@@ -47,7 +48,7 @@ public class CollectionUtilsTest {
     }
 
     @Test
-    public void testIsNotEmpty_whenCollectionIsNotEmpty_thenReturnTrue() {
+    void testIsNotEmpty_whenCollectionIsNotEmpty_thenReturnTrue() {
 
         Collection<Integer> testCollection = new ArrayList<>();
         testCollection.add(1);
@@ -58,7 +59,7 @@ public class CollectionUtilsTest {
     }
 
     @Test
-    public void testIsNotEmpty_whenCollectionIsNull_thenReturnFalse() {
+    void testIsNotEmpty_whenCollectionIsNull_thenReturnFalse() {
 
         Collection<Object> testCollection = null;
 

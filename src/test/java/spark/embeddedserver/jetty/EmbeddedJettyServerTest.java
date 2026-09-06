@@ -1,40 +1,38 @@
 package spark.embeddedserver.jetty;
 
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-
-import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.servlet.Filter;
-
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 import spark.ExceptionMapper;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerClassWrapper;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
 import spark.http.matching.MatcherFilter;
 import spark.route.Routes;
 import spark.ssl.SslStores;
-
 import spark.staticfiles.StaticFilesConfiguration;
 
-public class EmbeddedJettyServerTest {
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+class EmbeddedJettyServerTest {
 
     private EmbeddedJettyServer embeddedJettyServer;
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         if (embeddedJettyServer != null) {
             embeddedJettyServer.extinguish();
         }
     }
 
     @Test
-    public void testIgnite_whenWebSocketIdleTimeoutPresent_thenSetOnContainer() throws Exception {
+    void testIgnite_whenWebSocketIdleTimeoutPresent_thenSetOnContainer() throws Exception {
         JettyHandler handler = newHandler();
         embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), handler);
 
@@ -49,7 +47,7 @@ public class EmbeddedJettyServerTest {
     }
 
     @Test
-    public void testIgnite_whenWebSocketIdleTimeoutAbsent_thenContainerStillAvailable() throws Exception {
+    void testIgnite_whenWebSocketIdleTimeoutAbsent_thenContainerStillAvailable() throws Exception {
         JettyHandler handler = newHandler();
         embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), handler);
 
@@ -65,7 +63,7 @@ public class EmbeddedJettyServerTest {
     }
 
     @Test
-    public void testIgnite_whenNoWebSocketHandlersConfigured_thenNoMappingsRegistered() throws Exception {
+    void testIgnite_whenNoWebSocketHandlersConfigured_thenNoMappingsRegistered() throws Exception {
         JettyHandler handler = newHandler();
         embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), handler);
 
