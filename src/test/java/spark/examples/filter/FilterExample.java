@@ -16,17 +16,17 @@
  */
 package spark.examples.filter;
 
-import java.util.HashMap;
-import java.util.Map;
+import static spark.Spark.after;
+import static spark.Spark.before;
+import static spark.Spark.get;
+import static spark.Spark.halt;
 
 import spark.Filter;
 import spark.Request;
 import spark.Response;
 
-import static spark.Spark.after;
-import static spark.Spark.before;
-import static spark.Spark.get;
-import static spark.Spark.halt;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Example showing a very simple (and stupid) authentication filter that is

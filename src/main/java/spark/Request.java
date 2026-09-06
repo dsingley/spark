@@ -16,6 +16,15 @@
  */
 package spark;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import spark.routematch.RouteMatch;
+import spark.utils.IOUtils;
+import spark.utils.SparkUtils;
+import spark.utils.StringUtils;
+import spark.utils.urldecoding.UrlDecode;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -27,16 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
-import spark.routematch.RouteMatch;
-import spark.utils.IOUtils;
-import spark.utils.SparkUtils;
-import spark.utils.StringUtils;
-import spark.utils.urldecoding.UrlDecode;
 
 /**
  * Provides information about the HTTP request

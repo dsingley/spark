@@ -16,9 +16,9 @@
  */
 package spark.examples.multiple;
 
-import spark.Service;
-
 import static spark.Service.ignite;
+
+import spark.Service;
 
 /**
  * This example shows how to correctly use the Spark instance API which allows for multiple services.

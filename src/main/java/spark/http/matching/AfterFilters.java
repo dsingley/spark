@@ -16,13 +16,13 @@
  */
 package spark.http.matching;
 
-import java.util.List;
-
 import spark.FilterImpl;
 import spark.Request;
 import spark.RequestResponseFactory;
 import spark.route.HttpMethod;
 import spark.routematch.RouteMatch;
+
+import java.util.List;
 
 /**
  * Executes the after filters matching an HTTP request.

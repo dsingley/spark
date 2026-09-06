@@ -16,8 +16,6 @@
  */
 package spark.http.matching;
 
-import java.io.IOException;
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -26,7 +24,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import spark.CustomErrorPages;
 import spark.ExceptionMapper;
 import spark.HaltException;
@@ -36,6 +33,8 @@ import spark.embeddedserver.jetty.HttpRequestWrapper;
 import spark.route.HttpMethod;
 import spark.serialization.SerializerChain;
 import spark.staticfiles.StaticFilesConfiguration;
+
+import java.io.IOException;
 
 /**
  * Matches Spark routes and filters.

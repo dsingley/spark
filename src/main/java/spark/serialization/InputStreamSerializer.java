@@ -16,11 +16,11 @@
  */
 package spark.serialization;
 
+import spark.utils.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import spark.utils.IOUtils;
 
 /**
  * Input stream serializer.

@@ -16,8 +16,6 @@
  */
 package spark.servlet;
 
-import java.io.IOException;
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -27,16 +25,16 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import spark.ExceptionMapper;
 import spark.globalstate.ServletFlag;
 import spark.http.matching.MatcherFilter;
 import spark.route.ServletRoutes;
 import spark.staticfiles.StaticFilesConfiguration;
 import spark.utils.StringUtils;
+
+import java.io.IOException;
 
 /**
  * Filter that can be configured to be used in a web.xml file.

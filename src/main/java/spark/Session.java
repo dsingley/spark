@@ -1,12 +1,11 @@
 package spark;
 
+import jakarta.servlet.http.HttpSession;
+import spark.utils.Assert;
+
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.TreeSet;
-
-import jakarta.servlet.http.HttpSession;
-
-import spark.utils.Assert;
 
 /**
  * Provides session information.

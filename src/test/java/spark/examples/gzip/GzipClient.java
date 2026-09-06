@@ -1,12 +1,12 @@
 package spark.examples.gzip;
 
+import spark.utils.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
-
-import spark.utils.IOUtils;
 
 /**
  * Created by Per Wendel on 2015-11-24.

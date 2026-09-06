@@ -16,14 +16,13 @@
  */
 package spark.http.matching;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import spark.utils.GzipUtils;
 import spark.serialization.SerializerChain;
+import spark.utils.GzipUtils;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Represents the 'body'

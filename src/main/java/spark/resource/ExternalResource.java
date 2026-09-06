@@ -16,13 +16,13 @@
  */
 package spark.resource;
 
+import spark.utils.StringUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import spark.utils.StringUtils;
 
 /**
  * Created by Per Wendel on 2014-05-18.

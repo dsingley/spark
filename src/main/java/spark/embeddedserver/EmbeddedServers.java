@@ -16,13 +16,13 @@
  */
 package spark.embeddedserver;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import spark.ExceptionMapper;
 import spark.embeddedserver.jetty.EmbeddedJettyFactory;
 import spark.route.Routes;
 import spark.staticfiles.StaticFilesConfiguration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Holds and uses the factories for creating different Embedded servers.

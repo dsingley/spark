@@ -16,12 +16,12 @@
  */
 package spark.examples.simple;
 
-import spark.util.SparkTestUtil;
-
 import static spark.Spark.get;
 import static spark.Spark.halt;
 import static spark.Spark.post;
 import static spark.Spark.secure;
+
+import spark.util.SparkTestUtil;
 
 /**
  * A simple example just showing some basic functionality.

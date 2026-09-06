@@ -1,13 +1,12 @@
 package spark.examples.hello;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import spark.Spark;
 import spark.util.SparkTestUtil;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class HelloSecureWorldExampleTest {
 

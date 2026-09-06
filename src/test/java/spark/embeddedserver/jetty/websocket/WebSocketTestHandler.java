@@ -2,14 +2,14 @@ package spark.embeddedserver.jetty.websocket;
 
 import static java.util.Collections.synchronizedList;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @WebSocket
 public class WebSocketTestHandler {

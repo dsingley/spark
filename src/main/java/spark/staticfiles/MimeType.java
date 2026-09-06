@@ -16,11 +16,11 @@
  */
 package spark.staticfiles;
 
+import spark.resource.AbstractFileResolvingResource;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import spark.resource.AbstractFileResolvingResource;
 
 /**
  * Configures and holds mappings from file extensions to MIME types.

@@ -17,10 +17,10 @@
  */
 package spark;
 
-import java.util.HashMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 
 /**
  * Holds the custom error pages. A page can be defined as a String or a Route.

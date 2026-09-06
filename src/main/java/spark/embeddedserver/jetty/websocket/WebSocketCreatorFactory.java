@@ -16,11 +16,11 @@
  */
 package spark.embeddedserver.jetty.websocket;
 
+import static java.util.Objects.requireNonNull;
+
 import org.eclipse.jetty.ee11.websocket.server.JettyServerUpgradeRequest;
 import org.eclipse.jetty.ee11.websocket.server.JettyServerUpgradeResponse;
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketCreator;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Factory class to create {@link JettyWebSocketCreator} implementations that

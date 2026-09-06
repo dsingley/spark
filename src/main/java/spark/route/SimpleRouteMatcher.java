@@ -16,9 +16,9 @@
  */
 package spark.route;
 
-import java.util.List;
-
 import spark.routematch.RouteMatch;
+
+import java.util.List;
 
 /**
  * Kept just for not breaking API.
