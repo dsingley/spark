@@ -58,9 +58,9 @@ public class CustomErrorPages {
 
         if (customRenderer instanceof String) {
             customPage = customRenderer;
-        } else if (customRenderer instanceof Route) {
+        } else if (customRenderer instanceof Route route) {
             try {
-                customPage = ((Route) customRenderer).handle(request, response);
+                customPage = route.handle(request, response);
             } catch (Exception e) {
              // The custom page renderer is causing an internal server error.  Log exception as a warning and use default page instead
                 LOG.warn("Custom error page handler for status code {} has thrown an exception: {}. Using default page instead.", status, e.getMessage());

@@ -16,7 +16,15 @@
  */
 package spark;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class Base64 {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Base64.class);
+
+    private Base64() {
+    }
 
     //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
 
@@ -40,6 +48,7 @@ class Base64 {
      * @param toDecodeContent the String to be decode
      * @return String after decode
      */
+    // TODO (sleberknight): only used by tests, remove it?
     public static String decode(String toDecodeContent) {
         if (toDecodeContent == null) {
             return null;
@@ -48,9 +57,9 @@ class Base64 {
         try {
             buf = decoder.decode(toDecodeContent);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("Error decoding", e);
         }
-        return new String(buf);
+        return new String(buf);  // TODO (sleberknight): if this method is not removed, need to fix this waiting-to-happen NPE
     }
 
 

@@ -29,6 +29,9 @@ import java.util.List;
  */
 final class AfterFilters {
 
+    private AfterFilters() {
+    }
+
     static void execute(RouteContext context) throws Exception {
 
         Object content = context.body().get();
@@ -40,7 +43,7 @@ final class AfterFilters {
         for (RouteMatch filterMatch : matchSet) {
             Object filterTarget = filterMatch.getTarget();
 
-            if (filterTarget instanceof FilterImpl) {
+            if (filterTarget instanceof FilterImpl filter) {
 
                 if (context.requestWrapper().getDelegate() == null) {
                     Request request = RequestResponseFactory.create(filterMatch, context.httpRequest());
@@ -51,7 +54,6 @@ final class AfterFilters {
 
                 context.responseWrapper().setDelegate(context.response());
 
-                FilterImpl filter = (FilterImpl) filterTarget;
                 filter.handle(context.requestWrapper(), context.responseWrapper());
 
                 String bodyAfterFilter = context.response().body();

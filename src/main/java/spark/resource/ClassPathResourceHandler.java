@@ -89,7 +89,7 @@ public class ClassPathResourceHandler extends AbstractResourceHandler {
             throw directoryTraversalDetection;
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e.getClass().getSimpleName() + " when trying to get resource. " + e.getMessage());
+                LOG.debug("{} when trying to get resource. {}", e.getClass().getSimpleName(), e.getMessage());
             }
         }
         return null;

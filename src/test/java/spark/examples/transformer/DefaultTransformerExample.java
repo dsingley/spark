@@ -7,7 +7,7 @@ import spark.ResponseTransformer;
 
 public class DefaultTransformerExample {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         defaultResponseTransformer(json);
 

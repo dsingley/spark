@@ -99,11 +99,11 @@ public class Books {
 
         // Gets all available book resources (id's)
         get("/books", (request, response) -> {
-            String ids = "";
+            var ids = new StringBuilder();
             for (String id : books.keySet()) {
-                ids += id + " ";
+                ids.append(id).append(" ");
             }
-            return ids;
+            return ids.toString();
         });
 
     }

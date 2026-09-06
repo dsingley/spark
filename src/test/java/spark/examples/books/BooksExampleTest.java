@@ -10,6 +10,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Spark;
 import spark.utils.IOUtils;
 
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 class BooksExampleTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BooksExampleTest.class);
 
     private static final int PORT = 4567;
 
@@ -68,7 +72,7 @@ class BooksExampleTest {
     void canListBooks() {
         bookId = createBookViaPOST().body.trim();
 
-        UrlResponse response = doMethod("GET", "/books", null);
+        UrlResponse response = doMethod("GET", "/books");
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -83,7 +87,7 @@ class BooksExampleTest {
     void canGetBook() {
         bookId = createBookViaPOST().body.trim();
 
-        UrlResponse response = doMethod("GET", "/books/" + bookId, null);
+        UrlResponse response = doMethod("GET", "/books/" + bookId);
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -116,7 +120,7 @@ class BooksExampleTest {
         bookId = createBookViaPOST().body.trim();
         updateBook();
 
-        UrlResponse response = doMethod("GET", "/books/" + bookId, null);
+        UrlResponse response = doMethod("GET", "/books/" + bookId);
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -131,7 +135,7 @@ class BooksExampleTest {
     void canDeleteBook() {
         bookId = createBookViaPOST().body.trim();
 
-        UrlResponse response = doMethod("DELETE", "/books/" + bookId, null);
+        UrlResponse response = doMethod("DELETE", "/books/" + bookId);
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -148,13 +152,14 @@ class BooksExampleTest {
                 .isInstanceOf(FileNotFoundException.class);
     }
 
-    private static UrlResponse doMethod(String requestMethod, String path, String body) {
+    private static UrlResponse doMethod(String requestMethod, String path) {
         UrlResponse response = new UrlResponse();
 
         try {
             getResponse(requestMethod, path, response);
         } catch (IOException e) {
-            e.printStackTrace();
+            // TODO (sleberknight): wrap and throw as UncheckedIOException?
+            LOG.error("Error getting response from {} {}", requestMethod, path, e);
         }
 
         return response;
@@ -178,11 +183,11 @@ class BooksExampleTest {
     }
 
     private UrlResponse createBookViaPOST() {
-        return doMethod("POST", "/books?author=" + AUTHOR + "&title=" + TITLE, null);
+        return doMethod("POST", "/books?author=" + AUTHOR + "&title=" + TITLE);
     }
 
     private UrlResponse updateBook() {
-        return doMethod("PUT", "/books/" + bookId + "?title=" + NEW_TITLE, null);
+        return doMethod("PUT", "/books/" + bookId + "?title=" + NEW_TITLE);
     }
 
     private boolean afterFilterIsSet(UrlResponse response) {
