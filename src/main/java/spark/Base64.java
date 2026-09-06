@@ -59,7 +59,7 @@ class Base64 {
         } catch (Exception e) {
             LOG.warn("Error decoding", e);
         }
-        return new String(buf);  // TODO (sleberknight): if this methof is not removed, need to fix this waiting-to-happen NPE
+        return new String(buf);  // TODO (sleberknight): if this method is not removed, need to fix this waiting-to-happen NPE
     }
 
 
