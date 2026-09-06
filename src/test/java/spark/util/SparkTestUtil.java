@@ -107,7 +107,7 @@ public class SparkTestUtil {
     }
 
     public UrlResponse doMethod(String requestMethod, String path, String body, boolean secureConnection,
-                                String acceptType, Map<String, String> reqHeaders) throws IOException, ParseException {
+                                String acceptType, Map<String, String> reqHeaders) throws IOException {
         HttpUriRequest httpRequest = getHttpRequest(requestMethod, path, body, secureConnection, acceptType, reqHeaders);
 
         UrlResponse urlResponse = httpClient.execute(httpRequest, this::toUrlResponse);
@@ -371,13 +371,6 @@ public class SparkTestUtil {
         public Map<String, String> headers;
         public String body;
         public int status;
-    }
-
-    public static void sleep(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (Exception e) {
-        }
     }
 
     static class HttpLock extends HttpUriRequestBase {

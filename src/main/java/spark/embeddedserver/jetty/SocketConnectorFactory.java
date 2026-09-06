@@ -34,6 +34,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class SocketConnectorFactory {
 
+    private static final String SERVER_MUST_NOT_BE_NULL = "'server' must not be null";
+    private static final String HOST_MUST_NOT_BE_NULL = "'host' must not be null";
+
     private SocketConnectorFactory() {
     }
 
@@ -46,8 +49,8 @@ public class SocketConnectorFactory {
      * @return - a server jetty
      */
     public static ServerConnector createSocketConnector(Server server, String host, int port, boolean trustForwardHeaders) {
-        Assert.notNull(server, "'server' must not be null");
-        Assert.notNull(host, "'host' must not be null");
+        Assert.notNull(server, SERVER_MUST_NOT_BE_NULL);
+        Assert.notNull(host, HOST_MUST_NOT_BE_NULL);
 
         HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory(trustForwardHeaders);
         ServerConnector connector = new ServerConnector(server, httpConnectionFactory);
@@ -69,8 +72,8 @@ public class SocketConnectorFactory {
                                                               int port,
                                                               SslStores sslStores,
                                                               boolean trustForwardHeaders) {
-        Assert.notNull(server, "'server' must not be null");
-        Assert.notNull(host, "'host' must not be null");
+        Assert.notNull(server, SERVER_MUST_NOT_BE_NULL);
+        Assert.notNull(host, HOST_MUST_NOT_BE_NULL);
         Assert.notNull(sslStores, "'sslStores' must not be null");
 
         return createSecureSocketConnector(server, host, port, sslStores, null, trustForwardHeaders);
@@ -90,8 +93,8 @@ public class SocketConnectorFactory {
                                                               int port,
                                                               SslContextFactory.Server sslContextFactory,
                                                               boolean trustForwardHeaders) {
-        Assert.notNull(server, "'server' must not be null");
-        Assert.notNull(host, "'host' must not be null");
+        Assert.notNull(server, SERVER_MUST_NOT_BE_NULL);
+        Assert.notNull(host, HOST_MUST_NOT_BE_NULL);
         Assert.notNull(sslContextFactory, "'sslContextFactory' must not be null");
 
         return createSecureSocketConnector(server, host, port, null, sslContextFactory, trustForwardHeaders);

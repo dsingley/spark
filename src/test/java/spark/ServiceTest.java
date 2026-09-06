@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.kiwiproject.reflect.KiwiReflection;
-import org.mockito.Mockito;
 import spark.embeddedserver.EmbeddedServer;
 import spark.embeddedserver.EmbeddedServers;
 import spark.route.Routes;
@@ -279,16 +278,16 @@ class ServiceTest {
     @Test
     @Timeout(value = 300, unit = TimeUnit.MILLISECONDS)
     void stopExtinguishesServer() {
-        Service service = Service.ignite();
+        Service theService = Service.ignite();
         Routes routes = mock(Routes.class);
         EmbeddedServer server = mock(EmbeddedServer.class);
-        service.routes = routes;
-        service.server = server;
-        service.initialized = true;
-        service.stop();
+        theService.routes = routes;
+        theService.server = server;
+        theService.initialized = true;
+        theService.stop();
         try {
         	// yes, this is ugly and forces to set a test timeout as a precaution :(
-            while (service.initialized) {
+            while (theService.initialized) {
             	Thread.sleep(20);
             }
         } catch (InterruptedException e) {
@@ -299,16 +298,16 @@ class ServiceTest {
 
     @Test
     void awaitStopBlocksUntilExtinguished() {
-        Service service = Service.ignite();
+        Service theService = Service.ignite();
         Routes routes = mock(Routes.class);
         EmbeddedServer server = mock(EmbeddedServer.class);
-        service.routes = routes;
-        service.server = server;
-        service.initialized = true;
-        service.stop();
-        service.awaitStop();
+        theService.routes = routes;
+        theService.server = server;
+        theService.initialized = true;
+        theService.stop();
+        theService.awaitStop();
         verify(server).extinguish();
-        assertThat(service.initialized).isFalse();
+        assertThat(theService.initialized).isFalse();
     }
 
     protected static class DummyWebSocketListener {

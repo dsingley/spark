@@ -16,6 +16,8 @@
  */
 package spark.route;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.FilterImpl;
 import spark.RouteImpl;
 import spark.routematch.RouteMatch;
@@ -23,7 +25,7 @@ import spark.utils.MimeParse;
 import spark.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +38,10 @@ import java.util.Map;
  */
 public class Routes {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(Routes.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Routes.class);
     private static final char SINGLE_QUOTE = '\'';
 
-    private List<RouteEntry> routes;
+    private final List<RouteEntry> routeEntries;
 
     public static Routes create() {
         return new Routes();
@@ -49,7 +51,7 @@ public class Routes {
      * Constructor
      */
     protected Routes() {
-        routes = new ArrayList<>();
+        routeEntries = new ArrayList<>();
     }
 
     /**
@@ -100,13 +102,13 @@ public class Routes {
 
         for (RouteEntry routeEntry : routeEntries) {
             if (acceptType != null) {
-                String bestMatch = MimeParse.bestMatch(Arrays.asList(routeEntry.acceptedType), acceptType);
+                String bestMatch = MimeParse.bestMatch(Collections.singletonList(routeEntry.acceptedType), acceptType);
 
                 if (routeWithGivenAcceptType(bestMatch)) {
                     matchSet.add(new RouteMatch(routeEntry.target, routeEntry.path, path, acceptType, httpMethod));
                 }
             } else {
-                matchSet.add(new RouteMatch(routeEntry.target, routeEntry.path, path, acceptType, httpMethod));
+                matchSet.add(new RouteMatch(routeEntry.target, routeEntry.path, path, null, httpMethod));
             }
         }
 
@@ -118,7 +120,6 @@ public class Routes {
      */
     public List<RouteMatch> findAll() {
         List<RouteMatch> matchSet = new ArrayList<>();
-        List<RouteEntry> routeEntries = routes;
 
         for (RouteEntry routeEntry : routeEntries) {
             matchSet.add(new RouteMatch(routeEntry.target, routeEntry.path, "ALL_ROUTES", routeEntry.acceptedType, routeEntry.httpMethod));
@@ -131,7 +132,7 @@ public class Routes {
      * ¨Clear all routes
      */
     public void clear() {
-        routes.clear();
+        routeEntries.clear();
     }
 
     /**
@@ -175,7 +176,7 @@ public class Routes {
             throw new IllegalArgumentException("path cannot be null or blank");
         }
 
-        return removeRoute((HttpMethod) null, path);
+        return removeRoute(null, path);
     }
 
     //////////////////////////////////////////////////
@@ -190,7 +191,7 @@ public class Routes {
         entry.acceptedType = acceptedType;
         LOG.debug("Adds route: {}", entry);
         // Adds to end of list
-        routes.add(entry);
+        routeEntries.add(entry);
     }
 
     //can be cached? I don't think so.
@@ -211,8 +212,8 @@ public class Routes {
     }
 
     private List<RouteEntry> findTargetsForRequestedRoute(HttpMethod httpMethod, String path) {
-        List<RouteEntry> matchSet = new ArrayList<RouteEntry>();
-        for (RouteEntry entry : routes) {
+        List<RouteEntry> matchSet = new ArrayList<>();
+        for (RouteEntry entry : routeEntries) {
             if (entry.matches(httpMethod, path)) {
                 matchSet.add(entry);
             }
@@ -243,7 +244,7 @@ public class Routes {
     private boolean removeRoute(HttpMethod httpMethod, String path) {
         List<RouteEntry> forRemoval = new ArrayList<>();
 
-        for (RouteEntry routeEntry : routes) {
+        for (RouteEntry routeEntry : routeEntries) {
             HttpMethod httpMethodToMatch = httpMethod;
 
             if (httpMethod == null) {
@@ -261,7 +262,7 @@ public class Routes {
             }
         }
 
-        return routes.removeAll(forRemoval);
+        return routeEntries.removeAll(forRemoval);
     }
 
     /**
@@ -288,7 +289,7 @@ public class Routes {
             }
             add(method, url, acceptType, target);
         } catch (Exception e) {
-            LOG.error("The @Route value: " + route + " is not in the correct format", e);
+            LOG.error("The @Route value: {} is not in the correct format", route, e);
         }
     }
 }

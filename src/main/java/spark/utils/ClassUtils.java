@@ -16,9 +16,9 @@
 package spark.utils;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -97,9 +97,9 @@ public class ClassUtils {
 
         Set<Class<?>> primitiveTypes = new HashSet<>(32);
         primitiveTypes.addAll(primitiveWrapperTypeMap.values());
-        primitiveTypes.addAll(Arrays.asList(new Class<?>[] {
-                boolean[].class, byte[].class, char[].class, double[].class,
-                float[].class, int[].class, long[].class, short[].class}));
+        primitiveTypes.addAll(List.of(
+            boolean[].class, byte[].class, char[].class, double[].class,
+            float[].class, int[].class, long[].class, short[].class));
         primitiveTypes.add(void.class);
         for (Class<?> primitiveType : primitiveTypes) {
             primitiveTypeNameMap.put(primitiveType.getName(), primitiveType);

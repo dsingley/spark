@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * MIME-Type Parser
@@ -104,28 +105,37 @@ public class MimeParse {
     /**
      * Structure for holding a fitness/quality combo
      */
-    private static class FitnessAndQuality implements Comparable<FitnessAndQuality> {
+    static class FitnessAndQuality implements Comparable<FitnessAndQuality> {
         int fitness;
 
         float quality;
 
         String mimeType; // optionally used
 
-        private FitnessAndQuality(int fitness, float quality) {
+        FitnessAndQuality(int fitness, float quality) {
             this.fitness = fitness;
             this.quality = quality;
         }
 
         public int compareTo(FitnessAndQuality o) {
             if (fitness == o.fitness) {
-                if (quality == o.quality) {
-                    return 0;
-                } else {
-                    return quality < o.quality ? -1 : 1;
-                }
+                return Float.compare(quality, o.quality);
             } else {
                 return fitness < o.fitness ? -1 : 1;
             }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof FitnessAndQuality that)) {
+                return false;
+            }
+            return fitness == that.fitness && Float.compare(quality, that.quality) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(fitness, quality);
         }
     }
 

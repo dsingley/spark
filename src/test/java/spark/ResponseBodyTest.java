@@ -37,7 +37,7 @@ public class ResponseBodyTest {
 
     public static final String HELLO_WORLD = "Hello World!";
     public static final String XIDXUS = "xidxus";
-    public static final String $11AB = "$11ab";
+    public static final String DOLLAR_11AB = "$11ab";
     public static final String GALLUS_SCANDALUM = "gallus scandalum";
 
     private static SparkTestUtil http;
@@ -75,12 +75,12 @@ public class ResponseBodyTest {
 
         get(MAXIME, (q, a) -> {
             a.body(XIDXUS);
-            return $11AB;
+            return DOLLAR_11AB;
         });
 
         after(MAXIME, (q, a) -> {
             String body = a.body();
-            assertThat(body).isEqualTo($11AB);
+            assertThat(body).isEqualTo(DOLLAR_11AB);
         });
 
         Spark.awaitInitialization();
@@ -130,7 +130,7 @@ public class ResponseBodyTest {
         try {
             SparkTestUtil.UrlResponse response = http.get(MAXIME);
             assertThat(response.status).isEqualTo(200);
-            assertThat(response.body).isEqualTo($11AB);
+            assertThat(response.body).isEqualTo(DOLLAR_11AB);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

@@ -13,7 +13,7 @@ import java.util.TreeSet;
 public class Session {
 
     private final Request request;
-    private final HttpSession session;
+    private final HttpSession httpSession;
 
     /**
      * Creates a session with the <code>HttpSession</code>.
@@ -25,7 +25,7 @@ public class Session {
     Session(HttpSession session, Request request) {
         Assert.notNull(session, "session cannot be null");
         Assert.notNull(request, "request cannot be null");
-        this.session = session;
+        this.httpSession = session;
         this.request = request;
     }
 
@@ -33,7 +33,7 @@ public class Session {
      * @return the raw <code>HttpSession</code> object handed in by the servlet container.
      */
     public HttpSession raw() {
-        return session;
+        return httpSession;
     }
 
     /**
@@ -45,7 +45,7 @@ public class Session {
      */
     @SuppressWarnings("unchecked")
     public <T> T attribute(String name) {
-        return (T) session.getAttribute(name);
+        return (T) httpSession.getAttribute(name);
     }
 
     /**
@@ -55,7 +55,7 @@ public class Session {
      * @param value the object to be bound
      */
     public void attribute(String name, Object value) {
-        session.setAttribute(name, value);
+        httpSession.setAttribute(name, value);
     }
 
     /**
@@ -64,7 +64,7 @@ public class Session {
      */
     public Set<String> attributes() {
         TreeSet<String> attributes = new TreeSet<>();
-        Enumeration<String> enumeration = session.getAttributeNames();
+        Enumeration<String> enumeration = httpSession.getAttributeNames();
         while (enumeration.hasMoreElements()) {
             attributes.add(enumeration.nextElement());
         }
@@ -75,14 +75,14 @@ public class Session {
      * @return the time when this session was created, measured in milliseconds since midnight January 1, 1970 GMT.
      */
     public long creationTime() {
-        return session.getCreationTime();
+        return httpSession.getCreationTime();
     }
 
     /**
      * @return a string containing the unique identifier assigned to this session.
      */
     public String id() {
-        return session.getId();
+        return httpSession.getId();
     }
 
     /**
@@ -91,7 +91,7 @@ public class Session {
      * by the time the container received the request.
      */
     public long lastAccessedTime() {
-        return session.getLastAccessedTime();
+        return httpSession.getLastAccessedTime();
     }
 
     /**
@@ -99,7 +99,7 @@ public class Session {
      * will keep this session open between client accesses.
      */
     public int maxInactiveInterval() {
-        return session.getMaxInactiveInterval();
+        return httpSession.getMaxInactiveInterval();
     }
 
     /**
@@ -108,7 +108,7 @@ public class Session {
      * @param interval the interval
      */
     public void maxInactiveInterval(int interval) {
-        session.setMaxInactiveInterval(interval);
+        httpSession.setMaxInactiveInterval(interval);
     }
 
     /**
@@ -116,14 +116,14 @@ public class Session {
      */
     public void invalidate() {
         request.validSession(false);
-        session.invalidate();
+        httpSession.invalidate();
     }
 
     /**
      * @return true if the client does not yet know about the session or if the client chooses not to join the session.
      */
     public boolean isNew() {
-        return session.isNew();
+        return httpSession.isNew();
     }
 
     /**
@@ -132,6 +132,6 @@ public class Session {
      * @param name the name of the object to remove from this session
      */
     public void removeAttribute(String name) {
-        session.removeAttribute(name);
+        httpSession.removeAttribute(name);
     }
 }

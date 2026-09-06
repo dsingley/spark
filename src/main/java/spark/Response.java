@@ -37,7 +37,7 @@ public class Response {
      */
     private static final Logger LOG = LoggerFactory.getLogger(Response.class);
 
-    private HttpServletResponse response;
+    private HttpServletResponse httpServletResponse;
     private String body;
 
     protected Response() {
@@ -45,7 +45,7 @@ public class Response {
     }
 
     Response(HttpServletResponse response) {
-        this.response = response;
+        this.httpServletResponse = response;
     }
 
 
@@ -55,7 +55,7 @@ public class Response {
      * @param statusCode the status code
      */
     public void status(int statusCode) {
-        response.setStatus(statusCode);
+        httpServletResponse.setStatus(statusCode);
     }
 
     /**
@@ -64,7 +64,7 @@ public class Response {
      * @return the status code
      */
     public int status() {
-        return response.getStatus();
+        return httpServletResponse.getStatus();
     }
 
     /**
@@ -73,7 +73,7 @@ public class Response {
      * @param contentType the content type
      */
     public void type(String contentType) {
-        response.setContentType(contentType);
+        httpServletResponse.setContentType(contentType);
     }
 
     /**
@@ -82,7 +82,7 @@ public class Response {
      * @return the content type
      */
     public String type() {
-        return response.getContentType();
+        return httpServletResponse.getContentType();
     }
 
     /**
@@ -107,7 +107,7 @@ public class Response {
      * @return the raw response object handed in by Jetty
      */
     public HttpServletResponse raw() {
-        return response;
+        return httpServletResponse;
     }
 
     /**
@@ -120,7 +120,7 @@ public class Response {
             LOG.debug("Redirecting ({} {} to {}", "Found", HttpServletResponse.SC_FOUND, location);
         }
         try {
-            response.sendRedirect(location);
+            httpServletResponse.sendRedirect(location);
         } catch (IOException ioException) {
             LOG.warn("Redirect failure", ioException);
         }
@@ -136,11 +136,11 @@ public class Response {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Redirecting ({} to {}", httpStatusCode, location);
         }
-        response.setStatus(httpStatusCode);
-        response.setHeader("Location", location);
-        response.setHeader("Connection", "close");
+        httpServletResponse.setStatus(httpStatusCode);
+        httpServletResponse.setHeader("Location", location);
+        httpServletResponse.setHeader("Connection", "close");
         try {
-            response.sendError(httpStatusCode);
+            httpServletResponse.sendError(httpStatusCode);
         } catch (IOException e) {
             LOG.warn("Exception when trying to redirect permanently", e);
         }
@@ -153,7 +153,7 @@ public class Response {
      * @param value  the value
      */
     public void header(String header, String value) {
-        response.addHeader(header, value);
+        httpServletResponse.addHeader(header, value);
     }
 
     /**
@@ -163,7 +163,7 @@ public class Response {
      * @param value  the value
      */
     public void header(String header, int value) {
-        response.addIntHeader(header, value);
+        httpServletResponse.addIntHeader(header, value);
     }
 
     /**
@@ -173,7 +173,7 @@ public class Response {
      * @param value  the value
      */
     public void header(String header, Date value) {
-        response.addDateHeader(header, value.getTime());
+        httpServletResponse.addDateHeader(header, value.getTime());
     }
 
     /**
@@ -183,7 +183,7 @@ public class Response {
      * @param value  the value
      */
     public void header(String header, java.sql.Date value) {
-        response.addDateHeader(header, value.getTime());
+        httpServletResponse.addDateHeader(header, value.getTime());
     }
 
     /**
@@ -193,7 +193,7 @@ public class Response {
      * @param value  the value
      */
     public void header(String header, Instant value) {
-        response.addDateHeader(header, value.toEpochMilli());
+        httpServletResponse.addDateHeader(header, value.toEpochMilli());
     }
 
     /**
@@ -289,7 +289,7 @@ public class Response {
         cookie.setMaxAge(maxAge);
         cookie.setSecure(secured);
         cookie.setHttpOnly(httpOnly);
-        response.addCookie(cookie);
+        httpServletResponse.addCookie(cookie);
     }
 
     /**
@@ -311,7 +311,7 @@ public class Response {
         Cookie cookie = new Cookie(name, "");
         cookie.setPath(path);
         cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        httpServletResponse.addCookie(cookie);
     }
 
 }

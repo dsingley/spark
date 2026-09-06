@@ -117,13 +117,13 @@ public class SparkFilter implements Filter {
      */
     protected SparkApplication[] getApplications(final FilterConfig filterConfig) throws ServletException {
 
-        String applications = filterConfig.getInitParameter(APPLICATION_CLASS_PARAM);
+        String configuredApplications = filterConfig.getInitParameter(APPLICATION_CLASS_PARAM);
         SparkApplication[] solvedApplications = null;
 
-        if (StringUtils.isNotBlank(applications)) {
-            final String[] sparkApplications = applications.split(",");
+        if (StringUtils.isNotBlank(configuredApplications)) {
+            final String[] sparkApplications = configuredApplications.split(",");
 
-            if (sparkApplications != null && sparkApplications.length > 0) {
+            if (sparkApplications.length > 0) {
                 solvedApplications = new SparkApplication[sparkApplications.length];
 
                 for (int index = 0; index < sparkApplications.length; index++) {
@@ -141,8 +141,8 @@ public class SparkFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
                                                                                               IOException,
                                                                                               ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request; // NOSONAR
-        HttpServletResponse httpResponse = (HttpServletResponse) response; // NOSONAR
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         final String relativePath = FilterTools.getRelativePath(httpRequest, filterPath);
 

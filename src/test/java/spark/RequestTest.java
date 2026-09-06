@@ -115,8 +115,8 @@ class RequestTest {
 
         when(servletRequest.getServletPath()).thenReturn(THE_SERVLET_PATH);
 
-        Request request = new Request(match, servletRequest);
-        assertThat(request.servletPath()).isEqualTo(THE_SERVLET_PATH);
+        Request req = new Request(match, servletRequest);
+        assertThat(req.servletPath()).isEqualTo(THE_SERVLET_PATH);
     }
 
     @Test
@@ -124,14 +124,14 @@ class RequestTest {
 
         when(servletRequest.getContextPath()).thenReturn(THE_CONTEXT_PATH);
 
-        Request request = new Request(match, servletRequest);
-        assertThat(request.contextPath()).isEqualTo(THE_CONTEXT_PATH);
+        Request req = new Request(match, servletRequest);
+        assertThat(req.contextPath()).isEqualTo(THE_CONTEXT_PATH);
     }
 
     @Test
     void shouldBeAbleToGetTheMatchedPath() {
-        Request request = new Request(matchWithParams, servletRequest);
-        assertThat(request.matchedPath()).isEqualTo(THE_MATCHED_ROUTE);
+        Request req = new Request(matchWithParams, servletRequest);
+        assertThat(req.matchedPath()).isEqualTo(THE_MATCHED_ROUTE);
         try {
             http.get("/users/bob");
         } catch (Exception e) {

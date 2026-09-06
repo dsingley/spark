@@ -68,12 +68,8 @@ final class Routes {
             if (result != null) {
                 content = result;
 
-                if (content instanceof String) {
-                    String contentStr = (String) content;
-
-                    if (!contentStr.equals("")) {
-                        context.responseWrapper().body(contentStr);
-                    }
+                if (content instanceof String contentStr && !contentStr.isEmpty()) {
+                    context.responseWrapper().body(contentStr);
                 }
             }
         }

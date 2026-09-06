@@ -31,7 +31,8 @@ class ResponseTest {
 
     @Test
     void testConstructor_whenHttpServletResponseParameter() {
-        HttpServletResponse returnResponse = KiwiReflection.getTypedFieldValue(response, "response", HttpServletResponse.class);
+        HttpServletResponse returnResponse = KiwiReflection.getTypedFieldValue(
+            response, "httpServletResponse", HttpServletResponse.class);
         assertThat(returnResponse).isSameAs(httpServletResponse);
     }
 
