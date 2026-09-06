@@ -16,12 +16,12 @@
  */
 package spark.examples.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static spark.Spark.after;
 import static spark.Spark.before;
 import static spark.Spark.get;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DummyFilter {

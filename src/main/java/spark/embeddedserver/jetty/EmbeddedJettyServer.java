@@ -16,12 +16,6 @@
  */
 package spark.embeddedserver.jetty;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.time.Duration;
-import java.util.Map;
-import java.util.Optional;
-
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -30,11 +24,16 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import spark.embeddedserver.EmbeddedServer;
 import spark.embeddedserver.jetty.websocket.WebSocketCreatorFactory;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
 import spark.ssl.SslStores;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.time.Duration;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Spark server implementation

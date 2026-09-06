@@ -16,16 +16,15 @@
  */
 package spark.http.matching;
 
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.servlet.http.HttpServletRequest;
-
 import spark.Access;
 import spark.QueryParamsMap;
 import spark.Request;
 import spark.Session;
 import spark.routematch.RouteMatch;
+
+import java.util.Map;
+import java.util.Set;
 
 final class RequestWrapper extends Request {
 

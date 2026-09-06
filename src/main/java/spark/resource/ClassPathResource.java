@@ -16,15 +16,15 @@
 
 package spark.resource;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import spark.utils.Assert;
 import spark.utils.ClassUtils;
 import spark.utils.ResourceUtils;
 import spark.utils.StringUtils;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * {@link Resource} implementation for class path resources.

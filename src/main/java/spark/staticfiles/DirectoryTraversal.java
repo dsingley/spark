@@ -1,8 +1,8 @@
 package spark.staticfiles;
 
-import java.nio.file.Paths;
-
 import static spark.utils.StringUtils.removeLeadingAndTrailingSlashesFrom;
+
+import java.nio.file.Paths;
 
 /**
  * Protecting against Directory traversal

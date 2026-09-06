@@ -1,11 +1,11 @@
 package spark.staticfiles;
 
+import static spark.utils.StringUtils.removeLeadingAndTrailingSlashesFrom;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Paths;
-
-import static spark.utils.StringUtils.removeLeadingAndTrailingSlashesFrom;
 
 /**
  * Created by Per Wendel on 2016-11-05.

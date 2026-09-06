@@ -1,10 +1,10 @@
 package spark.examples.templateview;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static spark.Spark.get;
 import static spark.Spark.modelAndView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FreeMarkerExample {
 

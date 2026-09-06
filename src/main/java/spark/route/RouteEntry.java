@@ -16,9 +16,9 @@
  */
 package spark.route;
 
-import java.util.List;
-
 import spark.utils.SparkUtils;
+
+import java.util.List;
 
 /**
  * Class that holds information about routes

@@ -16,14 +16,14 @@ package spark.resource;
  * limitations under the License.
  */
 
+import spark.utils.ResourceUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-
-import spark.utils.ResourceUtils;
 
 /**
  * Abstract base class for resources which resolve URLs into File references,

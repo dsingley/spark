@@ -16,12 +16,12 @@
  */
 package spark;
 
+import static spark.Service.ignite;
+
 import spark.routematch.RouteMatch;
 
 import java.util.List;
 import java.util.function.Consumer;
-
-import static spark.Service.ignite;
 
 /**
  * The main building block of a Spark application is a set of routes. A route is

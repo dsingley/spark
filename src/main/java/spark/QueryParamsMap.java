@@ -1,12 +1,12 @@
 package spark;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * These objects represent the parameters sent on a Http Request. <br>

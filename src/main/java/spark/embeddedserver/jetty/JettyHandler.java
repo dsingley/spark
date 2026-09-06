@@ -16,17 +16,16 @@
  */
 package spark.embeddedserver.jetty;
 
-import java.util.EnumSet;
-
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.SessionCookieConfig;
-
 import org.eclipse.jetty.ee11.servlet.FilterHolder;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
 import org.eclipse.jetty.ee11.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import org.eclipse.jetty.server.Handler;
+
+import java.util.EnumSet;
 
 /**
  * Jetty {@link Handler} that dispatches every request through Spark's {@link Filter}

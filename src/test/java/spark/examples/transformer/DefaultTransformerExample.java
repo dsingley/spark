@@ -1,9 +1,9 @@
 package spark.examples.transformer;
 
-import spark.ResponseTransformer;
-
-import static spark.Spark.get;
 import static spark.Spark.defaultResponseTransformer;
+import static spark.Spark.get;
+
+import spark.ResponseTransformer;
 
 public class DefaultTransformerExample {
 

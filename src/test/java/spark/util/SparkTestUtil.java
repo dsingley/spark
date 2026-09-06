@@ -1,27 +1,5 @@
 package spark.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.KeyStore;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-
-import org.kiwiproject.security.KeyStoreType;
-import org.kiwiproject.test.security.CertOptions;
-import org.kiwiproject.test.security.CertificateTestHelpers;
-import org.kiwiproject.test.security.TestKeyStores;
-
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpHead;
@@ -46,6 +24,26 @@ import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.kiwiproject.security.KeyStoreType;
+import org.kiwiproject.test.security.CertOptions;
+import org.kiwiproject.test.security.CertificateTestHelpers;
+import org.kiwiproject.test.security.TestKeyStores;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyStore;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SparkTestUtil {
 
