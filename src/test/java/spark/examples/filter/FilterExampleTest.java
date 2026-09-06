@@ -41,8 +41,8 @@ class FilterExampleTest {
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!"),
-                () -> assertThat(response.headers.get("Foo")).isEqualTo("Set by second before filter"),
-                () -> assertThat(response.headers.get("spark")).isEqualTo("added by after-filter")
+                () -> assertThat(response.headers).containsEntry("Foo", "Set by second before filter"),
+                () -> assertThat(response.headers).containsEntry("spark", "added by after-filter")
         );
     }
 }

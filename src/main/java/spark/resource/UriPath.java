@@ -21,6 +21,9 @@ package spark.resource;
  */
 public class UriPath {
 
+    private UriPath() {
+    }
+
     /**
      * Convert a path to a cananonical form.
      * All instances of "." and ".." are factored out.  Null is returned
@@ -30,7 +33,7 @@ public class UriPath {
      * @return path or null.
      */
     public static String canonical(String path) {
-        if (path == null || path.length() == 0) {
+        if (path == null || path.isEmpty()) {
             return path;
         }
 

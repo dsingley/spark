@@ -3,6 +3,8 @@ package spark;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static spark.Service.ignite;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -278,8 +280,8 @@ class ServiceTest {
     @Timeout(value = 300, unit = TimeUnit.MILLISECONDS)
     void stopExtinguishesServer() {
         Service service = Service.ignite();
-        Routes routes = Mockito.mock(Routes.class);
-        EmbeddedServer server = Mockito.mock(EmbeddedServer.class);
+        Routes routes = mock(Routes.class);
+        EmbeddedServer server = mock(EmbeddedServer.class);
         service.routes = routes;
         service.server = server;
         service.initialized = true;
@@ -292,20 +294,20 @@ class ServiceTest {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        Mockito.verify(server).extinguish();
+        verify(server).extinguish();
     }
 
     @Test
     void awaitStopBlocksUntilExtinguished() {
         Service service = Service.ignite();
-        Routes routes = Mockito.mock(Routes.class);
-        EmbeddedServer server = Mockito.mock(EmbeddedServer.class);
+        Routes routes = mock(Routes.class);
+        EmbeddedServer server = mock(EmbeddedServer.class);
         service.routes = routes;
         service.server = server;
         service.initialized = true;
         service.stop();
         service.awaitStop();
-        Mockito.verify(server).extinguish();
+        verify(server).extinguish();
         assertThat(service.initialized).isFalse();
     }
 

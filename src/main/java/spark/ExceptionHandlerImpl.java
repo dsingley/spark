@@ -28,7 +28,7 @@ public abstract class ExceptionHandlerImpl<T extends Exception> implements Excep
      *
      * @param exceptionClass Type of exception
      */
-    public ExceptionHandlerImpl(Class<T> exceptionClass) {
+    protected ExceptionHandlerImpl(Class<T> exceptionClass) {
         this.exceptionClass = exceptionClass;
     }
 

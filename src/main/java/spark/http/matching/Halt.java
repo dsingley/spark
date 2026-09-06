@@ -25,6 +25,9 @@ import spark.HaltException;
  */
 public class Halt {
 
+    private Halt() {
+    }
+
     /**
      * Modifies the HTTP response and body based on the provided HaltException.
      *
@@ -32,6 +35,7 @@ public class Halt {
      * @param body         The body content
      * @param halt         The halt exception object
      */
+    // TODO (sleberknight): Does Body need to be public? IntelliJ: Class 'Body' is exposed outside its defined visibility scope
     public static void modify(HttpServletResponse httpResponse, Body body, HaltException halt) {
 
         httpResponse.setStatus(halt.statusCode());

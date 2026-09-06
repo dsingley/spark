@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class FreeMarkerExample {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         get("/hello", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();

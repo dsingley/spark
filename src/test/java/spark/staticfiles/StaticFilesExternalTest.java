@@ -16,6 +16,7 @@
  */
 package spark.staticfiles;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static spark.Spark.exception;
@@ -41,7 +42,7 @@ import java.net.URLEncoder;
  */
 class StaticFilesExternalTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StaticFilesExternalTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StaticFilesExternalTest.class);
 
     private static final String FO_SHIZZY = "Fo shizzy";
     private static final String NOT_FOUND_BRO = "Not found bro";
@@ -99,7 +100,7 @@ class StaticFilesExternalTest {
         Spark.stop();
         Spark.awaitStop();
         if (tmpExternalFile1 != null) {
-            LOGGER.debug("tearDown(). Deleting tmp files");
+            LOG.debug("tearDown(). Deleting tmp files");
             tmpExternalFile1.delete();
             tmpExternalFile2.delete();
             folderOutsideStaticFiles.delete();
@@ -114,7 +115,7 @@ class StaticFilesExternalTest {
                 () -> assertThat(response.status).isEqualTo(200),
                 // Jetty 12 echoes MimeTypes' assumed charset for text/html into the Content-Type
                 // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
-                () -> assertThat(response.headers.get("Content-Type")).isEqualTo("text/html;charset=utf-8"),
+                () -> assertThat(response.headers).containsEntry("Content-Type", "text/html;charset=utf-8"),
                 () -> assertThat(response.body).isEqualTo(CONTENT_OF_EXTERNAL_FILE)
         );
 
@@ -123,7 +124,7 @@ class StaticFilesExternalTest {
 
     @Test
     void testDirectoryTraversalProtectionExternal() throws Exception {
-        String path = "/" + URLEncoder.encode("..\\..\\spark\\", "UTF-8") + "Spark.class";
+        String path = "/" + URLEncoder.encode("..\\..\\spark\\", UTF_8) + "Spark.class";
         SparkTestUtil.UrlResponse response = doGet(path);
 
         assertAll(

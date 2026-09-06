@@ -54,8 +54,9 @@ public class MatcherFilter implements Filter {
     private SerializerChain serializerChain;
     private ExceptionMapper exceptionMapper;
 
+    // TODO (sleberknight): Can remove this unused field, but then the ctor arg also unused. What to do?
     private boolean externalContainer;
-    private boolean hasOtherHandlers;
+    private final boolean hasOtherHandlers;
 
     /**
      * Constructor
@@ -155,11 +156,9 @@ public class MatcherFilter implements Filter {
                 body.set("");
             }
 
-            if (body.notSet() && hasOtherHandlers) {
-                if (servletRequest instanceof HttpRequestWrapper) {
-                    ((HttpRequestWrapper) servletRequest).notConsumed(true);
-                    return;
-                }
+            if (body.notSet() && hasOtherHandlers && servletRequest instanceof HttpRequestWrapper servletRequestWrapper) {
+                servletRequestWrapper.notConsumed(true);
+                return;
             }
 
             if (body.notSet()) {

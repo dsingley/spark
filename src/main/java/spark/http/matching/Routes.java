@@ -27,6 +27,9 @@ import spark.routematch.RouteMatch;
  */
 final class Routes {
 
+    private Routes() {
+    }
+
     static void execute(RouteContext context) throws Exception {
 
         Object content = context.body().get();
@@ -46,9 +49,7 @@ final class Routes {
         if (target != null) {
             Object result = null;
 
-            if (target instanceof RouteImpl) {
-                RouteImpl route = ((RouteImpl) target);
-
+            if (target instanceof RouteImpl route) {
                 if (context.requestWrapper().getDelegate() == null) {
                     Request request = RequestResponseFactory.create(match, context.httpRequest());
                     context.requestWrapper().setDelegate(request);

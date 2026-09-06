@@ -66,11 +66,9 @@ public class GzipUtils {
         boolean acceptsGzip = Collections.list(httpRequest.getHeaders(ACCEPT_ENCODING)).stream().anyMatch(STRING_MATCH);
         boolean wantGzip = httpResponse.getHeaders(CONTENT_ENCODING).contains(GZIP);
 
-        if (acceptsGzip) {
-            if (!requireWantsHeader || wantGzip) {
-                responseStream = new GZIPOutputStream(responseStream, true);
-                addContentEncodingHeaderIfMissing(httpResponse, wantGzip);
-            }
+        if (acceptsGzip && (!requireWantsHeader || wantGzip)) {
+            responseStream = new GZIPOutputStream(responseStream, true);
+            addContentEncodingHeaderIfMissing(httpResponse, wantGzip);
         }
 
         return responseStream;

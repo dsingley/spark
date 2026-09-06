@@ -57,7 +57,7 @@ class RouteImplTest {
         Object value = route.render(finalObjValue);
         assertAll(
                 () -> assertThat(value).isNotNull(),
-                () -> assertThat(value.toString()).isEqualTo(finalObjValue)
+                () -> assertThat(value).hasToString(finalObjValue)
         );
     }
 

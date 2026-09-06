@@ -8,53 +8,54 @@ import org.junit.jupiter.api.Test;
 
 class FilterImplTest {
 
-    public String PATH_TEST;
-    public String ACCEPT_TYPE_TEST;
+    public String pathTest;
+    public String acceptTypeTest;
 
     public FilterImpl filter;
 
     @BeforeEach
     void setUp(){
-        PATH_TEST = "/etc/test";
-        ACCEPT_TYPE_TEST  = "test/*";
+        pathTest = "/etc/test";
+        acceptTypeTest = "test/*";
     }
 
     @Test
     void testConstructor(){
-        FilterImpl filter = new FilterImpl(PATH_TEST, ACCEPT_TYPE_TEST) {
+        var f = new FilterImpl(pathTest, acceptTypeTest) {
             @Override
-            public void handle(Request request, Response response) throws Exception {
+            public void handle(Request request, Response response) {
+                // no-op
             }
         };
         assertAll(
-                () -> assertThat(filter.getPath()).isEqualTo(PATH_TEST),
-                () -> assertThat(filter.getAcceptType()).isEqualTo(ACCEPT_TYPE_TEST)
+                () -> assertThat(f.getPath()).isEqualTo(pathTest),
+                () -> assertThat(f.getAcceptType()).isEqualTo(acceptTypeTest)
         );
     }
 
     @Test
-    void testGets_thenReturnGetPathAndGetAcceptTypeSuccessfully() throws Exception {
-        filter = FilterImpl.create(PATH_TEST, ACCEPT_TYPE_TEST, null);
+    void testGets_thenReturnGetPathAndGetAcceptTypeSuccessfully() {
+        filter = FilterImpl.create(pathTest, acceptTypeTest, null);
         assertAll(
-                () -> assertThat(filter.getPath()).isEqualTo(PATH_TEST),
-                () -> assertThat(filter.getAcceptType()).isEqualTo(ACCEPT_TYPE_TEST)
+                () -> assertThat(filter.getPath()).isEqualTo(pathTest),
+                () -> assertThat(filter.getAcceptType()).isEqualTo(acceptTypeTest)
         );
     }
 
     @Test
     void testCreate_whenOutAssignAcceptTypeInTheParameters_thenReturnPathAndAcceptTypeSuccessfully(){
-        filter = FilterImpl.create(PATH_TEST, null);
+        filter = FilterImpl.create(pathTest, null);
         assertAll(
-                () -> assertThat(filter.getPath()).isEqualTo(PATH_TEST),
+                () -> assertThat(filter.getPath()).isEqualTo(pathTest),
                 () -> assertThat(filter.getAcceptType()).isEqualTo(RouteImpl.DEFAULT_ACCEPT_TYPE)
         );
     }
 
     @Test
     void testCreate_whenAcceptTypeNullValueInTheParameters_thenReturnPathAndAcceptTypeSuccessfully(){
-        filter = FilterImpl.create(PATH_TEST, null, null);
+        filter = FilterImpl.create(pathTest, null, null);
         assertAll(
-                () -> assertThat(filter.getPath()).isEqualTo(PATH_TEST),
+                () -> assertThat(filter.getPath()).isEqualTo(pathTest),
                 () -> assertThat(filter.getAcceptType()).isEqualTo(RouteImpl.DEFAULT_ACCEPT_TYPE)
         );
     }

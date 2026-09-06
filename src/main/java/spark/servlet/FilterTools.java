@@ -36,7 +36,7 @@ final class FilterTools {
 
         path = path.substring(contextPath.length());
 
-        if (path.length() > 0) {
+        if (!path.isEmpty()) {
             path = path.substring(1);
         }
 

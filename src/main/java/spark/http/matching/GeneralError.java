@@ -19,6 +19,8 @@ package spark.http.matching;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.CustomErrorPages;
 import spark.ExceptionHandlerImpl;
 import spark.ExceptionMapper;
@@ -29,7 +31,10 @@ import spark.RequestResponseFactory;
  */
 final class GeneralError {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(GeneralError.class);
+    private GeneralError() {
+    }
+
+    private static final Logger LOG = LoggerFactory.getLogger(GeneralError.class);
 
     /**
      * Modifies the HTTP response and body based on the provided exception.

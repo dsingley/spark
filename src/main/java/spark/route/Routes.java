@@ -188,7 +188,7 @@ public class Routes {
         entry.path = url;
         entry.target = target;
         entry.acceptedType = acceptedType;
-        LOG.debug("Adds route: " + entry);
+        LOG.debug("Adds route: {}", entry);
         // Adds to end of list
         routes.add(entry);
     }
@@ -222,7 +222,7 @@ public class Routes {
 
     // TODO: I believe this feature has impacted performance. Optimization?
     private RouteEntry findTargetWithGivenAcceptType(List<RouteEntry> routeMatches, String acceptType) {
-        if (acceptType != null && routeMatches.size() > 0) {
+        if (acceptType != null && !routeMatches.isEmpty()) {
             Map<String, RouteEntry> acceptedMimeTypes = getAcceptedMimeTypes(routeMatches);
             String bestMatch = MimeParse.bestMatch(acceptedMimeTypes.keySet(), acceptType);
 
@@ -232,7 +232,7 @@ public class Routes {
                 return null;
             }
         } else {
-            if (routeMatches.size() > 0) {
+            if (!routeMatches.isEmpty()) {
                 return routeMatches.get(0);
             }
         }
@@ -283,11 +283,7 @@ public class Routes {
             try {
                 method = HttpMethod.valueOf(httpMethod);
             } catch (IllegalArgumentException e) {
-                LOG.error("The @Route value: "
-                              + route
-                              + " has an invalid HTTP method part: "
-                              + httpMethod
-                              + ".");
+                LOG.error("The @Route value: {} has an invalid HTTP method part: {}.", route, httpMethod);
                 return;
             }
             add(method, url, acceptType, target);

@@ -26,17 +26,17 @@ import org.slf4j.LoggerFactory;
 
 public class DummyFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DummyFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DummyFilter.class);
 
     public static void main(String[] args) {
         before((request, response) -> {
-            LOGGER.info("Before");
+            LOG.info("Before");
         });
 
         get("/hello", (request, response) -> "Hello World!");
 
         after((request, response) -> {
-            LOGGER.info("After");
+            LOG.info("After");
         });
     }
 

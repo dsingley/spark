@@ -9,16 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 class QueryParamsMapTest {
-
-    QueryParamsMap queryMap = new QueryParamsMap();
     
     @Test
     void constructorWithParametersMap() {
         Map<String,String[]> params = new HashMap<>();
         
         params.put("user[info][name]",new String[] {"fede"});
-        
-        QueryParamsMap queryMap = new QueryParamsMap(params);
+
+        var queryMap = new QueryParamsMap(params);
         
         assertAll(
                 () -> assertThat(queryMap.get("user").get("info").get("name").value()).isEqualTo("fede"),
@@ -28,15 +26,16 @@ class QueryParamsMapTest {
     
     @Test
     void keyToMap() {
-        QueryParamsMap queryMap = new QueryParamsMap();
+        var queryMap = new QueryParamsMap();
         
         queryMap.loadKeys("user[info][first_name]",new String[] {"federico"});
         queryMap.loadKeys("user[info][last_name]",new String[] {"dayan"});
 
+        assertThat(queryMap.getQueryMap()).isNotEmpty();
+
         assertAll(
-                () -> assertThat(queryMap.getQueryMap().isEmpty()).isFalse(),
-                () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().isEmpty()).isFalse(),
-                () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().get("info").getQueryMap().isEmpty()).isFalse(),
+                () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap()).isNotEmpty(),
+                () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().get("info").getQueryMap()).isNotEmpty(),
                 () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().get("info").getQueryMap().get("first_name").getValues()[0]).isEqualTo("federico"),
                 () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().get("info").getQueryMap().get("last_name").getValues()[0]).isEqualTo("dayan"),
                 () -> assertThat(queryMap.hasKey("user")).isTrue(),
@@ -66,8 +65,10 @@ class QueryParamsMapTest {
     
     @Test
     void parseKeyShouldParseRootKey() {
+        var queryMap = new QueryParamsMap();
         String[] parsed = queryMap.parseKey("user[name][more]");
-        
+        assertThat(parsed).isNotNull();
+
         assertAll(
                 () -> assertThat(parsed[0]).isEqualTo("user"),
                 () -> assertThat(parsed[1]).isEqualTo("[name][more]")
@@ -76,7 +77,9 @@ class QueryParamsMapTest {
     
     @Test
     void parseKeyShouldParseSubkeys() {
+        var queryMap = new QueryParamsMap();
         String[] parsedNameMore = queryMap.parseKey("[name][more]");
+        assertThat(parsedNameMore).isNotNull();
 
         assertAll(
                 () -> assertThat(parsedNameMore[0]).isEqualTo("name"),
@@ -84,16 +87,17 @@ class QueryParamsMapTest {
         );
 
         String[] parsedMore = queryMap.parseKey("[more]");
+        assertThat(parsedMore).isNotNull();
 
         assertAll(
                 () -> assertThat(parsedMore[0]).isEqualTo("more"),
-                () -> assertThat(parsedMore[1]).isEqualTo("")
+                () -> assertThat(parsedMore[1]).isEmpty()
         );
     }
     
     @Test
-    void itShouldbeNullSafe() {
-        QueryParamsMap queryParamsMap = new QueryParamsMap();
+    void itShouldBeNullSafe() {
+        var queryParamsMap = new QueryParamsMap();
         
         String ret = queryParamsMap.get("x").get("z").get("y").value("w");
         
@@ -102,12 +106,12 @@ class QueryParamsMapTest {
     
     @Test
     void testConstructor() {
-        QueryParamsMap queryMap = new QueryParamsMap("user[name][more]","fede");
+        var queryMap = new QueryParamsMap("user[name][more]","fede");
 
+        assertThat(queryMap.getQueryMap()).isNotEmpty();
         assertAll(
-                () -> assertThat(queryMap.getQueryMap().isEmpty()).isFalse(),
-                () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().isEmpty()).isFalse(),
-                () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().get("name").getQueryMap().isEmpty()).isFalse(),
+                () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap()).isNotEmpty(),
+                () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().get("name").getQueryMap()).isNotEmpty(),
                 () -> assertThat(queryMap.getQueryMap().get("user").getQueryMap().get("name").getQueryMap().get("more").getValues()[0]).isEqualTo("fede")
         );
     }
@@ -118,13 +122,13 @@ class QueryParamsMapTest {
         
         params.put("user[info][name]",new String[] {"fede"});
         params.put("user[info][last]",new String[] {"dayan"});
-        
-        QueryParamsMap queryMap = new QueryParamsMap(params);
+
+        var queryMap = new QueryParamsMap(params);
         
         Map<String,String[]> map = queryMap.get("user","info").toMap();
-        
+
+        assertThat(map).hasSize(2);
         assertAll(
-                () -> assertThat(map.size()).isEqualTo(2),
                 () -> assertThat(map.get("name")[0]).isEqualTo("fede"),
                 () -> assertThat(map.get("last")[0]).isEqualTo("dayan")
         );

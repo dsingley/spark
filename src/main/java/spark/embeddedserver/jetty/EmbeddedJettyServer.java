@@ -49,6 +49,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private final JettyHandler handler;
     private Server server;
 
+    // TODO (sleberknight): Is this intentionally using an instance logger? If so, why?
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Map<String, WebSocketHandlerWrapper> webSocketHandlers;
@@ -136,7 +137,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
             connector = SocketConnectorFactory.createSocketConnector(server, host, port, trustForwardHeaders);
         }
 
-        Connector previousConnectors[] = server.getConnectors();
+        Connector[] previousConnectors = server.getConnectors();
         server = connector.getServer();
         if (previousConnectors.length != 0) {
             server.setConnectors(previousConnectors);

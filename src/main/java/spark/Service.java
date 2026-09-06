@@ -91,7 +91,7 @@ public final class Service extends Routable {
     private final ExceptionMapper exceptionMapper = new ExceptionMapper();
 
     // default exception handler during initialization phase
-    private Consumer<Exception> initExceptionHandler = (e) -> {
+    private Consumer<Exception> initExceptionHandler = e -> {
         LOG.error("ignite failed", e);
         System.exit(100);
     };
@@ -716,7 +716,7 @@ public final class Service extends Routable {
      */
     public synchronized <T extends Exception> void exception(Class<T> exceptionClass, ExceptionHandler<? super T> handler) {
         // wrap
-        ExceptionHandlerImpl wrapper = new ExceptionHandlerImpl<T>(exceptionClass) {
+        var wrapper = new ExceptionHandlerImpl<>(exceptionClass) {
             @Override
             public void handle(T exception, Request request, Response response) {
                 handler.handle(exception, request, response);

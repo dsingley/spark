@@ -24,11 +24,11 @@ import java.util.HashMap;
 public enum HttpMethod {
     get, post, put, patch, delete, head, trace, connect, options, before, after, afterafter, unsupported;
 
-    private static HashMap<String, HttpMethod> methods = new HashMap<>();
+    private static final HashMap<String, HttpMethod> METHODS = new HashMap<>();
 
     static {
         for (HttpMethod method : values()) {
-            methods.put(method.toString(), method);
+            METHODS.put(method.toString(), method);
         }
     }
 
@@ -40,7 +40,7 @@ public enum HttpMethod {
      * @return          The HttpMethod corresponding to the provided string
      */
     public static HttpMethod get(String methodStr) {
-        HttpMethod method = methods.get(methodStr);
+        HttpMethod method = METHODS.get(methodStr);
         return method != null ? method : unsupported;
     }
 }

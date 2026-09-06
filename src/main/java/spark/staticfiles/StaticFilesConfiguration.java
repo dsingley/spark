@@ -43,7 +43,8 @@ import java.util.Map;
  * TODO: ETAG ?
  */
 public class StaticFilesConfiguration {
-    private final Logger LOG = LoggerFactory.getLogger(StaticFilesConfiguration.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(StaticFilesConfiguration.class);
 
     private List<AbstractResourceHandler> staticResourceHandlers = null;
 
@@ -52,7 +53,7 @@ public class StaticFilesConfiguration {
 
     public static StaticFilesConfiguration servletInstance = new StaticFilesConfiguration();
 
-    private Map<String, String> customHeaders = new HashMap<>();
+    private final Map<String, String> customHeaders = new HashMap<>();
 
     /**
      * Attempt consuming using either static resource handlers or jar resource handlers
@@ -73,8 +74,8 @@ public class StaticFilesConfiguration {
             httpResponse.setStatus(400);
             httpResponse.getWriter().write("Bad request");
             httpResponse.getWriter().flush();
-            LOG.warn(directoryTraversalDetection.getMessage() + " directory traversal detection for path: "
-                             + httpRequest.getPathInfo());
+            LOG.warn("{} directory traversal detection for path: {}",
+                directoryTraversalDetection.getMessage(), httpRequest.getPathInfo());
         }
         return false;
     }

@@ -39,7 +39,7 @@ import java.io.IOException;
  */
 class DisableMimeGuessingTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StaticFilesTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DisableMimeGuessingTest.class);
 
     private static final String FO_SHIZZY = "Fo shizzy";
     private static final String EXTERNAL_FILE_NAME_HTML = "externalFile.html";
@@ -78,13 +78,13 @@ class DisableMimeGuessingTest {
         Spark.stop();
         Spark.awaitStop();
         if (tmpExternalFile != null) {
-            LOGGER.debug("tearDown().deleting: " + tmpExternalFile);
+            LOG.debug("tearDown().deleting: {}", tmpExternalFile);
             tmpExternalFile.delete();
         }
     }
 
     @Test
-    void testMimeTypes() throws Exception {
+    void testMimeTypes() {
         assertAll(
                 () -> assertThat(doGet("/pages/index.html").headers.get("Content-Type")).isNull(),
                 () -> assertThat(doGet("/js/scripts.js").headers.get("Content-Type")).isNull(),

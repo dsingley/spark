@@ -11,19 +11,23 @@ import java.nio.file.Paths;
  * Created by Per Wendel on 2016-11-05.
  */
 public class StaticFilesFolder {
+
     private static final Logger LOG = LoggerFactory.getLogger(StaticFilesFolder.class);
     
     private static volatile String local;
     private static volatile String external;
 
+    private StaticFilesFolder() {
+    }
+
     @Deprecated
-    public static final void localConfiguredTo(String folder) {
+    public static void localConfiguredTo(String folder) {
 
         local = removeLeadingAndTrailingSlashesFrom(folder);
     }
 
     @Deprecated
-    public static final void externalConfiguredTo(String folder) {
+    public static void externalConfiguredTo(String folder) {
 
         String unixLikeFolder = Paths.get(folder).toAbsolutePath().toString().replace("\\", "/");
         LOG.warn("Registering external static files folder [{}] as [{}].", folder, unixLikeFolder);
@@ -31,12 +35,12 @@ public class StaticFilesFolder {
     }
 
     @Deprecated
-    public static final String local() {
+    public static String local() {
         return local;
     }
 
     @Deprecated
-    public static final String external() {
+    public static String external() {
         return external;
     }
 

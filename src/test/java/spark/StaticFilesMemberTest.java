@@ -40,7 +40,7 @@ import java.util.HashMap;
  */
 class StaticFilesMemberTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StaticFilesMemberTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StaticFilesMemberTest.class);
 
     private static final String FO_SHIZZY = "Fo shizzy";
     private static final String NOT_FOUND_BRO = "Not found bro";
@@ -86,7 +86,7 @@ class StaticFilesMemberTest {
         Spark.stop();
         Spark.awaitStop();
         if (tmpExternalFile != null) {
-            LOGGER.debug("tearDown().deleting: " + tmpExternalFile);
+            LOG.debug("tearDown().deleting: {}", tmpExternalFile);
             tmpExternalFile.delete();
         }
     }

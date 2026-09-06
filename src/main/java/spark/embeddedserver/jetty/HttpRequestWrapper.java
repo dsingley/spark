@@ -73,7 +73,7 @@ public class HttpRequestWrapper extends HttpServletRequestWrapper {
     }
 
     private class CachedServletInputStream extends ServletInputStream {
-        private ByteArrayInputStream byteArrayInputStream;
+        private final ByteArrayInputStream byteArrayInputStream;
 
         public CachedServletInputStream() {
             byteArrayInputStream = new ByteArrayInputStream(cachedBytes);
@@ -101,6 +101,7 @@ public class HttpRequestWrapper extends HttpServletRequestWrapper {
 
         @Override
         public void setReadListener(ReadListener readListener) {
+            // Assuming this was intentionally left empty to preserve the stream's synchronous-only behavior.
         }
     }
 }

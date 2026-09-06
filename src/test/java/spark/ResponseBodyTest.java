@@ -25,8 +25,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 
-import java.io.IOException;
-
 /**
  * Validates and shows the "rules" for how response "body" is set.
  */
@@ -45,7 +43,7 @@ public class ResponseBodyTest {
     private static SparkTestUtil http;
 
     @BeforeAll
-    static void beforeAll() throws IOException {
+    static void beforeAll() {
         http = new SparkTestUtil(4567);
 
         get(HELLO, (q, a) -> HELLO_WORLD);

@@ -31,6 +31,9 @@ import java.util.HashMap;
  */
 public class TypeUtil {
 
+    private TypeUtil() {
+    }
+
     /* ------------------------------------------------------------ */
     private static final HashMap<String, Class<?>> name2Class = new HashMap<>();
 
@@ -109,39 +112,41 @@ public class TypeUtil {
     /* ------------------------------------------------------------ */
     private static final HashMap<Class<?>, Method> class2Value = new HashMap<>();
 
+    private static final String VALUE_OF = "valueOf";
+
     static {
         try {
             Class<?>[] s = {java.lang.String.class};
 
             class2Value.put(java.lang.Boolean.TYPE,
-                            java.lang.Boolean.class.getMethod("valueOf", s));
+                            java.lang.Boolean.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Byte.TYPE,
-                            java.lang.Byte.class.getMethod("valueOf", s));
+                            java.lang.Byte.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Double.TYPE,
-                            java.lang.Double.class.getMethod("valueOf", s));
+                            java.lang.Double.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Float.TYPE,
-                            java.lang.Float.class.getMethod("valueOf", s));
+                            java.lang.Float.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Integer.TYPE,
-                            java.lang.Integer.class.getMethod("valueOf", s));
+                            java.lang.Integer.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Long.TYPE,
-                            java.lang.Long.class.getMethod("valueOf", s));
+                            java.lang.Long.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Short.TYPE,
-                            java.lang.Short.class.getMethod("valueOf", s));
+                            java.lang.Short.class.getMethod(VALUE_OF, s));
 
             class2Value.put(java.lang.Boolean.class,
-                            java.lang.Boolean.class.getMethod("valueOf", s));
+                            java.lang.Boolean.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Byte.class,
-                            java.lang.Byte.class.getMethod("valueOf", s));
+                            java.lang.Byte.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Double.class,
-                            java.lang.Double.class.getMethod("valueOf", s));
+                            java.lang.Double.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Float.class,
-                            java.lang.Float.class.getMethod("valueOf", s));
+                            java.lang.Float.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Integer.class,
-                            java.lang.Integer.class.getMethod("valueOf", s));
+                            java.lang.Integer.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Long.class,
-                            java.lang.Long.class.getMethod("valueOf", s));
+                            java.lang.Long.class.getMethod(VALUE_OF, s));
             class2Value.put(java.lang.Short.class,
-                            java.lang.Short.class.getMethod("valueOf", s));
+                            java.lang.Short.class.getMethod(VALUE_OF, s));
         } catch (Exception e) {
             throw new Error(e);
         }
