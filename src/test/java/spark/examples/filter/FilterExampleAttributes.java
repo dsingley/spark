@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FilterExampleAttributes {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilterExampleAttributes.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FilterExampleAttributes.class);
 
     public static void main(String[] args) {
         get("/hi", (request, response) -> {
@@ -39,7 +39,7 @@ public class FilterExampleAttributes {
 
         after("/hi", (request, response) -> {
             for (String attr : request.attributes()) {
-                LOGGER.info("attr: " + attr);
+                LOG.info("attr: {}", attr);
             }
         });
 

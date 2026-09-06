@@ -47,6 +47,9 @@ import java.net.URLConnection;
  */
 public abstract class ResourceUtils {
 
+    private ResourceUtils() {
+    }
+
     /**
      * Pseudo URL prefix for loading from the class path: "classpath:"
      */

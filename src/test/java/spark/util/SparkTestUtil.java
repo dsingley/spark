@@ -381,7 +381,7 @@ public class SparkTestUtil {
     }
 
     static class HttpLock extends HttpUriRequestBase {
-        public final static String METHOD_NAME = "LOCK";
+        public static final String METHOD_NAME = "LOCK";
 
         public HttpLock(final String uri) {
             super(METHOD_NAME, URI.create(uri));

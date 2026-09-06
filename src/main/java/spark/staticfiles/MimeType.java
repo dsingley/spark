@@ -27,7 +27,10 @@ import java.util.Optional;
  */
 public class MimeType {
 
-    final static String CONTENT_TYPE = "Content-Type";
+    private MimeType() {
+    }
+
+    static final String CONTENT_TYPE = "Content-Type";
 
     private static volatile boolean guessingOn = true;
 

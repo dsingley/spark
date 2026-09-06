@@ -46,6 +46,9 @@ public class EmbeddedServers {
         return Identifiers.JETTY;
     }
 
+    /**
+     * @deprecated use {@link #create(Object, Routes, ExceptionMapper, StaticFilesConfiguration, boolean)}
+     */
     @Deprecated
     public static EmbeddedServer create(Object identifier,
                                         Routes routeMatcher,

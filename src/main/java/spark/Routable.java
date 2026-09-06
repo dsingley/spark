@@ -34,6 +34,9 @@ abstract class Routable {
      */
     protected abstract void addRoute(HttpMethod httpMethod, RouteImpl route);
 
+    /**
+     * @deprecated use {@link #addRoute(HttpMethod, RouteImpl)}
+     */
     @Deprecated
     protected abstract void addRoute(String httpMethod, RouteImpl route);
 
@@ -45,6 +48,9 @@ abstract class Routable {
      */
     protected abstract void addFilter(HttpMethod httpMethod, FilterImpl filter);
 
+    /**
+     * @deprecated use {@link #addFilter(HttpMethod, FilterImpl)}
+     */
     @Deprecated
     protected abstract void addFilter(String httpMethod, FilterImpl filter);
 

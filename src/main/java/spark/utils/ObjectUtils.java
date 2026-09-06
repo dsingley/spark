@@ -30,6 +30,9 @@ package spark.utils;
  */
 public abstract class ObjectUtils {
 
+    private ObjectUtils() {
+    }
+
     /**
      * Determine whether the given array is empty:
      * i.e. {@code null} or of zero length.

@@ -61,6 +61,7 @@ public class MyApp implements SparkApplication {
         try {
             Thread.sleep(500);
         } catch (Exception e) {
+            // ignored
         }
     }
 

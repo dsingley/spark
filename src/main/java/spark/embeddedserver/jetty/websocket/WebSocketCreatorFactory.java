@@ -30,6 +30,9 @@ import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketCreator;
  */
 public class WebSocketCreatorFactory {
 
+    private WebSocketCreatorFactory() {
+    }
+
     /**
      * Creates a {@link JettyWebSocketCreator} that uses the given handler class/instance for
      * the WebSocket connections.

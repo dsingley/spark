@@ -41,7 +41,7 @@ import java.net.URLEncoder;
  */
 class StaticFilesTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StaticFilesTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StaticFilesTest.class);
 
     private static final String FO_SHIZZY = "Fo shizzy";
     private static final String NOT_FOUND_BRO = "Not found bro";
@@ -87,7 +87,7 @@ class StaticFilesTest {
         Spark.stop();
         Spark.awaitStop();
         if (tmpExternalFile != null) {
-            LOGGER.debug("tearDown().deleting: " + tmpExternalFile);
+            LOG.debug("tearDown().deleting: " + tmpExternalFile);
             tmpExternalFile.delete();
         }
     }

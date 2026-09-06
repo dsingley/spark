@@ -12,13 +12,11 @@ import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
-import java.io.IOException;
-
 class FilterTest {
     static SparkTestUtil testUtil;
 
     @BeforeAll
-    static void beforeAll() throws IOException {
+    static void beforeAll() {
         testUtil = new SparkTestUtil(4567);
 
         before("/justfilter", (q, a) -> System.out.println("Filter matched"));

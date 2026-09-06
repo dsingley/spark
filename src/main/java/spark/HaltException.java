@@ -26,25 +26,23 @@ import jakarta.servlet.http.HttpServletResponse;
 public class HaltException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    private int statusCode = HttpServletResponse.SC_OK;
-    private String body = null;
+    private final int statusCode;
+    private final String body;
 
     HaltException() {
-        super(null, null, false, false);
+        this(HttpServletResponse.SC_OK, null);
     }
 
     HaltException(int statusCode) {
-        this();
-        this.statusCode = statusCode;
+        this(statusCode, null);
     }
 
     HaltException(String body) {
-        this();
-        this.body = body;
+        this(HttpServletResponse.SC_OK, body);
     }
 
     HaltException(int statusCode, String body) {
-        this();
+        super(null, null, false, false);
         this.statusCode = statusCode;
         this.body = body;
     }

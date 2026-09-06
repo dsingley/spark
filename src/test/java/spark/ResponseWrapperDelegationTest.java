@@ -73,7 +73,7 @@ class ResponseWrapperDelegationTest {
                 () -> assertThat(response.body).isEqualTo("{\"status\": \"ok\"}"),
                 // Jetty 12 echoes MimeTypes' assumed charset for text/plain into the Content-Type
                 // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
-                () -> assertThat(response.headers.get("Content-Type")).isEqualTo("text/plain;charset=iso-8859-1")
+            () -> assertThat(response.headers).containsEntry("Content-Type", "text/plain;charset=iso-8859-1")
         );
     }
 }

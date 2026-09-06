@@ -174,7 +174,7 @@ class RequestTest {
 
         when(servletRequest.getSession(true)).thenReturn(httpSession);
 
-        assertThat(request.session(false)).isEqualTo(null);
+        assertThat(request.session(false)).isNull();
 
     }
 
@@ -216,8 +216,8 @@ class RequestTest {
     void testSession_2times() {
         when(servletRequest.getSession(true)).thenReturn(httpSession);
 
-        Session session = request.session(true);
-        session = request.session(true);
+        request.session(true);
+        var session = request.session(true);
 
         assertThat(session).isNotNull();
         verify(servletRequest, times(1)).getSession(true);

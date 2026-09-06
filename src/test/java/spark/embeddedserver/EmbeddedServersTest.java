@@ -48,13 +48,13 @@ class EmbeddedServersTest {
         embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 0, (SslStores) null, 0, 0, 0);
 
-        assertThat(requestLogFile.exists()).isTrue();
+        assertThat(requestLogFile).exists();
         embeddedServer.extinguish();
         verify(serverFactory).create(0, 0, 0);
     }
 
     @Test
-    void testAdd_whenConfigureRoutes_createsCustomServer() throws Exception {
+    void testAdd_whenConfigureRoutes_createsCustomServer() {
         File requestLogFile = new File(temporaryFolder, "request.log");
         // Register custom server
         EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new EmbeddedJettyFactory(new JettyServerFactory() {
@@ -73,7 +73,7 @@ class EmbeddedServersTest {
         Spark.get("/", (request, response) -> "OK");
         Spark.awaitInitialization();
 
-        assertThat(requestLogFile.exists()).isTrue();
+        assertThat(requestLogFile).exists();
     }
 
 }

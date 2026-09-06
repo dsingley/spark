@@ -16,8 +16,7 @@ public class GzipClient {
     public static String getAndDecompress(String url) throws Exception {
         InputStream compressed = get(url);
         GZIPInputStream gzipInputStream = new GZIPInputStream(compressed);
-        String decompressed = IOUtils.toString(gzipInputStream);
-        return decompressed;
+        return IOUtils.toString(gzipInputStream);
     }
 
     public static InputStream get(String url) throws IOException {

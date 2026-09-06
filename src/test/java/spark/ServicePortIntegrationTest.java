@@ -16,8 +16,9 @@ import spark.util.SparkTestUtil;
  */
 class ServicePortIntegrationTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ServicePortIntegrationTest.class);
+
     private static Service service;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServicePortIntegrationTest.class);
 
     @BeforeAll
     static void beforeAll() {
@@ -39,7 +40,7 @@ class ServicePortIntegrationTest {
     void testGetPort_withRandomPort() throws Exception {
         int actualPort = service.port();
 
-        LOGGER.info("got port ");
+        LOG.info("got port ");
 
         SparkTestUtil testUtil = new SparkTestUtil(actualPort);
 

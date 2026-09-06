@@ -22,9 +22,9 @@ import java.util.Map;
 
 class GenericSecureIntegrationTest {
 
-    static SparkTestUtil testUtil;
+    private static final Logger LOG = LoggerFactory.getLogger(GenericSecureIntegrationTest.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GenericSecureIntegrationTest.class);
+    static SparkTestUtil testUtil;
 
     @BeforeAll
     static void beforeAll() {
@@ -102,7 +102,7 @@ class GenericSecureIntegrationTest {
         UrlResponse response = testUtil.doMethodSecure("HEAD", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
-                () -> assertThat(response.body).isEqualTo("")
+                () -> assertThat(response.body).isEmpty()
         );
     }
 
@@ -163,7 +163,7 @@ class GenericSecureIntegrationTest {
     @Test
     void testPost() throws Exception {
         UrlResponse response = testUtil.doMethodSecure("POST", "/poster", "Fo shizzy");
-        LOGGER.info(response.body);
+        LOG.info(response.body);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(201),
                 () -> assertThat(response.body).contains("Fo shizzy")
@@ -173,7 +173,7 @@ class GenericSecureIntegrationTest {
     @Test
     void testPatch() throws Exception {
         UrlResponse response = testUtil.doMethodSecure("PATCH", "/patcher", "Fo shizzy");
-        LOGGER.info(response.body);
+        LOG.info(response.body);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).contains("Fo shizzy")
