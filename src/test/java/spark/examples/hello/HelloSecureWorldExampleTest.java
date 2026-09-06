@@ -9,25 +9,25 @@ import spark.util.SparkTestUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HelloSecureWorldExampleTest {
+class HelloSecureWorldExampleTest {
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         testUtil = new SparkTestUtil(4567);
         HelloSecureWorld.main(new String[0]);
         Spark.awaitInitialization();
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
     }
 
     @Test
-    public void hello() throws Exception {
+    void hello() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/hello", null);
         assertThat(response.status).isEqualTo(200);
         assertThat(response.body).isEqualTo("Hello Secure World!");

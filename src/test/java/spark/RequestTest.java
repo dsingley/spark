@@ -1,8 +1,22 @@
 package spark;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static spark.Spark.after;
+import static spark.Spark.afterAfter;
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.before;
+import static spark.Spark.get;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import spark.routematch.RouteMatch;
 import spark.util.SparkTestUtil;
 
@@ -12,23 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static spark.Spark.after;
-import static spark.Spark.afterAfter;
-import static spark.Spark.before;
-import static spark.Spark.get;
-import static spark.Spark.awaitInitialization;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-public class RequestTest {
+class RequestTest {
 
     private static final String THE_SERVLET_PATH = "/the/servlet/path";
     private static final String THE_CONTEXT_PATH = "/the/context/path";
@@ -47,7 +45,7 @@ public class RequestTest {
     RouteMatch matchWithParams = new RouteMatch(null, "/users/:username", "/users/bob", "text/html", null);
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         http = new SparkTestUtil(4567);
 
         before(BEFORE_MATCHED_ROUTE, (q, a) -> {
@@ -75,7 +73,7 @@ public class RequestTest {
     }
 
     @Test
-    public void queryParamShouldReturnsParametersFromQueryString() {
+    void queryParamShouldReturnsParametersFromQueryString() {
 
         when(servletRequest.getParameter("name")).thenReturn("Federico");
 
@@ -84,7 +82,7 @@ public class RequestTest {
     }
 
     @Test
-    public void queryParamOrDefault_shouldReturnQueryParam_whenQueryParamExists() {
+    void queryParamOrDefault_shouldReturnQueryParam_whenQueryParamExists() {
 
         when(servletRequest.getParameter("name")).thenReturn("Federico");
 
@@ -93,7 +91,7 @@ public class RequestTest {
     }
 
     @Test
-    public void queryParamOrDefault_shouldReturnDefault_whenQueryParamIsNull() {
+    void queryParamOrDefault_shouldReturnDefault_whenQueryParamIsNull() {
 
         when(servletRequest.getParameter("name")).thenReturn(null);
 
@@ -102,7 +100,7 @@ public class RequestTest {
     }
 
     @Test
-    public void queryParamShouldBeParsedAsHashMap() {
+    void queryParamShouldBeParsedAsHashMap() {
         Map<String, String[]> params = new HashMap<>();
         params.put("user[name]", new String[] {"Federico"});
 
@@ -113,7 +111,7 @@ public class RequestTest {
     }
 
     @Test
-    public void shouldBeAbleToGetTheServletPath() {
+    void shouldBeAbleToGetTheServletPath() {
 
         when(servletRequest.getServletPath()).thenReturn(THE_SERVLET_PATH);
 
@@ -122,7 +120,7 @@ public class RequestTest {
     }
 
     @Test
-    public void shouldBeAbleToGetTheContextPath() {
+    void shouldBeAbleToGetTheContextPath() {
 
         when(servletRequest.getContextPath()).thenReturn(THE_CONTEXT_PATH);
 
@@ -131,7 +129,7 @@ public class RequestTest {
     }
 
     @Test
-    public void shouldBeAbleToGetTheMatchedPath() {
+    void shouldBeAbleToGetTheMatchedPath() {
         Request request = new Request(matchWithParams, servletRequest);
         assertThat(request.matchedPath()).isEqualTo(THE_MATCHED_ROUTE);
         try {
@@ -155,7 +153,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testSessionNoParams_whenSessionIsNull() {
+    void testSessionNoParams_whenSessionIsNull() {
 
         when(servletRequest.getSession()).thenReturn(httpSession);
 
@@ -163,7 +161,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testSession_whenCreateIsTrue() {
+    void testSession_whenCreateIsTrue() {
 
         when(servletRequest.getSession(true)).thenReturn(httpSession);
 
@@ -172,7 +170,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testSession_whenCreateIsFalse() {
+    void testSession_whenCreateIsFalse() {
 
         when(servletRequest.getSession(true)).thenReturn(httpSession);
 
@@ -181,7 +179,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testSessionNpParams_afterSessionInvalidate() {
+    void testSessionNpParams_afterSessionInvalidate() {
         when(servletRequest.getSession()).thenReturn(httpSession);
 
         Session session = request.session();
@@ -192,7 +190,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testSession_whenCreateIsTrue_afterSessionInvalidate() {
+    void testSession_whenCreateIsTrue_afterSessionInvalidate() {
         when(servletRequest.getSession(true)).thenReturn(httpSession);
 
         Session session = request.session(true);
@@ -203,7 +201,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testSession_whenCreateIsFalse_afterSessionInvalidate() {
+    void testSession_whenCreateIsFalse_afterSessionInvalidate() {
         when(servletRequest.getSession()).thenReturn(httpSession);
         when(servletRequest.getSession(false)).thenReturn(null);
 
@@ -215,7 +213,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testSession_2times() {
+    void testSession_2times() {
         when(servletRequest.getSession(true)).thenReturn(httpSession);
 
         Session session = request.session(true);
@@ -226,7 +224,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testCookies_whenCookiesArePresent() {
+    void testCookies_whenCookiesArePresent() {
 
         Collection<Cookie> cookies = new ArrayList<>();
         cookies.add(new Cookie("cookie1", "cookie1value"));
@@ -249,7 +247,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testCookies_whenCookiesAreNotPresent() {
+    void testCookies_whenCookiesAreNotPresent() {
 
         when(servletRequest.getCookies()).thenReturn(null);
 
@@ -263,7 +261,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testCookie_whenCookiesArePresent() {
+    void testCookie_whenCookiesArePresent() {
 
         final String cookieKey = "cookie1";
         final String cookieValue = "cookie1value";
@@ -282,7 +280,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testCookie_whenCookiesAreNotPresent() {
+    void testCookie_whenCookiesAreNotPresent() {
 
         final String cookieKey = "nonExistentCookie";
 
@@ -293,7 +291,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testRequestMethod() {
+    void testRequestMethod() {
 
         final String requestMethod = "GET";
 
@@ -304,7 +302,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testScheme() {
+    void testScheme() {
 
         final String scheme = "http";
 
@@ -315,7 +313,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testHost() {
+    void testHost() {
 
         final String host = "www.google.com";
 
@@ -326,7 +324,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testUserAgent() {
+    void testUserAgent() {
 
         final String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
 
@@ -337,7 +335,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testPort() {
+    void testPort() {
 
         final int port = 80;
 
@@ -348,7 +346,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testPathInfo() {
+    void testPathInfo() {
 
         final String pathInfo = "/path/to/resource";
 
@@ -359,7 +357,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testServletPath() {
+    void testServletPath() {
 
         final String servletPath = "/api";
 
@@ -370,7 +368,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testContextPath() {
+    void testContextPath() {
 
         final String contextPath = "/my-app";
 
@@ -381,7 +379,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testUrl() {
+    void testUrl() {
 
         final String url = "http://www.myapp.com/myapp/a";
 
@@ -392,7 +390,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testContentType() {
+    void testContentType() {
 
         final String contentType = "image/jpeg";
 
@@ -403,7 +401,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testIp() {
+    void testIp() {
 
         final String ip = "216.58.197.106:80";
 
@@ -414,7 +412,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testContentLength() {
+    void testContentLength() {
 
         final int contentLength = 500;
 
@@ -425,7 +423,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testHeaders() {
+    void testHeaders() {
 
         final String headerKey = "host";
         final String host = "www.google.com";
@@ -437,7 +435,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testQueryParamsValues_whenParamExists() {
+    void testQueryParamsValues_whenParamExists() {
 
         final String[] paramValues = {"foo", "bar"};
 
@@ -448,7 +446,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testQueryParamsValues_whenParamDoesNotExists() {
+    void testQueryParamsValues_whenParamDoesNotExists() {
 
         when(servletRequest.getParameterValues("id")).thenReturn(null);
 
@@ -457,7 +455,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testQueryParams() {
+    void testQueryParams() {
 
         Map<String, String[]> params = new HashMap<>();
         params.put("sort", new String[]{"asc"});
@@ -472,7 +470,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testURI() {
+    void testURI() {
 
         final String requestURI = "http://localhost:8080/myapp/";
 
@@ -483,7 +481,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testProtocol() {
+    void testProtocol() {
 
         final String protocol = "HTTP/1.1";
 

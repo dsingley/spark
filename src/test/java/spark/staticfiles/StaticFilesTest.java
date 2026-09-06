@@ -16,35 +16,30 @@
  */
 package spark.staticfiles;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import java.net.URLEncoder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static spark.Spark.exception;
+import static spark.Spark.get;
+import static spark.Spark.staticFiles;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import org.slf4j.Logger;
-
 import org.slf4j.LoggerFactory;
-
 import spark.Spark;
 import spark.examples.exception.NotFoundException;
-
 import spark.util.SparkTestUtil;
 
-import static spark.Spark.exception;
-import static spark.Spark.get;
-
-import static spark.Spark.staticFiles;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * Test static files
  */
-public class StaticFilesTest {
+class StaticFilesTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticFilesTest.class);
 
@@ -60,7 +55,7 @@ public class StaticFilesTest {
     private static File tmpExternalFile;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(4567);
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE_NAME_HTML);
@@ -88,7 +83,7 @@ public class StaticFilesTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
         if (tmpExternalFile != null) {
@@ -98,7 +93,7 @@ public class StaticFilesTest {
     }
 
     @Test
-    public void testMimeTypes() throws Exception {
+    void testMimeTypes() throws Exception {
         // Jetty 12 echoes MimeTypes' assumed charset for text/html into the Content-Type
         // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
         assertAll(
@@ -114,13 +109,13 @@ public class StaticFilesTest {
     }
 
     @Test
-    public void testCustomMimeType() throws Exception {
+    void testCustomMimeType() throws Exception {
         staticFiles.registerMimeType("cxt", "custom-extension-type");
         assertThat(doGet("/img/file.cxt").headers.get("Content-Type")).isEqualTo("custom-extension-type");
     }
 
     @Test
-    public void testStaticFileCssStyleCss() throws Exception {
+    void testStaticFileCssStyleCss() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/css/style.css");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -132,7 +127,7 @@ public class StaticFilesTest {
     }
 
     @Test
-    public void testStaticFilePagesIndexHtml() throws Exception {
+    void testStaticFilePagesIndexHtml() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/pages/index.html");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -143,7 +138,7 @@ public class StaticFilesTest {
     }
 
     @Test
-    public void testStaticFilePageHtml() throws Exception {
+    void testStaticFilePageHtml() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/page.html");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -154,7 +149,7 @@ public class StaticFilesTest {
     }
 
     @Test
-    public void testDirectoryTraversalProtectionLocal() throws Exception {
+    void testDirectoryTraversalProtectionLocal() throws Exception {
         String path = "/" + URLEncoder.encode("..\\spark\\", "UTF-8") + "Spark.class";
         SparkTestUtil.UrlResponse response = doGet(path);
 
@@ -164,7 +159,7 @@ public class StaticFilesTest {
     }
 
     @Test
-    public void testExternalStaticFile() throws Exception {
+    void testExternalStaticFile() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/externalFile.html");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -187,7 +182,7 @@ public class StaticFilesTest {
     }
 
     @Test
-    public void testExceptionMapping404() throws Exception {
+    void testExceptionMapping404() throws Exception {
         SparkTestUtil.UrlResponse response = doGet("/filethatdoesntexist.html");
 
         assertAll(

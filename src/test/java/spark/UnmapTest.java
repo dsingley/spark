@@ -1,22 +1,20 @@
 package spark;
 
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-
-import spark.util.SparkTestUtil;
-
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.get;
-
 import static spark.Spark.unmap;
 
-public class UnmapTest {
+import org.junit.jupiter.api.Test;
+import spark.util.SparkTestUtil;
+
+class UnmapTest {
 
     SparkTestUtil testUtil = new SparkTestUtil(4567);
 
     @Test
-    public void testUnmap() throws Exception {
+    void testUnmap() throws Exception {
         get("/tobeunmapped", (q, a) -> "tobeunmapped");
         awaitInitialization();
 

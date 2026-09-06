@@ -1,29 +1,27 @@
 package spark;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import spark.util.SparkTestUtil;
-
 import static spark.Spark.after;
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.awaitStop;
 import static spark.Spark.before;
 import static spark.Spark.get;
-
 import static spark.Spark.stop;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import spark.util.SparkTestUtil;
 
 /**
  * Basic test to ensure that multiple before and after filters can be mapped to a route.
  */
-public class MultipleFiltersTest {
+class MultipleFiltersTest {
     
     private static SparkTestUtil http;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         http = new SparkTestUtil(4567);
 
         before("/user", initializeCounter, incrementCounter, loadUser);
@@ -42,13 +40,13 @@ public class MultipleFiltersTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         stop();
         awaitStop();
     }
 
     @Test
-    public void testMultipleFilters() {
+    void testMultipleFilters() {
         try {
             SparkTestUtil.UrlResponse response = http.get("/user");
             assertThat(response.status).isEqualTo(200);

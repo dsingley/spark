@@ -1,11 +1,13 @@
 package spark.resource;
 
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UriPathTest {
+import org.junit.jupiter.api.Test;
+
+class UriPathTest {
+
     @Test
-    public void canonical() throws Exception {
+    void canonical() {
         String[][] canonical = {
             {"/aaa/bbb/", "/aaa/bbb/"},
             {"/aaa//bbb/", "/aaa//bbb/"},

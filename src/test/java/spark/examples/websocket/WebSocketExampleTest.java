@@ -1,9 +1,6 @@
 package spark.examples.websocket;
 
-import java.net.URI;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.jetty.websocket.api.Callback;
 import org.eclipse.jetty.websocket.api.Session;
@@ -14,12 +11,14 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import spark.Spark;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.net.URI;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
-public class WebSocketExampleTest {
+class WebSocketExampleTest {
 
     @WebSocket
     public static class EchoingClient {
@@ -46,19 +45,19 @@ public class WebSocketExampleTest {
     }
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         WebSocketExample.main(null);
         Spark.awaitInitialization();
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
     }
 
     @Test
-    public void echoesMessage() throws Exception {
+    void echoesMessage() throws Exception {
         WebSocketClient client = new WebSocketClient();
         EchoingClient echoingClient = new EchoingClient("hello ws");
         try {
@@ -71,7 +70,7 @@ public class WebSocketExampleTest {
     }
 
     @Test
-    public void respondsToPing() throws Exception {
+    void respondsToPing() throws Exception {
         WebSocketClient client = new WebSocketClient();
         EchoingClient echoingClient = new EchoingClient("PING");
         try {

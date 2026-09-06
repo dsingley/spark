@@ -1,34 +1,33 @@
 package spark.examples.filter;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import spark.Spark;
-import spark.util.SparkTestUtil;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class FilterExampleTest {
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import spark.Spark;
+import spark.util.SparkTestUtil;
+
+class FilterExampleTest {
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         testUtil = new SparkTestUtil(4567);
         FilterExample.main(null);
         Spark.awaitInitialization();
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
     }
 
     @Test
-    public void rejectsBadCredentials() throws Exception {
+    void rejectsBadCredentials() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello?user=some&password=guy", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(401),
@@ -37,7 +36,7 @@ public class FilterExampleTest {
     }
 
     @Test
-    public void acceptsGoodCredentials() throws Exception {
+    void acceptsGoodCredentials() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello?user=foo&password=bar", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),

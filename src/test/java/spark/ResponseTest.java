@@ -1,21 +1,21 @@
 package spark;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.kiwiproject.reflect.KiwiReflection;
-import org.mockito.ArgumentCaptor;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import java.util.Date;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class ResponseTest {
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kiwiproject.reflect.KiwiReflection;
+import org.mockito.ArgumentCaptor;
+
+import java.util.Date;
+
+class ResponseTest {
 
     private Response response;
     private HttpServletResponse httpServletResponse;
@@ -23,20 +23,20 @@ public class ResponseTest {
     private ArgumentCaptor<Cookie> cookieArgumentCaptor;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         httpServletResponse = mock(HttpServletResponse.class);
         response = new Response(httpServletResponse);
         cookieArgumentCaptor = ArgumentCaptor.forClass(Cookie.class);
     }
 
     @Test
-    public void testConstructor_whenHttpServletResponseParameter() {
+    void testConstructor_whenHttpServletResponseParameter() {
         HttpServletResponse returnResponse = KiwiReflection.getTypedFieldValue(response, "response", HttpServletResponse.class);
         assertThat(returnResponse).isSameAs(httpServletResponse);
     }
 
     @Test
-    public void testSetStatus() {
+    void testSetStatus() {
         final int finalStatusCode = HttpServletResponse.SC_OK;
 
         response.status(finalStatusCode);
@@ -44,13 +44,13 @@ public class ResponseTest {
     }
 
     @Test
-    public void testGetStatus() {
+    void testGetStatus() {
         response.status();
         verify(httpServletResponse).getStatus();
     }
 
     @Test
-    public void testSetType() {
+    void testSetType() {
         final String finalType = "text/html";
 
         response.type(finalType);
@@ -58,13 +58,13 @@ public class ResponseTest {
     }
 
     @Test
-    public void testGetType() {
+    void testGetType() {
         response.type();
         verify(httpServletResponse).getContentType();
     }
 
     @Test
-    public void testSetBody() {
+    void testSetBody() {
         final String finalBody = "Hello world!";
 
         response.body(finalBody);
@@ -73,7 +73,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testGetBody() {
+    void testGetBody() {
         final String finalBody = "Hello world!";
 
         KiwiReflection.setFieldValue(response, "body", finalBody);
@@ -82,13 +82,13 @@ public class ResponseTest {
     }
 
     @Test
-    public void testRaw() {
+    void testRaw() {
         HttpServletResponse returnResponse = response.raw();
         assertThat(returnResponse).isSameAs(httpServletResponse);
     }
 
     @Test
-    public void testHeader() {
+    void testHeader() {
         final String finalHeaderKey = "Content-Length";
         final String finalHeaderValue = "32";
 
@@ -97,27 +97,27 @@ public class ResponseTest {
     }
 
     @Test
-    public void testIntHeader() {
+    void testIntHeader() {
         response.header("X-Processing-Time", 10);
         verify(httpServletResponse).addIntHeader("X-Processing-Time", 10);
     }
 
     @Test
-    public void testJavaUtilDateHeader() {
+    void testJavaUtilDateHeader() {
         Date now = new Date();
         response.header("X-Processing-Since", now);
         verify(httpServletResponse).addDateHeader("X-Processing-Since", now.getTime());
     }
 
     @Test
-    public void testJavaSqlDateHeader() {
+    void testJavaSqlDateHeader() {
         Date now = new Date();
         response.header("X-Processing-Since", new java.sql.Date(now.getTime()));
         verify(httpServletResponse).addDateHeader("X-Processing-Since", now.getTime());
     }
 
     @Test
-    public void testInstantDateHeader() {
+    void testInstantDateHeader() {
         Date now = new Date();
         response.header("X-Processing-Since", now.toInstant());
         verify(httpServletResponse).addDateHeader("X-Processing-Since", now.getTime());
@@ -141,7 +141,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testCookie_whenNameAndValueParameters_shouldAddCookieSuccessfully() {
+    void testCookie_whenNameAndValueParameters_shouldAddCookieSuccessfully() {
 
         final String finalDomain = "";
         final String finalPath = "";
@@ -158,7 +158,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testCookie_whenNameValueAndMaxAgeParameters_shouldAddCookieSuccessfully() {
+    void testCookie_whenNameValueAndMaxAgeParameters_shouldAddCookieSuccessfully() {
 
         final String finalDomain = "";
         final String finalPath = "";
@@ -175,7 +175,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testCookie_whenNameValueMaxAgeAndSecuredParameters_shouldAddCookieSuccessfully() {
+    void testCookie_whenNameValueMaxAgeAndSecuredParameters_shouldAddCookieSuccessfully() {
         final String finalDomain = "";
         final String finalPath = "";
         final String finalName = "cookie_name";
@@ -191,7 +191,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testCookie_whenNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
+    void testCookie_whenNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
         final String finalDomain = "";
         final String finalPath = "";
         final String finalName = "cookie_name";
@@ -207,7 +207,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testCookie_whenPathNameValueMaxAgeAndSecuredParameters_shouldAddCookieSuccessfully() {
+    void testCookie_whenPathNameValueMaxAgeAndSecuredParameters_shouldAddCookieSuccessfully() {
         final String finalDomain = "";
         final String finalPath = "/cookie/SetCookie";
         final String finalName = "cookie_name";
@@ -223,7 +223,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testCookie_whenPathNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
+    void testCookie_whenPathNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
         final String finalDomain = "";
         final String finalPath = "/cookie/SetCookie";
         final String finalName = "cookie_name";
@@ -239,7 +239,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testCookie_whenDomainPathNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
+    void testCookie_whenDomainPathNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
         final String finalDomain = "example.com";
         final String finalPath = "/cookie/SetCookie";
         final String finalName = "cookie_name";
@@ -255,7 +255,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testRemoveCookie_shouldModifyPropertiesFromCookieSuccessfully() {
+    void testRemoveCookie_shouldModifyPropertiesFromCookieSuccessfully() {
         final String finalPath = "/cookie/SetCookie";
         final String finalName = "cookie_name";
         final String finalValue = "Test Cookie";
@@ -275,7 +275,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testRedirect_whenLocationParameter_shouldModifyStatusCodeSuccessfully() throws Exception { // NOSONAR
+    void testRedirect_whenLocationParameter_shouldModifyStatusCodeSuccessfully() throws Exception { // NOSONAR
         final String finalLocation = "/test";
 
         response.redirect(finalLocation);
@@ -283,7 +283,7 @@ public class ResponseTest {
     }
 
     @Test
-    public void testRedirect_whenLocationAndHttpStatusCodeParameters_shouldModifyStatusCodeSuccessfully() throws
+    void testRedirect_whenLocationAndHttpStatusCodeParameters_shouldModifyStatusCodeSuccessfully() throws
                                                                                                           Exception { // NOSONAR
         final String finalLocation = "/test";
         int finalStatusCode = HttpServletResponse.SC_BAD_GATEWAY;

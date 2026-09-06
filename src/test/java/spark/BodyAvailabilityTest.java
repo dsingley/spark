@@ -1,22 +1,19 @@
 package spark;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static spark.Spark.after;
+import static spark.Spark.before;
+import static spark.Spark.post;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.slf4j.Logger;
-
 import org.slf4j.LoggerFactory;
-
 import spark.util.SparkTestUtil;
 
-import static spark.Spark.after;
-import static spark.Spark.before;
-
-import static spark.Spark.post;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-public class BodyAvailabilityTest {
+class BodyAvailabilityTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BodyAvailabilityTest.class);
 
@@ -24,14 +21,14 @@ public class BodyAvailabilityTest {
     
     private static SparkTestUtil testUtil;
 
-    private final int HTTP_OK = 200;
+    private static final int HTTP_OK = 200;
     
     private static String beforeBody = null;
     private static String routeBody = null;
     private static String afterBody = null;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         LOGGER.debug("setup()");
 
         testUtil = new SparkTestUtil(4567);
@@ -60,7 +57,7 @@ public class BodyAvailabilityTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
 
@@ -70,7 +67,7 @@ public class BodyAvailabilityTest {
     }
 
     @Test
-    public void testPost() throws Exception {
+    void testPost() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("POST", "/hello", BODY_CONTENT);
         LOGGER.info(response.body);
         assertAll(

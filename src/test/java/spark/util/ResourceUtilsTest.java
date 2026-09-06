@@ -1,22 +1,21 @@
 package spark.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.Test;
+import spark.utils.ResourceUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.junit.jupiter.api.Test;
-
-import spark.utils.ResourceUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-public class ResourceUtilsTest {
+class ResourceUtilsTest {
 
     @Test
-    public void testGetFile_whenURLProtocolIsNotFile_thenThrowFileNotFoundException() throws MalformedURLException {
+    void testGetFile_whenURLProtocolIsNotFile_thenThrowFileNotFoundException() throws MalformedURLException {
         URL url = new URL("http://example.com/");
 
         assertThatThrownBy(() -> ResourceUtils.getFile(url, "My File Path"))
@@ -26,7 +25,7 @@ public class ResourceUtilsTest {
     }
 
     @Test
-    public void testGetFile_whenURLProtocolIsFile_thenReturnFileObject() throws
+    void testGetFile_whenURLProtocolIsFile_thenReturnFileObject() throws
                                                                          MalformedURLException,
                                                                          FileNotFoundException,
                                                                          URISyntaxException {

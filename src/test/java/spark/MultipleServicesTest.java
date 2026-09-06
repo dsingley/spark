@@ -16,22 +16,21 @@
  */
 package spark;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static spark.Service.ignite;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import spark.route.HttpMethod;
 import spark.routematch.RouteMatch;
 import spark.util.SparkTestUtil;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static spark.Service.ignite;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 /**
  * Created by Per Wendel on 2016-02-18.
  */
-public class MultipleServicesTest {
+class MultipleServicesTest {
 
     private static Service first;
     private static Service second;
@@ -40,7 +39,7 @@ public class MultipleServicesTest {
     private static SparkTestUtil secondClient;
 
     @BeforeAll
-    public static void beforeAll() throws Exception {
+    static void beforeAll() {
         firstClient = new SparkTestUtil(4567);
         secondClient = new SparkTestUtil(1234);
 
@@ -52,7 +51,7 @@ public class MultipleServicesTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         first.stop();
         second.stop();
         first.awaitStop();
@@ -60,7 +59,7 @@ public class MultipleServicesTest {
     }
 
     @Test
-    public void testGetHello() throws Exception {
+    void testGetHello() throws Exception {
         SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -69,7 +68,7 @@ public class MultipleServicesTest {
     }
 
     @Test
-    public void testGetRedirectedHi() throws Exception {
+    void testGetRedirectedHi() throws Exception {
         SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -78,13 +77,13 @@ public class MultipleServicesTest {
     }
 
     @Test
-    public void testGetUniqueForSecondWithFirst() throws Exception {
+    void testGetUniqueForSecondWithFirst() throws Exception {
         SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/uniqueforsecond", null);
         assertThat(response.status).isEqualTo(404);
     }
 
     @Test
-    public void testGetUniqueForSecondWithSecond() throws Exception {
+    void testGetUniqueForSecondWithSecond() throws Exception {
         SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/uniqueforsecond", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -93,13 +92,13 @@ public class MultipleServicesTest {
     }
 
     @Test
-    public void testStaticFileCssStyleCssWithFirst() throws Exception {
+    void testStaticFileCssStyleCssWithFirst() throws Exception {
         SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/css/style.css", null);
         assertThat(response.status).isEqualTo(404);
     }
 
     @Test
-    public void testStaticFileCssStyleCssWithSecond() throws Exception {
+    void testStaticFileCssStyleCssWithSecond() throws Exception {
         SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/css/style.css", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -108,7 +107,7 @@ public class MultipleServicesTest {
     }
 
     @Test
-    public void testGetAllRoutesFromBothServices(){
+    void testGetAllRoutesFromBothServices(){
         for(RouteMatch routeMatch : first.routes()){
             assertThat(routeMatch.getAcceptType()).isEqualTo("*/*");
             assertThat(routeMatch.getHttpMethod()).isEqualTo(HttpMethod.get);

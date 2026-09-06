@@ -1,26 +1,24 @@
 package spark;
 
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.awaitStop;
+import static spark.Spark.before;
+import static spark.Spark.stop;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 import spark.util.SparkTestUtil;
-
 import spark.util.SparkTestUtil.UrlResponse;
 
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.awaitStop;
-import static spark.Spark.before;
+import java.io.IOException;
 
-import static spark.Spark.stop;
-
-public class FilterTest {
+class FilterTest {
     static SparkTestUtil testUtil;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(4567);
 
         before("/justfilter", (q, a) -> System.out.println("Filter matched"));
@@ -28,13 +26,13 @@ public class FilterTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         stop();
         awaitStop();
     }
 
     @Test
-    public void testJustFilter() throws Exception {
+    void testJustFilter() throws Exception {
         UrlResponse response = testUtil.doMethod("GET", "/justfilter", null);
 
         System.out.println("response.status = " + response.status);

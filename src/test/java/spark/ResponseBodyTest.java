@@ -16,18 +16,16 @@
  */
 package spark;
 
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static spark.Spark.after;
+import static spark.Spark.get;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import spark.util.SparkTestUtil;
 
-import static spark.Spark.after;
-
-import static spark.Spark.get;
+import java.io.IOException;
 
 /**
  * Validates and shows the "rules" for how response "body" is set.
@@ -47,7 +45,7 @@ public class ResponseBodyTest {
     private static SparkTestUtil http;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() throws IOException {
         http = new SparkTestUtil(4567);
 
         get(HELLO, (q, a) -> HELLO_WORLD);
@@ -91,13 +89,13 @@ public class ResponseBodyTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
     }
 
     @Test
-    public void testHELLO() {
+    void testHELLO() {
         try {
             SparkTestUtil.UrlResponse response = http.get(HELLO);
             assertThat(response.status).isEqualTo(200);
@@ -108,7 +106,7 @@ public class ResponseBodyTest {
     }
 
     @Test
-    public void testSPECIAL() {
+    void testSPECIAL() {
         try {
             SparkTestUtil.UrlResponse response = http.get(SPECIAL);
             assertThat(response.status).isEqualTo(200);
@@ -119,7 +117,7 @@ public class ResponseBodyTest {
     }
 
     @Test
-    public void testPORAKATIKAOKAO() {
+    void testPORAKATIKAOKAO() {
         try {
             SparkTestUtil.UrlResponse response = http.get(PORAKATIKAOKAO);
             assertThat(response.status).isEqualTo(200);
@@ -130,7 +128,7 @@ public class ResponseBodyTest {
     }
 
     @Test
-    public void testMAXIME() {
+    void testMAXIME() {
         try {
             SparkTestUtil.UrlResponse response = http.get(MAXIME);
             assertThat(response.status).isEqualTo(200);

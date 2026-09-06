@@ -1,29 +1,29 @@
 package spark;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.kiwiproject.reflect.KiwiReflection;
-
-import jakarta.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SessionTest {
+import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kiwiproject.reflect.KiwiReflection;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+class SessionTest {
 
     Request request;
     HttpSession httpSession;
     Session session;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         httpSession = mock(HttpSession.class);
         request = mock(Request.class);
@@ -31,7 +31,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testSession_whenHttpSessionIsNull_thenThrowException() {
+    void testSession_whenHttpSessionIsNull_thenThrowException() {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Session(null, request))
@@ -39,7 +39,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testSession_whenRequestIsNull_thenThrowException() {
+    void testSession_whenRequestIsNull_thenThrowException() {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Session(httpSession, null))
@@ -47,20 +47,20 @@ public class SessionTest {
     }
 
     @Test
-    public void testSession() {
+    void testSession() {
 
         HttpSession internalSession = KiwiReflection.getTypedFieldValue(session, "session", HttpSession.class);
         assertThat(internalSession).isEqualTo(httpSession);
     }
 
     @Test
-    public void testRaw() {
+    void testRaw() {
 
         assertThat(session.raw()).isEqualTo(httpSession);
     }
 
     @Test
-    public void testAttribute_whenAttributeIsRetrieved() {
+    void testAttribute_whenAttributeIsRetrieved() {
 
         when(httpSession.getAttribute("name")).thenReturn("Jett");
 
@@ -69,7 +69,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testAttribute_whenAttributeIsSet() {
+    void testAttribute_whenAttributeIsSet() {
 
         session.attribute("name", "Jett");
 
@@ -77,7 +77,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testAttributes() {
+    void testAttributes() {
 
         Set<String> attributes = new HashSet<>(Arrays.asList("name", "location"));
 
@@ -87,7 +87,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testCreationTime() {
+    void testCreationTime() {
 
         when(httpSession.getCreationTime()).thenReturn(10000000l);
 
@@ -95,7 +95,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testId() {
+    void testId() {
 
         when(httpSession.getId()).thenReturn("id");
 
@@ -103,7 +103,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testLastAccessedTime() {
+    void testLastAccessedTime() {
 
         when(httpSession.getLastAccessedTime()).thenReturn(20000000l);
 
@@ -111,7 +111,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testMaxInactiveInterval_whenRetrieved() {
+    void testMaxInactiveInterval_whenRetrieved() {
 
         when(httpSession.getMaxInactiveInterval()).thenReturn(100);
 
@@ -119,7 +119,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testMaxInactiveInterval_whenSet() {
+    void testMaxInactiveInterval_whenSet() {
 
         session.maxInactiveInterval(200);
 
@@ -127,7 +127,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testInvalidate() {
+    void testInvalidate() {
 
         session.invalidate();
 
@@ -135,7 +135,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testIsNew() {
+    void testIsNew() {
 
         when(httpSession.isNew()).thenReturn(true);
 
@@ -143,7 +143,7 @@ public class SessionTest {
     }
 
     @Test
-    public void testRemoveAttribute() {
+    void testRemoveAttribute() {
 
         session.removeAttribute("name");
 

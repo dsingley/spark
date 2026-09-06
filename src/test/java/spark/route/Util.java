@@ -2,6 +2,7 @@ package spark.route;
 
 import java.util.List;
 
+// TODO remove unused
 public class Util {
 
     public static boolean equals(List<RouteEntry> routes, List<RouteEntry> expectedRoutes) {

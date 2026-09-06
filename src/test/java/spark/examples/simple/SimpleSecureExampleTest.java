@@ -1,34 +1,33 @@
 package spark.examples.simple;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import spark.Spark;
-import spark.util.SparkTestUtil;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class SimpleSecureExampleTest {
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import spark.Spark;
+import spark.util.SparkTestUtil;
+
+class SimpleSecureExampleTest {
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         testUtil = new SparkTestUtil(4567);
         SimpleSecureExample.main(null);
         Spark.awaitInitialization();
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
     }
 
     @Test
-    public void hello() throws Exception {
+    void hello() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -37,7 +36,7 @@ public class SimpleSecureExampleTest {
     }
 
     @Test
-    public void helloPost() throws Exception {
+    void helloPost() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("POST", "/hello", "body text");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -46,7 +45,7 @@ public class SimpleSecureExampleTest {
     }
 
     @Test
-    public void selectedUser() throws Exception {
+    void selectedUser() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/users/scott", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -55,7 +54,7 @@ public class SimpleSecureExampleTest {
     }
 
     @Test
-    public void privateRoute() throws Exception {
+    void privateRoute() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/private", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(401),
@@ -64,7 +63,7 @@ public class SimpleSecureExampleTest {
     }
 
     @Test
-    public void newsSection() throws Exception {
+    void newsSection() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/news/world", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -74,7 +73,7 @@ public class SimpleSecureExampleTest {
     }
 
     @Test
-    public void protectedRoute() throws Exception {
+    void protectedRoute() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/protected", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(403),
@@ -83,7 +82,7 @@ public class SimpleSecureExampleTest {
     }
 
     @Test
-    public void redirect() throws Exception {
+    void redirect() throws Exception {
         // the client follows the redirect by default, landing on /news/world
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/redirect", null);
         assertAll(
@@ -94,7 +93,7 @@ public class SimpleSecureExampleTest {
     }
 
     @Test
-    public void root() throws Exception {
+    void root() throws Exception {
         SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),

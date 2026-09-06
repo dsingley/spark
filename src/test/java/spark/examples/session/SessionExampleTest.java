@@ -1,34 +1,33 @@
 package spark.examples.session;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import spark.Spark;
-import spark.util.SparkTestUtil;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class SessionExampleTest {
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import spark.Spark;
+import spark.util.SparkTestUtil;
+
+class SessionExampleTest {
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         testUtil = new SparkTestUtil(4567);
         SessionExample.main(null);
         Spark.awaitInitialization();
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
     }
 
     @Test
-    public void remembersNameAcrossRequestsViaSession() throws Exception {
+    void remembersNameAcrossRequestsViaSession() throws Exception {
         SparkTestUtil.UrlResponse formResponse = testUtil.doMethod("GET", "/", null);
         assertThat(formResponse.body).contains("What's your name?");
 

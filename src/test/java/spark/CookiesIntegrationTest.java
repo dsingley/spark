@@ -10,6 +10,7 @@ import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.cookie.StandardCookieSpec;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author dreambrother
  */
-public class CookiesIntegrationTest {
+class CookiesIntegrationTest {
 
     private static final String DEFAULT_HOST_URL = "http://localhost:4567";
     // Jetty 12 renders a deleted cookie's Expires attribute in standard RFC 1123 form
@@ -32,7 +33,7 @@ public class CookiesIntegrationTest {
             .build();
 
     @BeforeAll
-    public static void beforeAll() throws InterruptedException {
+    static void beforeAll() {
         post("/assertNoCookies", (request, response) -> {
             if (!request.cookies().isEmpty()) {
                 halt(500);
@@ -91,18 +92,18 @@ public class CookiesIntegrationTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         Spark.stop();
         Spark.awaitStop();
     }
 
     @Test
-    public void testEmptyCookies() {
+    void testEmptyCookies() {
         httpPost("/assertNoCookies");
     }
 
     @Test
-    public void testCreateCookie() {
+    void testCreateCookie() {
         String cookieName = "testCookie";
         String cookieValue = "testCookieValue";
         httpPost("/setCookie?cookieName=" + cookieName + "&cookieValue=" + cookieValue);
@@ -110,7 +111,7 @@ public class CookiesIntegrationTest {
     }
 
     @Test
-    public void testRemoveCookie() {
+    void testRemoveCookie() {
         String cookieName = "testCookie";
         String cookieValue = "testCookieValue";
         httpPost("/setCookie?cookieName=" + cookieName + "&cookieValue=" + cookieValue);
@@ -119,7 +120,7 @@ public class CookiesIntegrationTest {
     }
 
     @Test
-    public void testRemoveCookieWithPath() {
+    void testRemoveCookieWithPath() {
         String cookieName = "testCookie";
         String cookieValue = "testCookieValue";
         httpPost("/path/setCookieWithPath?cookieName=" + cookieName + "&cookieValue=" + cookieValue);
@@ -135,7 +136,7 @@ public class CookiesIntegrationTest {
     private void httpPost(String relativePath) {
         HttpPost request = new HttpPost(DEFAULT_HOST_URL + relativePath);
         assertThatCode(() -> {
-            int statusCode = httpClient.execute(request, response -> response.getCode());
+            int statusCode = httpClient.execute(request, HttpResponse::getCode);
             assertThat(statusCode).isEqualTo(200);
         }).doesNotThrowAnyException();
     }

@@ -1,5 +1,9 @@
 package spark.embeddedserver.jetty;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -17,14 +21,10 @@ import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-public class SocketConnectorFactoryTest {
+class SocketConnectorFactoryTest {
 
     @Test
-    public void testCreateSocketConnector_whenServerIsNull_thenThrowException() {
+    void testCreateSocketConnector_whenServerIsNull_thenThrowException() {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> SocketConnectorFactory.createSocketConnector(null, "host", 80, true))
@@ -33,7 +33,7 @@ public class SocketConnectorFactoryTest {
 
 
     @Test
-    public void testCreateSocketConnector_whenHostIsNull_thenThrowException() {
+    void testCreateSocketConnector_whenHostIsNull_thenThrowException() {
 
         Server server = new Server();
 
@@ -43,7 +43,7 @@ public class SocketConnectorFactoryTest {
     }
 
     @Test
-    public void testCreateSocketConnector() {
+    void testCreateSocketConnector() {
 
         final String host = "localhost";
         final int port = 8888;
@@ -63,7 +63,7 @@ public class SocketConnectorFactoryTest {
     }
 
     @Test
-    public void testCreateSecureSocketConnector_whenServerIsNull() {
+    void testCreateSecureSocketConnector_whenServerIsNull() {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> SocketConnectorFactory.createSecureSocketConnector(null, "localhost", 80, (SslStores) null, true))
@@ -71,7 +71,7 @@ public class SocketConnectorFactoryTest {
     }
 
     @Test
-    public void testCreateSecureSocketConnector_whenHostIsNull() {
+    void testCreateSecureSocketConnector_whenHostIsNull() {
 
         Server server = new Server();
 
@@ -81,7 +81,7 @@ public class SocketConnectorFactoryTest {
     }
 
     @Test
-    public void testCreateSecureSocketConnector_whenSslStoresIsNull() {
+    void testCreateSecureSocketConnector_whenSslStoresIsNull() {
 
         Server server = new Server();
 
@@ -92,7 +92,7 @@ public class SocketConnectorFactoryTest {
 
 
     @Test
-    public void testCreateSecureSocketConnector(@TempDir Path tempDir) {
+    void testCreateSecureSocketConnector(@TempDir Path tempDir) {
 
         final String host = "localhost";
         final int port = 8888;

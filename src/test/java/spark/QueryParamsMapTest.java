@@ -1,19 +1,19 @@
 package spark;
 
-import java.util.HashMap;
-
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class QueryParamsMapTest {
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+class QueryParamsMapTest {
 
     QueryParamsMap queryMap = new QueryParamsMap();
     
     @Test
-    public void constructorWithParametersMap() {
+    void constructorWithParametersMap() {
         Map<String,String[]> params = new HashMap<>();
         
         params.put("user[info][name]",new String[] {"fede"});
@@ -27,7 +27,7 @@ public class QueryParamsMapTest {
     }
     
     @Test
-    public void keyToMap() {
+    void keyToMap() {
         QueryParamsMap queryMap = new QueryParamsMap();
         
         queryMap.loadKeys("user[info][first_name]",new String[] {"federico"});
@@ -49,7 +49,7 @@ public class QueryParamsMapTest {
     }
     
     @Test
-    public void testDifferentTypesForValue() {
+    void testDifferentTypesForValue() {
         QueryParamsMap queryMap = new QueryParamsMap();
         
         queryMap.loadKeys("user[age]",new String[] {"10"});
@@ -65,7 +65,7 @@ public class QueryParamsMapTest {
     }
     
     @Test
-    public void parseKeyShouldParseRootKey() {
+    void parseKeyShouldParseRootKey() {
         String[] parsed = queryMap.parseKey("user[name][more]");
         
         assertAll(
@@ -75,7 +75,7 @@ public class QueryParamsMapTest {
     }
     
     @Test
-    public void parseKeyShouldParseSubkeys() {
+    void parseKeyShouldParseSubkeys() {
         String[] parsedNameMore = queryMap.parseKey("[name][more]");
 
         assertAll(
@@ -92,7 +92,7 @@ public class QueryParamsMapTest {
     }
     
     @Test
-    public void itShouldbeNullSafe() {
+    void itShouldbeNullSafe() {
         QueryParamsMap queryParamsMap = new QueryParamsMap();
         
         String ret = queryParamsMap.get("x").get("z").get("y").value("w");
@@ -101,7 +101,7 @@ public class QueryParamsMapTest {
     }
     
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         QueryParamsMap queryMap = new QueryParamsMap("user[name][more]","fede");
 
         assertAll(
@@ -113,7 +113,7 @@ public class QueryParamsMapTest {
     }
     
     @Test
-    public void testToMap() {
+    void testToMap() {
         Map<String,String[]> params = new HashMap<>();
         
         params.put("user[info][name]",new String[] {"fede"});

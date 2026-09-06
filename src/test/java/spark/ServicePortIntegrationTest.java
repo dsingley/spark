@@ -1,27 +1,26 @@
 package spark;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static spark.Service.ignite;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import spark.util.SparkTestUtil;
-
-import static spark.Service.ignite;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * Created by Tom on 08/02/2017.
  */
-public class ServicePortIntegrationTest {
+class ServicePortIntegrationTest {
 
     private static Service service;
     private static final Logger LOGGER = LoggerFactory.getLogger(ServicePortIntegrationTest.class);
 
     @BeforeAll
-    public static void beforeAll() throws Exception {
+    static void beforeAll() {
         service = ignite();
         service.port(0);
 
@@ -31,13 +30,13 @@ public class ServicePortIntegrationTest {
     }
 
     @AfterAll
-    public static void afterAll() throws Exception {
+    static void afterAll() {
         service.stop();
         service.awaitStop();
     }
 
     @Test
-    public void testGetPort_withRandomPort() throws Exception {
+    void testGetPort_withRandomPort() throws Exception {
         int actualPort = service.port();
 
         LOGGER.info("got port ");
