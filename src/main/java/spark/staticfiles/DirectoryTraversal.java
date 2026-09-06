@@ -9,6 +9,9 @@ import java.nio.file.Paths;
  */
 public class DirectoryTraversal {
 
+    private DirectoryTraversal() {
+    }
+
     public static void protectAgainstInClassPath(String path, String localFolder) {
         if (!isPathWithinFolder(path, localFolder)) {
             throw new DirectoryTraversalDetection("classpath");

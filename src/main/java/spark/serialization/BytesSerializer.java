@@ -36,11 +36,12 @@ class BytesSerializer extends Serializer {
     public void process(OutputStream outputStream, Object element)
             throws IOException {
         byte[] bytes = null;
-        if (element instanceof byte[]) {
-            bytes = (byte[]) element;
-        } else if (element instanceof ByteBuffer){
-            bytes = ((ByteBuffer) element).array();
+        if (element instanceof byte[] byteArray) {
+            bytes = byteArray;
+        } else if (element instanceof ByteBuffer byteBuffer){
+            bytes = byteBuffer.array();
         }
+        // TODO (sleberknight): what to do here? a NPE will be thrown if bytes is null
         outputStream.write(bytes);
     }
 

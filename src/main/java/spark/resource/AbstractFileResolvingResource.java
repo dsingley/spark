@@ -74,7 +74,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
                 URLConnection con = url.openConnection();
                 customizeConnection(con);
                 HttpURLConnection httpCon =
-                        (con instanceof HttpURLConnection ? (HttpURLConnection) con : null);
+                    con instanceof HttpURLConnection httpURLConnection ? httpURLConnection : null;
                 if (httpCon != null) {
                     int code = httpCon.getResponseCode();
                     if (code == HttpURLConnection.HTTP_OK) {
@@ -159,8 +159,8 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
      */
     protected void customizeConnection(URLConnection con) throws IOException {
         ResourceUtils.useCachesIfNecessary(con);
-        if (con instanceof HttpURLConnection) {
-            customizeConnection((HttpURLConnection) con);
+        if (con instanceof HttpURLConnection httpURLConnection) {
+            customizeConnection(httpURLConnection);
         }
     }
 

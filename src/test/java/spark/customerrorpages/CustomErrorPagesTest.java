@@ -75,7 +75,7 @@ class CustomErrorPagesTest {
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/raiseinternal", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(500),
-                () -> assertThat(response.headers.get("Content-Type")).isEqualTo(APPLICATION_JSON),
+                () -> assertThat(response.headers).containsEntry("Content-Type", APPLICATION_JSON),
                 () -> assertThat(response.body).isEqualTo(CUSTOM_INTERNAL)
         );
     }

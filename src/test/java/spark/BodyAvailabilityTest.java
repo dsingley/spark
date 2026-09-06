@@ -38,18 +38,18 @@ class BodyAvailabilityTest {
         afterBody = null;
 
         before("/hello", (req, res) -> {
-            LOGGER.debug("before-req.body() = " + req.body());
+            LOGGER.debug("before-req.body() = {}", req.body());
             beforeBody = req.body();
         });
 
         post("/hello", (req, res) -> {
-            LOGGER.debug("get-req.body() = " + req.body());
+            LOGGER.debug("get-req.body() = {}", req.body());
             routeBody = req.body();
             return req.body();
         });
 
         after("/hello", (req, res) -> {
-            LOGGER.debug("after-before-req.body() = " + req.body());
+            LOGGER.debug("after-before-req.body() = {}", req.body());
             afterBody = req.body();
         });
 

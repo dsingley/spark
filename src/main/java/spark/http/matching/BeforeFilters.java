@@ -29,6 +29,9 @@ import java.util.List;
  */
 final class BeforeFilters {
 
+    private BeforeFilters() {
+    }
+
     static void execute(RouteContext context) throws Exception {
         Object content = context.body().get();
 
@@ -37,10 +40,8 @@ final class BeforeFilters {
         for (RouteMatch filterMatch : matchSet) {
             Object filterTarget = filterMatch.getTarget();
 
-            if (filterTarget instanceof FilterImpl) {
+            if (filterTarget instanceof FilterImpl filter) {
                 Request request = RequestResponseFactory.create(filterMatch, context.httpRequest());
-
-                FilterImpl filter = (FilterImpl) filterTarget;
 
                 context.requestWrapper().setDelegate(request);
                 context.responseWrapper().setDelegate(context.response());

@@ -132,7 +132,8 @@ public abstract class AbstractResource implements Resource {
         } finally {
             try {
                 is.close();
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
+                // ignored
             }
         }
     }
@@ -202,7 +203,7 @@ public abstract class AbstractResource implements Resource {
     @Override
     public boolean equals(Object obj) {
         return (obj == this ||
-                (obj instanceof Resource && ((Resource) obj).getDescription().equals(getDescription())));
+            obj instanceof Resource resource && resource.getDescription().equals(getDescription()));
     }
 
     /**

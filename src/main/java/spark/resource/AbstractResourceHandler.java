@@ -78,13 +78,13 @@ public abstract class AbstractResourceHandler {
      * @return Legally combined path segments.
      */
     public static String addPaths(String segment1, String segment2) {
-        if (segment1 == null || segment1.length() == 0) {
+        if (segment1 == null || segment1.isEmpty()) {
             if (segment1 != null && segment2 == null) {
                 return segment1;
             }
             return segment2;
         }
-        if (segment2 == null || segment2.length() == 0) {
+        if (segment2 == null || segment2.isEmpty()) {
             return segment1;
         }
 

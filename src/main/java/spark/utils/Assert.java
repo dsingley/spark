@@ -39,6 +39,9 @@ package spark.utils;
  */
 public abstract class Assert {
 
+    private Assert() {
+    }
+
     /**
      * Assert a boolean expression, throwing {@code IllegalArgumentException}
      * if the test result is {@code false}.
