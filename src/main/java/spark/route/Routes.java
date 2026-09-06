@@ -83,8 +83,8 @@ public class Routes {
      * @return the target
      */
     public RouteMatch find(HttpMethod httpMethod, String path, String acceptType) {
-        List<RouteEntry> routeEntries = this.findTargetsForRequestedRoute(httpMethod, path);
-        RouteEntry entry = findTargetWithGivenAcceptType(routeEntries, acceptType);
+        List<RouteEntry> targetRouteEntries = this.findTargetsForRequestedRoute(httpMethod, path);
+        RouteEntry entry = findTargetWithGivenAcceptType(targetRouteEntries, acceptType);
         return entry != null ? new RouteMatch(entry.target, entry.path, path, acceptType, httpMethod) : null;
     }
 
@@ -98,9 +98,9 @@ public class Routes {
      */
     public List<RouteMatch> findMultiple(HttpMethod httpMethod, String path, String acceptType) {
         List<RouteMatch> matchSet = new ArrayList<>();
-        List<RouteEntry> routeEntries = findTargetsForRequestedRoute(httpMethod, path);
+        List<RouteEntry> targetRouteEntries = findTargetsForRequestedRoute(httpMethod, path);
 
-        for (RouteEntry routeEntry : routeEntries) {
+        for (RouteEntry routeEntry : targetRouteEntries) {
             if (acceptType != null) {
                 String bestMatch = MimeParse.bestMatch(Collections.singletonList(routeEntry.acceptedType), acceptType);
 
