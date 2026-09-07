@@ -24,7 +24,7 @@ import java.io.OutputStream;
  */
 public final class SerializerChain {
 
-    private Serializer root;
+    private final Serializer root;
 
     /**
      * Constructs a serializer chain.

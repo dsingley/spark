@@ -2,6 +2,7 @@ package spark.serialization;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -12,7 +13,12 @@ import java.io.InputStream;
 
 class InputStreamSerializerTest {
 
-    private InputStreamSerializer serializer = new InputStreamSerializer();
+    private InputStreamSerializer serializer;
+
+    @BeforeEach
+    void setUp() {
+        serializer = new InputStreamSerializer();
+    }
 
     @Test
     void testProcess_copiesData() throws IOException {

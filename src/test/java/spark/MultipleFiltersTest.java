@@ -1,6 +1,7 @@
 package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static spark.Spark.after;
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.awaitStop;
@@ -17,20 +18,23 @@ import spark.util.SparkTestUtil;
  * Basic test to ensure that multiple before and after filters can be mapped to a route.
  */
 class MultipleFiltersTest {
-    
+
     private static SparkTestUtil http;
 
     @BeforeAll
     static void beforeAll() {
         http = new SparkTestUtil(4567);
 
-        before("/user", initializeCounter, incrementCounter, loadUser);
+        before("/user", INITIALIZE_COUNTER, INCREMENT_COUNTER, LOAD_USER);
 
-        after("/user", incrementCounter, (req, res) -> {
+        after("/user", INCREMENT_COUNTER, (req, res) -> {
             int counter = req.attribute("counter");
             assertThat(counter).isEqualTo(2);
         });
 
+        // assertions here and in the after filter above run on the request-handling
+        // thread; a failure surfaces to the test below only as a non-200 status, not
+        // as a direct assertion failure
         get("/user", (request, response) -> {
             assertThat((int) request.attribute("counter")).isEqualTo(1);
             return ((User) request.attribute("user")).name();
@@ -45,33 +49,21 @@ class MultipleFiltersTest {
         awaitStop();
     }
 
-    @Test
-    void testMultipleFilters() {
-        try {
-            SparkTestUtil.UrlResponse response = http.get("/user");
-            assertThat(response.status).isEqualTo(200);
-            assertThat(response.body).isEqualTo("Kevin");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static Filter loadUser = (request, response) -> {
-        User u = new User();
+    private static final Filter LOAD_USER = (request, response) -> {
+        var u = new User();
         u.name("Kevin");
         request.attribute("user", u);
     };
 
-    private static Filter initializeCounter = (request, response) -> request.attribute("counter", 0);
+    private static final Filter INITIALIZE_COUNTER = (request, response) -> request.attribute("counter", 0);
 
-    private static Filter incrementCounter = (request, response) -> {
+    private static final Filter INCREMENT_COUNTER = (request, response) -> {
         int counter = request.attribute("counter");
         counter++;
         request.attribute("counter", counter);
     };
 
     private static class User {
-
         private String name;
 
         public String name() {
@@ -81,5 +73,14 @@ class MultipleFiltersTest {
         public void name(String name) {
             this.name = name;
         }
+    }
+
+    @Test
+    void testMultipleFilters() throws Exception {
+        SparkTestUtil.UrlResponse response = http.get("/user");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("Kevin")
+        );
     }
 }

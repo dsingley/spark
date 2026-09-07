@@ -27,11 +27,12 @@ public class ModelAndView {
     /**
      * Model object.
      */
-    private Object model;
+    private final Object model;
+
     /**
      * View name used to render output.
      */
-    private String viewName;
+    private final String viewName;
 
     /**
      * Constructs an instance with the provided model and view name

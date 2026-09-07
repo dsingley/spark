@@ -34,75 +34,75 @@ public class MimeType {
 
     private static volatile boolean guessingOn = true;
 
-    private static Map<String, String> mappings = new HashMap();
+    private static final Map<String, String> MAPPINGS = new HashMap<>();
 
     static {
-        mappings.put("au", "audio/basic");
-        mappings.put("avi", "video/msvideo,video/avi,video/x-msvideo");
-        mappings.put("bmp", "image/bmp");
-        mappings.put("bz2", "application/x-bzip2");
-        mappings.put("css", "text/css");
-        mappings.put("dtd", "application/xml-dtd");
-        mappings.put("doc", "application/msword");
-        mappings.put("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        mappings.put("dotx", "application/vnd.openxmlformats-officedocument.wordprocessingml.template");
-        mappings.put("eot", "application/vnd.ms-fontobject");
-        mappings.put("es", "application/ecmascript");
-        mappings.put("exe", "application/octet-stream");
-        mappings.put("gif", "image/gif");
-        mappings.put("gz", "application/x-gzip");
-        mappings.put("ico", "image/x-icon");
-        mappings.put("hqx", "application/mac-binhex40");
-        mappings.put("htm", "text/html");
-        mappings.put("html", "text/html");
-        mappings.put("jar", "application/java-archive");
-        mappings.put("jpg", "image/jpeg");
-        mappings.put("js", "application/javascript");
-        mappings.put("mjs", "application/javascript");
-        mappings.put("json", "application/json");
-        mappings.put("midi", "audio/x-midi");
-        mappings.put("mp3", "audio/mpeg");
-        mappings.put("mpeg", "video/mpeg");
-        mappings.put("ogg", "audio/vorbis,application/ogg");
-        mappings.put("otf", "application/font-otf");
-        mappings.put("pdf", "application/pdf");
-        mappings.put("pl", "application/x-perl");
-        mappings.put("png", "image/png");
-        mappings.put("potx", "application/vnd.openxmlformats-officedocument.presentationml.template");
-        mappings.put("ppsx", "application/vnd.openxmlformats-officedocument.presentationml.slideshow");
-        mappings.put("ppt", "application/vnd.ms-powerpointtd");
-        mappings.put("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
-        mappings.put("ps", "application/postscript");
-        mappings.put("qt", "video/quicktime");
-        mappings.put("ra", "audio/x-pn-realaudio,audio/vnd.rn-realaudio");
-        mappings.put("rar", "application/x-rar-compressed");
-        mappings.put("ram", "audio/x-pn-realaudio,audio/vnd.rn-realaudio");
-        mappings.put("rdf", "application/rdf,application/rdf+xml");
-        mappings.put("rtf", "application/rtf");
-        mappings.put("sgml", "text/sgml");
-        mappings.put("sit", "application/x-stuffit");
-        mappings.put("sldx", "application/vnd.openxmlformats-officedocument.presentationml.slide");
-        mappings.put("svg", "image/svg+xml");
-        mappings.put("swf", "application/x-shockwave-flash");
-        mappings.put("tgz", "application/x-tar");
-        mappings.put("tiff", "image/tiff");
-        mappings.put("tsv", "text/tab-separated-values");
-        mappings.put("ttf", "application/font-ttf");
-        mappings.put("txt", "text/plain");
-        mappings.put("wav", "audio/wav,audio/x-wav");
-        mappings.put("woff", "application/font-woff");
-        mappings.put("woff2", "application/font-woff2");
-        mappings.put("xlam", "application/vnd.ms-excel.addin.macroEnabled.12");
-        mappings.put("xls", "application/vnd.ms-excel");
-        mappings.put("xlsb", "application/vnd.ms-excel.sheet.binary.macroEnabled.12");
-        mappings.put("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        mappings.put("xltx", "application/vnd.openxmlformats-officedocument.spreadsheetml.template");
-        mappings.put("xml", "application/xml");
-        mappings.put("zip", "application/zip,application/x-compressed-zip");
+        MAPPINGS.put("au", "audio/basic");
+        MAPPINGS.put("avi", "video/msvideo,video/avi,video/x-msvideo");
+        MAPPINGS.put("bmp", "image/bmp");
+        MAPPINGS.put("bz2", "application/x-bzip2");
+        MAPPINGS.put("css", "text/css");
+        MAPPINGS.put("dtd", "application/xml-dtd");
+        MAPPINGS.put("doc", "application/msword");
+        MAPPINGS.put("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        MAPPINGS.put("dotx", "application/vnd.openxmlformats-officedocument.wordprocessingml.template");
+        MAPPINGS.put("eot", "application/vnd.ms-fontobject");
+        MAPPINGS.put("es", "application/ecmascript");
+        MAPPINGS.put("exe", "application/octet-stream");
+        MAPPINGS.put("gif", "image/gif");
+        MAPPINGS.put("gz", "application/x-gzip");
+        MAPPINGS.put("ico", "image/x-icon");
+        MAPPINGS.put("hqx", "application/mac-binhex40");
+        MAPPINGS.put("htm", "text/html");
+        MAPPINGS.put("html", "text/html");
+        MAPPINGS.put("jar", "application/java-archive");
+        MAPPINGS.put("jpg", "image/jpeg");
+        MAPPINGS.put("js", "application/javascript");
+        MAPPINGS.put("mjs", "application/javascript");
+        MAPPINGS.put("json", "application/json");
+        MAPPINGS.put("midi", "audio/x-midi");
+        MAPPINGS.put("mp3", "audio/mpeg");
+        MAPPINGS.put("mpeg", "video/mpeg");
+        MAPPINGS.put("ogg", "audio/vorbis,application/ogg");
+        MAPPINGS.put("otf", "application/font-otf");
+        MAPPINGS.put("pdf", "application/pdf");
+        MAPPINGS.put("pl", "application/x-perl");
+        MAPPINGS.put("png", "image/png");
+        MAPPINGS.put("potx", "application/vnd.openxmlformats-officedocument.presentationml.template");
+        MAPPINGS.put("ppsx", "application/vnd.openxmlformats-officedocument.presentationml.slideshow");
+        MAPPINGS.put("ppt", "application/vnd.ms-powerpointtd");
+        MAPPINGS.put("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+        MAPPINGS.put("ps", "application/postscript");
+        MAPPINGS.put("qt", "video/quicktime");
+        MAPPINGS.put("ra", "audio/x-pn-realaudio,audio/vnd.rn-realaudio");
+        MAPPINGS.put("rar", "application/x-rar-compressed");
+        MAPPINGS.put("ram", "audio/x-pn-realaudio,audio/vnd.rn-realaudio");
+        MAPPINGS.put("rdf", "application/rdf,application/rdf+xml");
+        MAPPINGS.put("rtf", "application/rtf");
+        MAPPINGS.put("sgml", "text/sgml");
+        MAPPINGS.put("sit", "application/x-stuffit");
+        MAPPINGS.put("sldx", "application/vnd.openxmlformats-officedocument.presentationml.slide");
+        MAPPINGS.put("svg", "image/svg+xml");
+        MAPPINGS.put("swf", "application/x-shockwave-flash");
+        MAPPINGS.put("tgz", "application/x-tar");
+        MAPPINGS.put("tiff", "image/tiff");
+        MAPPINGS.put("tsv", "text/tab-separated-values");
+        MAPPINGS.put("ttf", "application/font-ttf");
+        MAPPINGS.put("txt", "text/plain");
+        MAPPINGS.put("wav", "audio/wav,audio/x-wav");
+        MAPPINGS.put("woff", "application/font-woff");
+        MAPPINGS.put("woff2", "application/font-woff2");
+        MAPPINGS.put("xlam", "application/vnd.ms-excel.addin.macroEnabled.12");
+        MAPPINGS.put("xls", "application/vnd.ms-excel");
+        MAPPINGS.put("xlsb", "application/vnd.ms-excel.sheet.binary.macroEnabled.12");
+        MAPPINGS.put("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        MAPPINGS.put("xltx", "application/vnd.openxmlformats-officedocument.spreadsheetml.template");
+        MAPPINGS.put("xml", "application/xml");
+        MAPPINGS.put("zip", "application/zip,application/x-compressed-zip");
     }
 
     public static void register(String extension, String mimeType) {
-        mappings.put(extension, mimeType);
+        MAPPINGS.put(extension, mimeType);
     }
 
     public static void disableGuessing() {
@@ -116,7 +116,7 @@ public class MimeType {
 
     protected static String getMimeType(String filename) {
         String fileExtension = filename.replaceAll("^.*\\.(.*)$", "$1");
-        return mappings.getOrDefault(fileExtension, "application/octet-stream");
+        return MAPPINGS.getOrDefault(fileExtension, "application/octet-stream");
     }
 
     protected static String fromPathInfo(String pathInfo) {

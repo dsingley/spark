@@ -47,7 +47,7 @@ import java.util.Map;
 
 public class SparkTestUtil {
 
-    private int port;
+    private final int port;
 
     private CloseableHttpClient httpClient;
     private List<Integer> followRedirectCodes;

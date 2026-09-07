@@ -40,18 +40,18 @@ import java.util.Map;
  */
 public class FilterExample {
 
-    private static Map<String, String> usernamePasswords = new HashMap<>();
+    private static final Map<String, String> USERNAME_PASSWORDS = new HashMap<>();
 
     public static void main(String[] args) {
 
-        usernamePasswords.put("foo", "bar");
-        usernamePasswords.put("admin", "admin");
+        USERNAME_PASSWORDS.put("foo", "bar");
+        USERNAME_PASSWORDS.put("admin", "admin");
 
         before((request, response) -> {
             String user = request.queryParams("user");
             String password = request.queryParams("password");
 
-            String dbPassword = usernamePasswords.get(user);
+            String dbPassword = USERNAME_PASSWORDS.get(user);
             if (!(password != null && password.equals(dbPassword))) {
                 halt(401, "You are not welcome here!!!");
             }

@@ -52,12 +52,12 @@ public class MatcherFilter implements Filter {
 
     private final StaticFilesConfiguration staticFiles;
 
-    private spark.route.Routes routeMatcher;
-    private SerializerChain serializerChain;
-    private ExceptionMapper exceptionMapper;
+    private final spark.route.Routes routeMatcher;
+    private final SerializerChain serializerChain;
+    private final ExceptionMapper exceptionMapper;
 
     // TODO (sleberknight): Can remove this unused field, but then the ctor arg also unused. What to do?
-    private boolean externalContainer;
+    private final boolean externalContainer;
     private final boolean hasOtherHandlers;
 
     /**
