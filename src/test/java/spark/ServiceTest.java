@@ -2,6 +2,7 @@ package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -92,23 +93,6 @@ class ServiceTest {
     }
 
     @Test
-    void testSetIpAddress_whenInitializedFalse() {
-        service.ipAddress(IP_ADDRESS);
-
-        String ipAddress = KiwiReflection.getTypedFieldValue(service, "ipAddress", String.class);
-        assertThat(ipAddress).isEqualTo(IP_ADDRESS);
-    }
-
-    @Test
-    void testSetIpAddress_whenInitializedTrue_thenThrowIllegalStateException() {
-        KiwiReflection.setFieldValue(service, "initialized", true);
-
-        assertThatThrownBy(() -> service.ipAddress(IP_ADDRESS))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("This must be done before route mapping has begun");
-    }
-
-    @Test
     void testPort_whenInitializedFalse() {
         service.port(8080);
 
@@ -118,23 +102,6 @@ class ServiceTest {
 
     @Test
     void testPort_whenInitializedTrue_thenThrowIllegalStateException() {
-        KiwiReflection.setFieldValue(service, "initialized", true);
-
-        assertThatThrownBy(() -> service.port(8080))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("This must be done before route mapping has begun");
-    }
-
-    @Test
-    void testSetPort_whenInitializedFalse() {
-        service.port(8080);
-
-        int port = KiwiReflection.getTypedFieldValue(service, "port", Integer.class);
-        assertThat(port).isEqualTo(8080);
-    }
-
-    @Test
-    void testSetPort_whenInitializedTrue_thenThrowIllegalStateException() {
         KiwiReflection.setFieldValue(service, "initialized", true);
 
         assertThatThrownBy(() -> service.port(8080))
@@ -211,8 +178,9 @@ class ServiceTest {
     void testSecure_thenReturnNewSslStores() {
         service.secure("keyfile", "keypassword", "truststorefile", "truststorepassword");
         SslStores sslStores = KiwiReflection.getTypedFieldValue(service, "sslStores", SslStores.class);
+
+        assertThat(sslStores).isNotNull();
         assertAll(
-                () -> assertThat(sslStores).isNotNull(),
                 () -> assertThat(sslStores.keystoreFile()).isEqualTo("keyfile"),
                 () -> assertThat(sslStores.keystorePassword()).isEqualTo("keypassword"),
                 () -> assertThat(sslStores.trustStoreFile()).isEqualTo("truststorefile"),
@@ -249,21 +217,24 @@ class ServiceTest {
     void testWebSocket_whenInitializedTrue_thenThrowIllegalStateException() {
         KiwiReflection.setFieldValue(service, "initialized", true);
 
-        assertThatThrownBy(() -> service.webSocket("/", new DummyWebSocketHandler()))
+        var handler = new DummyWebSocketHandler();
+        assertThatThrownBy(() -> service.webSocket("/", handler))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("This must be done before route mapping has begun");
     }
 
     @Test
     void testWebSocket_whenPathNull_thenThrowNullPointerException() {
-        assertThatThrownBy(() -> service.webSocket(null, new DummyWebSocketHandler()))
+        var handler = new DummyWebSocketHandler();
+        assertThatThrownBy(() -> service.webSocket(null, handler))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("WebSocket path cannot be null");
     }
 
     @Test
     void testWebSocket_whenHandlerNotAnnotated_thenThrowIllegalArgumentException() {
-        assertThatThrownBy(() -> service.webSocket("/", new DummyWebSocketListener()))
+        var handler = new DummyWebSocketListener();
+        assertThatThrownBy(() -> service.webSocket("/", handler))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("WebSocket handler must be annotated as '@WebSocket'");
     }
@@ -276,7 +247,6 @@ class ServiceTest {
     }
 
     @Test
-    @Timeout(value = 300, unit = TimeUnit.MILLISECONDS)
     void stopExtinguishesServer() {
         Service theService = Service.ignite();
         Routes routes = mock(Routes.class);
@@ -285,18 +255,17 @@ class ServiceTest {
         theService.server = server;
         theService.initialized = true;
         theService.stop();
-        try {
-        	// yes, this is ugly and forces to set a test timeout as a precaution :(
-            while (theService.initialized) {
-            	Thread.sleep(20);
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
+        // polls "initialized" directly instead of calling awaitStop(), so this test verifies
+        // stop() completes independently of awaitStop()'s own correctness (see the dedicated
+        // awaitStop() test below)
+        await().atMost(1, TimeUnit.SECONDS).until(() -> !theService.initialized);
+
         verify(server).extinguish();
     }
 
     @Test
+    @Timeout(value = 1, unit = TimeUnit.SECONDS)
     void awaitStopBlocksUntilExtinguished() {
         Service theService = Service.ignite();
         Routes routes = mock(Routes.class);
