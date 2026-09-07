@@ -40,7 +40,7 @@ class ServicePortIntegrationTest {
     void testGetPort_withRandomPort() throws Exception {
         int actualPort = service.port();
 
-        LOG.info("got port ");
+        LOG.info("got port {}", actualPort);
 
         SparkTestUtil testUtil = new SparkTestUtil(actualPort);
 

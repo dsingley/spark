@@ -16,16 +16,19 @@
  */
 package spark;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.routematch.RouteMatch;
 import spark.utils.IOUtils;
 import spark.utils.SparkUtils;
 import spark.utils.StringUtils;
 import spark.utils.urldecoding.UrlDecode;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +47,7 @@ import java.util.TreeSet;
  */
 public class Request {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(Request.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Request.class);
 
     private static final String USER_AGENT = "user-agent";
 
@@ -396,7 +399,7 @@ public class Request {
      */
     public Set<String> attributes() {
         Set<String> attrList = new HashSet<>();
-        Enumeration<String> attributes = (Enumeration<String>) servletRequest.getAttributeNames();
+        Enumeration<String> attributes = servletRequest.getAttributeNames();
         while (attributes.hasMoreElements()) {
             attrList.add(attributes.nextElement());
         }
@@ -525,10 +528,7 @@ public class Request {
 
                 String decodedReq = UrlDecode.path(request.get(i));
 
-                LOG.debug("matchedPart: "
-                                  + matchedPart
-                                  + " = "
-                                  + decodedReq);
+                LOG.debug("matchedPart: {} = {}", matchedPart, decodedReq);
 
                 params.put(matchedPart.toLowerCase(), decodedReq);
             }
@@ -558,11 +558,8 @@ public class Request {
                         splatParam.append(request.get(j));
                     }
                 }
-                try {
-                    String decodedSplat = URLDecoder.decode(splatParam.toString(), "UTF-8");
-                    splat.add(decodedSplat);
-                } catch (UnsupportedEncodingException e) {
-                }
+                String decodedSplat = URLDecoder.decode(splatParam.toString(), UTF_8);
+                splat.add(decodedSplat);
             }
         }
 

@@ -21,6 +21,7 @@ import java.util.HashMap;
 /**
  * @author Per Wendel
  */
+@SuppressWarnings("java:S115")  // ignore lowercase enum constants
 public enum HttpMethod {
     get, post, put, patch, delete, head, trace, connect, options, before, after, afterafter, unsupported;
 

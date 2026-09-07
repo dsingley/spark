@@ -35,7 +35,7 @@ public final class SparkUtils {
         String[] pathArray = route.split("/");
         List<String> path = new ArrayList<>();
         for (String p : pathArray) {
-            if (p.length() > 0) {
+            if (!p.isEmpty()) {
                 path.add(p);
             }
         }

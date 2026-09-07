@@ -87,13 +87,13 @@ class StaticFilesTest {
         Spark.stop();
         Spark.awaitStop();
         if (tmpExternalFile != null) {
-            LOG.debug("tearDown().deleting: " + tmpExternalFile);
+            LOG.debug("tearDown().deleting: {}", tmpExternalFile);
             tmpExternalFile.delete();
         }
     }
 
     @Test
-    void testMimeTypes() throws Exception {
+    void testMimeTypes() {
         // Jetty 12 echoes MimeTypes' assumed charset for text/html into the Content-Type
         // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
         assertAll(

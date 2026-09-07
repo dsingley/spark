@@ -24,6 +24,8 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.CustomErrorPages;
 import spark.ExceptionMapper;
 import spark.HaltException;
@@ -43,7 +45,7 @@ import java.io.IOException;
  */
 public class MatcherFilter implements Filter {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(MatcherFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MatcherFilter.class);
 
     private static final String ACCEPT_TYPE_REQUEST_MIME_HEADER = "Accept";
     private static final String HTTP_METHOD_OVERRIDE_HEADER = "X-HTTP-Method-Override";
@@ -83,7 +85,7 @@ public class MatcherFilter implements Filter {
 
     @Override
     public void init(FilterConfig config) {
-        //
+        // no-op
     }
 
     @Override
@@ -207,7 +209,6 @@ public class MatcherFilter implements Filter {
 
     @Override
     public void destroy() {
+        // no-op
     }
-
-
 }

@@ -49,7 +49,8 @@ class SessionTest {
     @Test
     void testSession() {
 
-        HttpSession internalSession = KiwiReflection.getTypedFieldValue(session, "session", HttpSession.class);
+        HttpSession internalSession = KiwiReflection.getTypedFieldValue(
+            session, "httpSession", HttpSession.class);
         assertThat(internalSession).isEqualTo(httpSession);
     }
 
@@ -89,9 +90,9 @@ class SessionTest {
     @Test
     void testCreationTime() {
 
-        when(httpSession.getCreationTime()).thenReturn(10000000l);
+        when(httpSession.getCreationTime()).thenReturn(10_000_000L);
 
-        assertThat(session.creationTime()).isEqualTo(10000000l);
+        assertThat(session.creationTime()).isEqualTo(10_000_000L);
     }
 
     @Test
@@ -105,9 +106,9 @@ class SessionTest {
     @Test
     void testLastAccessedTime() {
 
-        when(httpSession.getLastAccessedTime()).thenReturn(20000000l);
+        when(httpSession.getLastAccessedTime()).thenReturn(20_000_000L);
 
-        assertThat(session.lastAccessedTime()).isEqualTo(20000000l);
+        assertThat(session.lastAccessedTime()).isEqualTo(20_000_000L);
     }
 
     @Test
