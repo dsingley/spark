@@ -15,7 +15,6 @@
  */
 package spark.utils;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,21 +38,6 @@ public class ClassUtils {
 
     private ClassUtils() {
     }
-
-    /**
-     * Suffix for array class names: "[]"
-     */
-    public static final String ARRAY_SUFFIX = "[]";
-
-    /**
-     * Prefix for internal array class names: "["
-     */
-    private static final String INTERNAL_ARRAY_PREFIX = "[";
-
-    /**
-     * Prefix for internal non-primitive array class names: "[L"
-     */
-    private static final String NON_PRIMITIVE_ARRAY_PREFIX = "[L";
 
     /**
      * Map with primitive wrapper type as key and corresponding primitive
@@ -128,10 +112,7 @@ public class ClassUtils {
      * ClassLoader, if available; the ClassLoader that loaded the ClassUtils
      * class will be used as fallback.
      * <p>Call this method if you intend to use the thread context ClassLoader
-     * in a scenario where you absolutely need a non-null ClassLoader reference:
-     * for example, for class path resource loading (but not necessarily for
-     * {@code Class.forName}, which accepts a {@code null} ClassLoader
-     * reference as well).
+     * in a scenario where you absolutely need a non-null ClassLoader reference.
      *
      * @return the default ClassLoader (never {@code null})
      * @see Thread#getContextClassLoader()
@@ -148,94 +129,6 @@ public class ClassUtils {
             cl = ClassUtils.class.getClassLoader();
         }
         return cl;
-    }
-
-    /**
-     * Replacement for {@code Class.forName()} that also returns Class instances
-     * for primitives (e.g."int") and array class names (e.g. "String[]").
-     * Furthermore, it is also capable of resolving inner class names in Java source
-     * style (e.g. "java.lang.Thread.State" instead of "java.lang.Thread$State").
-     *
-     * @param name        the name of the Class
-     * @param classLoader the class loader to use
-     *                    (may be {@code null}, which indicates the default class loader)
-     * @return Class instance for the supplied name
-     * @throws ClassNotFoundException if the class was not found
-     * @throws LinkageError           if the class file could not be loaded
-     * @see Class#forName(String, boolean, ClassLoader)
-     */
-    public static Class<?> forName(String name, ClassLoader classLoader) throws ClassNotFoundException, LinkageError {
-        Assert.notNull(name, "Name must not be null");
-
-        Class<?> clazz = resolvePrimitiveClassName(name);
-        if (clazz == null) {
-            clazz = commonClassCache.get(name);
-        }
-        if (clazz != null) {
-            return clazz;
-        }
-
-        // "java.lang.String[]" style arrays
-        if (name.endsWith(ARRAY_SUFFIX)) {
-            String elementClassName = name.substring(0, name.length() - ARRAY_SUFFIX.length());
-            Class<?> elementClass = forName(elementClassName, classLoader);
-            return Array.newInstance(elementClass, 0).getClass();
-        }
-
-        // "[Ljava.lang.String;" style arrays
-        if (name.startsWith(NON_PRIMITIVE_ARRAY_PREFIX) && name.endsWith(";")) {
-            String elementName = name.substring(NON_PRIMITIVE_ARRAY_PREFIX.length(), name.length() - 1);
-            Class<?> elementClass = forName(elementName, classLoader);
-            return Array.newInstance(elementClass, 0).getClass();
-        }
-
-        // "[[I" or "[[Ljava.lang.String;" style arrays
-        if (name.startsWith(INTERNAL_ARRAY_PREFIX)) {
-            String elementName = name.substring(INTERNAL_ARRAY_PREFIX.length());
-            Class<?> elementClass = forName(elementName, classLoader);
-            return Array.newInstance(elementClass, 0).getClass();
-        }
-
-        ClassLoader classLoaderToUse = classLoader;
-        if (classLoaderToUse == null) {
-            classLoaderToUse = getDefaultClassLoader();
-        }
-        try {
-            return classLoaderToUse.loadClass(name);
-        } catch (ClassNotFoundException ex) {
-            int lastDotIndex = name.lastIndexOf('.');
-            if (lastDotIndex != -1) {
-                String innerClassName = name.substring(0, lastDotIndex) + '$' + name.substring(lastDotIndex + 1);
-                try {
-                    return classLoaderToUse.loadClass(innerClassName);
-                } catch (ClassNotFoundException ex2) {
-                    // swallow - let original exception get through
-                }
-            }
-            throw ex;
-        }
-    }
-
-    /**
-     * Resolve the given class name as primitive class, if appropriate,
-     * according to the JVM's naming rules for primitive classes.
-     * <p>Also supports the JVM's internal class names for primitive arrays.
-     * Does <i>not</i> support the "[]" suffix notation for primitive arrays;
-     * this is only supported by {@link #forName(String, ClassLoader)}.
-     *
-     * @param name the name of the potentially primitive class
-     * @return the primitive class, or {@code null} if the name does not denote
-     * a primitive class or primitive array class
-     */
-    public static Class<?> resolvePrimitiveClassName(String name) {
-        Class<?> result = null;
-        // Most class names will be quite long, considering that they
-        // SHOULD sit in a package, so a length check is worthwhile.
-        if (name != null && name.length() <= 8) {
-            // Could be a primitive - likely.
-            result = primitiveTypeNameMap.get(name);
-        }
-        return result;
     }
 
     /**

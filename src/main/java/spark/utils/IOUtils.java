@@ -71,17 +71,11 @@ import java.io.Writer;
  */
 public final class IOUtils {
 
-    /**
-     * The system line separator string.
-     */
-    public static final String LINE_SEPARATOR;
-
     static {
         // avoid security issues
         StringWriter buf = new StringWriter(4);
         PrintWriter out = new PrintWriter(buf);
         out.println();
-        LINE_SEPARATOR = buf.toString();
     }
 
     /**
@@ -182,7 +176,7 @@ public final class IOUtils {
         throws IOException {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         long count = 0;
-        int n = 0;
+        int n;
         while (-1 != (n = input.read(buffer))) {
             output.write(buffer, 0, n);
             count += n;
@@ -257,7 +251,7 @@ public final class IOUtils {
     public static long copyLarge(Reader input, Writer output) throws IOException {
         char[] buffer = new char[DEFAULT_BUFFER_SIZE];
         long count = 0;
-        int n = 0;
+        int n;
         while (-1 != (n = input.read(buffer))) {
             output.write(buffer, 0, n);
             count += n;
