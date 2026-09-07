@@ -269,7 +269,7 @@ public class Routes {
      * @param target     the invocation target
      * @deprecated use {@link #add(HttpMethod, RouteImpl)} or {@link #add(HttpMethod, FilterImpl)}
      */
-    @Deprecated
+    @Deprecated(since = "2.6.0")
     public void add(String route, String acceptType, Object target) {
         try {
             int singleQuoteIndex = route.indexOf(SINGLE_QUOTE);

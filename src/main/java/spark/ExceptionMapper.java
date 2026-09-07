@@ -29,7 +29,7 @@ public class ExceptionMapper {
     /**
      * @deprecated use {@link #getServletInstance()}
      */
-    @Deprecated
+    @Deprecated(since = "2.9.0")
     public static ExceptionMapper getInstance() {
         return getServletInstance();
     }

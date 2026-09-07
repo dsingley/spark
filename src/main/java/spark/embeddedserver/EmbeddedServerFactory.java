@@ -28,7 +28,7 @@ public interface EmbeddedServerFactory {
     /**
      * @deprecated replaced by {@link #create(Routes, StaticFilesConfiguration, ExceptionMapper, boolean)}
      */
-    @Deprecated
+    @Deprecated(since = "2.9.0")
     default EmbeddedServer create(Routes routeMatcher, StaticFilesConfiguration staticFilesConfiguration, boolean hasMultipleHandler) {
         return create(routeMatcher, staticFilesConfiguration, ExceptionMapper.getServletInstance(), hasMultipleHandler);
     }

@@ -49,7 +49,7 @@ public class EmbeddedServers {
     /**
      * @deprecated use {@link #create(Object, Routes, ExceptionMapper, StaticFilesConfiguration, boolean)}
      */
-    @Deprecated
+    @Deprecated(since = "2.9.0")
     public static EmbeddedServer create(Object identifier,
                                         Routes routeMatcher,
                                         StaticFilesConfiguration staticFilesConfiguration,
