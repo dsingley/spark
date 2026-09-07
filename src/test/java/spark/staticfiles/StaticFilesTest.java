@@ -97,21 +97,21 @@ class StaticFilesTest {
         // Jetty 12 echoes MimeTypes' assumed charset for text/html into the Content-Type
         // header when none is set explicitly; Jetty 9 did not. Cosmetic, not a functional change.
         assertAll(
-                () -> assertThat(doGet("/pages/index.html").headers.get("Content-Type")).isEqualTo("text/html;charset=utf-8"),
-                () -> assertThat(doGet("/js/scripts.js").headers.get("Content-Type")).isEqualTo("application/javascript"),
-                () -> assertThat(doGet("/css/style.css").headers.get("Content-Type")).isEqualTo("text/css"),
-                () -> assertThat(doGet("/img/sparklogo.png").headers.get("Content-Type")).isEqualTo("image/png"),
-                () -> assertThat(doGet("/img/sparklogo.svg").headers.get("Content-Type")).isEqualTo("image/svg+xml"),
-                () -> assertThat(doGet("/img/sparklogoPng").headers.get("Content-Type")).isEqualTo("application/octet-stream"),
-                () -> assertThat(doGet("/img/sparklogoSvg").headers.get("Content-Type")).isEqualTo("application/octet-stream"),
-                () -> assertThat(doGet("/externalFile.html").headers.get("Content-Type")).isEqualTo("text/html;charset=utf-8")
+                () -> assertThat(doGet("/pages/index.html").headers).containsEntry("Content-Type", "text/html;charset=utf-8"),
+                () -> assertThat(doGet("/js/scripts.js").headers).containsEntry("Content-Type", "application/javascript"),
+                () -> assertThat(doGet("/css/style.css").headers).containsEntry("Content-Type", "text/css"),
+                () -> assertThat(doGet("/img/sparklogo.png").headers).containsEntry("Content-Type", "image/png"),
+                () -> assertThat(doGet("/img/sparklogo.svg").headers).containsEntry("Content-Type", "image/svg+xml"),
+                () -> assertThat(doGet("/img/sparklogoPng").headers).containsEntry("Content-Type", "application/octet-stream"),
+                () -> assertThat(doGet("/img/sparklogoSvg").headers).containsEntry("Content-Type", "application/octet-stream"),
+                () -> assertThat(doGet("/externalFile.html").headers).containsEntry("Content-Type", "text/html;charset=utf-8")
         );
     }
 
     @Test
     void testCustomMimeType() throws Exception {
         staticFiles.registerMimeType("cxt", "custom-extension-type");
-        assertThat(doGet("/img/file.cxt").headers.get("Content-Type")).isEqualTo("custom-extension-type");
+        assertThat(doGet("/img/file.cxt").headers).containsEntry("Content-Type", "custom-extension-type");
     }
 
     @Test
@@ -119,7 +119,7 @@ class StaticFilesTest {
         SparkTestUtil.UrlResponse response = doGet("/css/style.css");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
-                () -> assertThat(response.headers.get("Content-Type")).isEqualTo("text/css"),
+                () -> assertThat(response.headers).containsEntry("Content-Type", "text/css"),
                 () -> assertThat(response.body).isEqualTo("Content of css file")
         );
 

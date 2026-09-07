@@ -704,9 +704,7 @@ public final class Service extends Routable {
         return 0;
     }
 
-    //////////////////////////////////////////////////
     // EXCEPTION mapper
-    //////////////////////////////////////////////////
 
     /**
      * Maps an exception handler to be executed when an exception occurs during routing
@@ -726,9 +724,7 @@ public final class Service extends Routable {
         exceptionMapper.map(exceptionClass, wrapper);
     }
 
-    //////////////////////////////////////////////////
     // HALT methods
-    //////////////////////////////////////////////////
 
     /**
      * Immediately stops a request within a filter or route
