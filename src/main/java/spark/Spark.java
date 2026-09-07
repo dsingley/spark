@@ -223,9 +223,7 @@ public class Spark {
         }
     }
 
-    //////////////////////////////////////////////////
     // BEGIN route/filter mapping with accept type
-    //////////////////////////////////////////////////
 
     /**
      * Map the route for HTTP GET requests
@@ -395,13 +393,9 @@ public class Spark {
         getInstance().afterAfter(filter);
     }
 
-    //////////////////////////////////////////////////
     // END route/filter mapping with accept type
-    //////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////
     // BEGIN Template View Routes
-    //////////////////////////////////////////////////
 
     /**
      * Map the route for HTTP GET requests
@@ -637,13 +631,9 @@ public class Spark {
         getInstance().options(path, acceptType, route, engine);
     }
 
-    //////////////////////////////////////////////////
     // END Template View Routes
-    //////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////
     // BEGIN Response Transforming Routes
-    //////////////////////////////////////////////////
 
     /**
      * Map the route for HTTP GET requests
@@ -894,13 +884,9 @@ public class Spark {
         return getInstance().unmap(path, httpMethod);
     }
 
-    //////////////////////////////////////////////////
     // END Response Transforming Routes
-    //////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////
     // EXCEPTION mapper
-    //////////////////////////////////////////////////
 
     /**
      * Maps an exception handler to be executed when an exception occurs during routing
@@ -912,9 +898,7 @@ public class Spark {
         getInstance().exception(exceptionClass, handler);
     }
 
-    //////////////////////////////////////////////////
     // HALT methods
-    //////////////////////////////////////////////////
 
     /**
      * Immediately stops a request within a filter or route
@@ -1224,7 +1208,6 @@ public class Spark {
     	getInstance().awaitStop();
     }
 
-    ////////////////
     // Websockets //
 
     /**
@@ -1280,8 +1263,7 @@ public class Spark {
         getInstance().internalServerError(route);
     }
 
-    ////////////////
-    // Security //
+    // Security
 
     /**
      * Sets Spark to trust Forwarded, X-Forwarded-Host, X-Forwarded-Server, X-Forwarded-For, X-Forwarded-Proto, X-Proxied-Https headers

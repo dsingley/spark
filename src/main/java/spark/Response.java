@@ -309,6 +309,7 @@ public class Response {
      */
     public void removeCookie(String path, String name) {
         Cookie cookie = new Cookie(name, "");
+        cookie.setHttpOnly(true);
         cookie.setPath(path);
         cookie.setMaxAge(0);
         httpServletResponse.addCookie(cookie);

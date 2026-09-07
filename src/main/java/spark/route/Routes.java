@@ -179,10 +179,6 @@ public class Routes {
         return removeRoute(null, path);
     }
 
-    //////////////////////////////////////////////////
-    // PRIVATE METHODS
-    //////////////////////////////////////////////////
-
     private void add(HttpMethod method, String url, String acceptedType, Object target) {
         RouteEntry entry = new RouteEntry();
         entry.httpMethod = method;
@@ -276,20 +272,25 @@ public class Routes {
     public void add(String route, String acceptType, Object target) {
         try {
             int singleQuoteIndex = route.indexOf(SINGLE_QUOTE);
-            String httpMethod = route.substring(0, singleQuoteIndex).trim().toLowerCase(); // NOSONAR
-            String url = route.substring(singleQuoteIndex + 1, route.length() - 1).trim(); // NOSONAR
+            String httpMethod = route.substring(0, singleQuoteIndex).trim().toLowerCase();
+            String url = route.substring(singleQuoteIndex + 1, route.length() - 1).trim();
 
-            // Use special enum stuff to get from value
-            HttpMethod method;
-            try {
-                method = HttpMethod.valueOf(httpMethod);
-            } catch (IllegalArgumentException e) {
-                LOG.error("The @Route value: {} has an invalid HTTP method part: {}.", route, httpMethod);
+            HttpMethod method = parseHttpMethod(route, httpMethod);
+            if (method == null) {
                 return;
             }
             add(method, url, acceptType, target);
         } catch (Exception e) {
             LOG.error("The @Route value: {} is not in the correct format", route, e);
+        }
+    }
+
+    private HttpMethod parseHttpMethod(String route, String httpMethod) {
+        try {
+            return HttpMethod.valueOf(httpMethod);
+        } catch (IllegalArgumentException e) {
+            LOG.error("The @Route value: {} has an invalid HTTP method part: {}.", route, httpMethod);
+            return null;
         }
     }
 }
