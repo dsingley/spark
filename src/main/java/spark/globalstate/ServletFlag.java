@@ -23,7 +23,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ServletFlag {
 
-    private static AtomicBoolean isRunningFromServlet = new AtomicBoolean(false);
+    private static final AtomicBoolean isRunningFromServlet = new AtomicBoolean(false);
+
+    private ServletFlag() {
+    }
 
     /**
      * Tells the system that Spark was run from an "external" web application server.
