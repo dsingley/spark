@@ -151,9 +151,9 @@ public class Request {
         }
 
         if (param.startsWith(":")) {
-            return params.get(param.toLowerCase()); // NOSONAR
+            return params.get(param.toLowerCase());
         } else {
-            return params.get(":" + param.toLowerCase()); // NOSONAR
+            return params.get(":" + param.toLowerCase());
         }
     }
 

@@ -276,7 +276,7 @@ class ResponseTest {
     }
 
     @Test
-    void testRedirect_whenLocationParameter_shouldModifyStatusCodeSuccessfully() throws Exception { // NOSONAR
+    void testRedirect_whenLocationParameter_shouldModifyStatusCodeSuccessfully() throws Exception {
         final String finalLocation = "/test";
 
         response.redirect(finalLocation);
@@ -284,8 +284,9 @@ class ResponseTest {
     }
 
     @Test
-    void testRedirect_whenLocationAndHttpStatusCodeParameters_shouldModifyStatusCodeSuccessfully() throws
-                                                                                                          Exception { // NOSONAR
+    void testRedirect_whenLocationAndHttpStatusCodeParameters_shouldModifyStatusCodeSuccessfully()
+        throws Exception {
+        
         final String finalLocation = "/test";
         int finalStatusCode = HttpServletResponse.SC_BAD_GATEWAY;
 

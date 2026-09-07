@@ -193,7 +193,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
             }
         } catch (Exception e) {
             logger.error("stop failed", e);
-            System.exit(100); // NOSONAR
+            System.exit(100);
         }
         logger.info("done");
     }

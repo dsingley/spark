@@ -57,7 +57,7 @@ class RouteEntry {
     }
 
     private boolean matchPath(String path) { // NOSONAR
-        if (!this.path.endsWith("*") && ((path.endsWith("/") && !this.path.endsWith("/")) // NOSONAR
+        if (!this.path.endsWith("*") && ((path.endsWith("/") && !this.path.endsWith("/"))
                 || (this.path.endsWith("/") && !path.endsWith("/")))) {
             // One and not both ends with slash
             return false;

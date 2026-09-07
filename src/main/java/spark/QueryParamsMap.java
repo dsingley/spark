@@ -129,7 +129,7 @@ public class QueryParamsMap {
         if (m.find()) {
             return new String[] {cleanKey(m.group()), key.substring(m.end())};
         } else {
-            return null; // NOSONAR
+            return null;
         }
     }
 
