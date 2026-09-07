@@ -156,8 +156,8 @@ class StaticFilesMemberTest {
         });
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/pages/index.html", null);
         assertAll(
-                () -> assertThat(response.headers.get("Server")).isEqualTo("Microsoft Word"),
-                () -> assertThat(response.headers.get("Cache-Control")).isEqualTo("private, max-age=600")
+                () -> assertThat(response.headers).containsEntry("Server", "Microsoft Word"),
+                () -> assertThat(response.headers).containsEntry("Cache-Control", "private, max-age=600")
         );
 
         testGet();
@@ -167,7 +167,7 @@ class StaticFilesMemberTest {
     void testStaticFileExpireTime() throws Exception {
         staticFiles.expireTime(600);
         SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/pages/index.html", null);
-        assertThat(response.headers.get("Cache-Control")).isEqualTo("private, max-age=600");
+        assertThat(response.headers).containsEntry("Cache-Control", "private, max-age=600");
 
         testGet();
     }

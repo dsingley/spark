@@ -54,8 +54,7 @@ abstract class Routable {
     @Deprecated
     protected abstract void addFilter(String httpMethod, FilterImpl filter);
 
-    /////////////////////////////
-    // Default implementations //
+    // Default implementations
 
     /**
      * Map the route for HTTP GET requests
@@ -167,9 +166,7 @@ abstract class Routable {
         addFilter(HttpMethod.after, FilterImpl.create(path, filter));
     }
 
-    //////////////////////////////////////////////////
     // BEGIN route/filter mapping with accept type
-    //////////////////////////////////////////////////
 
     /**
      * Map the route for HTTP GET requests
@@ -329,13 +326,9 @@ abstract class Routable {
         addFilter(HttpMethod.afterafter, FilterImpl.create(path, filter));
     }
 
-    //////////////////////////////////////////////////
     // END route/filter mapping with accept type
-    //////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////
     // BEGIN Template View Routes
-    //////////////////////////////////////////////////
 
     /**
      * Map the route for HTTP GET requests
@@ -571,13 +564,9 @@ abstract class Routable {
         addRoute(HttpMethod.options, TemplateViewRouteImpl.create(path, acceptType, route, engine));
     }
 
-    //////////////////////////////////////////////////
     // END Template View Routes
-    //////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////
     // BEGIN Response Transforming Routes
-    //////////////////////////////////////////////////
 
     /**
      * Map the route for HTTP GET requests
