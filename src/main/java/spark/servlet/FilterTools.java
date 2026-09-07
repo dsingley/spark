@@ -64,10 +64,10 @@ final class FilterTools {
         if (result == null || result.equals(SLASH_WILDCARD)) {
             return "";
         } else if (!result.startsWith(SLASH) || !result.endsWith(SLASH_WILDCARD)) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     "The " + FILTER_MAPPING_PARAM + " must start with \"/\" and end with \"/*\". It's: "
                             + result
-            ); // NOSONAR
+            );
         }
         return result.substring(1, result.length() - 1);
     }

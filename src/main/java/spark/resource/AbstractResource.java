@@ -55,7 +55,7 @@ public abstract class AbstractResource implements Resource {
                 InputStream is = getInputStream();
                 is.close();
                 return true;
-            } catch (Throwable isEx) {
+            } catch (Exception isEx) {
                 return false;
             }
         }

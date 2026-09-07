@@ -82,7 +82,7 @@ public class EmbeddedServers {
         if (factory != null) {
             return factory.create(routeMatcher, staticFilesConfiguration, exceptionMapper, multipleHandlers);
         } else {
-            throw new RuntimeException("No embedded server matching the identifier");
+            throw new IllegalStateException("No embedded server matching the identifier");
         }
     }
 

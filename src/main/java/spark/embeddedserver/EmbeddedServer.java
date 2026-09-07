@@ -39,6 +39,8 @@ public interface EmbeddedServer {
      * @param minThreads              - min nbr of threads.
      * @return The port number the server was launched on.
      */
+    // throws Exception is part of the public API; narrowing it would break existing implementations
+    @SuppressWarnings("java:S112")
     int ignite(String host,
                    int port,
                    SslStores sslStores,
@@ -68,6 +70,8 @@ public interface EmbeddedServer {
      * @param threadIdleTimeoutMillis - idle timeout (ms).
      * @return The port number the server was launched on.
      */
+    // throws Exception is part of the public API; narrowing it would break existing implementations
+    @SuppressWarnings("java:S112")
     int ignite(String host,
                int port,
                SslContextFactory.Server sslContextFactory,

@@ -124,6 +124,8 @@ public abstract class RouteImpl implements Route, Wrapper {
      * @return body content.
      * @throws java.lang.Exception when render fails
      */
+    // throws Exception is part of the public API; narrowing it would break existing implementations
+    @SuppressWarnings("java:S112")
     public Object render(Object element) throws Exception {
         return element;
     }

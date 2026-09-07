@@ -49,8 +49,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private final JettyHandler handler;
     private Server server;
 
-    // TODO (sleberknight): Is this intentionally using an instance logger? If so, why?
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(EmbeddedJettyServer.class);
 
     private Map<String, WebSocketHandlerWrapper> webSocketHandlers;
     private Optional<Long> webSocketIdleTimeoutMillis;
@@ -102,6 +101,10 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         return ignite(host, port, null, sslContextFactory, maxThreads, minThreads, threadIdleTimeoutMillis);
     }
 
+    // the ServerConnector created below is handed off to "server" via setConnectors(),
+    // which owns its lifecycle from then on (started by server.start(), closed by
+    // server.stop() in extinguish()) - closing it here would break server startup
+    @SuppressWarnings({ "java:S2095", "resource" })
     private int ignite(String host,
                        int port,
                        SslStores sslStores,
