@@ -17,11 +17,6 @@
 //
 package spark.utils.urldecoding;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
-/* ------------------------------------------------------------ */
-
 /**
  * TYPE Utilities.
  * Provides various static utility methods for manipulating types and their
@@ -32,124 +27,6 @@ import java.util.HashMap;
 public class TypeUtil {
 
     private TypeUtil() {
-    }
-
-    /* ------------------------------------------------------------ */
-    private static final HashMap<String, Class<?>> name2Class = new HashMap<>();
-
-    static {
-        name2Class.put("boolean", java.lang.Boolean.TYPE);
-        name2Class.put("byte", java.lang.Byte.TYPE);
-        name2Class.put("char", java.lang.Character.TYPE);
-        name2Class.put("double", java.lang.Double.TYPE);
-        name2Class.put("float", java.lang.Float.TYPE);
-        name2Class.put("int", java.lang.Integer.TYPE);
-        name2Class.put("long", java.lang.Long.TYPE);
-        name2Class.put("short", java.lang.Short.TYPE);
-        name2Class.put("void", java.lang.Void.TYPE);
-
-        name2Class.put("java.lang.Boolean.TYPE", java.lang.Boolean.TYPE);
-        name2Class.put("java.lang.Byte.TYPE", java.lang.Byte.TYPE);
-        name2Class.put("java.lang.Character.TYPE", java.lang.Character.TYPE);
-        name2Class.put("java.lang.Double.TYPE", java.lang.Double.TYPE);
-        name2Class.put("java.lang.Float.TYPE", java.lang.Float.TYPE);
-        name2Class.put("java.lang.Integer.TYPE", java.lang.Integer.TYPE);
-        name2Class.put("java.lang.Long.TYPE", java.lang.Long.TYPE);
-        name2Class.put("java.lang.Short.TYPE", java.lang.Short.TYPE);
-        name2Class.put("java.lang.Void.TYPE", java.lang.Void.TYPE);
-
-        name2Class.put("java.lang.Boolean", java.lang.Boolean.class);
-        name2Class.put("java.lang.Byte", java.lang.Byte.class);
-        name2Class.put("java.lang.Character", java.lang.Character.class);
-        name2Class.put("java.lang.Double", java.lang.Double.class);
-        name2Class.put("java.lang.Float", java.lang.Float.class);
-        name2Class.put("java.lang.Integer", java.lang.Integer.class);
-        name2Class.put("java.lang.Long", java.lang.Long.class);
-        name2Class.put("java.lang.Short", java.lang.Short.class);
-
-        name2Class.put("Boolean", java.lang.Boolean.class);
-        name2Class.put("Byte", java.lang.Byte.class);
-        name2Class.put("Character", java.lang.Character.class);
-        name2Class.put("Double", java.lang.Double.class);
-        name2Class.put("Float", java.lang.Float.class);
-        name2Class.put("Integer", java.lang.Integer.class);
-        name2Class.put("Long", java.lang.Long.class);
-        name2Class.put("Short", java.lang.Short.class);
-
-        name2Class.put(null, java.lang.Void.TYPE);
-        name2Class.put("string", java.lang.String.class);
-        name2Class.put("String", java.lang.String.class);
-        name2Class.put("java.lang.String", java.lang.String.class);
-    }
-
-    /* ------------------------------------------------------------ */
-    private static final HashMap<Class<?>, String> class2Name = new HashMap<>();
-
-    static {
-        class2Name.put(java.lang.Boolean.TYPE, "boolean");
-        class2Name.put(java.lang.Byte.TYPE, "byte");
-        class2Name.put(java.lang.Character.TYPE, "char");
-        class2Name.put(java.lang.Double.TYPE, "double");
-        class2Name.put(java.lang.Float.TYPE, "float");
-        class2Name.put(java.lang.Integer.TYPE, "int");
-        class2Name.put(java.lang.Long.TYPE, "long");
-        class2Name.put(java.lang.Short.TYPE, "short");
-        class2Name.put(java.lang.Void.TYPE, "void");
-
-        class2Name.put(java.lang.Boolean.class, "java.lang.Boolean");
-        class2Name.put(java.lang.Byte.class, "java.lang.Byte");
-        class2Name.put(java.lang.Character.class, "java.lang.Character");
-        class2Name.put(java.lang.Double.class, "java.lang.Double");
-        class2Name.put(java.lang.Float.class, "java.lang.Float");
-        class2Name.put(java.lang.Integer.class, "java.lang.Integer");
-        class2Name.put(java.lang.Long.class, "java.lang.Long");
-        class2Name.put(java.lang.Short.class, "java.lang.Short");
-
-        class2Name.put(null, "void");
-        class2Name.put(java.lang.String.class, "java.lang.String");
-    }
-
-    /* ------------------------------------------------------------ */
-    private static final HashMap<Class<?>, Method> class2Value = new HashMap<>();
-
-    private static final String VALUE_OF = "valueOf";
-
-    static {
-        try {
-            Class<?>[] s = {java.lang.String.class};
-
-            class2Value.put(java.lang.Boolean.TYPE,
-                            java.lang.Boolean.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Byte.TYPE,
-                            java.lang.Byte.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Double.TYPE,
-                            java.lang.Double.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Float.TYPE,
-                            java.lang.Float.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Integer.TYPE,
-                            java.lang.Integer.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Long.TYPE,
-                            java.lang.Long.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Short.TYPE,
-                            java.lang.Short.class.getMethod(VALUE_OF, s));
-
-            class2Value.put(java.lang.Boolean.class,
-                            java.lang.Boolean.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Byte.class,
-                            java.lang.Byte.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Double.class,
-                            java.lang.Double.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Float.class,
-                            java.lang.Float.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Integer.class,
-                            java.lang.Integer.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Long.class,
-                            java.lang.Long.class.getMethod(VALUE_OF, s));
-            class2Value.put(java.lang.Short.class,
-                            java.lang.Short.class.getMethod(VALUE_OF, s));
-        } catch (Exception e) {
-            throw new Error(e);
-        }
     }
 
     /**
@@ -183,8 +60,6 @@ public class TypeUtil {
         return value;
     }
 
-    /* ------------------------------------------------------------ */
-
     /**
      * @param c An ASCII encoded character 0-9 a-f A-F
      * @return The byte value of the character 0-16.
@@ -196,8 +71,6 @@ public class TypeUtil {
         }
         return d;
     }
-
-    /* ------------------------------------------------------------ */
 
     /**
      * @param c An ASCII encoded character 0-9 a-f A-F
@@ -211,12 +84,10 @@ public class TypeUtil {
         return d;
     }
 
-    /* ------------------------------------------------------------ */
     public static String toHexString(byte b) {
         return toHexString(new byte[] {b}, 0, 1);
     }
 
-    /* ------------------------------------------------------------ */
     public static String toHexString(byte[] b, int offset, int length) {
         StringBuilder buf = new StringBuilder();
         for (int i = offset; i < offset + length; i++) {
