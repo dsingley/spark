@@ -68,6 +68,7 @@
         <!-- Maven plugin versions -->        
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+        <jshell-maven-plugin.version>1.4</jshell-maven-plugin.version>
         <maven-bundle.version>6.1.2</maven-bundle.version>
         <maven-compiler.version>3.16.0</maven-compiler.version>
         <maven-deploy.version>3.1.4</maven-deploy.version>
@@ -224,6 +225,12 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.johnpoth</groupId>
+                <artifactId>jshell-maven-plugin</artifactId>
+                <version>${jshell-maven-plugin.version}</version>
             </plugin>
 
             <plugin>
