@@ -12,15 +12,23 @@
 #   ./create-pr.sh -t "My title" -b "My body"    # explicit title/body
 #   ./create-pr.sh -t "My title"                 # title only, opens $EDITOR for body
 #   ./create-pr.sh --draft                       # open as a draft PR
+#   ./create-pr.sh -a sleberknight -m 3.0.0 -l "code cleanup"  # defaults shown explicitly
+#   ./create-pr.sh -l ""                         # pass "" to omit assignee/milestone/label
 #
 # Env overrides (useful once ossrh is renamed to main):
 #   TARGET_REPO=dsingley/spark
 #   TARGET_BASE=ossrh
+#   ASSIGNEE=sleberknight,dsingley
+#   MILESTONE=3.0.0
+#   LABEL="code cleanup"
 
 set -euo pipefail
 
 TARGET_REPO="${TARGET_REPO:-dsingley/spark}"
 TARGET_BASE="${TARGET_BASE:-ossrh}"
+ASSIGNEE="${ASSIGNEE:-sleberknight,dsingley}"
+MILESTONE="${MILESTONE:-3.0.0}"
+LABEL="${LABEL:-code cleanup}"
 
 TITLE=""
 BODY=""
@@ -42,6 +50,12 @@ while [[ $# -gt 0 ]]; do
       HEAD_BRANCH="$2"; shift 2 ;;
     --draft)
       DRAFT="--draft"; shift ;;
+    -a|--assignee)
+      ASSIGNEE="$2"; shift 2 ;;
+    -m|--milestone)
+      MILESTONE="$2"; shift 2 ;;
+    -l|--label)
+      LABEL="$2"; shift 2 ;;
     -h|--help)
       usage ;;
     *)
@@ -69,6 +83,18 @@ CMD=(gh pr create --repo "$TARGET_REPO" --base "$TARGET_BASE" --head "$HEAD_BRAN
 
 if [[ -n "$DRAFT" ]]; then
   CMD+=("$DRAFT")
+fi
+
+if [[ -n "$ASSIGNEE" ]]; then
+  CMD+=(--assignee "$ASSIGNEE")
+fi
+
+if [[ -n "$MILESTONE" ]]; then
+  CMD+=(--milestone "$MILESTONE")
+fi
+
+if [[ -n "$LABEL" ]]; then
+  CMD+=(--label "$LABEL")
 fi
 
 if [[ -n "$TITLE" ]]; then
