@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 /**
  * TYPE Utilities.
- * Provides various static utiltiy methods for manipulating types and their
+ * Provides various static utility methods for manipulating types and their
  * string representations.
  *
  * @since Jetty 4.1
@@ -181,25 +181,6 @@ public class TypeUtil {
             value = value * base + digit;
         }
         return value;
-    }
-
-    /* ------------------------------------------------------------ */
-    public static String toString(byte[] bytes, int base) {
-        StringBuilder buf = new StringBuilder();
-        for (byte b : bytes) {
-            int bi = 0xff & b;
-            int c = '0' + (bi / base) % base;
-            if (c > '9') {
-                c = 'a' + (c - '0' - 10);
-            }
-            buf.append((char) c);
-            c = '0' + bi % base;
-            if (c > '9') {
-                c = 'a' + (c - '0' - 10);
-            }
-            buf.append((char) c);
-        }
-        return buf.toString();
     }
 
     /* ------------------------------------------------------------ */
