@@ -14,6 +14,8 @@ public interface Route {
      * @return The content to be set in the response
      * @throws java.lang.Exception implementation can choose to throw exception
      */
+    // throws Exception is part of the public API; narrowing it would break existing implementations
+    @SuppressWarnings("java:S112")
     Object handle(Request request, Response response) throws Exception;
 
 }

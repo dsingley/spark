@@ -19,6 +19,9 @@ package spark.utils.urldecoding;
 
 public class UrlDecode {
 
+    private UrlDecode() {
+    }
+
     /* ------------------------------------------------------------ */
     /* Decode a URI path and strip parameters
      */

@@ -27,6 +27,9 @@ import java.net.URL;
 /**
  * Created by Per Wendel on 2014-05-18.
  */
+// equals/hashCode inherited from AbstractResource are description-based and
+// already cover the "file" field added here, via getDescription()
+@SuppressWarnings("java:S2160")
 public class ExternalResource extends AbstractFileResolvingResource {
 
     private final File file;
