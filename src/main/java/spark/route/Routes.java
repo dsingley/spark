@@ -267,6 +267,7 @@ public class Routes {
      * @param route      the route path
      * @param acceptType the accept type
      * @param target     the invocation target
+     * @deprecated use {@link #add(HttpMethod, RouteImpl)} or {@link #add(HttpMethod, FilterImpl)}
      */
     @Deprecated
     public void add(String route, String acceptType, Object target) {

@@ -20,12 +20,18 @@ public class StaticFilesFolder {
     private StaticFilesFolder() {
     }
 
+    /**
+     * @deprecated static file locations are no longer global; use {@link spark.Service#staticFileLocation(String)}
+     */
     @Deprecated
     public static void localConfiguredTo(String folder) {
 
         local = removeLeadingAndTrailingSlashesFrom(folder);
     }
 
+    /**
+     * @deprecated static file locations are no longer global; use {@link spark.Service#externalStaticFileLocation(String)}
+     */
     @Deprecated
     public static void externalConfiguredTo(String folder) {
 
@@ -34,11 +40,19 @@ public class StaticFilesFolder {
         external = removeLeadingAndTrailingSlashesFrom(unixLikeFolder);
     }
 
+    /**
+     * @deprecated static file locations are no longer global; each {@link spark.Service} now
+     * has its own, which is not exposed via a getter
+     */
     @Deprecated
     public static String local() {
         return local;
     }
 
+    /**
+     * @deprecated static file locations are no longer global; each {@link spark.Service} now
+     * has its own, which is not exposed via a getter
+     */
     @Deprecated
     public static String external() {
         return external;
