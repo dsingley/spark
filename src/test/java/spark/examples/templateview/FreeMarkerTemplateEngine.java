@@ -11,7 +11,7 @@ import java.io.StringWriter;
 
 public class FreeMarkerTemplateEngine extends TemplateEngine {
 
-    private Configuration configuration;
+    private final Configuration configuration;
 
     protected FreeMarkerTemplateEngine() {
         this.configuration = createFreemarkerConfiguration();

@@ -5,11 +5,11 @@ import spark.ResponseTransformer;
 
 public class JsonTransformer implements ResponseTransformer {
 
-	private Gson gson = new Gson();
+	private static final Gson GSON = new Gson();
 
 	@Override
 	public String render(Object model) {
-		return gson.toJson(model);
+		return GSON.toJson(model);
 	}
 
 }

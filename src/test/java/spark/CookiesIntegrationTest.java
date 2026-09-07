@@ -12,8 +12,12 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.HttpResponse;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 /**
  * System tests for the Cookies support.
@@ -23,14 +27,20 @@ import org.junit.jupiter.api.Test;
 class CookiesIntegrationTest {
 
     private static final String DEFAULT_HOST_URL = "http://localhost:4567";
-    // Jetty 12 renders a deleted cookie's Expires attribute in standard RFC 1123 form
-    // (space-separated, e.g. "Thu, 01 Jan 1970 00:00:00 GMT"); Apache HttpClient's default
-    // cookie spec only accepts the legacy Netscape/RFC 2109 hyphenated form and silently
-    // discards the header otherwise, so the client-side cookie store never sees the
-    // deletion. Both forms are RFC 6265-compliant; opt into the more permissive RELAXED spec.
-    private CloseableHttpClient httpClient = HttpClientBuilder.create()
+
+    private CloseableHttpClient httpClient;
+
+    @BeforeEach
+    void setUp() {
+        // Jetty 12 renders a deleted cookie's Expires attribute in standard RFC 1123 form
+        // (space-separated, e.g. "Thu, 01 Jan 1970 00:00:00 GMT"); Apache HttpClient's default
+        // cookie spec only accepts the legacy Netscape/RFC 2109 hyphenated form and silently
+        // discards the header otherwise, so the client-side cookie store never sees the
+        // deletion. Both forms are RFC 6265-compliant; opt into the more permissive RELAXED spec.
+        httpClient = HttpClientBuilder.create()
             .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(StandardCookieSpec.RELAXED).build())
             .build();
+    }
 
     @BeforeAll
     static void beforeAll() {
@@ -89,6 +99,11 @@ class CookiesIntegrationTest {
         });
 
         Spark.awaitInitialization();
+    }
+
+    @AfterEach
+    void tearDown() throws IOException {
+        httpClient.close();
     }
 
     @AfterAll

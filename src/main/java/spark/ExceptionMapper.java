@@ -49,7 +49,7 @@ public class ExceptionMapper {
     /**
      * Holds a map of Exception classes and associated handlers
      */
-    private Map<Class<? extends Exception>, ExceptionHandlerImpl> exceptionMap;
+    private final Map<Class<? extends Exception>, ExceptionHandlerImpl> exceptionMap;
 
     /**
      * Class constructor

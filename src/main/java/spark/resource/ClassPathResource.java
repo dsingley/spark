@@ -43,7 +43,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 
     private final String path;
 
-    private ClassLoader classLoader;
+    private final ClassLoader classLoader;
 
     private Class<?> clazz;
 

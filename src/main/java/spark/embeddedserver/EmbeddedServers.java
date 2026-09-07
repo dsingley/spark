@@ -34,10 +34,10 @@ public class EmbeddedServers {
         JETTY
     }
 
-    private static Map<Object, EmbeddedServerFactory> factories = new HashMap<>();
+    private static final Map<Object, EmbeddedServerFactory> FACTORIES = new HashMap<>();
 
     public static void initialize() {
-        if (!factories.containsKey(Identifiers.JETTY)) {
+        if (!FACTORIES.containsKey(Identifiers.JETTY)) {
             add(Identifiers.JETTY, new EmbeddedJettyFactory());
         }
     }
@@ -77,7 +77,7 @@ public class EmbeddedServers {
                                         StaticFilesConfiguration staticFilesConfiguration,
                                         boolean multipleHandlers) {
 
-        EmbeddedServerFactory factory = factories.get(identifier);
+        EmbeddedServerFactory factory = FACTORIES.get(identifier);
 
         if (factory != null) {
             return factory.create(routeMatcher, staticFilesConfiguration, exceptionMapper, multipleHandlers);
@@ -93,7 +93,7 @@ public class EmbeddedServers {
      * @param factory    the factory
      */
     public static void add(Object identifier, EmbeddedServerFactory factory) {
-        factories.put(identifier, factory);
+        FACTORIES.put(identifier, factory);
     }
 
 }

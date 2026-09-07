@@ -23,11 +23,11 @@ import spark.route.HttpMethod;
  */
 public class RouteMatch {
 
-    private Object target;
-    private String matchUri;
-    private String requestURI;
-    private String acceptType;
-    private HttpMethod httpMethod;
+    private final Object target;
+    private final String matchUri;
+    private final String requestURI;
+    private final String acceptType;
+    private final HttpMethod httpMethod;
 
     public RouteMatch(Object target, String matchUri, String requestUri, String acceptType) {
         this(target, matchUri, requestUri, acceptType, null);

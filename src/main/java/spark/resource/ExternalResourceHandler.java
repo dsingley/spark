@@ -32,7 +32,7 @@ public class ExternalResourceHandler extends AbstractResourceHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ExternalResourceHandler.class);
 
     private final String baseResource;
-    private String welcomeFile;
+    private final String welcomeFile;
 
     /**
      * Constructor

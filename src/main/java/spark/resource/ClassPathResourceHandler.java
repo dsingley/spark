@@ -32,7 +32,7 @@ public class ClassPathResourceHandler extends AbstractResourceHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ClassPathResourceHandler.class);
 
     private final String baseResource;
-    private String welcomeFile;
+    private final String welcomeFile;
 
     /**
      * Constructor
