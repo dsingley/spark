@@ -51,7 +51,7 @@ public class HaltException extends RuntimeException {
      * @return the statusCode
      * @deprecated replaced by {@link #statusCode()}
      */
-    @Deprecated
+    @Deprecated(since = "2.5")
     public int getStatusCode() {
         return statusCode;
     }
@@ -67,7 +67,7 @@ public class HaltException extends RuntimeException {
      * @return the body
      * @deprecated replaced by {@link #body()}
      */
-    @Deprecated
+    @Deprecated(since = "2.5")
     public String getBody() {
         return body;
     }

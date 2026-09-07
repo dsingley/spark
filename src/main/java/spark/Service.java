@@ -620,7 +620,7 @@ public final class Service extends Routable {
      * @deprecated use {@link #addRoute(HttpMethod, RouteImpl)}
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "2.6.0")
     public void addRoute(String httpMethod, RouteImpl route) {
         init();
         routes.add(httpMethod + " '" + getPaths() + route.getPath() + "'", route.getAcceptType(), route);
@@ -630,7 +630,7 @@ public final class Service extends Routable {
      * @deprecated use {@link #addFilter(HttpMethod, FilterImpl)}
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "2.6.0")
     public void addFilter(String httpMethod, FilterImpl filter) {
         init();
         routes.add(httpMethod + " '" + getPaths() + filter.getPath() + "'", filter.getAcceptType(), filter);

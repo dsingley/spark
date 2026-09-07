@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @deprecated see {@link spark.route.Routes}
  */
-@Deprecated
+@Deprecated(since = "2.5")
 public class SimpleRouteMatcher extends Routes {
 
     /**

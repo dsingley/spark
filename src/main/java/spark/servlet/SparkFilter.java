@@ -83,7 +83,7 @@ public class SparkFilter implements Filter {
      * @throws ServletException if anything went wrong.
      * @deprecated Use {@link #getApplications(FilterConfig)} instead.
      */
-    @Deprecated
+    @Deprecated(since = "2.5.1")
     protected SparkApplication getApplication(FilterConfig filterConfig) throws ServletException {
         return getApplication(filterConfig.getInitParameter(APPLICATION_CLASS_PARAM));
     }
