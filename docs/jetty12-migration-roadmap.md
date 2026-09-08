@@ -89,7 +89,8 @@ internally, but `.raw()` would return a non-standard type instead of a familiar 
 turned out to be compile-coupled — fixing Phase 1's namespace break required touching
 `JettyHandler` immediately, which is Phase 2's own architectural rewrite — so with the user's
 explicit sign-off ("we can work with real feedback"), Phases 1 and 2 landed together in one PR
-(#11) driven by the compiler's own errors as a checklist, rather than issue-by-issue. Phases 4
+(sleberknight/spark#11) driven by the compiler's own errors as a checklist, rather than
+issue-by-issue. Phases 4
 and 5 (5.1–5.3) turned out to already be complete as a side effect of that same PR when audited
 during Phase 6. Actual status is noted per phase below.*
 
@@ -104,7 +105,7 @@ target, before touching application code.
 | 0.2 | internal | Move CI to a JDK 17/21 matrix | Update `setup-java` in the push workflow off JDK 8; consider testing 17 and 21 side by side. |
 | 0.3 | spike | Pin exact Jetty 12.1 artifact coordinates | Confirm the current jetty-bom version (12.1.x — the only line still publishing to Maven Central since Jan 2026) and the ee11 module set (servlet, webapp, websocket) to depend on. |
 
-**Status:** ✅ Done — issues #1, #2, #3.
+**Status:** ✅ Done — sleberknight/spark#1, sleberknight/spark#2, sleberknight/spark#3.
 
 ### Phase 1 — Servlet namespace migration
 
@@ -118,7 +119,8 @@ The one deliberate external break. Mechanical in most files; the public-API thre
 | 1.3 | internal | Sweep internal plumbing to jakarta.servlet | Mechanical rename across the request/response pipeline — invisible to consumers since none of these types are public return values. |
 | 1.4 | external · WAR | Migrate the web.xml deployment path | `SparkFilter` and `FilterTools` move to jakarta.servlet, same ee11 baseline as the rest of the codebase. |
 
-**Status:** ✅ Done — issues #7, #8, #9, #10, all landed via PR #11.
+**Status:** ✅ Done — sleberknight/spark#7, sleberknight/spark#8, sleberknight/spark#9,
+sleberknight/spark#10, all landed via sleberknight/spark#11.
 
 ### Phase 2 — Embedded Jetty core rewrite
 
@@ -132,8 +134,8 @@ currently overrides to inject its filter — this has to be redesigned, not rena
 | 2.3 | external · SSL API | Move SocketConnectorFactory to SslContextFactory.Server | The unqualified `SslContextFactory` class is gone. |
 | 2.4 | internal | Verify Utf8Appendable's Jetty dependency | Confirmed `org.eclipse.jetty.util.Utf8Appendable.NotUtf8Exception` still resolves at the same coordinates. |
 
-**Status:** ✅ Done — no separate issues were filed for this phase; it landed directly in PR #11
-alongside Phase 1, per the compile-coupling discovery above.
+**Status:** ✅ Done — no separate issues were filed for this phase; it landed directly in
+sleberknight/spark#11 alongside Phase 1, per the compile-coupling discovery above.
 
 ### Phase 3 — WebSocket layer rewrite
 
@@ -147,8 +149,9 @@ write against should survive conceptually, but that needed confirming before it 
 | 3.3 | external · WebSocket | Confirm and document the handler-class break | Verified: `WebSocketListener` was removed entirely with no replacement (real rewrite required); `@WebSocket`-annotated handlers need one rename (`@OnWebSocketConnect` → `@OnWebSocketOpen`). |
 | 3.4 | internal | Update websocket fixtures and examples | Ported the echo/ping example handlers and the test client/handler. |
 
-**Status:** ✅ Done — issue #12, landed via PR #19 plus a follow-up gap-fill PR #20 (the example
-files and an idle-timeout test that #19 initially missed).
+**Status:** ✅ Done — sleberknight/spark#12, landed via sleberknight/spark#19 plus a follow-up
+gap-fill sleberknight/spark#20 (the example files and an idle-timeout test that
+sleberknight/spark#19 initially missed).
 
 ### Phase 4 — Static files & resource serving
 
@@ -162,7 +165,7 @@ Smaller surface, but Jetty's resource-serving types have also moved and this pat
 **Status:** ✅ Done — no separate issue filed. Verified complete when auditing Phase 6: this path
 never actually depended on Jetty's own resource types (Spark has its own
 `AbstractFileResolvingResource`/`ClassPathResourceHandler`), and the jakarta.servlet migration
-landed as part of PR #11.
+landed as part of sleberknight/spark#11.
 
 ### Phase 5 — Test suite modernization
 
@@ -177,9 +180,10 @@ follow-on, not scope creep on this plan.
 | 5.3 | internal | Rewrite integration & servlet-mode tests | `GenericIntegrationTest`, `ServletTest`, `EmbeddedServersTest`. |
 | 5.4 | optional | Drop PowerMock in the files touched above | Opportunistic, not required. |
 
-**Status:** 5.1–5.3 ✅ done, no separate issues filed — landed as a side effect of PR #11's
-rewrite, same as Phase 2/4. 5.4 is tracked separately as [BACKLOG] issue #22 (open) since it's
-explicitly optional and unrelated to the migration itself.
+**Status:** 5.1–5.3 ✅ done, no separate issues filed — landed as a side effect of
+sleberknight/spark#11's rewrite, same as Phase 2/4. 5.4 was tracked separately as
+[BACKLOG] sleberknight/spark#22 — ✅ done, closed via sleberknight/spark#35 ("Migrate test suite
+to JUnit 5, AssertJ, and drop PowerMock").
 
 ### Phase 6 — Verification & release
 
@@ -193,8 +197,11 @@ than a surprise.
 | 6.3 | external · docs | Write the consumer migration guide | JDK 17 minimum, the `javax→jakarta` rename, `SslContextFactory.Server`, the websocket changes, the `web.xml` container requirement. |
 | 6.4 | external · versioning | Release as a new major version | Ship the Jetty 12 line as e.g. 3.0.0. |
 
-**Status:** 6.1 ✅ done — issue #23. 6.2 ✅ done — issue #24. 6.3 ✅ done — issue #25, landed via
-PR #28 as [MIGRATING.md](../MIGRATING.md). 6.4 still open — issue #26.
+**Status:** 6.1 ✅ done — sleberknight/spark#23. 6.2 ✅ done — sleberknight/spark#24. 6.3 ✅ done —
+sleberknight/spark#25, landed via sleberknight/spark#28 as [MIGRATING.md](../MIGRATING.md).
+6.4 still open — tracked as dsingley/spark#202 (originally filed as sleberknight/spark#26,
+closed and moved here once work started happening directly in this repo instead of via merging
+the fork's branch upstream, since the actual release-cutting can only happen from here).
 
 ---
 
