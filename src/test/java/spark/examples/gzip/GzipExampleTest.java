@@ -19,19 +19,17 @@ package spark.examples.gzip;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static spark.Spark.awaitInitialization;
-import static spark.Spark.awaitStop;
-import static spark.Spark.stop;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
-
-import java.time.Duration;
 
 /**
  * Tests the GZIP compression support in Spark.
  */
+@ExtendWith(SparkStopExtension.class)
 class GzipExampleTest {
 
     @BeforeAll
@@ -39,12 +37,6 @@ class GzipExampleTest {
         GzipExample.addStaticFileLocation();
         GzipExample.addRoutes();
         awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        stop();
-        awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

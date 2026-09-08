@@ -2,18 +2,16 @@ package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static spark.Spark.awaitInitialization;
-import static spark.Spark.awaitStop;
 import static spark.Spark.before;
-import static spark.Spark.stop;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
-import java.time.Duration;
-
+@ExtendWith(SparkStopExtension.class)
 class FilterTest {
     static SparkTestUtil testUtil;
 
@@ -23,12 +21,6 @@ class FilterTest {
 
         before("/justfilter", (q, a) -> System.out.println("Filter matched"));
         awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        stop();
-        awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

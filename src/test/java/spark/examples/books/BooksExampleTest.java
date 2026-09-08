@@ -6,23 +6,24 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static spark.Spark.after;
 import static spark.Spark.before;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
+import spark.util.SparkStopExtension;
 import spark.utils.IOUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+@ExtendWith(SparkStopExtension.class)
 class BooksExampleTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(BooksExampleTest.class);
@@ -49,12 +50,6 @@ class BooksExampleTest {
     @AfterEach
     void tearDown() {
         Books.books.clear();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

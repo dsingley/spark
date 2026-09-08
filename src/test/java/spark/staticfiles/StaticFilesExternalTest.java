@@ -26,21 +26,23 @@ import static spark.Spark.staticFiles;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
 import spark.examples.exception.NotFoundException;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.time.Duration;
 
 /**
  * Test external static files
  */
+@ExtendWith(SparkStopExtension.class)
 class StaticFilesExternalTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticFilesExternalTest.class);
@@ -98,8 +100,6 @@ class StaticFilesExternalTest {
 
     @AfterAll
     static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
         if (tmpExternalFile1 != null) {
             LOG.debug("tearDown(). Deleting tmp files");
             tmpExternalFile1.delete();

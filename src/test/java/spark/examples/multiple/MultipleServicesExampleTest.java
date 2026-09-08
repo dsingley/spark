@@ -3,18 +3,20 @@ package spark.examples.multiple;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import spark.Service;
+import spark.util.ServiceStopExtension;
 import spark.util.SparkTestUtil;
-
-import java.time.Duration;
 
 class MultipleServicesExampleTest {
 
     private static Service first;
     private static Service second;
+
+    @RegisterExtension
+    static ServiceStopExtension stopExtension = new ServiceStopExtension(() -> first, () -> second);
 
     private static SparkTestUtil firstClient;
     private static SparkTestUtil secondClient;
@@ -29,14 +31,6 @@ class MultipleServicesExampleTest {
 
         first.awaitInitialization();
         second.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        first.stop();
-        second.stop();
-        first.awaitStop(Duration.ofSeconds(5));
-        second.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

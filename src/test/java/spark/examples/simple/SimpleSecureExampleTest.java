@@ -3,14 +3,14 @@ package spark.examples.simple;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import spark.Spark;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
-import java.time.Duration;
-
+@ExtendWith(SparkStopExtension.class)
 class SimpleSecureExampleTest {
 
     private static SparkTestUtil testUtil;
@@ -20,12 +20,6 @@ class SimpleSecureExampleTest {
         testUtil = new SparkTestUtil(4567);
         SimpleSecureExample.main(null);
         Spark.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

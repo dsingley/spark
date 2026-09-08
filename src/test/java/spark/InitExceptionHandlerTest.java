@@ -3,17 +3,19 @@ package spark;
 import static org.assertj.core.api.Assertions.assertThat;
 import static spark.Service.ignite;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.time.Duration;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.util.ServiceStopExtension;
 
 class InitExceptionHandlerTest {
 
     private static final int NON_VALID_PORT = Integer.MAX_VALUE;
     private static Service service;
     private static String errorMessage = "";
+
+    @RegisterExtension
+    static ServiceStopExtension stopExtension = new ServiceStopExtension(() -> service);
 
     @BeforeAll
     static void beforeAll() {
@@ -22,12 +24,6 @@ class InitExceptionHandlerTest {
         service.initExceptionHandler(e -> errorMessage = "Custom init error");
         service.init();
         service.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        service.stop();
-        service.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

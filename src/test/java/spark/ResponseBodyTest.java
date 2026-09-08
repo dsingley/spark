@@ -20,16 +20,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static spark.Spark.after;
 import static spark.Spark.get;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
-
-import java.time.Duration;
 
 /**
  * Validates and shows the "rules" for how response "body" is set.
  */
+@ExtendWith(SparkStopExtension.class)
 public class ResponseBodyTest {
 
     public static final String HELLO = "/hello";
@@ -86,12 +86,6 @@ public class ResponseBodyTest {
         });
 
         Spark.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test
