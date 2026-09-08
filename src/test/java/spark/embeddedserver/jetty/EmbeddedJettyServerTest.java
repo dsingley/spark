@@ -2,7 +2,6 @@ package spark.embeddedserver.jetty;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.servlet.Filter;
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.junit.jupiter.api.AfterEach;
@@ -77,7 +76,7 @@ class EmbeddedJettyServerTest {
     }
 
     private static JettyHandler newHandler() {
-        Filter matcherFilter = new MatcherFilter(
+        var matcherFilter = new MatcherFilter(
                 Routes.create(), new StaticFilesConfiguration(), new ExceptionMapper(), false);
         return new JettyHandler(matcherFilter);
     }
