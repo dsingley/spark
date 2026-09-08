@@ -2,14 +2,14 @@ package spark.examples.filter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import spark.Spark;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
-import java.time.Duration;
-
+@ExtendWith(SparkStopExtension.class)
 class DummyFilterExampleTest {
 
     private static SparkTestUtil testUtil;
@@ -19,12 +19,6 @@ class DummyFilterExampleTest {
         testUtil = new SparkTestUtil(4567);
         DummyFilter.main(null);
         Spark.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

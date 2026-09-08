@@ -10,15 +10,16 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Spark;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
-import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 
+@ExtendWith(SparkStopExtension.class)
 class ServletTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServletTest.class);
@@ -68,8 +69,6 @@ class ServletTest {
 
     @AfterAll
     static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
         if (MyApp.tmpExternalFile != null) {
             LOG.debug("tearDown().deleting: {}", MyApp.tmpExternalFile);
             MyApp.tmpExternalFile.delete();

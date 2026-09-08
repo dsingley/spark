@@ -6,14 +6,14 @@ import static spark.Spark.after;
 import static spark.Spark.exception;
 import static spark.Spark.get;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
-import java.time.Duration;
-
+@ExtendWith(SparkStopExtension.class)
 class ResponseWrapperDelegationTest {
 
     static SparkTestUtil testUtil;
@@ -50,12 +50,6 @@ class ResponseWrapperDelegationTest {
         });
 
         Spark.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

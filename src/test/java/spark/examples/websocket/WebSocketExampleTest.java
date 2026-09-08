@@ -8,17 +8,18 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import spark.Spark;
+import spark.util.SparkStopExtension;
 
 import java.net.URI;
-import java.time.Duration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+@ExtendWith(SparkStopExtension.class)
 class WebSocketExampleTest {
 
     @WebSocket
@@ -49,12 +50,6 @@ class WebSocketExampleTest {
     static void beforeAll() {
         WebSocketExample.main(null);
         Spark.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

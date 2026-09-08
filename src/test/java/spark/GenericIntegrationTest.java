@@ -21,6 +21,7 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.embeddedserver.jetty.websocket.WebSocketTestClient;
@@ -29,6 +30,7 @@ import spark.examples.exception.BaseException;
 import spark.examples.exception.JWGmeligMeylingException;
 import spark.examples.exception.NotFoundException;
 import spark.examples.exception.SubclassOfBaseException;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
@@ -39,12 +41,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@ExtendWith(SparkStopExtension.class)
 class GenericIntegrationTest {
 
     private static final String NOT_FOUND_BRO = "Not found bro";
@@ -187,8 +189,6 @@ class GenericIntegrationTest {
 
     @AfterAll
     static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
         if (tmpExternalFile != null) {
             tmpExternalFile.delete();
         }

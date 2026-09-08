@@ -9,27 +9,22 @@ import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.RequestLogWriter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import spark.Spark;
 import spark.embeddedserver.jetty.EmbeddedJettyFactory;
 import spark.embeddedserver.jetty.JettyServerFactory;
 import spark.ssl.SslStores;
+import spark.util.SparkStopExtension;
 
 import java.io.File;
-import java.time.Duration;
 
+@ExtendWith(SparkStopExtension.class)
 class EmbeddedServersTest {
 
     @TempDir
     File temporaryFolder;
-
-    @AfterAll
-    static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
-    }
 
     @Test
     void testAddAndCreate_whenCreate_createsCustomServer() throws Exception {

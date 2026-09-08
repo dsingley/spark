@@ -20,14 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static spark.Service.ignite;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import spark.route.HttpMethod;
 import spark.routematch.RouteMatch;
+import spark.util.ServiceStopExtension;
 import spark.util.SparkTestUtil;
-
-import java.time.Duration;
 
 /**
  * Created by Per Wendel on 2016-02-18.
@@ -36,6 +35,9 @@ class MultipleServicesTest {
 
     private static Service first;
     private static Service second;
+
+    @RegisterExtension
+    static ServiceStopExtension stopExtension = new ServiceStopExtension(() -> first, () -> second);
 
     private static SparkTestUtil firstClient;
     private static SparkTestUtil secondClient;
@@ -50,14 +52,6 @@ class MultipleServicesTest {
 
         first.awaitInitialization();
         second.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        first.stop();
-        second.stop();
-        first.awaitStop(Duration.ofSeconds(5));
-        second.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

@@ -4,14 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static spark.Service.ignite;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.util.ServiceStopExtension;
 import spark.util.SparkTestUtil;
-
-import java.time.Duration;
 
 /**
  * Created by Tom on 08/02/2017.
@@ -22,6 +21,9 @@ class ServicePortIntegrationTest {
 
     private static Service service;
 
+    @RegisterExtension
+    static ServiceStopExtension stopExtension = new ServiceStopExtension(() -> service);
+
     @BeforeAll
     static void beforeAll() {
         service = ignite();
@@ -30,12 +32,6 @@ class ServicePortIntegrationTest {
         service.get("/hi", (q, a) -> "Hello World!");
 
         service.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        service.stop();
-        service.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

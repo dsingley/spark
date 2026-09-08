@@ -9,18 +9,19 @@ import static spark.Spark.halt;
 import static spark.Spark.patch;
 import static spark.Spark.post;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+@ExtendWith(SparkStopExtension.class)
 class GenericSecureIntegrationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericSecureIntegrationTest.class);
@@ -68,12 +69,6 @@ class GenericSecureIntegrationTest {
         });
 
         Spark.awaitInitialization();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        Spark.stop();
-        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test
