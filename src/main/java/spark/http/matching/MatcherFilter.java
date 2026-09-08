@@ -56,8 +56,6 @@ public class MatcherFilter implements Filter {
     private final SerializerChain serializerChain;
     private final ExceptionMapper exceptionMapper;
 
-    // TODO (sleberknight): Can remove this unused field, but then the ctor arg also unused. What to do?
-    private final boolean externalContainer;
     private final boolean hasOtherHandlers;
 
     /**
@@ -65,20 +63,37 @@ public class MatcherFilter implements Filter {
      *
      * @param routeMatcher      The route matcher
      * @param staticFiles       The static files configuration object
-     * @param externalContainer Tells the filter that Spark is run in an external web container.
-     *                          If true, chain.doFilter will be invoked if request is not consumed by Spark.
+     * @param exceptionMapper   The exception mapper
+     * @param externalContainer unused; kept only so existing callers keep compiling and running unchanged
      * @param hasOtherHandlers  If true, do nothing if request is not consumed by Spark in order to let others handlers process the request.
+     * @deprecated replaced by {@link #MatcherFilter(spark.route.Routes, StaticFilesConfiguration, ExceptionMapper, boolean)},
+     *             which drops the unused {@code externalContainer} parameter
      */
+    @Deprecated(since = "3.0.0")
     public MatcherFilter(spark.route.Routes routeMatcher,
                          StaticFilesConfiguration staticFiles,
                          ExceptionMapper exceptionMapper,
                          boolean externalContainer,
                          boolean hasOtherHandlers) {
+        this(routeMatcher, staticFiles, exceptionMapper, hasOtherHandlers);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param routeMatcher      The route matcher
+     * @param staticFiles       The static files configuration object
+     * @param exceptionMapper   The exception mapper
+     * @param hasOtherHandlers  If true, do nothing if request is not consumed by Spark in order to let others handlers process the request.
+     */
+    public MatcherFilter(spark.route.Routes routeMatcher,
+                         StaticFilesConfiguration staticFiles,
+                         ExceptionMapper exceptionMapper,
+                         boolean hasOtherHandlers) {
 
         this.routeMatcher = routeMatcher;
         this.staticFiles = staticFiles;
         this.exceptionMapper = exceptionMapper;
-        this.externalContainer = externalContainer;
         this.hasOtherHandlers = hasOtherHandlers;
         this.serializerChain = new SerializerChain();
     }
