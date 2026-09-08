@@ -13,6 +13,8 @@ import spark.CustomErrorPages;
 import spark.Spark;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 class CustomErrorPagesTest {
 
     private static final String CUSTOM_NOT_FOUND = "custom not found 404";
@@ -49,7 +51,7 @@ class CustomErrorPagesTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

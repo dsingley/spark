@@ -7,6 +7,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 class InitExceptionHandlerTest {
 
     private static final int NON_VALID_PORT = Integer.MAX_VALUE;
@@ -25,7 +27,7 @@ class InitExceptionHandlerTest {
     @AfterAll
     static void afterAll() {
         service.stop();
-        service.awaitStop();
+        service.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

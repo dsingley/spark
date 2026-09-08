@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import spark.Spark;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 class SugarExampleTest {
 
     private static SparkTestUtil testUtil;
@@ -23,7 +25,7 @@ class SugarExampleTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
+import java.time.Duration;
+
 class ResponseWrapperDelegationTest {
 
     static SparkTestUtil testUtil;
@@ -53,7 +55,7 @@ class ResponseWrapperDelegationTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.time.Duration;
 
 /**
  * Test external static files
@@ -98,7 +99,7 @@ class StaticFilesExternalTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
         if (tmpExternalFile1 != null) {
             LOG.debug("tearDown(). Deleting tmp files");
             tmpExternalFile1.delete();

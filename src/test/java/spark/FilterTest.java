@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
+import java.time.Duration;
+
 class FilterTest {
     static SparkTestUtil testUtil;
 
@@ -26,7 +28,7 @@ class FilterTest {
     @AfterAll
     static void afterAll() {
         stop();
-        awaitStop();
+        awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import spark.Spark;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 class HelloSecureWorldExampleTest {
 
     private static SparkTestUtil testUtil;
@@ -22,7 +24,7 @@ class HelloSecureWorldExampleTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

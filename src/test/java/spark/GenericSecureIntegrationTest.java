@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,7 +73,7 @@ class GenericSecureIntegrationTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

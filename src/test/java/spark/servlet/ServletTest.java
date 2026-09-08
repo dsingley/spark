@@ -16,6 +16,7 @@ import spark.Spark;
 import spark.util.SparkTestUtil;
 import spark.util.SparkTestUtil.UrlResponse;
 
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 
 class ServletTest {
@@ -68,7 +69,7 @@ class ServletTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
         if (MyApp.tmpExternalFile != null) {
             LOG.debug("tearDown().deleting: {}", MyApp.tmpExternalFile);
             MyApp.tmpExternalFile.delete();

@@ -27,6 +27,8 @@ import spark.route.HttpMethod;
 import spark.routematch.RouteMatch;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 /**
  * Created by Per Wendel on 2016-02-18.
  */
@@ -54,8 +56,8 @@ class MultipleServicesTest {
     static void afterAll() {
         first.stop();
         second.stop();
-        first.awaitStop();
-        second.awaitStop();
+        first.awaitStop(Duration.ofSeconds(5));
+        second.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

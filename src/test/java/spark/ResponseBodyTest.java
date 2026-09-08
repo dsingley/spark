@@ -25,6 +25,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 /**
  * Validates and shows the "rules" for how response "body" is set.
  */
@@ -89,7 +91,7 @@ public class ResponseBodyTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

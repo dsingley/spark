@@ -27,6 +27,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 /**
  * Tests the GZIP compression support in Spark.
  */
@@ -42,7 +44,7 @@ class GzipExampleTest {
     @AfterAll
     static void afterAll() {
         stop();
-        awaitStop();
+        awaitStop(Duration.ofSeconds(5));
     }
 
     @Test
