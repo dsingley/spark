@@ -77,7 +77,7 @@ class EmbeddedJettyServerTest {
 
     private static JettyHandler newHandler() {
         var matcherFilter = new MatcherFilter(
-                Routes.create(), new StaticFilesConfiguration(), new ExceptionMapper(), false);
+                Routes.create(), new StaticFilesConfiguration(), new ExceptionMapper(), MatcherFilter.UnmatchedRequestHandling.RESPOND_NOT_FOUND);
         return new JettyHandler(matcherFilter);
     }
 
