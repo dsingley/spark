@@ -265,7 +265,11 @@ class ServiceTest {
     }
 
     @Test
-    @Timeout(value = 1, unit = TimeUnit.SECONDS)
+    // 1 second was too tight in CPU-constrained environments (e.g. GitHub Codespaces sharing
+    // cores with the IDE/language server): the actual work here is trivial (mocks), but stop()
+    // spawns a real background thread, and awaitStop() blocks until it's scheduled and runs -
+    // OS thread-scheduling latency under contention, not this test's logic, was tripping it.
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
     void awaitStopBlocksUntilExtinguished() {
         Service theService = Service.ignite();
         Routes routes = mock(Routes.class);
