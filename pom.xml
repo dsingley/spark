@@ -4,7 +4,7 @@
 
     <groupId>com.dsingley.sparkjava</groupId>
     <artifactId>spark-core</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0-alpha.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Spark</name>
