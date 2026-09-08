@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +54,7 @@ class BooksExampleTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

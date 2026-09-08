@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import spark.Service;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 class MultipleServicesExampleTest {
 
     private static Service first;
@@ -33,8 +35,8 @@ class MultipleServicesExampleTest {
     static void afterAll() {
         first.stop();
         second.stop();
-        first.awaitStop();
-        second.awaitStop();
+        first.awaitStop(Duration.ofSeconds(5));
+        second.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

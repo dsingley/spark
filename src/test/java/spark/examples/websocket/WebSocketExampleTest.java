@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import spark.Spark;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -53,7 +54,7 @@ class WebSocketExampleTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

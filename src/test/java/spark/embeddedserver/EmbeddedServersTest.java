@@ -18,6 +18,7 @@ import spark.embeddedserver.jetty.JettyServerFactory;
 import spark.ssl.SslStores;
 
 import java.io.File;
+import java.time.Duration;
 
 class EmbeddedServersTest {
 
@@ -27,7 +28,7 @@ class EmbeddedServersTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

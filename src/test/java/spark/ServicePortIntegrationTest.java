@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 /**
  * Created by Tom on 08/02/2017.
  */
@@ -33,7 +35,7 @@ class ServicePortIntegrationTest {
     @AfterAll
     static void afterAll() {
         service.stop();
-        service.awaitStop();
+        service.awaitStop(Duration.ofSeconds(5));
     }
 
     @Test

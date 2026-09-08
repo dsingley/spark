@@ -20,6 +20,7 @@ import static spark.Service.ignite;
 
 import spark.routematch.RouteMatch;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -1201,11 +1202,23 @@ public class Spark {
     }
     
     /**
-     * Waits for the Spark server to be stopped.
+     * Waits, with no timeout, for the Spark server to be stopped.
      * If it's already stopped, will return immediately.
+     * See {@link Service#awaitStop()} for the risk of an unbounded wait.
      */
     public static void awaitStop() {
     	getInstance().awaitStop();
+    }
+
+    /**
+     * Waits for the Spark server to be stopped, for up to the given timeout.
+     * If it's already stopped, will return immediately.
+     *
+     * @param timeout the maximum time to wait
+     * @return true if the server stopped before the timeout elapsed, false if the timeout elapsed first
+     */
+    public static boolean awaitStop(Duration timeout) {
+        return getInstance().awaitStop(timeout);
     }
 
     // Websockets //

@@ -14,6 +14,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 /**
  * Basic test to ensure that multiple before and after filters can be mapped to a route.
  */
@@ -46,7 +48,7 @@ class MultipleFiltersTest {
     @AfterAll
     static void afterAll() {
         stop();
-        awaitStop();
+        awaitStop(Duration.ofSeconds(5));
     }
 
     private static final Filter LOAD_USER = (request, response) -> {

@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -187,7 +188,7 @@ class GenericIntegrationTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
         if (tmpExternalFile != null) {
             tmpExternalFile.delete();
         }

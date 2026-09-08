@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.util.SparkTestUtil;
 
+import java.time.Duration;
+
 class BodyAvailabilityTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(BodyAvailabilityTest.class);
@@ -59,7 +61,7 @@ class BodyAvailabilityTest {
     @AfterAll
     static void afterAll() {
         Spark.stop();
-        Spark.awaitStop();
+        Spark.awaitStop(Duration.ofSeconds(5));
 
         beforeBody = null;
         routeBody = null;
