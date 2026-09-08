@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static spark.Service.ignite;
@@ -19,6 +20,7 @@ import spark.embeddedserver.EmbeddedServers;
 import spark.route.Routes;
 import spark.ssl.SslStores;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 class ServiceTest {
@@ -281,6 +283,47 @@ class ServiceTest {
         theService.awaitStop();
         verify(server).extinguish();
         assertThat(theService.initialized).isFalse();
+    }
+
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    void awaitStopWithTimeout_whenServerStopsInTime_returnsTrue() {
+        var theService = Service.ignite();
+        var routes = mock(Routes.class);
+        var server = mock(EmbeddedServer.class);
+        theService.routes = routes;
+        theService.server = server;
+        theService.initialized = true;
+        theService.stop();
+
+        var stopped = theService.awaitStop(Duration.ofSeconds(5));
+
+        verify(server).extinguish();
+        assertAll(
+                () -> assertThat(stopped).isTrue(),
+                () -> assertThat(theService.initialized).isFalse()
+        );
+    }
+
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    void awaitStopWithTimeout_whenServerDoesNotStopInTime_returnsFalse() {
+        var theService = Service.ignite();
+        var routes = mock(Routes.class);
+        var server = mock(EmbeddedServer.class);
+        // simulates a slow/hung shutdown, so the timeout genuinely elapses first
+        doAnswer(invocation -> {
+            Thread.sleep(500);
+            return null;
+        }).when(server).extinguish();
+        theService.routes = routes;
+        theService.server = server;
+        theService.initialized = true;
+        theService.stop();
+
+        var stopped = theService.awaitStop(Duration.ofMillis(50));
+
+        assertThat(stopped).isFalse();
     }
 
     protected static class DummyWebSocketListener {

@@ -35,6 +35,7 @@ import spark.ssl.SslStores;
 import spark.staticfiles.MimeType;
 import spark.staticfiles.StaticFilesConfiguration;
 
+import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -544,7 +546,10 @@ public final class Service extends Routable {
     }
 
     /**
-     * Waits for the Spark server to stop.
+     * Waits, with no timeout, for the Spark server to stop.
+     * <b>Warning:</b> this can block indefinitely if the server never finishes stopping (e.g. an
+     * exception during shutdown prevents the internal latch from ever counting down). Prefer
+     * {@link #awaitStop(Duration)} for a bounded wait.
      * <b>Warning:</b> this method should not be called from a request handler.
      */
     public void awaitStop() {
@@ -553,6 +558,23 @@ public final class Service extends Routable {
         } catch (InterruptedException e) {
             LOG.warn("Interrupted by another thread");
             Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * Waits for the Spark server to stop, for up to the given timeout.
+     * <b>Warning:</b> this method should not be called from a request handler.
+     *
+     * @param timeout the maximum time to wait
+     * @return true if the server stopped before the timeout elapsed, false if the timeout elapsed first
+     */
+    public boolean awaitStop(Duration timeout) {
+        try {
+            return stopLatch.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            LOG.warn("Interrupted by another thread");
+            Thread.currentThread().interrupt();
+            return false;
         }
     }
 
