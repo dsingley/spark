@@ -45,7 +45,7 @@ public class EmbeddedJettyFactory implements EmbeddedServerFactory {
                                  StaticFilesConfiguration staticFilesConfiguration,
                                  ExceptionMapper exceptionMapper,
                                  boolean hasMultipleHandler) {
-        MatcherFilter matcherFilter = new MatcherFilter(routeMatcher, staticFilesConfiguration, exceptionMapper, hasMultipleHandler);
+        var matcherFilter = new MatcherFilter(routeMatcher, staticFilesConfiguration, exceptionMapper, hasMultipleHandler);
         matcherFilter.init(null);
 
         JettyHandler handler = new JettyHandler(matcherFilter);
