@@ -56,30 +56,68 @@ public class MatcherFilter implements Filter {
     private final SerializerChain serializerChain;
     private final ExceptionMapper exceptionMapper;
 
-    // TODO (sleberknight): Can remove this unused field, but then the ctor arg also unused. What to do?
-    private final boolean externalContainer;
-    private final boolean hasOtherHandlers;
+    private final UnmatchedRequestHandling unmatchedRequestHandling;
+
+    /**
+     * What this filter should do with a request that Spark itself didn't consume (no route
+     * matched, and no before/after filter produced a body).
+     */
+    public enum UnmatchedRequestHandling {
+
+        /**
+         * Leave the request marked as not consumed and return without responding, so that
+         * other handlers/filters further down the chain get a chance to process it. Used when
+         * Spark isn't the only thing handling requests, e.g. embedded mode with additional
+         * Jetty handlers, or a servlet filter chain with other filters/servlets after this one.
+         */
+        DELEGATE_TO_OTHER_HANDLERS,
+
+        /**
+         * Have Spark respond directly with a 404 (or a registered custom 404 page). Used when
+         * Spark is the sole handler of the request, so there's nothing else to delegate to.
+         */
+        RESPOND_NOT_FOUND
+    }
 
     /**
      * Constructor
      *
      * @param routeMatcher      The route matcher
      * @param staticFiles       The static files configuration object
-     * @param externalContainer Tells the filter that Spark is run in an external web container.
-     *                          If true, chain.doFilter will be invoked if request is not consumed by Spark.
+     * @param exceptionMapper   The exception mapper
+     * @param externalContainer unused; kept only so existing callers keep compiling and running unchanged
      * @param hasOtherHandlers  If true, do nothing if request is not consumed by Spark in order to let others handlers process the request.
+     * @deprecated replaced by {@link #MatcherFilter(spark.route.Routes, StaticFilesConfiguration, ExceptionMapper, UnmatchedRequestHandling)},
+     *             which drops the unused {@code externalContainer} parameter and replaces the
+     *             {@code hasOtherHandlers} boolean with the more descriptive {@link UnmatchedRequestHandling}
      */
+    @Deprecated(since = "3.0.0")
     public MatcherFilter(spark.route.Routes routeMatcher,
                          StaticFilesConfiguration staticFiles,
                          ExceptionMapper exceptionMapper,
                          boolean externalContainer,
                          boolean hasOtherHandlers) {
+        this(routeMatcher, staticFiles, exceptionMapper,
+             hasOtherHandlers ? UnmatchedRequestHandling.DELEGATE_TO_OTHER_HANDLERS : UnmatchedRequestHandling.RESPOND_NOT_FOUND);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param routeMatcher              The route matcher
+     * @param staticFiles               The static files configuration object
+     * @param exceptionMapper           The exception mapper
+     * @param unmatchedRequestHandling  What to do with a request Spark itself didn't consume
+     */
+    public MatcherFilter(spark.route.Routes routeMatcher,
+                         StaticFilesConfiguration staticFiles,
+                         ExceptionMapper exceptionMapper,
+                         UnmatchedRequestHandling unmatchedRequestHandling) {
 
         this.routeMatcher = routeMatcher;
         this.staticFiles = staticFiles;
         this.exceptionMapper = exceptionMapper;
-        this.externalContainer = externalContainer;
-        this.hasOtherHandlers = hasOtherHandlers;
+        this.unmatchedRequestHandling = unmatchedRequestHandling;
         this.serializerChain = new SerializerChain();
     }
 
@@ -158,7 +196,8 @@ public class MatcherFilter implements Filter {
                 body.set("");
             }
 
-            if (body.notSet() && hasOtherHandlers && servletRequest instanceof HttpRequestWrapper servletRequestWrapper) {
+            if (body.notSet() && unmatchedRequestHandling == UnmatchedRequestHandling.DELEGATE_TO_OTHER_HANDLERS
+                    && servletRequest instanceof HttpRequestWrapper servletRequestWrapper) {
                 servletRequestWrapper.notConsumed(true);
                 return;
             }
