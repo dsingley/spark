@@ -71,7 +71,7 @@ class MultipleFiltersTest {
 
     @Test
     void testMultipleFilters() throws Exception {
-        SparkTestUtil.UrlResponse response = http.get("/user");
+        var response = http.get("/user");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Kevin")

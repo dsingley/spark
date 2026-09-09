@@ -24,7 +24,7 @@ class JsonAcceptTypeExampleTest {
 
     @Test
     void jsonAcceptTypeMatchesRoute() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null, "application/json");
+        var response = testUtil.doMethod("GET", "/hello", null, "application/json");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("{\"message\": \"Hello World\"}")
@@ -33,7 +33,7 @@ class JsonAcceptTypeExampleTest {
 
     @Test
     void htmlAcceptTypeDoesNotMatchRoute() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null, "text/html");
+        var response = testUtil.doMethod("GET", "/hello", null, "text/html");
         assertThat(response.status).isEqualTo(404);
     }
 }

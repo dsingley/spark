@@ -111,7 +111,7 @@ class StaticFilesExternalTest {
 
     @Test
     void testExternalStaticFile() throws Exception {
-        SparkTestUtil.UrlResponse response = doGet("/externalFile.html");
+        var response = doGet("/externalFile.html");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 // Jetty 12 echoes MimeTypes' assumed charset for text/html into the Content-Type
@@ -126,7 +126,7 @@ class StaticFilesExternalTest {
     @Test
     void testDirectoryTraversalProtectionExternal() throws Exception {
         String path = "/" + URLEncoder.encode("..\\..\\spark\\", UTF_8) + "Spark.class";
-        SparkTestUtil.UrlResponse response = doGet(path);
+        var response = doGet(path);
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(404),
@@ -137,7 +137,7 @@ class StaticFilesExternalTest {
     }
 
     private static void testGet() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", "");
+        var response = testUtil.doMethod("GET", "/hello", "");
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),

@@ -22,7 +22,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
-import spark.util.SparkTestUtil.UrlResponse;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -84,7 +83,7 @@ class StaticFilesFromArchiveTest {
 
     @Test
     void testCss() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", "/css/style.css", null);
+        var response = testUtil.doMethod("GET", "/css/style.css", null);
 
         String expectedContentType = response.headers.get("Content-Type");
         assertThat(expectedContentType).isEqualTo("text/css");

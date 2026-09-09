@@ -18,7 +18,7 @@ class UnmapTest {
         get("/tobeunmapped", (q, a) -> "tobeunmapped");
         awaitInitialization();
 
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/tobeunmapped", null);
+        var response = testUtil.doMethod("GET", "/tobeunmapped", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("tobeunmapped")
@@ -26,20 +26,20 @@ class UnmapTest {
 
         unmap("/tobeunmapped");
 
-        SparkTestUtil.UrlResponse afterUnmap = testUtil.doMethod("GET", "/tobeunmapped", null);
-        assertThat(afterUnmap.status).isEqualTo(404);
+        var afterUnmapResponse = testUtil.doMethod("GET", "/tobeunmapped", null);
+        assertThat(afterUnmapResponse.status).isEqualTo(404);
 
         get("/tobeunmapped", (q, a) -> "tobeunmapped");
 
-        SparkTestUtil.UrlResponse afterRemap = testUtil.doMethod("GET", "/tobeunmapped", null);
+        var afterRemapResponse = testUtil.doMethod("GET", "/tobeunmapped", null);
         assertAll(
-                () -> assertThat(afterRemap.status).isEqualTo(200),
-                () -> assertThat(afterRemap.body).isEqualTo("tobeunmapped")
+                () -> assertThat(afterRemapResponse.status).isEqualTo(200),
+                () -> assertThat(afterRemapResponse.body).isEqualTo("tobeunmapped")
         );
 
         unmap("/tobeunmapped", "get");
 
-        SparkTestUtil.UrlResponse afterUnmapByMethod = testUtil.doMethod("GET", "/tobeunmapped", null);
-        assertThat(afterUnmapByMethod.status).isEqualTo(404);
+        var afterUnmapByMethodResponse = testUtil.doMethod("GET", "/tobeunmapped", null);
+        assertThat(afterUnmapByMethodResponse.status).isEqualTo(404);
     }
 }

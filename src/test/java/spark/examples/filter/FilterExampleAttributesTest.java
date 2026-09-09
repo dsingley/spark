@@ -24,7 +24,7 @@ class FilterExampleAttributesTest {
 
     @Test
     void attributeSetInRouteIsVisibleInAfterFilter() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hi", null);
+        var response = testUtil.doMethod("GET", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body)

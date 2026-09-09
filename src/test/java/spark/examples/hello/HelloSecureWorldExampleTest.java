@@ -1,6 +1,7 @@
 package spark.examples.hello;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,10 @@ class HelloSecureWorldExampleTest {
 
     @Test
     void hello() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/hello", null);
-        assertThat(response.status).isEqualTo(200);
-        assertThat(response.body).isEqualTo("Hello Secure World!");
+        var response = testUtil.doMethodSecure("GET", "/hello", null);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("Hello Secure World!")
+        );
     }
 }

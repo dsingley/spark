@@ -110,10 +110,10 @@ public class SparkTestUtil {
                                 String acceptType, Map<String, String> reqHeaders) throws IOException {
         HttpUriRequest httpRequest = getHttpRequest(requestMethod, path, body, secureConnection, acceptType, reqHeaders);
 
-        UrlResponse urlResponse = httpClient.execute(httpRequest, this::toUrlResponse);
+        var response = httpClient.execute(httpRequest, this::toUrlResponse);
 
-        if (followRedirectCodes != null && followRedirectCodes.contains(urlResponse.status)) {
-            String location = urlResponse.headers.get("Location");
+        if (followRedirectCodes != null && followRedirectCodes.contains(response.status)) {
+            String location = response.headers.get("Location");
             if (location != null) {
                 URI redirectUri;
                 try {
@@ -124,24 +124,24 @@ public class SparkTestUtil {
                 HttpUriRequest redirectRequest = "HEAD".equalsIgnoreCase(requestMethod)
                         ? new HttpHead(redirectUri)
                         : new HttpGet(redirectUri);
-                urlResponse = httpClient.execute(redirectRequest, this::toUrlResponse);
+                response = httpClient.execute(redirectRequest, this::toUrlResponse);
             }
         }
 
-        return urlResponse;
+        return response;
     }
 
     private UrlResponse toUrlResponse(ClassicHttpResponse httpResponse) throws IOException, ParseException {
-        UrlResponse urlResponse = new UrlResponse();
-        urlResponse.status = httpResponse.getCode();
+        var response = new UrlResponse();
+        response.status = httpResponse.getCode();
         HttpEntity entity = httpResponse.getEntity();
-        urlResponse.body = entity != null ? EntityUtils.toString(entity) : "";
+        response.body = entity != null ? EntityUtils.toString(entity) : "";
         Map<String, String> headers = new HashMap<>();
         for (Header header : httpResponse.getHeaders()) {
             headers.put(header.getName(), header.getValue());
         }
-        urlResponse.headers = headers;
-        return urlResponse;
+        response.headers = headers;
+        return response;
     }
 
     private HttpUriRequest getHttpRequest(String requestMethod, String path, String body, boolean secureConnection,

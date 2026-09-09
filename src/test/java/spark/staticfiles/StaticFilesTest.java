@@ -117,7 +117,7 @@ class StaticFilesTest {
 
     @Test
     void testStaticFileCssStyleCss() throws Exception {
-        SparkTestUtil.UrlResponse response = doGet("/css/style.css");
+        var response = doGet("/css/style.css");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.headers).containsEntry("Content-Type", "text/css"),
@@ -129,7 +129,7 @@ class StaticFilesTest {
 
     @Test
     void testStaticFilePagesIndexHtml() throws Exception {
-        SparkTestUtil.UrlResponse response = doGet("/pages/index.html");
+        var response = doGet("/pages/index.html");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("<html><body>Hello Static World!</body></html>")
@@ -140,7 +140,7 @@ class StaticFilesTest {
 
     @Test
     void testStaticFilePageHtml() throws Exception {
-        SparkTestUtil.UrlResponse response = doGet("/page.html");
+        var response = doGet("/page.html");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("<html><body>Hello Static Files World!</body></html>")
@@ -152,7 +152,7 @@ class StaticFilesTest {
     @Test
     void testDirectoryTraversalProtectionLocal() throws Exception {
         String path = "/" + URLEncoder.encode("..\\spark\\", "UTF-8") + "Spark.class";
-        SparkTestUtil.UrlResponse response = doGet(path);
+        var response = doGet(path);
 
         assertThat(response.status).isEqualTo(400);
 
@@ -161,7 +161,7 @@ class StaticFilesTest {
 
     @Test
     void testExternalStaticFile() throws Exception {
-        SparkTestUtil.UrlResponse response = doGet("/externalFile.html");
+        var response = doGet("/externalFile.html");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo(CONTENT_OF_EXTERNAL_FILE)
@@ -174,7 +174,7 @@ class StaticFilesTest {
      * Used to verify that "normal" functionality works after static files mapping
      */
     private static void testGet() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", "");
+        var response = testUtil.doMethod("GET", "/hello", "");
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -184,7 +184,7 @@ class StaticFilesTest {
 
     @Test
     void testExceptionMapping404() throws Exception {
-        SparkTestUtil.UrlResponse response = doGet("/filethatdoesntexist.html");
+        var response = doGet("/filethatdoesntexist.html");
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(404),

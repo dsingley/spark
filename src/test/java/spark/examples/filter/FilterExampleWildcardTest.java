@@ -24,7 +24,7 @@ class FilterExampleWildcardTest {
 
     @Test
     void wildcardPathIsBlocked() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/protected/anything", null);
+        var response = testUtil.doMethod("GET", "/protected/anything", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(401),
                 () -> assertThat(response.body).isEqualTo("Go Away!")

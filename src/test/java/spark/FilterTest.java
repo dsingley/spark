@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
-import spark.util.SparkTestUtil.UrlResponse;
 
 @ExtendWith(SparkStopExtension.class)
 class FilterTest {
@@ -25,7 +24,7 @@ class FilterTest {
 
     @Test
     void testJustFilter() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", "/justfilter", null);
+        var response = testUtil.doMethod("GET", "/justfilter", null);
 
         System.out.println("response.status = " + response.status);
         assertThat(response.status).isEqualTo(404);

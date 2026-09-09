@@ -24,7 +24,7 @@ class StaticResourcesExampleTest {
 
     @Test
     void hello() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null);
+        var response = testUtil.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")
@@ -33,7 +33,7 @@ class StaticResourcesExampleTest {
 
     @Test
     void staticPageHtml() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/page.html", null);
+        var response = testUtil.doMethod("GET", "/page.html", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("<html><body>Hello Static Files World!</body></html>")

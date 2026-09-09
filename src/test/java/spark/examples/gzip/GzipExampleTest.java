@@ -57,7 +57,7 @@ class GzipExampleTest {
      */
     private static void testGet() throws Exception {
         SparkTestUtil testUtil = new SparkTestUtil(4567);
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", "");
+        var response = testUtil.doMethod("GET", "/hello", "");
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),

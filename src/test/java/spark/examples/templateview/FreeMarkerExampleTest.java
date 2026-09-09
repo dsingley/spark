@@ -24,7 +24,7 @@ class FreeMarkerExampleTest {
 
     @Test
     void hello() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null);
+        var response = testUtil.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("<h1>Hello FreeMarker World</h1>")

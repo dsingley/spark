@@ -91,7 +91,7 @@ public class ResponseBodyTest {
     @Test
     void testHELLO() {
         try {
-            SparkTestUtil.UrlResponse response = http.get(HELLO);
+            var response = http.get(HELLO);
             assertThat(response.status).isEqualTo(200);
             assertThat(response.body).isEqualTo(HELLO_WORLD);
         } catch (Throwable e) {
@@ -102,7 +102,7 @@ public class ResponseBodyTest {
     @Test
     void testSPECIAL() {
         try {
-            SparkTestUtil.UrlResponse response = http.get(SPECIAL);
+            var response = http.get(SPECIAL);
             assertThat(response.status).isEqualTo(200);
             assertThat(response.body).isEqualTo(XIDXUS);
         } catch (Throwable e) {
@@ -113,7 +113,7 @@ public class ResponseBodyTest {
     @Test
     void testPORAKATIKAOKAO() {
         try {
-            SparkTestUtil.UrlResponse response = http.get(PORAKATIKAOKAO);
+            var response = http.get(PORAKATIKAOKAO);
             assertThat(response.status).isEqualTo(200);
             assertThat(response.body).isEqualTo(GALLUS_SCANDALUM);
         } catch (Throwable e) {
@@ -124,7 +124,7 @@ public class ResponseBodyTest {
     @Test
     void testMAXIME() {
         try {
-            SparkTestUtil.UrlResponse response = http.get(MAXIME);
+            var response = http.get(MAXIME);
             assertThat(response.status).isEqualTo(200);
             assertThat(response.body).isEqualTo(DOLLAR_11AB);
         } catch (Throwable e) {

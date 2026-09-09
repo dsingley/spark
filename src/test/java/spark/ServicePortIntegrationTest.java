@@ -42,7 +42,7 @@ class ServicePortIntegrationTest {
 
         SparkTestUtil testUtil = new SparkTestUtil(actualPort);
 
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hi", null);
+        var response = testUtil.doMethod("GET", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")

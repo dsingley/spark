@@ -56,7 +56,7 @@ class MultipleServicesTest {
 
     @Test
     void testGetHello() throws Exception {
-        SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/hello", null);
+        var response = firstClient.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")
@@ -65,7 +65,7 @@ class MultipleServicesTest {
 
     @Test
     void testGetRedirectedHi() throws Exception {
-        SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/hi", null);
+        var response = secondClient.doMethod("GET", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")
@@ -74,13 +74,13 @@ class MultipleServicesTest {
 
     @Test
     void testGetUniqueForSecondWithFirst() throws Exception {
-        SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/uniqueforsecond", null);
+        var response = firstClient.doMethod("GET", "/uniqueforsecond", null);
         assertThat(response.status).isEqualTo(404);
     }
 
     @Test
     void testGetUniqueForSecondWithSecond() throws Exception {
-        SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/uniqueforsecond", null);
+        var response = secondClient.doMethod("GET", "/uniqueforsecond", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Bompton")
@@ -89,13 +89,13 @@ class MultipleServicesTest {
 
     @Test
     void testStaticFileCssStyleCssWithFirst() throws Exception {
-        SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/css/style.css", null);
+        var response = firstClient.doMethod("GET", "/css/style.css", null);
         assertThat(response.status).isEqualTo(404);
     }
 
     @Test
     void testStaticFileCssStyleCssWithSecond() throws Exception {
-        SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/css/style.css", null);
+        var response = secondClient.doMethod("GET", "/css/style.css", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Content of css file")
