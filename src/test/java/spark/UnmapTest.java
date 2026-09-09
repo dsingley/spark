@@ -6,12 +6,18 @@ import static spark.Spark.awaitInitialization;
 import static spark.Spark.get;
 import static spark.Spark.unmap;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 
 class UnmapTest {
 
-    SparkTestUtil testUtil = new SparkTestUtil(4567);
+    private SparkTestUtil testUtil;
+
+    @BeforeEach 
+    void setUp() {
+        testUtil = new SparkTestUtil(4567);
+    }
 
     @Test
     void testUnmap() throws Exception {

@@ -10,7 +10,7 @@ class RouteEntryTest {
     @Test
     void testMatches_BeforeAndAllPaths() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.before;
         entry.path = SparkUtils.ALL_PATHS;
 
@@ -25,7 +25,7 @@ class RouteEntryTest {
     @Test
     void testMatches_AfterAndAllPaths() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.after;
         entry.path = SparkUtils.ALL_PATHS;
 
@@ -38,7 +38,7 @@ class RouteEntryTest {
     @Test
     void testMatches_NotAllPathsAndDidNotMatchHttpMethod() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.post;
         entry.path = "/test";
 
@@ -48,7 +48,7 @@ class RouteEntryTest {
     @Test
     void testMatches_RouteDoesNotEndWithSlash() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
         entry.path = "/test";
 
@@ -61,7 +61,7 @@ class RouteEntryTest {
     @Test
     void testMatches_PathDoesNotEndInSlash() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
         entry.path = "/test/";
 
@@ -74,7 +74,7 @@ class RouteEntryTest {
     @Test
     void testMatches_MatchingPaths() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
         entry.path = "/test/";
 
@@ -84,7 +84,7 @@ class RouteEntryTest {
     @Test
     void testMatches_WithWildcardOnEntryPath() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
         entry.path = "/test/*";
 
@@ -94,7 +94,7 @@ class RouteEntryTest {
     @Test
     void testMatches_PathsDoNotMatch() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
         entry.path = "/test/me";
 
@@ -104,7 +104,7 @@ class RouteEntryTest {
     @Test
     void testMatches_longRoutePathWildcard() {
 
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = HttpMethod.get;
         entry.path = "/test/this/resource/*";
 

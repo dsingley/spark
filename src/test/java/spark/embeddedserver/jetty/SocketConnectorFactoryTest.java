@@ -14,7 +14,6 @@ import org.junit.jupiter.api.io.TempDir;
 import org.kiwiproject.reflect.KiwiReflection;
 import org.kiwiproject.reflect.RuntimeReflectionException;
 import org.kiwiproject.test.security.CertificateTestHelpers;
-import org.kiwiproject.test.security.TestKeyStores;
 import spark.ssl.SslStores;
 
 import java.lang.reflect.Field;
@@ -35,7 +34,7 @@ class SocketConnectorFactoryTest {
     @Test
     void testCreateSocketConnector_whenHostIsNull_thenThrowException() {
 
-        Server server = new Server();
+        var server = new Server();
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> SocketConnectorFactory.createSocketConnector(server, null, 80, true))
@@ -45,15 +44,15 @@ class SocketConnectorFactoryTest {
     @Test
     void testCreateSocketConnector() {
 
-        final String host = "localhost";
-        final int port = 8888;
+        var host = "localhost";
+        var port = 8888;
 
-        Server server = new Server();
-        ServerConnector serverConnector = SocketConnectorFactory.createSocketConnector(server, "localhost", 8888, true);
+        var server = new Server();
+        var serverConnector = SocketConnectorFactory.createSocketConnector(server, "localhost", 8888, true);
 
-        String internalHost = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_host"), String.class);
+        var internalHost = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_host"), String.class);
         int internalPort = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_port"), Integer.class);
-        Server internalServerConnector = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_server"), Server.class);
+        var internalServerConnector = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_server"), Server.class);
 
         assertAll(
                 () -> assertThat(internalHost).isEqualTo(host),
@@ -73,7 +72,7 @@ class SocketConnectorFactoryTest {
     @Test
     void testCreateSecureSocketConnector_whenHostIsNull() {
 
-        Server server = new Server();
+        var server = new Server();
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> SocketConnectorFactory.createSecureSocketConnector(server, null, 80, (SslStores) null, true))
@@ -83,7 +82,7 @@ class SocketConnectorFactoryTest {
     @Test
     void testCreateSecureSocketConnector_whenSslStoresIsNull() {
 
-        Server server = new Server();
+        var server = new Server();
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> SocketConnectorFactory.createSecureSocketConnector(server, "localhost", 80, (SslStores) null, true))
@@ -94,23 +93,23 @@ class SocketConnectorFactoryTest {
     @Test
     void testCreateSecureSocketConnector(@TempDir Path tempDir) {
 
-        final String host = "localhost";
-        final int port = 8888;
+        var host = "localhost";
+        var port = 8888;
 
         // Jetty 12 validates that the keystore/truststore paths are accessible as soon as
         // they're set (Jetty 9 deferred this until the SslContextFactory actually started),
         // so this needs real files rather than placeholder names.
-        TestKeyStores testKeyStores = CertificateTestHelpers.createJKSKeyAndTrustStores(tempDir);
+        var testKeyStores = CertificateTestHelpers.createJKSKeyAndTrustStores(tempDir);
 
-        SslStores sslStores = SslStores.create(
+        var sslStores = SslStores.create(
                 testKeyStores.requiredKeyStorePathAsString(), testKeyStores.keyStorePassword(),
                 testKeyStores.requiredTrustStorePathAsString(), testKeyStores.trustStorePassword());
 
-        Server server = new Server();
+        var server = new Server();
 
-        ServerConnector serverConnector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores, true);
+        var serverConnector = SocketConnectorFactory.createSecureSocketConnector(server, host, port, sslStores, true);
 
-        String internalHost = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_host"), String.class);
+        var internalHost = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_host"), String.class);
         int internalPort = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_port"), Integer.class);
 
         assertAll(
@@ -121,10 +120,10 @@ class SocketConnectorFactoryTest {
         @SuppressWarnings("unchecked")
         Map<String, ConnectionFactory> factories = KiwiReflection.getTypedFieldValue(serverConnector, declaredField(ServerConnector.class, "_factories"), Map.class);
 
-        SslConnectionFactory sslConnectionFactory = (SslConnectionFactory) factories.get("ssl");
+        var sslConnectionFactory = (SslConnectionFactory) factories.get("ssl");
         assertThat(sslConnectionFactory).isNotNull();
 
-        SslContextFactory sslContextFactory = sslConnectionFactory.getSslContextFactory();
+        var sslContextFactory = sslConnectionFactory.getSslContextFactory();
 
         assertAll(
                 () -> assertThat(sslContextFactory.getKeyStoreResource().getFileName())
@@ -140,7 +139,7 @@ class SocketConnectorFactoryTest {
     // exact runtime class) can't find them; nonStaticFieldsInHierarchy() walks the hierarchy
     // for us, though it doesn't set accessibility, so that's still on us.
     private static Field declaredField(Class<?> type, String fieldName) {
-        Field field = KiwiReflection.nonStaticFieldsInHierarchy(type).stream()
+        var field = KiwiReflection.nonStaticFieldsInHierarchy(type).stream()
                 .filter(f -> f.getName().equals(fieldName))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeReflectionException(

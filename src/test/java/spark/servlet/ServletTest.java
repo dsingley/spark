@@ -32,21 +32,21 @@ class ServletTest {
     static void beforeAll() throws InterruptedException {
         testUtil = new SparkTestUtil(PORT);
 
-        final Server server = new Server();
-        ServerConnector connector = new ServerConnector(server);
+        var server = new Server();
+        var connector = new ServerConnector(server);
 
         // Set some timeout options to make debugging easier.
         connector.setIdleTimeout(1000 * 60 * 60);
         connector.setPort(PORT);
         server.setConnectors(new Connector[] {connector});
 
-        WebAppContext bb = new WebAppContext();
-        bb.setServer(server);
-        bb.setContextPath(SOME_PATH);
-        bb.setWar("src/test/webapp");
+        var context = new WebAppContext();
+        context.setServer(server);
+        context.setContextPath(SOME_PATH);
+        context.setWar("src/test/webapp");
 
-        server.setHandler(bb);
-        CountDownLatch latch = new CountDownLatch(1);
+        server.setHandler(context);
+        var latch = new CountDownLatch(1);
 
         new Thread(() -> {
             try {

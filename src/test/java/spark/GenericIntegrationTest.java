@@ -61,7 +61,7 @@ class GenericIntegrationTest {
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), "externalFile.html");
 
-        FileWriter writer = new FileWriter(tmpExternalFile);
+        var writer = new FileWriter(tmpExternalFile);
         writer.write("Content of external file");
         writer.flush();
         writer.close();
@@ -279,7 +279,7 @@ class GenericIntegrationTest {
 
     @Test
     void testXForwardedFor() throws Exception {
-        final String xForwardedFor = "XXX.XXX.XXX.XXX";
+        var xForwardedFor = "XXX.XXX.XXX.XXX";
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Forwarded-For", xForwardedFor);
 
@@ -328,7 +328,7 @@ class GenericIntegrationTest {
 
     @Test
     void testEchoParam3() throws Exception {
-        String polyglot = "жξ Ä 聊";
+        var polyglot = "жξ Ä 聊";
         String encoded = URIUtil.encodePath(polyglot);
         var response = testUtil.doMethod("GET", "/param/" + encoded, null);
         assertAll(
@@ -339,7 +339,7 @@ class GenericIntegrationTest {
 
     @Test
     void testPathParamsWithPlusSign() throws Exception {
-        String pathParamWithPlusSign = "not+broken+path+param";
+        var pathParamWithPlusSign = "not+broken+path+param";
         var response = testUtil.doMethod("GET", "/param/" + pathParamWithPlusSign, null);
         assertAll(
             () -> assertThat(response.status).isEqualTo(200),
@@ -349,7 +349,7 @@ class GenericIntegrationTest {
 
     @Test
     void testParamWithEncodedSlash() throws Exception {
-        String polyglot = "te/st";
+        var polyglot = "te/st";
         String encoded = URLEncoder.encode(polyglot, UTF_8);
         var response = testUtil.doMethod("GET", "/param/" + encoded, null);
         assertAll(
@@ -360,9 +360,9 @@ class GenericIntegrationTest {
 
     @Test
     void testSplatWithEncodedSlash() throws Exception {
-        String param = "fo/shizzle";
+        var param = "fo/shizzle";
         String encodedParam = URLEncoder.encode(param, UTF_8);
-        String splat = "mah/FRIEND";
+        var splat = "mah/FRIEND";
         String encodedSplat = URLEncoder.encode(splat, UTF_8);
         var response = testUtil.doMethod("GET",
             "/paramandwild/" + encodedParam + "/stuff/" + encodedSplat, null);
@@ -374,7 +374,7 @@ class GenericIntegrationTest {
 
     @Test
     void testEchoParamWithUpperCaseInValue() throws Exception {
-        final String camelCased = "ThisIsAValueAndSparkShouldRetainItsUpperCasedCharacters";
+        var camelCased = "ThisIsAValueAndSparkShouldRetainItsUpperCasedCharacters";
         var response = testUtil.doMethod("GET", "/param/" + camelCased, null);
         assertAll(
             () -> assertThat(response.status).isEqualTo(200),
@@ -384,8 +384,8 @@ class GenericIntegrationTest {
 
     @Test
     void testTwoRoutesWithDifferentCaseButSameName() throws Exception {
-        String lowerCasedRoutePart = "param";
-        String upperCasedRoutePart = "PARAM";
+        var lowerCasedRoutePart = "param";
+        var upperCasedRoutePart = "PARAM";
 
         registerEchoRoute(lowerCasedRoutePart);
         registerEchoRoute(upperCasedRoutePart);
@@ -398,7 +398,7 @@ class GenericIntegrationTest {
     }
 
     private static void assertEchoRoute(String routePart) throws Exception {
-        final String expected = "expected";
+        var expected = "expected";
         var response = testUtil.doMethod("GET", "/tworoutes/" + routePart + "/" + expected, null);
         assertAll(
             () -> assertThat(response.status).isEqualTo(200),
@@ -515,14 +515,14 @@ class GenericIntegrationTest {
 
     @Test
     void testWebSocketConversation() throws Exception {
-        String uri = "ws://localhost:4567/ws";
-        WebSocketClient client = new WebSocketClient();
-        WebSocketTestClient ws = new WebSocketTestClient();
+        var uri = "ws://localhost:4567/ws";
+        var client = new WebSocketClient();
+        var websocket = new WebSocketTestClient();
 
         try {
             client.start();
-            client.connect(ws, URI.create(uri));
-            ws.awaitClose(30, TimeUnit.SECONDS);
+            client.connect(websocket, URI.create(uri));
+            websocket.awaitClose(30, TimeUnit.SECONDS);
         } finally {
             client.stop();
         }

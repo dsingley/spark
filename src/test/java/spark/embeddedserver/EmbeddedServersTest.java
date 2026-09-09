@@ -29,13 +29,13 @@ class EmbeddedServersTest {
     @Test
     void testAddAndCreate_whenCreate_createsCustomServer() throws Exception {
         // Create custom Server
-        Server server = new Server();
-        File requestLogFile = new File(temporaryFolder, "request.log");
+        var server = new Server();
+        var requestLogFile = new File(temporaryFolder, "request.log");
         server.setRequestLog(new CustomRequestLog(new RequestLogWriter(requestLogFile.getAbsolutePath()), CustomRequestLog.NCSA_FORMAT));
-        JettyServerFactory serverFactory = mock(JettyServerFactory.class);
+        var serverFactory = mock(JettyServerFactory.class);
         when(serverFactory.create(0, 0, 0)).thenReturn(server);
 
-        String id = "custom";
+        var id = "custom";
 
         // Register custom server
         EmbeddedServers.add(id, new EmbeddedJettyFactory(serverFactory));
@@ -51,12 +51,12 @@ class EmbeddedServersTest {
 
     @Test
     void testAdd_whenConfigureRoutes_createsCustomServer() {
-        File requestLogFile = new File(temporaryFolder, "request.log");
+        var requestLogFile = new File(temporaryFolder, "request.log");
         // Register custom server
         EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new EmbeddedJettyFactory(new JettyServerFactory() {
             @Override
             public Server create(int maxThreads, int minThreads, int threadTimeoutMillis) {
-                Server server = new Server();
+                var server = new Server();
                 server.setRequestLog(new CustomRequestLog(new RequestLogWriter(requestLogFile.getAbsolutePath()), CustomRequestLog.NCSA_FORMAT));
                 return server;
             }

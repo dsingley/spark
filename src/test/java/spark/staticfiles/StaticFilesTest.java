@@ -63,7 +63,7 @@ class StaticFilesTest {
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE_NAME_HTML);
 
-        FileWriter writer = new FileWriter(tmpExternalFile);
+        var writer = new FileWriter(tmpExternalFile);
         writer.write(CONTENT_OF_EXTERNAL_FILE);
         writer.flush();
         writer.close();

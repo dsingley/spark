@@ -44,9 +44,9 @@ public class Books {
         post("/books", (request, response) -> {
             String author = request.queryParams("author");
             String title = request.queryParams("title");
-            Book book = new Book(author, title);
-            Random random = new Random();
-            int id = random.nextInt(Integer.MAX_VALUE);
+            var book = new Book(author, title);
+            var random = new Random();
+            var id = random.nextInt(Integer.MAX_VALUE);
             books.put(String.valueOf(id), book);
 
             response.status(201); // 201 Created

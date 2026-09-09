@@ -70,7 +70,7 @@ class StaticFilesExternalTest {
 
         tmpExternalFile1 = new File(directoryRoot, EXTERNAL_FILE_NAME_HTML);
 
-        FileWriter writer = new FileWriter(tmpExternalFile1);
+        var writer = new FileWriter(tmpExternalFile1);
         writer.write(CONTENT_OF_EXTERNAL_FILE);
         writer.flush();
         writer.close();

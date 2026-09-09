@@ -41,11 +41,14 @@ class RequestTest {
     HttpSession httpSession;
     Request request;
 
-    RouteMatch match = new RouteMatch(null, "/hi", "/hi", "text/html", null);
-    RouteMatch matchWithParams = new RouteMatch(null, "/users/:username", "/users/bob", "text/html", null);
+    RouteMatch routeMatch;
+    RouteMatch routeMatchWithParams;
 
     @BeforeEach
     void setUp() {
+        routeMatch = new RouteMatch(null, "/hi", "/hi", "text/html", null);
+        routeMatchWithParams = new RouteMatch(null, "/users/:username", "/users/bob", "text/html", null);
+
         http = new SparkTestUtil(4567);
 
         before(BEFORE_MATCHED_ROUTE, (q, a) -> {
@@ -68,7 +71,7 @@ class RequestTest {
         servletRequest = mock(HttpServletRequest.class);
         httpSession = mock(HttpSession.class);
 
-        request = new Request(match, servletRequest);
+        request = new Request(routeMatch, servletRequest);
 
     }
 
@@ -115,7 +118,7 @@ class RequestTest {
 
         when(servletRequest.getServletPath()).thenReturn(THE_SERVLET_PATH);
 
-        Request req = new Request(match, servletRequest);
+        var req = new Request(routeMatch, servletRequest);
         assertThat(req.servletPath()).isEqualTo(THE_SERVLET_PATH);
     }
 
@@ -124,13 +127,13 @@ class RequestTest {
 
         when(servletRequest.getContextPath()).thenReturn(THE_CONTEXT_PATH);
 
-        Request req = new Request(match, servletRequest);
+        var req = new Request(routeMatch, servletRequest);
         assertThat(req.contextPath()).isEqualTo(THE_CONTEXT_PATH);
     }
 
     @Test
     void shouldBeAbleToGetTheMatchedPath() {
-        Request req = new Request(matchWithParams, servletRequest);
+        var req = new Request(routeMatchWithParams, servletRequest);
         assertThat(req.matchedPath()).isEqualTo(THE_MATCHED_ROUTE);
         try {
             http.get("/users/bob");

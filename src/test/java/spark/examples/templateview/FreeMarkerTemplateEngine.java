@@ -1,7 +1,6 @@
 package spark.examples.templateview;
 
 import freemarker.template.Configuration;
-import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import spark.ModelAndView;
 import spark.TemplateEngine;
@@ -20,9 +19,9 @@ public class FreeMarkerTemplateEngine extends TemplateEngine {
     @Override
     public String render(ModelAndView modelAndView) {
         try {
-            StringWriter stringWriter = new StringWriter();
+            var stringWriter = new StringWriter();
 
-            Template template = configuration.getTemplate(modelAndView.getViewName());
+            var template = configuration.getTemplate(modelAndView.getViewName());
             template.process(modelAndView.getModel(), stringWriter);
 
             return stringWriter.toString();
@@ -32,7 +31,7 @@ public class FreeMarkerTemplateEngine extends TemplateEngine {
     }
 
     private Configuration createFreemarkerConfiguration() {
-        Configuration retVal = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+        var retVal = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         retVal.setClassForTemplateLoading(FreeMarkerTemplateEngine.class, "freemarker");
         return retVal;
     }

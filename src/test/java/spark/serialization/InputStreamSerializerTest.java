@@ -23,8 +23,8 @@ class InputStreamSerializerTest {
     @Test
     void testProcess_copiesData() throws IOException {
         byte[] bytes = "Hello, Spark!".getBytes();
-        ByteArrayInputStream input = new ByteArrayInputStream(bytes);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        var input = new ByteArrayInputStream(bytes);
+        var output = new ByteArrayOutputStream();
 
         serializer.process(output, input);
 
@@ -33,8 +33,8 @@ class InputStreamSerializerTest {
 
     @Test
     void testProcess_closesStream() throws IOException {
-        MockInputStream input = new MockInputStream(new ByteArrayInputStream(new byte[0]));
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        var input = new MockInputStream(new ByteArrayInputStream(new byte[0]));
+        var output = new ByteArrayOutputStream();
 
         serializer.process(output, input);
 

@@ -150,14 +150,14 @@ public class SparkTestUtil {
         String uri = protocol + "://localhost:" + port + path;
 
         if (requestMethod.equals("GET")) {
-            HttpGet httpGet = new HttpGet(uri);
+            var httpGet = new HttpGet(uri);
             httpGet.setHeader("Accept", acceptType);
             addHeaders(reqHeaders, httpGet);
             return httpGet;
         }
 
         if (requestMethod.equals("POST")) {
-            HttpPost httpPost = new HttpPost(uri);
+            var httpPost = new HttpPost(uri);
             httpPost.setHeader("Accept", acceptType);
             addHeaders(reqHeaders, httpPost);
             httpPost.setEntity(new StringEntity(body));
@@ -165,7 +165,7 @@ public class SparkTestUtil {
         }
 
         if (requestMethod.equals("PATCH")) {
-            HttpPatch httpPatch = new HttpPatch(uri);
+            var httpPatch = new HttpPatch(uri);
             httpPatch.setHeader("Accept", acceptType);
             addHeaders(reqHeaders, httpPatch);
             httpPatch.setEntity(new StringEntity(body));
@@ -173,14 +173,14 @@ public class SparkTestUtil {
         }
 
         if (requestMethod.equals("DELETE")) {
-            HttpDelete httpDelete = new HttpDelete(uri);
+            var httpDelete = new HttpDelete(uri);
             addHeaders(reqHeaders, httpDelete);
             httpDelete.setHeader("Accept", acceptType);
             return httpDelete;
         }
 
         if (requestMethod.equals("PUT")) {
-            HttpPut httpPut = new HttpPut(uri);
+            var httpPut = new HttpPut(uri);
             httpPut.setHeader("Accept", acceptType);
             addHeaders(reqHeaders, httpPut);
             httpPut.setEntity(new StringEntity(body));
@@ -188,25 +188,25 @@ public class SparkTestUtil {
         }
 
         if (requestMethod.equals("HEAD")) {
-            HttpHead httpHead = new HttpHead(uri);
+            var httpHead = new HttpHead(uri);
             addHeaders(reqHeaders, httpHead);
             return httpHead;
         }
 
         if (requestMethod.equals("TRACE")) {
-            HttpTrace httpTrace = new HttpTrace(uri);
+            var httpTrace = new HttpTrace(uri);
             addHeaders(reqHeaders, httpTrace);
             return httpTrace;
         }
 
         if (requestMethod.equals("OPTIONS")) {
-            HttpOptions httpOptions = new HttpOptions(uri);
+            var httpOptions = new HttpOptions(uri);
             addHeaders(reqHeaders, httpOptions);
             return httpOptions;
         }
 
         if (requestMethod.equals("LOCK")) {
-            HttpLock httpLock = new HttpLock(uri);
+            var httpLock = new HttpLock(uri);
             addHeaders(reqHeaders, httpLock);
             return httpLock;
         }
@@ -244,7 +244,7 @@ public class SparkTestUtil {
         KeyStore keyStore = null;
         try {
             keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            FileInputStream fis = new FileInputStream(getTrustStoreLocation());
+            var fis = new FileInputStream(getTrustStoreLocation());
             keyStore.load(fis, getTrustStorePassword().toCharArray());
             fis.close();
 

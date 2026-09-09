@@ -15,12 +15,12 @@ public class GzipClient {
 
     public static String getAndDecompress(String url) throws Exception {
         InputStream compressed = get(url);
-        GZIPInputStream gzipInputStream = new GZIPInputStream(compressed);
+        var gzipInputStream = new GZIPInputStream(compressed);
         return IOUtils.toString(gzipInputStream);
     }
 
     public static InputStream get(String url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        var connection = (HttpURLConnection) new URL(url).openConnection();
         connection.addRequestProperty("Accept-Encoding", "gzip");
         connection.connect();
 

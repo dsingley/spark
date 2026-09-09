@@ -115,16 +115,16 @@ class CookiesIntegrationTest {
 
     @Test
     void testCreateCookie() {
-        String cookieName = "testCookie";
-        String cookieValue = "testCookieValue";
+        var cookieName = "testCookie";
+        var cookieValue = "testCookieValue";
         httpPost("/setCookie?cookieName=" + cookieName + "&cookieValue=" + cookieValue);
         httpPost("/assertHasCookie?cookieName=" + cookieName + "&cookieValue=" + cookieValue);
     }
 
     @Test
     void testRemoveCookie() {
-        String cookieName = "testCookie";
-        String cookieValue = "testCookieValue";
+        var cookieName = "testCookie";
+        var cookieValue = "testCookieValue";
         httpPost("/setCookie?cookieName=" + cookieName + "&cookieValue=" + cookieValue);
         httpPost("/removeCookie?cookieName=" + cookieName + "&cookieValue=" + cookieValue);
         httpPost("/assertNoCookies");
@@ -132,8 +132,8 @@ class CookiesIntegrationTest {
 
     @Test
     void testRemoveCookieWithPath() {
-        String cookieName = "testCookie";
-        String cookieValue = "testCookieValue";
+        var cookieName = "testCookie";
+        var cookieValue = "testCookieValue";
         httpPost("/path/setCookieWithPath?cookieName=" + cookieName + "&cookieValue=" + cookieValue);
 
         // for sanity, check that cookie is not sent with request if path doesn't match
@@ -145,7 +145,7 @@ class CookiesIntegrationTest {
     }
 
     private void httpPost(String relativePath) {
-        HttpPost request = new HttpPost(DEFAULT_HOST_URL + relativePath);
+        var request = new HttpPost(DEFAULT_HOST_URL + relativePath);
         assertThatCode(() -> {
             int statusCode = httpClient.execute(request, HttpResponse::getCode);
             assertThat(statusCode).isEqualTo(200);
