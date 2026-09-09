@@ -16,7 +16,7 @@ class ResourceUtilsTest {
 
     @Test
     void testGetFile_whenURLProtocolIsNotFile_thenThrowFileNotFoundException() throws MalformedURLException {
-        URL url = new URL("http://example.com/");
+        var url = new URL("http://example.com/");
 
         assertThatThrownBy(() -> ResourceUtils.getFile(url, "My File Path"))
                 .isInstanceOf(FileNotFoundException.class)
@@ -30,7 +30,7 @@ class ResourceUtilsTest {
                                                                          FileNotFoundException,
                                                                          URISyntaxException {
         //given
-        URL url = new URL("file://public/file.txt");
+        var url = new URL("file://public/file.txt");
         File file = ResourceUtils.getFile(url, "Some description");
 
         //then

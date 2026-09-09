@@ -24,7 +24,7 @@ public class MyApp implements SparkApplication {
             staticFileLocation("/public");
 
             tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE);
-            FileWriter writer = new FileWriter(tmpExternalFile);
+            var writer = new FileWriter(tmpExternalFile);
             writer.write("Content of external file");
             writer.flush();
             writer.close();

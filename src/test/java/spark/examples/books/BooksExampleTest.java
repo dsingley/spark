@@ -163,7 +163,7 @@ class BooksExampleTest {
 
     private static void getResponse(String requestMethod, String path, UrlResponse response)
             throws IOException {
-        URL url = new URL("http://localhost:" + PORT + path);
+        var url = new URL("http://localhost:" + PORT + path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(requestMethod);
         connection.connect();

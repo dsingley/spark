@@ -54,8 +54,8 @@ class WebSocketExampleTest {
 
     @Test
     void echoesMessage() throws Exception {
-        WebSocketClient client = new WebSocketClient();
-        EchoingClient echoingClient = new EchoingClient("hello ws");
+        var client = new WebSocketClient();
+        var echoingClient = new EchoingClient("hello ws");
         try {
             client.start();
             client.connect(echoingClient, URI.create("ws://localhost:4567/echo"));
@@ -67,8 +67,8 @@ class WebSocketExampleTest {
 
     @Test
     void respondsToPing() throws Exception {
-        WebSocketClient client = new WebSocketClient();
-        EchoingClient echoingClient = new EchoingClient("PING");
+        var client = new WebSocketClient();
+        var echoingClient = new EchoingClient("PING");
         try {
             client.start();
             client.connect(echoingClient, URI.create("ws://localhost:4567/ping"));

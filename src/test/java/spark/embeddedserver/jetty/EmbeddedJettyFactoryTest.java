@@ -35,10 +35,10 @@ class EmbeddedJettyFactoryTest {
         final ExceptionMapper exceptionMapper = mock(ExceptionMapper.class);
         final Routes routes = mock(Routes.class);
 
-        Server server = new Server();
+        var server = new Server();
         when(jettyServerFactory.create(100, 10, 10000)).thenReturn(server);
 
-        final EmbeddedJettyFactory embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory);
+        var embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory);
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, exceptionMapper, false);
 
         embeddedServer.trustForwardHeaders(true);
@@ -51,15 +51,15 @@ class EmbeddedJettyFactoryTest {
 
     @Test
     void create_withThreadPool() throws Exception {
-        final QueuedThreadPool threadPool = new QueuedThreadPool(100);
-        final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
-        final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
-        final ExceptionMapper exceptionMapper = mock(ExceptionMapper.class);
-        final Routes routes = mock(Routes.class);
+        var threadPool = new QueuedThreadPool(100);
+        var jettyServerFactory = mock(JettyServerFactory.class);
+        var staticFilesConfiguration = mock(StaticFilesConfiguration.class);
+        var exceptionMapper = mock(ExceptionMapper.class);
+        var routes = mock(Routes.class);
 
         when(jettyServerFactory.create(threadPool)).thenReturn(new Server(threadPool));
 
-        final EmbeddedJettyFactory embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withThreadPool(threadPool);
+        var embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withThreadPool(threadPool);
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, exceptionMapper, false);
 
         embeddedServer.trustForwardHeaders(true);
@@ -71,14 +71,14 @@ class EmbeddedJettyFactoryTest {
 
     @Test
     void create_withNullThreadPool() throws Exception {
-        final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
-        final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
-        final ExceptionMapper exceptionMapper = mock(ExceptionMapper.class);
-        final Routes routes = mock(Routes.class);
+        var jettyServerFactory = mock(JettyServerFactory.class);
+        var staticFilesConfiguration = mock(StaticFilesConfiguration.class);
+        var exceptionMapper = mock(ExceptionMapper.class);
+        var routes = mock(Routes.class);
 
         when(jettyServerFactory.create(100, 10, 10000)).thenReturn(new Server());
 
-        final EmbeddedJettyFactory embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withThreadPool(null);
+        var embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withThreadPool(null);
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, exceptionMapper, false);
 
         embeddedServer.trustForwardHeaders(true);
@@ -90,14 +90,14 @@ class EmbeddedJettyFactoryTest {
 
     @Test
     void create_withoutHttpOnly() throws Exception {
-        final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
-        final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
-        final Routes routes = mock(Routes.class);
+        var jettyServerFactory = mock(JettyServerFactory.class);
+        var staticFilesConfiguration = mock(StaticFilesConfiguration.class);
+        var routes = mock(Routes.class);
 
-        Server server = new Server();
+        var server = new Server();
         when(jettyServerFactory.create(100, 10, 10000)).thenReturn(server);
 
-        final EmbeddedJettyFactory embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withHttpOnly(false);
+        var embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withHttpOnly(false);
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, ExceptionMapper.getServletInstance(), false);
         embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 6759, (SslStores) null, 100, 10, 10000);
@@ -109,14 +109,14 @@ class EmbeddedJettyFactoryTest {
     @SuppressWarnings("deprecation")
     @Test
     void create_deprecated_withoutHttpOnly() throws Exception {
-        final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
-        final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
-        final Routes routes = mock(Routes.class);
+        var jettyServerFactory = mock(JettyServerFactory.class);
+        var staticFilesConfiguration = mock(StaticFilesConfiguration.class);
+        var routes = mock(Routes.class);
 
-        Server server = new Server();
+        var server = new Server();
         when(jettyServerFactory.create(100, 10, 10000)).thenReturn(server);
 
-        final EmbeddedJettyFactory embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withHttpOnly(false);
+        var embeddedJettyFactory = new EmbeddedJettyFactory(jettyServerFactory).withHttpOnly(false);
         embeddedServer = embeddedJettyFactory.create(routes, staticFilesConfiguration, false);
         embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 6759, (SslStores) null, 100, 10, 10000);

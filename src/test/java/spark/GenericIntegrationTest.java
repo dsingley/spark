@@ -61,7 +61,7 @@ class GenericIntegrationTest {
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), "externalFile.html");
 
-        FileWriter writer = new FileWriter(tmpExternalFile);
+        var writer = new FileWriter(tmpExternalFile);
         writer.write("Content of external file");
         writer.flush();
         writer.close();
@@ -516,13 +516,13 @@ class GenericIntegrationTest {
     @Test
     void testWebSocketConversation() throws Exception {
         String uri = "ws://localhost:4567/ws";
-        WebSocketClient client = new WebSocketClient();
-        WebSocketTestClient ws = new WebSocketTestClient();
+        var client = new WebSocketClient();
+        var websocket = new WebSocketTestClient();
 
         try {
             client.start();
-            client.connect(ws, URI.create(uri));
-            ws.awaitClose(30, TimeUnit.SECONDS);
+            client.connect(websocket, URI.create(uri));
+            websocket.awaitClose(30, TimeUnit.SECONDS);
         } finally {
             client.stop();
         }

@@ -56,7 +56,7 @@ class GzipExampleTest {
      * Used to verify that "normal" functionality works after static files mapping
      */
     private static void testGet() throws Exception {
-        SparkTestUtil testUtil = new SparkTestUtil(4567);
+        var testUtil = new SparkTestUtil(4567);
         var response = testUtil.doMethod("GET", "/hello", "");
 
         assertAll(

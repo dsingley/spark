@@ -49,7 +49,7 @@ class QueryParamsMapTest {
     
     @Test
     void testDifferentTypesForValue() {
-        QueryParamsMap queryMap = new QueryParamsMap();
+        var queryMap = new QueryParamsMap();
         
         queryMap.loadKeys("user[age]",new String[] {"10"});
         queryMap.loadKeys("user[agrees]",new String[] {"true"});

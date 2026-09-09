@@ -105,21 +105,21 @@ class ResponseTest {
 
     @Test
     void testJavaUtilDateHeader() {
-        Date now = new Date();
+        var now = new Date();
         response.header("X-Processing-Since", now);
         verify(httpServletResponse).addDateHeader("X-Processing-Since", now.getTime());
     }
 
     @Test
     void testJavaSqlDateHeader() {
-        Date now = new Date();
+        var now = new Date();
         response.header("X-Processing-Since", new java.sql.Date(now.getTime()));
         verify(httpServletResponse).addDateHeader("X-Processing-Since", now.getTime());
     }
 
     @Test
     void testInstantDateHeader() {
-        Date now = new Date();
+        var now = new Date();
         response.header("X-Processing-Since", now.toInstant());
         verify(httpServletResponse).addDateHeader("X-Processing-Since", now.getTime());
     }

@@ -40,7 +40,7 @@ class ServicePortIntegrationTest {
 
         LOG.info("got port {}", actualPort);
 
-        SparkTestUtil testUtil = new SparkTestUtil(actualPort);
+        var testUtil = new SparkTestUtil(actualPort);
 
         var response = testUtil.doMethod("GET", "/hi", null);
         assertAll(

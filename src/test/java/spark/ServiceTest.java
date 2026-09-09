@@ -39,7 +39,7 @@ class ServiceTest {
     void testEmbeddedServerIdentifier_defaultAndSet() {
         assertThat(service.embeddedServerIdentifier()).isEqualTo(EmbeddedServers.defaultIdentifier());
 
-        Object obj = new Object();
+        var obj = new Object();
 
         service.embeddedServerIdentifier(obj);
 
@@ -48,7 +48,7 @@ class ServiceTest {
 
     @Test
     void testEmbeddedServerIdentifier_thenThrowIllegalStateException() {
-        Object obj = new Object();
+        var obj = new Object();
 
         KiwiReflection.setFieldValue(service, "initialized", true);
 
