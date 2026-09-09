@@ -51,7 +51,7 @@ public class EmbeddedJettyFactory implements EmbeddedServerFactory {
         var matcherFilter = new MatcherFilter(routeMatcher, staticFilesConfiguration, exceptionMapper, unmatchedRequestHandling);
         matcherFilter.init(null);
 
-        JettyHandler handler = new JettyHandler(matcherFilter);
+        var handler = new JettyHandler(matcherFilter);
         handler.getSessionCookieConfig().setHttpOnly(httpOnly);
         return new EmbeddedJettyServer(serverFactory, handler).withThreadPool(threadPool);
     }

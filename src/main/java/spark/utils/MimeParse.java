@@ -51,7 +51,7 @@ public class MimeParse {
      */
     private static ParseResults parseMimeType(String mimeType) {
         String[] parts = mimeType.split(";");
-        ParseResults results = new ParseResults();
+        var results = new ParseResults();
         results.params = new HashMap<>();
 
         for (int i = 1; i < parts.length; ++i) {

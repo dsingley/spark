@@ -45,20 +45,20 @@ public class JettyHandler extends Handler.Wrapper {
     }
 
     private static ServletContextHandler newContext(Filter filter) {
-        ServletContextHandler context = new ServletContextHandler("/", ServletContextHandler.SESSIONS);
+        var contextHandler = new ServletContextHandler("/", ServletContextHandler.SESSIONS);
         // Installs Jetty's WebSocketUpgradeFilter, which prepends itself to the front of the
         // filter chain (ServletHandler.prependFilter) regardless of registration order, so it
         // always gets first look at upgrade requests and lets everything else fall through to
         // the filter added below. No mappings are registered here; EmbeddedJettyServer adds
         // them via getWebSocketContainer() once Spark's registered handlers are known.
-        JettyWebSocketServletContainerInitializer.configure(context, null);
-        context.addFilter(new FilterHolder(filter), "/*", EnumSet.of(DispatcherType.REQUEST));
+        JettyWebSocketServletContainerInitializer.configure(contextHandler, null);
+        contextHandler.addFilter(new FilterHolder(filter), "/*", EnumSet.of(DispatcherType.REQUEST));
         // Jetty 12 rejects an encoded slash (%2F) within a path segment by default at the
         // servlet layer, independently of the connector's UriCompliance (see
         // SocketConnectorFactory). Spark has always allowed it — route params/splats are built
         // from URL-decoded segments — so opt back in here too to preserve that behavior.
-        context.getServletHandler().setDecodeAmbiguousURIs(true);
-        return context;
+        contextHandler.getServletHandler().setDecodeAmbiguousURIs(true);
+        return contextHandler;
     }
 
     public SessionCookieConfig getSessionCookieConfig() {

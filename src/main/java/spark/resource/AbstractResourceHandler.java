@@ -99,26 +99,26 @@ public abstract class AbstractResourceHandler {
             split = segment1.length();
         }
 
-        StringBuilder buf = new StringBuilder(segment1.length() + segment2.length() + 2);
-        buf.append(segment1);
+        var builder = new StringBuilder(segment1.length() + segment2.length() + 2);
+        builder.append(segment1);
 
-        if (buf.charAt(split - 1) == '/') {
+        if (builder.charAt(split - 1) == '/') {
             if (segment2.startsWith(SLASH)) {
-                buf.deleteCharAt(split - 1);
-                buf.insert(split - 1, segment2);
+                builder.deleteCharAt(split - 1);
+                builder.insert(split - 1, segment2);
             } else {
-                buf.insert(split, segment2);
+                builder.insert(split, segment2);
             }
         } else {
             if (segment2.startsWith(SLASH)) {
-                buf.insert(split, segment2);
+                builder.insert(split, segment2);
             } else {
-                buf.insert(split, '/');
-                buf.insert(split + 1, segment2);
+                builder.insert(split, '/');
+                builder.insert(split + 1, segment2);
             }
         }
 
-        return buf.toString();
+        return builder.toString();
     }
 
 }

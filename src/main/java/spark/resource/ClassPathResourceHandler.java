@@ -67,7 +67,7 @@ public class ClassPathResourceHandler extends AbstractResourceHandler {
 
             final String addedPath = addPaths(baseResource, path);
 
-            ClassPathResource resource = new ClassPathResource(addedPath);
+            var resource = new ClassPathResource(addedPath);
 
             if (resource.exists() && path.endsWith("/")) {
                 if (welcomeFile != null) {

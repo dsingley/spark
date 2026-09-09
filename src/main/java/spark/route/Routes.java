@@ -180,7 +180,7 @@ public class Routes {
     }
 
     private void add(HttpMethod method, String url, String acceptedType, Object target) {
-        RouteEntry entry = new RouteEntry();
+        var entry = new RouteEntry();
         entry.httpMethod = method;
         entry.path = url;
         entry.target = target;

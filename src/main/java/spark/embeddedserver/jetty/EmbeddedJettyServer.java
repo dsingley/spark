@@ -115,8 +115,8 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         boolean hasCustomizedConnectors = false;
 
         if (port == 0) {
-            try (ServerSocket s = new ServerSocket(0)) {
-                port = s.getLocalPort();
+            try (var serverSocket = new ServerSocket(0)) {
+                port = serverSocket.getLocalPort();
             } catch (IOException e) {
                 logger.error("Could not get first available port (port set to 0), using default: {}", SPARK_DEFAULT_PORT);
                 port = SPARK_DEFAULT_PORT;

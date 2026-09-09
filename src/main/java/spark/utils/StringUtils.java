@@ -125,7 +125,7 @@ public abstract class StringUtils {
         if (!hasLength(inString) || !hasLength(oldPattern) || newPattern == null) {
             return inString;
         }
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         int pos = 0; // our position in the old string
         int index = inString.indexOf(oldPattern);
         // the index of an occurrence we've found, or -1
@@ -153,7 +153,7 @@ public abstract class StringUtils {
         if (!hasLength(inString) || !hasLength(charsToDelete)) {
             return inString;
         }
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         for (int i = 0; i < inString.length(); i++) {
             char c = inString.charAt(i);
             if (charsToDelete.indexOf(c) == -1) {
@@ -343,7 +343,7 @@ public abstract class StringUtils {
         if (CollectionUtils.isEmpty(coll)) {
             return "";
         }
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         Iterator<?> it = coll.iterator();
         while (it.hasNext()) {
             sb.append(prefix).append(it.next()).append(suffix);

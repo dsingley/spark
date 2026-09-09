@@ -550,7 +550,7 @@ public class Request {
 
             if (SparkUtils.isSplat(matchedPart)) {
 
-                StringBuilder splatParam = new StringBuilder(request.get(i));
+                var splatParam = new StringBuilder(request.get(i));
 
                 if (!sameLength && (i == (nbrOfMatchedParts - 1))) {
                     for (int j = i + 1; j < nbrOfRequestParts; j++) {

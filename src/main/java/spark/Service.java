@@ -580,7 +580,7 @@ public final class Service extends Routable {
 
     private void initiateStop() {
     	stopLatch = new CountDownLatch(1);
-        Thread stopThread = new Thread(() -> {
+        var stopThread = new Thread(() -> {
             if (server != null) {
                 server.extinguish();
                 initLatch = new CountDownLatch(1);
