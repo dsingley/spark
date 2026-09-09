@@ -24,7 +24,7 @@ class DefaultTransformerExampleTest {
 
     @Test
     void helloUsesDefaultTransformer() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null, "application/json");
+        var response = testUtil.doMethod("GET", "/hello", null, "application/json");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("{\"message\":\"Hello World\"}")
@@ -33,7 +33,7 @@ class DefaultTransformerExampleTest {
 
     @Test
     void hello2OverridesDefaultTransformer() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello2", null, "application/json");
+        var response = testUtil.doMethod("GET", "/hello2", null, "application/json");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("custom transformer")

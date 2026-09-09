@@ -24,17 +24,17 @@ class SessionExampleTest {
 
     @Test
     void remembersNameAcrossRequestsViaSession() throws Exception {
-        SparkTestUtil.UrlResponse formResponse = testUtil.doMethod("GET", "/", null);
+        var formResponse = testUtil.doMethod("GET", "/", null);
         assertThat(formResponse.body).contains("What's your name?");
 
         // the client follows both redirects below (POST /entry -> GET /, and GET /clear -> GET /) by default
-        SparkTestUtil.UrlResponse entryResponse = testUtil.doMethod("POST", "/entry?name=Scott", "");
+        var entryResponse = testUtil.doMethod("POST", "/entry?name=Scott", "");
         assertThat(entryResponse.body).isEqualTo("<html><body>Hello, Scott!</body></html>");
 
-        SparkTestUtil.UrlResponse greetingResponse = testUtil.doMethod("GET", "/", null);
+        var greetingResponse = testUtil.doMethod("GET", "/", null);
         assertThat(greetingResponse.body).isEqualTo("<html><body>Hello, Scott!</body></html>");
 
-        SparkTestUtil.UrlResponse afterClearResponse = testUtil.doMethod("GET", "/clear", null);
+        var afterClearResponse = testUtil.doMethod("GET", "/clear", null);
         assertAll(
                 () -> assertThat(afterClearResponse.status).isEqualTo(200),
                 () -> assertThat(afterClearResponse.body).contains("What's your name?")

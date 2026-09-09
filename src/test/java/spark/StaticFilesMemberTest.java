@@ -94,7 +94,7 @@ class StaticFilesMemberTest {
 
     @Test
     void testStaticFileCssStyleCss() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/css/style.css", null);
+        var response = testUtil.doMethod("GET", "/css/style.css", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Content of css file")
@@ -105,7 +105,7 @@ class StaticFilesMemberTest {
 
     @Test
     void testStaticFileMjs() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/js/module.mjs", null);
+        var response = testUtil.doMethod("GET", "/js/module.mjs", null);
 
         String expectedContentType = response.headers.get("Content-Type");
         assertThat(expectedContentType).isEqualTo("application/javascript");
@@ -116,7 +116,7 @@ class StaticFilesMemberTest {
 
     @Test
     void testStaticFilePagesIndexHtml() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/pages/index.html", null);
+        var response = testUtil.doMethod("GET", "/pages/index.html", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("<html><body>Hello Static World!</body></html>")
@@ -127,7 +127,7 @@ class StaticFilesMemberTest {
 
     @Test
     void testStaticFilePageHtml() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/page.html", null);
+        var response = testUtil.doMethod("GET", "/page.html", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("<html><body>Hello Static Files World!</body></html>")
@@ -138,7 +138,7 @@ class StaticFilesMemberTest {
 
     @Test
     void testExternalStaticFile() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/externalFile.html", null);
+        var response = testUtil.doMethod("GET", "/externalFile.html", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Content of external file")
@@ -149,13 +149,13 @@ class StaticFilesMemberTest {
 
     @Test
     void testStaticFileHeaders() throws Exception {
-        staticFiles.headers(new HashMap() {
+        staticFiles.headers(new HashMap<>() {
             {
                 put("Server", "Microsoft Word");
                 put("Cache-Control", "private, max-age=600");
             }
         });
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/pages/index.html", null);
+        var response = testUtil.doMethod("GET", "/pages/index.html", null);
         assertAll(
                 () -> assertThat(response.headers).containsEntry("Server", "Microsoft Word"),
                 () -> assertThat(response.headers).containsEntry("Cache-Control", "private, max-age=600")
@@ -167,7 +167,7 @@ class StaticFilesMemberTest {
     @Test
     void testStaticFileExpireTime() throws Exception {
         staticFiles.expireTime(600);
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/pages/index.html", null);
+        var response = testUtil.doMethod("GET", "/pages/index.html", null);
         assertThat(response.headers).containsEntry("Cache-Control", "private, max-age=600");
 
         testGet();
@@ -177,7 +177,7 @@ class StaticFilesMemberTest {
      * Used to verify that "normal" functionality works after static files mapping
      */
     private static void testGet() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", "");
+        var response = testUtil.doMethod("GET", "/hello", "");
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -187,7 +187,7 @@ class StaticFilesMemberTest {
 
     @Test
     void testExceptionMapping404() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/filethatdoesntexist.html", null);
+        var response = testUtil.doMethod("GET", "/filethatdoesntexist.html", null);
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(404),

@@ -35,7 +35,7 @@ class MultipleServicesExampleTest {
 
     @Test
     void firstServiceHello() throws Exception {
-        SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/hello", null);
+        var response = firstClient.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")
@@ -44,7 +44,7 @@ class MultipleServicesExampleTest {
 
     @Test
     void secondServiceHello() throws Exception {
-        SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/hello", null);
+        var response = secondClient.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")
@@ -54,7 +54,7 @@ class MultipleServicesExampleTest {
     @Test
     void secondServiceHiRedirectsToHello() throws Exception {
         // the client follows the redirect by default, landing on /hello
-        SparkTestUtil.UrlResponse response = secondClient.doMethod("GET", "/hi", null);
+        var response = secondClient.doMethod("GET", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")
@@ -63,7 +63,7 @@ class MultipleServicesExampleTest {
 
     @Test
     void servicesAreIndependent() throws Exception {
-        SparkTestUtil.UrlResponse response = firstClient.doMethod("GET", "/hi", null);
+        var response = firstClient.doMethod("GET", "/hi", null);
         assertThat(response.status).isEqualTo(404);
     }
 }

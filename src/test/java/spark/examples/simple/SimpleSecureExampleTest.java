@@ -24,7 +24,7 @@ class SimpleSecureExampleTest {
 
     @Test
     void hello() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/hello", null);
+        var response = testUtil.doMethodSecure("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello Secure World!")
@@ -33,7 +33,7 @@ class SimpleSecureExampleTest {
 
     @Test
     void helloPost() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("POST", "/hello", "body text");
+        var response = testUtil.doMethodSecure("POST", "/hello", "body text");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello Secure World: body text")
@@ -42,7 +42,7 @@ class SimpleSecureExampleTest {
 
     @Test
     void selectedUser() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/users/scott", null);
+        var response = testUtil.doMethodSecure("GET", "/users/scott", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Selected user: scott")
@@ -51,7 +51,7 @@ class SimpleSecureExampleTest {
 
     @Test
     void privateRoute() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/private", null);
+        var response = testUtil.doMethodSecure("GET", "/private", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(401),
                 () -> assertThat(response.body).isEqualTo("Go Away!!!")
@@ -60,7 +60,7 @@ class SimpleSecureExampleTest {
 
     @Test
     void newsSection() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/news/world", null);
+        var response = testUtil.doMethodSecure("GET", "/news/world", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body)
@@ -70,7 +70,7 @@ class SimpleSecureExampleTest {
 
     @Test
     void protectedRoute() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/protected", null);
+        var response = testUtil.doMethodSecure("GET", "/protected", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(403),
                 () -> assertThat(response.body).isEqualTo("I don't think so!!!")
@@ -80,7 +80,7 @@ class SimpleSecureExampleTest {
     @Test
     void redirect() throws Exception {
         // the client follows the redirect by default, landing on /news/world
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/redirect", null);
+        var response = testUtil.doMethodSecure("GET", "/redirect", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body)
@@ -90,7 +90,7 @@ class SimpleSecureExampleTest {
 
     @Test
     void root() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/", null);
+        var response = testUtil.doMethodSecure("GET", "/", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("root")

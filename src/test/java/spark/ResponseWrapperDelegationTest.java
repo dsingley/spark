@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
-import spark.util.SparkTestUtil.UrlResponse;
 
 @ExtendWith(SparkStopExtension.class)
 class ResponseWrapperDelegationTest {
@@ -54,7 +53,7 @@ class ResponseWrapperDelegationTest {
 
     @Test
     void filters_can_detect_response_status() throws Exception {
-        UrlResponse response = testUtil.get("/204");
+        var response = testUtil.get("/204");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("ok")
@@ -63,7 +62,7 @@ class ResponseWrapperDelegationTest {
 
     @Test
     void filters_can_detect_content_type() throws Exception {
-        UrlResponse response = testUtil.get("/json");
+        var response = testUtil.get("/json");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("{\"status\": \"ok\"}"),

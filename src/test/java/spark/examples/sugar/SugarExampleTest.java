@@ -24,7 +24,7 @@ class SugarExampleTest {
 
     @Test
     void hi() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hi", null);
+        var response = testUtil.doMethod("GET", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hi!")
@@ -33,7 +33,7 @@ class SugarExampleTest {
 
     @Test
     void hello() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null);
+        var response = testUtil.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello!")

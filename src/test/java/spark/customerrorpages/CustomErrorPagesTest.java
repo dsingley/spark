@@ -50,7 +50,7 @@ class CustomErrorPagesTest {
 
     @Test
     void testGetHi() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null);
+        var response = testUtil.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo(HELLO_WORLD)
@@ -59,7 +59,7 @@ class CustomErrorPagesTest {
 
     @Test
     void testCustomNotFound() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/othernotmapped", null);
+        var response = testUtil.doMethod("GET", "/othernotmapped", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(404),
                 () -> assertThat(response.body).isEqualTo(CUSTOM_NOT_FOUND)
@@ -68,7 +68,7 @@ class CustomErrorPagesTest {
 
     @Test
     void testCustomInternal() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/raiseinternal", null);
+        var response = testUtil.doMethod("GET", "/raiseinternal", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(500),
                 () -> assertThat(response.headers).containsEntry("Content-Type", APPLICATION_JSON),
@@ -78,7 +78,7 @@ class CustomErrorPagesTest {
 
     @Test
     void testCustomInternalFailingRoute() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/raiseinternal?" + QUERY_PARAM_KEY + "=sumthin", null);
+        var response = testUtil.doMethod("GET", "/raiseinternal?" + QUERY_PARAM_KEY + "=sumthin", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(500),
                 () -> assertThat(response.body).isEqualTo(CustomErrorPages.INTERNAL_ERROR)

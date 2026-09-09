@@ -54,7 +54,7 @@ class BooksExampleTest {
 
     @Test
     void canCreateBook() {
-        UrlResponse response = createBookViaPOST();
+        var response = createBookViaPOST();
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -68,7 +68,7 @@ class BooksExampleTest {
     void canListBooks() {
         bookId = createBookViaPOST().body.trim();
 
-        UrlResponse response = doMethod("GET", "/books");
+        var response = doMethod("GET", "/books");
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -83,7 +83,7 @@ class BooksExampleTest {
     void canGetBook() {
         bookId = createBookViaPOST().body.trim();
 
-        UrlResponse response = doMethod("GET", "/books/" + bookId);
+        var response = doMethod("GET", "/books/" + bookId);
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -100,7 +100,7 @@ class BooksExampleTest {
     void canUpdateBook() {
         bookId = createBookViaPOST().body.trim();
 
-        UrlResponse response = updateBook();
+        var response = updateBook();
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -116,7 +116,7 @@ class BooksExampleTest {
         bookId = createBookViaPOST().body.trim();
         updateBook();
 
-        UrlResponse response = doMethod("GET", "/books/" + bookId);
+        var response = doMethod("GET", "/books/" + bookId);
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -131,7 +131,7 @@ class BooksExampleTest {
     void canDeleteBook() {
         bookId = createBookViaPOST().body.trim();
 
-        UrlResponse response = doMethod("DELETE", "/books/" + bookId);
+        var response = doMethod("DELETE", "/books/" + bookId);
 
         assertAll(
                 () -> assertThat(response).isNotNull(),
@@ -149,7 +149,7 @@ class BooksExampleTest {
     }
 
     private static UrlResponse doMethod(String requestMethod, String path) {
-        UrlResponse response = new UrlResponse();
+        var response = new UrlResponse();
 
         try {
             getResponse(requestMethod, path, response);

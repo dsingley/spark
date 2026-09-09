@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
-import spark.util.SparkTestUtil.UrlResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,7 +72,7 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testGetHi() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethodSecure("GET", "/hi", null);
+        var response = testUtil.doMethodSecure("GET", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")
@@ -86,7 +85,7 @@ class GenericSecureIntegrationTest {
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Forwarded-For", xForwardedFor);
 
-        UrlResponse response = testUtil.doMethod("GET", "/ip", null, true, "text/html", headers);
+        var response = testUtil.doMethod("GET", "/ip", null, true, "text/html", headers);
         assertThat(response.body).isEqualTo(xForwardedFor);
 
         response = testUtil.doMethod("GET", "/ip", null, true, "text/html", null);
@@ -95,7 +94,7 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testHiHead() throws Exception {
-        UrlResponse response = testUtil.doMethodSecure("HEAD", "/hi", null);
+        var response = testUtil.doMethodSecure("HEAD", "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEmpty()
@@ -104,13 +103,13 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testGetHiAfterFilter() throws Exception {
-        UrlResponse response = testUtil.doMethodSecure("GET", "/hi", null);
+        var response = testUtil.doMethodSecure("GET", "/hi", null);
         assertThat(response.headers.get("after")).contains("foobar");
     }
 
     @Test
     void testGetRoot() throws Exception {
-        UrlResponse response = testUtil.doMethodSecure("GET", "/", null);
+        var response = testUtil.doMethodSecure("GET", "/", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello Root!")
@@ -119,7 +118,7 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testEchoParam1() throws Exception {
-        UrlResponse response = testUtil.doMethodSecure("GET", "/shizzy", null);
+        var response = testUtil.doMethodSecure("GET", "/shizzy", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("echo: shizzy")
@@ -128,7 +127,7 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testEchoParam2() throws Exception {
-        UrlResponse response = testUtil.doMethodSecure("GET", "/gunit", null);
+        var response = testUtil.doMethodSecure("GET", "/gunit", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("echo: gunit")
@@ -137,7 +136,7 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testEchoParamWithMaj() throws Exception {
-        UrlResponse response = testUtil.doMethodSecure("GET", "/paramwithmaj/plop", null);
+        var response = testUtil.doMethodSecure("GET", "/paramwithmaj/plop", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("echo: plop")
@@ -146,19 +145,19 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testUnauthorized() throws Exception {
-        UrlResponse urlResponse = testUtil.doMethodSecure("GET", "/protected/resource", null);
-        assertThat(urlResponse.status).isEqualTo(401);
+        var response = testUtil.doMethodSecure("GET", "/protected/resource", null);
+        assertThat(response.status).isEqualTo(401);
     }
 
     @Test
     void testNotFound() throws Exception {
-        UrlResponse urlResponse = testUtil.doMethodSecure("GET", "/no/resource", null);
-        assertThat(urlResponse.status).isEqualTo(404);
+        var response = testUtil.doMethodSecure("GET", "/no/resource", null);
+        assertThat(response.status).isEqualTo(404);
     }
 
     @Test
     void testPost() throws Exception {
-        UrlResponse response = testUtil.doMethodSecure("POST", "/poster", "Fo shizzy");
+        var response = testUtil.doMethodSecure("POST", "/poster", "Fo shizzy");
         LOG.info(response.body);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(201),
@@ -168,7 +167,7 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testPatch() throws Exception {
-        UrlResponse response = testUtil.doMethodSecure("PATCH", "/patcher", "Fo shizzy");
+        var response = testUtil.doMethodSecure("PATCH", "/patcher", "Fo shizzy");
         LOG.info(response.body);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),

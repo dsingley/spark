@@ -15,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
-import spark.util.SparkTestUtil.UrlResponse;
-
 import java.util.concurrent.CountDownLatch;
 
 @ExtendWith(SparkStopExtension.class)
@@ -77,7 +75,7 @@ class ServletTest {
 
     @Test
     void testGetHi() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", SOME_PATH + "/hi", null);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!")
@@ -86,7 +84,7 @@ class ServletTest {
 
     @Test
     void testHiHead() throws Exception {
-        UrlResponse response = testUtil.doMethod("HEAD", SOME_PATH + "/hi", null);
+        var response = testUtil.doMethod("HEAD", SOME_PATH + "/hi", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEmpty()
@@ -95,13 +93,13 @@ class ServletTest {
 
     @Test
     void testGetHiAfterFilter() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", SOME_PATH + "/hi", null);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/hi", null);
         assertThat(response.headers.get("after")).contains("foobar");
     }
 
     @Test
     void testGetRoot() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", SOME_PATH + "/", null);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello Root!")
@@ -110,7 +108,7 @@ class ServletTest {
 
     @Test
     void testEchoParam1() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", SOME_PATH + "/shizzy", null);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/shizzy", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("echo: shizzy")
@@ -119,7 +117,7 @@ class ServletTest {
 
     @Test
     void testEchoParam2() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", SOME_PATH + "/gunit", null);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/gunit", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("echo: gunit")
@@ -128,19 +126,19 @@ class ServletTest {
 
     @Test
     void testUnauthorized() throws Exception {
-        UrlResponse urlResponse = testUtil.doMethod("GET", SOME_PATH + "/protected/resource", null);
-        assertThat(urlResponse.status).isEqualTo(401);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/protected/resource", null);
+        assertThat(response.status).isEqualTo(401);
     }
 
     @Test
     void testNotFound() throws Exception {
-        UrlResponse urlResponse = testUtil.doMethod("GET", SOME_PATH + "/no/resource", null);
-        assertThat(urlResponse.status).isEqualTo(404);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/no/resource", null);
+        assertThat(response.status).isEqualTo(404);
     }
 
     @Test
     void testPost() throws Exception {
-        UrlResponse response = testUtil.doMethod("POST", SOME_PATH + "/poster", "Fo shizzy");
+        var response = testUtil.doMethod("POST", SOME_PATH + "/poster", "Fo shizzy");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(201),
                 () -> assertThat(response.body).contains("Fo shizzy")
@@ -149,7 +147,7 @@ class ServletTest {
 
     @Test
     void testStaticResource() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", SOME_PATH + "/css/style.css", null);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/css/style.css", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).contains("Content of css file")
@@ -158,7 +156,7 @@ class ServletTest {
 
     @Test
     void testStaticWelcomeResource() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", SOME_PATH + "/pages/", null);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/pages/", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).contains("<html><body>Hello Static World!</body></html>")
@@ -167,7 +165,7 @@ class ServletTest {
 
     @Test
     void testExternalStaticFile() throws Exception {
-        UrlResponse response = testUtil.doMethod("GET", SOME_PATH + "/" + MyApp.EXTERNAL_FILE, null);
+        var response = testUtil.doMethod("GET", SOME_PATH + "/" + MyApp.EXTERNAL_FILE, null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Content of external file")

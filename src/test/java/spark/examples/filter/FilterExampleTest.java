@@ -24,7 +24,7 @@ class FilterExampleTest {
 
     @Test
     void rejectsBadCredentials() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello?user=some&password=guy", null);
+        var response = testUtil.doMethod("GET", "/hello?user=some&password=guy", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(401),
                 () -> assertThat(response.body).isEqualTo("You are not welcome here!!!")
@@ -33,7 +33,7 @@ class FilterExampleTest {
 
     @Test
     void acceptsGoodCredentials() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello?user=foo&password=bar", null);
+        var response = testUtil.doMethod("GET", "/hello?user=foo&password=bar", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Hello World!"),

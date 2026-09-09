@@ -24,7 +24,7 @@ class TransformerExampleTest {
 
     @Test
     void hello() throws Exception {
-        SparkTestUtil.UrlResponse response = testUtil.doMethod("GET", "/hello", null, "application/json");
+        var response = testUtil.doMethod("GET", "/hello", null, "application/json");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("{\"message\":\"Hello World\"}")
