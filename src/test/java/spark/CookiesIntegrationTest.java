@@ -147,7 +147,7 @@ class CookiesIntegrationTest {
     private void httpPost(String relativePath) {
         var request = new HttpPost(DEFAULT_HOST_URL + relativePath);
         assertThatCode(() -> {
-            var statusCode = httpClient.execute(request, HttpResponse::getCode);
+            int statusCode = httpClient.execute(request, HttpResponse::getCode);
             assertThat(statusCode).isEqualTo(200);
         }).doesNotThrowAnyException();
     }
