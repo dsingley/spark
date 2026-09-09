@@ -31,7 +31,7 @@ class ResourceUtilsTest {
                                                                          URISyntaxException {
         //given
         var url = new URL("file://public/file.txt");
-        File file = ResourceUtils.getFile(url, "Some description");
+        var file = ResourceUtils.getFile(url, "Some description");
 
         //then
         assertThat(new File(ResourceUtils.toURI(url).getSchemeSpecificPart())).isEqualTo(file);
