@@ -225,7 +225,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
      */
     @Override
     public String getDescription() {
-        StringBuilder builder = new StringBuilder("class path resource [");
+        var builder = new StringBuilder("class path resource [");
         String pathToUse = path;
         if (this.clazz != null && !pathToUse.startsWith("/")) {
             builder.append(ClassUtils.classPackageAsResourcePath(this.clazz));

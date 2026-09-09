@@ -64,7 +64,7 @@ public class UriPath {
             return path;
         }
 
-        StringBuilder buf = new StringBuilder(path);
+        var builder = new StringBuilder(path);
         int delStart = -1;
         int delEnd = -1;
         int skip = 0;
@@ -72,17 +72,17 @@ public class UriPath {
         while (end > 0) {
             switch (end - start) {
                 case 2: // possible single dot
-                    if (buf.charAt(start + 1) != '.') {
+                    if (builder.charAt(start + 1) != '.') {
                         if (skip > 0 && --skip == 0) {
                             delStart = start >= 0 ? start : 0;
-                            if (delStart > 0 && delEnd == buf.length() && buf.charAt(delEnd - 1) == '.') {
+                            if (delStart > 0 && delEnd == builder.length() && builder.charAt(delEnd - 1) == '.') {
                                 delStart++;
                             }
                         }
                         break;
                     }
 
-                    if (start < 0 && buf.length() > 2 && buf.charAt(1) == '/' && buf.charAt(2) == '/') {
+                    if (start < 0 && builder.length() > 2 && builder.charAt(1) == '/' && builder.charAt(2) == '/') {
                         break;
                     }
 
@@ -90,28 +90,28 @@ public class UriPath {
                         delEnd = end;
                     }
                     delStart = start;
-                    if (delStart < 0 || delStart == 0 && buf.charAt(delStart) == '/') {
+                    if (delStart < 0 || delStart == 0 && builder.charAt(delStart) == '/') {
                         delStart++;
-                        if (delEnd < buf.length() && buf.charAt(delEnd) == '/') {
+                        if (delEnd < builder.length() && builder.charAt(delEnd) == '/') {
                             delEnd++;
                         }
                         break;
                     }
-                    if (end == buf.length()) {
+                    if (end == builder.length()) {
                         delStart++;
                     }
 
                     end = start--;
-                    while (start >= 0 && buf.charAt(start) != '/') {
+                    while (start >= 0 && builder.charAt(start) != '/') {
                         start--;
                     }
                     continue;
 
                 case 3: // possible double dot
-                    if (buf.charAt(start + 1) != '.' || buf.charAt(start + 2) != '.') {
+                    if (builder.charAt(start + 1) != '.' || builder.charAt(start + 2) != '.') {
                         if (skip > 0 && --skip == 0) {
                             delStart = start >= 0 ? start : 0;
-                            if (delStart > 0 && delEnd == buf.length() && buf.charAt(delEnd - 1) == '.') {
+                            if (delStart > 0 && delEnd == builder.length() && builder.charAt(delEnd - 1) == '.') {
                                 delStart++;
                             }
                         }
@@ -125,7 +125,7 @@ public class UriPath {
 
                     skip++;
                     end = start--;
-                    while (start >= 0 && buf.charAt(start) != '/') {
+                    while (start >= 0 && builder.charAt(start) != '/') {
                         start--;
                     }
                     continue;
@@ -133,7 +133,7 @@ public class UriPath {
                 default:
                     if (skip > 0 && --skip == 0) {
                         delStart = start >= 0 ? start : 0;
-                        if (delEnd == buf.length() && buf.charAt(delEnd - 1) == '.') {
+                        if (delEnd == builder.length() && builder.charAt(delEnd - 1) == '.') {
                             delStart++;
                         }
                     }
@@ -141,12 +141,12 @@ public class UriPath {
 
             // Do the delete
             if (skip <= 0 && delStart >= 0 && delEnd >= delStart) {
-                buf.delete(delStart, delEnd);
+                builder.delete(delStart, delEnd);
                 delStart = delEnd = -1;
             }
 
             end = start--;
-            while (start >= 0 && buf.charAt(start) != '/') {
+            while (start >= 0 && builder.charAt(start) != '/') {
                 start--;
             }
         }
@@ -158,10 +158,10 @@ public class UriPath {
 
         // Do the delete
         if (delEnd >= 0) {
-            buf.delete(delStart, delEnd);
+            builder.delete(delStart, delEnd);
         }
 
-        return buf.toString();
+        return builder.toString();
     }
 
 }

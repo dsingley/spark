@@ -66,7 +66,7 @@ public class ExternalResourceHandler extends AbstractResourceHandler {
 
             final String addedPath = addPaths(baseResource, path);
 
-            ExternalResource resource = new ExternalResource(addedPath);
+            var resource = new ExternalResource(addedPath);
 
             if (resource.exists() && resource.isDirectory()) {
                 if (welcomeFile != null) {

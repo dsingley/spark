@@ -52,8 +52,8 @@ public class SocketConnectorFactory {
         Assert.notNull(server, SERVER_MUST_NOT_BE_NULL);
         Assert.notNull(host, HOST_MUST_NOT_BE_NULL);
 
-        HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory(trustForwardHeaders);
-        ServerConnector connector = new ServerConnector(server, httpConnectionFactory);
+        var httpConnectionFactory = createHttpConnectionFactory(trustForwardHeaders);
+        var connector = new ServerConnector(server, httpConnectionFactory);
         initializeConnector(connector, host, port);
         return connector;
     }
@@ -132,9 +132,9 @@ public class SocketConnectorFactory {
             }
         }
 
-        HttpConnectionFactory httpConnectionFactory = createHttpConnectionFactory(trustForwardHeaders);
+        var httpConnectionFactory = createHttpConnectionFactory(trustForwardHeaders);
 
-        ServerConnector connector = new ServerConnector(server, sslContextFactory, httpConnectionFactory);
+        var connector = new ServerConnector(server, sslContextFactory, httpConnectionFactory);
         initializeConnector(connector, host, port);
         return connector;
     }
@@ -148,7 +148,7 @@ public class SocketConnectorFactory {
     }
 
     private static HttpConnectionFactory createHttpConnectionFactory(boolean trustForwardHeaders) {
-        HttpConfiguration httpConfig = new HttpConfiguration();
+        var httpConfig = new HttpConfiguration();
         httpConfig.setSecureScheme("https");
         // Jetty defaults to rejecting ambiguous URIs (e.g. an encoded slash within a path
         // segment) with a 400 since a hardening change several versions back; Spark has always

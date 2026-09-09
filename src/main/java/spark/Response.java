@@ -283,7 +283,7 @@ public class Response {
      * @param httpOnly if true: cookie will be marked as http only
      */
     public void cookie(String domain, String path, String name, String value, int maxAge, boolean secured, boolean httpOnly) {
-        Cookie cookie = new Cookie(name, value);
+        var cookie = new Cookie(name, value);
         cookie.setPath(path);
         cookie.setDomain(domain);
         cookie.setMaxAge(maxAge);
@@ -308,7 +308,7 @@ public class Response {
      * @param name name of the cookie
      */
     public void removeCookie(String path, String name) {
-        Cookie cookie = new Cookie(name, "");
+        var cookie = new Cookie(name, "");
         cookie.setHttpOnly(true);
         cookie.setPath(path);
         cookie.setMaxAge(0);

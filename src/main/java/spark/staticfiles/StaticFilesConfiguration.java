@@ -161,7 +161,7 @@ public class StaticFilesConfiguration {
 
         if (!externalStaticResourcesSet) {
             try {
-                ExternalResource resource = new ExternalResource(folder);
+                var resource = new ExternalResource(folder);
                 if (!resource.getFile().isDirectory()) {
                     LOG.error("External Static resource location must be a folder");
                     return;

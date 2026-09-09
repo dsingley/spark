@@ -31,12 +31,12 @@ public final class SerializerChain {
      */
     public SerializerChain() {
 
-        DefaultSerializer defaultSerializer = new DefaultSerializer();
+        var defaultSerializer = new DefaultSerializer();
 
-        InputStreamSerializer inputStreamSerializer = new InputStreamSerializer();
+        var inputStreamSerializer = new InputStreamSerializer();
         inputStreamSerializer.setNext(defaultSerializer);
 
-        BytesSerializer bytesSerializer = new BytesSerializer();
+        var bytesSerializer = new BytesSerializer();
         bytesSerializer.setNext(inputStreamSerializer);
 
         this.root = bytesSerializer;

@@ -73,8 +73,8 @@ public final class IOUtils {
 
     static {
         // avoid security issues
-        StringWriter buf = new StringWriter(4);
-        PrintWriter out = new PrintWriter(buf);
+        var writer = new StringWriter(4);
+        var out = new PrintWriter(writer);
         out.println();
     }
 
@@ -102,7 +102,7 @@ public final class IOUtils {
      * @throws IOException          if an I/O error occurs
      */
     public static String toString(InputStream input) throws IOException {
-        StringWriter sw = new StringWriter();
+        var sw = new StringWriter();
         copy(input, sw);
         return sw.toString();
     }
@@ -122,8 +122,8 @@ public final class IOUtils {
      *             if an I/O error occurs
      */
     public static byte[] toByteArray(InputStream input) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
+        var os = new ByteArrayOutputStream();
+        var buf = new byte[1024];
         for (int n = input.read(buf); n != -1; n = input.read(buf)) {
             os.write(buf, 0, n);
         }
@@ -201,7 +201,7 @@ public final class IOUtils {
      */
     public static void copy(InputStream input, Writer output)
         throws IOException {
-        InputStreamReader in = new InputStreamReader(input);
+        var in = new InputStreamReader(input);
         copy(in, output);
     }
 
