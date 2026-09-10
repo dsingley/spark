@@ -37,7 +37,7 @@ class InputStreamSerializer extends Serializer {
     @Override
     public void process(OutputStream outputStream, Object element)
             throws IOException {
-        try (InputStream is = (InputStream) element) {
+        try (var is = (InputStream) element) {
             IOUtils.copy(is, outputStream);
         }
     }

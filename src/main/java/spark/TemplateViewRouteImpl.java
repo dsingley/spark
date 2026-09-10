@@ -82,7 +82,7 @@ public abstract class TemplateViewRouteImpl extends RouteImpl {
 
     @Override
     public Object render(Object object) {
-        ModelAndView modelAndView = (ModelAndView) object;
+        var modelAndView = (ModelAndView) object;
         return render(modelAndView);
     }
 

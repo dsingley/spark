@@ -47,7 +47,7 @@ public class HttpRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        HttpServletRequest request = (HttpServletRequest) super.getRequest();
+        var request = (HttpServletRequest) super.getRequest();
 
         // disable stream cache for chunked transfer encoding
         String transferEncoding = request.getHeader("Transfer-Encoding");

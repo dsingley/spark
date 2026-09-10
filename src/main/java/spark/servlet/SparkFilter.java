@@ -142,8 +142,8 @@ public class SparkFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
                                                                                               IOException,
                                                                                               ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        var httpRequest = (HttpServletRequest) request;
+        var httpResponse = (HttpServletResponse) response;
 
         final String relativePath = FilterTools.getRelativePath(httpRequest, filterPath);
 

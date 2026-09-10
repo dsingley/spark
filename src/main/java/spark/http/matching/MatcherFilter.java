@@ -131,8 +131,8 @@ public class MatcherFilter implements Filter {
                          ServletResponse servletResponse,
                          FilterChain chain) throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-        HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+        var httpRequest = (HttpServletRequest) servletRequest;
+        var httpResponse = (HttpServletResponse) servletResponse;
 
         // handle static resources
         boolean consumedByStaticFile = staticFiles.consume(httpRequest, httpResponse);

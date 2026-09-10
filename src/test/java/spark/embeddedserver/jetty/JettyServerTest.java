@@ -15,7 +15,7 @@ class JettyServerTest {
     void testCreateServer_useDefaults() {
         Server server = new JettyServer().create(0, 0, 0);
 
-        QueuedThreadPool threadPool = (QueuedThreadPool) server.getThreadPool();
+        var threadPool = (QueuedThreadPool) server.getThreadPool();
 
         int minThreads = KiwiReflection.getTypedFieldValue(threadPool, "_minThreads", Integer.class);
         int maxThreads = KiwiReflection.getTypedFieldValue(threadPool, "_maxThreads", Integer.class);
@@ -32,7 +32,7 @@ class JettyServerTest {
     void testCreateServer_whenNonDefaultMaxThreadsOnly_thenUseDefaultMinThreadsAndTimeout() {
         Server server = new JettyServer().create(9, 0, 0);
 
-        QueuedThreadPool threadPool = (QueuedThreadPool) server.getThreadPool();
+        var threadPool = (QueuedThreadPool) server.getThreadPool();
 
         int minThreads = KiwiReflection.getTypedFieldValue(threadPool, "_minThreads", Integer.class);
         int maxThreads = KiwiReflection.getTypedFieldValue(threadPool, "_maxThreads", Integer.class);
