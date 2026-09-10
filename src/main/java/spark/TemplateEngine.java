@@ -17,7 +17,7 @@ public abstract class TemplateEngine {
      * @return the rendered model and view
      */
     public String render(Object object) {
-        ModelAndView modelAndView = (ModelAndView) object;
+        var modelAndView = (ModelAndView) object;
         return render(modelAndView);
     }
 
