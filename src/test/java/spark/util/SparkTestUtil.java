@@ -34,7 +34,6 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -244,9 +243,9 @@ public class SparkTestUtil {
             keyStore.load(fis, getTrustStorePassword().toCharArray());
             fis.close();
 
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            var tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmf.init(keyStore);
-            SSLContext ctx = SSLContext.getInstance("TLS");
+            var ctx = SSLContext.getInstance("TLS");
             ctx.init(null, tmf.getTrustManagers(), null);
             return ctx;
         } catch (Exception e) {
@@ -336,9 +335,9 @@ public class SparkTestUtil {
 
         private static TestKeyStores generate() {
             try {
-                Path certDir = Files.createTempDirectory("spark-test-default-keystore");
+                var certDir = Files.createTempDirectory("spark-test-default-keystore");
                 certDir.toFile().deleteOnExit();
-                TestKeyStores testKeyStores = CertificateTestHelpers.createKeyAndTrustStores(
+                var testKeyStores = CertificateTestHelpers.createKeyAndTrustStores(
                         CertOptions.builder()
                                 .certDir(certDir)
                                 .sanDnsName("localhost")
