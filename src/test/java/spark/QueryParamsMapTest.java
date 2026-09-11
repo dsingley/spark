@@ -118,7 +118,7 @@ class QueryParamsMapTest {
     
     @Test
     void testToMap() {
-        Map<String, String[]> params = Map.of(
+        var params = Map.of(
                 "user[info][name]", new String[] { "fede" },
                 "user[info][last]", new String[] { "dayan" }
         );
