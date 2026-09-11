@@ -151,7 +151,7 @@ class StaticFilesTest {
 
     @Test
     void testDirectoryTraversalProtectionLocal() throws Exception {
-        String path = "/" + URLEncoder.encode("..\\spark\\", "UTF-8") + "Spark.class";
+        var path = "/" + URLEncoder.encode("..\\spark\\", "UTF-8") + "Spark.class";
         var response = doGet(path);
 
         assertThat(response.status).isEqualTo(400);

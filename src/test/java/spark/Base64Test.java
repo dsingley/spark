@@ -10,8 +10,8 @@ class Base64Test {
 
     @Test
     final void test_encode() {
-        String in = "hello";
-        String encode = Base64.encode(in);
+        var in = "hello";
+        var encode = Base64.encode(in);
         assertThat(in).isNotEqualTo(encode);
     }
 
@@ -19,9 +19,9 @@ class Base64Test {
 
     @Test
     final void test_decode() {
-        String in = "hello";
-        String encode = Base64.encode(in);
-        String decode = Base64.decode(encode);
+        var in = "hello";
+        var encode = Base64.encode(in);
+        var decode = Base64.decode(encode);
 
         assertThat(in).isEqualTo(decode);
     }

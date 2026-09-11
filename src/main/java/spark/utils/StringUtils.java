@@ -19,7 +19,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -189,7 +188,7 @@ public abstract class StringUtils {
     public static String applyRelativePath(String path, String relativePath) {
         int separatorIndex = path.lastIndexOf(FOLDER_SEPARATOR);
         if (separatorIndex != -1) {
-            String newPath = path.substring(0, separatorIndex);
+            var newPath = path.substring(0, separatorIndex);
             if (!relativePath.startsWith(FOLDER_SEPARATOR)) {
                 newPath += FOLDER_SEPARATOR;
             }
@@ -212,14 +211,14 @@ public abstract class StringUtils {
         if (path == null) {
             return null;
         }
-        String pathToUse = replace(path, WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
+        var pathToUse = replace(path, WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
 
         // Strip prefix from path to analyze, to not treat it as part of the
         // first path element. This is necessary to correctly parse paths like
         // "file:core/../core/io/Resource.class", where the ".." should just
         // strip the first "core" directory while keeping the "file:" prefix.
         int prefixIndex = pathToUse.indexOf(":");
-        String prefix = "";
+        var prefix = "";
         if (prefixIndex != -1) {
             prefix = pathToUse.substring(0, prefixIndex + 1);
             pathToUse = pathToUse.substring(prefixIndex + 1);
@@ -234,7 +233,7 @@ public abstract class StringUtils {
         int tops = 0;
 
         for (int i = pathArray.length - 1; i >= 0; i--) {
-            String element = pathArray[i];
+            var element = pathArray[i];
             if (CURRENT_PATH.equals(element)) {
                 // Points to current directory - drop it.
             } else if (TOP_PATH.equals(element)) {
@@ -385,7 +384,7 @@ public abstract class StringUtils {
 
     public static String removeLeadingAndTrailingSlashesFrom(String string) {
         
-        String trimmed = string;
+        var trimmed = string;
 
         if (trimmed.endsWith("/") || trimmed.endsWith("\\")) {
             trimmed = trimmed.substring(0, trimmed.length() - 1);

@@ -40,7 +40,7 @@ public class SimpleSecureExample {
                 SparkTestUtil.getKeyStoreLocation(),
                 SparkTestUtil.getKeystorePassword(), null, null);
 
-        String caCertLocation = SparkTestUtil.getCaCertificateLocation();
+        var caCertLocation = SparkTestUtil.getCaCertificateLocation();
         System.out.println("""
                 Keystore:   %s (password: %s)
                 Truststore: %s (password: %s)

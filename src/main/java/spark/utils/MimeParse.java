@@ -50,18 +50,18 @@ public class MimeParse {
      * ('application', 'xhtml', {'q', '0.5'})
      */
     private static ParseResults parseMimeType(String mimeType) {
-        String[] parts = mimeType.split(";");
+        var parts = mimeType.split(";");
         var results = new ParseResults();
         results.params = new HashMap<>();
 
         for (int i = 1; i < parts.length; ++i) {
-            String p = parts[i];
-            String[] subParts = p.split("=");
+            var part = parts[i];
+            var subParts = part.split("=");
             if (subParts.length == 2) {
                 results.params.put(subParts[0].trim(), subParts[1].trim());
             }
         }
-        String fullType = parts[0].trim();
+        var fullType = parts[0].trim();
 
         // Java URLConnection class sends an Accept header that includes a
         // single "*" - Turn it into a legal wildcard.

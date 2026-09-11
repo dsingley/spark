@@ -51,7 +51,7 @@ public class ResponseBodyTest {
         get(HELLO, (q, a) -> HELLO_WORLD);
 
         after(HELLO, (q, a) -> {
-            String body = a.body();
+            var body = a.body();
             assertThat(body).isEqualTo(HELLO_WORLD);
         });
 
@@ -61,7 +61,7 @@ public class ResponseBodyTest {
         });
 
         after(SPECIAL, (q, a) -> {
-            String body = a.body();
+            var body = a.body();
             assertThat(body).isEqualTo(XIDXUS);
         });
 
@@ -71,7 +71,7 @@ public class ResponseBodyTest {
         });
 
         after(PORAKATIKAOKAO, (q, a) -> {
-            String body = a.body();
+            var body = a.body();
             assertThat(body).isEqualTo(GALLUS_SCANDALUM);
         });
 
@@ -81,7 +81,7 @@ public class ResponseBodyTest {
         });
 
         after(MAXIME, (q, a) -> {
-            String body = a.body();
+            var body = a.body();
             assertThat(body).isEqualTo(DOLLAR_11AB);
         });
 

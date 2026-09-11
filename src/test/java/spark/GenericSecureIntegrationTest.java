@@ -52,13 +52,13 @@ class GenericSecureIntegrationTest {
         get("/", (request, response) -> "Hello Root!");
 
         post("/poster", (request, response) -> {
-            String body = request.body();
+            var body = request.body();
             response.status(201); // created
             return "Body was: " + body;
         });
 
         patch("/patcher", (request, response) -> {
-            String body = request.body();
+            var body = request.body();
             response.status(200);
             return "Body was: " + body;
         });
@@ -81,7 +81,7 @@ class GenericSecureIntegrationTest {
 
     @Test
     void testXForwardedFor() throws Exception {
-        final String xForwardedFor = "XXX.XXX.XXX.XXX";
+        var xForwardedFor = "XXX.XXX.XXX.XXX";
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Forwarded-For", xForwardedFor);
 

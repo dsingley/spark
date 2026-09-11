@@ -77,7 +77,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
         Assert.notNull(path, "Path must not be null");
         Assert.isTrue(isValid(path), "Path is not valid");
 
-        String pathToUse = StringUtils.cleanPath(path);
+        var pathToUse = StringUtils.cleanPath(path);
 
         if (pathToUse.startsWith("/")) {
             pathToUse = pathToUse.substring(1);
@@ -96,7 +96,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
             return true;
         }
         if (path.contains(":/")) {
-            String relativePath = (path.charAt(0) == '/' ? path.substring(1) : path);
+            var relativePath = (path.charAt(0) == '/' ? path.substring(1) : path);
             if (ResourceUtils.isUrl(relativePath) || relativePath.startsWith("url:")) {
                 return true;
             }
@@ -202,7 +202,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
      */
     @Override
     public Resource createRelative(String relativePath) {
-        String pathToUse = StringUtils.applyRelativePath(this.path, relativePath);
+        var pathToUse = StringUtils.applyRelativePath(this.path, relativePath);
         return new ClassPathResource(pathToUse, this.classLoader, this.clazz);
     }
 

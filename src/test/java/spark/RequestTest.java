@@ -1,5 +1,6 @@
 package spark;
 
+import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
@@ -20,9 +21,9 @@ import org.junit.jupiter.api.Test;
 import spark.routematch.RouteMatch;
 import spark.util.SparkTestUtil;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,7 +81,7 @@ class RequestTest {
 
         when(servletRequest.getParameter("name")).thenReturn("Federico");
 
-        String name = request.queryParams("name");
+        var name = request.queryParams("name");
         assertThat(name).isEqualTo("Federico");
     }
 
@@ -89,7 +90,7 @@ class RequestTest {
 
         when(servletRequest.getParameter("name")).thenReturn("Federico");
 
-        String name = request.queryParamOrDefault("name", "David");
+        var name = request.queryParamOrDefault("name", "David");
         assertThat(name).isEqualTo("Federico");
     }
 
@@ -98,7 +99,7 @@ class RequestTest {
 
         when(servletRequest.getParameter("name")).thenReturn(null);
 
-        String name = request.queryParamOrDefault("name", "David");
+        var name = request.queryParamOrDefault("name", "David");
         assertThat(name).isEqualTo("David");
     }
 
@@ -109,7 +110,7 @@ class RequestTest {
 
         when(servletRequest.getParameterMap()).thenReturn(params);
 
-        String name = request.queryMap("user").value("name");
+        var name = request.queryMap("user").value("name");
         assertThat(name).isEqualTo("Federico");
     }
 
@@ -229,24 +230,19 @@ class RequestTest {
     @Test
     void testCookies_whenCookiesArePresent() {
 
-        Collection<Cookie> cookies = new ArrayList<>();
-        cookies.add(new Cookie("cookie1", "cookie1value"));
-        cookies.add(new Cookie("cookie2", "cookie2value"));
-
-        Map<String, String> expected = new HashMap<>();
-        for(Cookie cookie : cookies) {
-            expected.put(cookie.getName(), cookie.getValue());
-        }
-
-        Cookie[] cookieArray = cookies.toArray(new Cookie[cookies.size()]);
+        Cookie[] cookieArray = {
+                new Cookie("cookie1", "cookie1value"),
+                new Cookie("cookie2", "cookie2value")
+        };
 
         when(servletRequest.getCookies()).thenReturn(cookieArray);
 
+        var expected = Arrays.stream(cookieArray)
+                .collect(toMap(Cookie::getName, Cookie::getValue));
+
         assertAll(
                 () -> assertThat(request.cookies()).hasSize(2),
-                () -> assertThat(request.cookies()).isEqualTo(expected)
-        );
-
+                () -> assertThat(request.cookies()).isEqualTo(expected));
     }
 
     @Test
@@ -266,11 +262,10 @@ class RequestTest {
     @Test
     void testCookie_whenCookiesArePresent() {
 
-        final String cookieKey = "cookie1";
-        final String cookieValue = "cookie1value";
+        var cookieKey = "cookie1";
+        var cookieValue = "cookie1value";
 
-        Collection<Cookie> cookies = new ArrayList<>();
-        cookies.add(new Cookie(cookieKey, cookieValue));
+        var cookies = List.of(new Cookie(cookieKey, cookieValue));
 
         Cookie[] cookieArray = cookies.toArray(new Cookie[cookies.size()]);
         when(servletRequest.getCookies()).thenReturn(cookieArray);
@@ -285,7 +280,7 @@ class RequestTest {
     @Test
     void testCookie_whenCookiesAreNotPresent() {
 
-        final String cookieKey = "nonExistentCookie";
+        var cookieKey = "nonExistentCookie";
 
         when(servletRequest.getCookies()).thenReturn(null);
 
@@ -296,7 +291,7 @@ class RequestTest {
     @Test
     void testRequestMethod() {
 
-        final String requestMethod = "GET";
+        var requestMethod = "GET";
 
         when(servletRequest.getMethod()).thenReturn(requestMethod);
 
@@ -307,7 +302,7 @@ class RequestTest {
     @Test
     void testScheme() {
 
-        final String scheme = "http";
+        var scheme = "http";
 
         when(servletRequest.getScheme()).thenReturn(scheme);
 
@@ -318,7 +313,7 @@ class RequestTest {
     @Test
     void testHost() {
 
-        final String host = "www.google.com";
+        var host = "www.google.com";
 
         when(servletRequest.getHeader("host")).thenReturn(host);
 
@@ -329,7 +324,7 @@ class RequestTest {
     @Test
     void testUserAgent() {
 
-        final String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
+        var userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
 
         when(servletRequest.getHeader("user-agent")).thenReturn(userAgent);
 
@@ -340,7 +335,7 @@ class RequestTest {
     @Test
     void testPort() {
 
-        final int port = 80;
+        var port = 80;
 
         when(servletRequest.getServerPort()).thenReturn(80);
 
@@ -351,7 +346,7 @@ class RequestTest {
     @Test
     void testPathInfo() {
 
-        final String pathInfo = "/path/to/resource";
+        var pathInfo = "/path/to/resource";
 
         when(servletRequest.getPathInfo()).thenReturn(pathInfo);
 
@@ -362,7 +357,7 @@ class RequestTest {
     @Test
     void testServletPath() {
 
-        final String servletPath = "/api";
+        var servletPath = "/api";
 
         when(servletRequest.getServletPath()).thenReturn(servletPath);
 
@@ -373,7 +368,7 @@ class RequestTest {
     @Test
     void testContextPath() {
 
-        final String contextPath = "/my-app";
+        var contextPath = "/my-app";
 
         when(servletRequest.getContextPath()).thenReturn(contextPath);
 
@@ -384,7 +379,7 @@ class RequestTest {
     @Test
     void testUrl() {
 
-        final String url = "http://www.myapp.com/myapp/a";
+        var url = "http://www.myapp.com/myapp/a";
 
         when(servletRequest.getRequestURL()).thenReturn(new StringBuffer(url));
 
@@ -395,7 +390,7 @@ class RequestTest {
     @Test
     void testContentType() {
 
-        final String contentType = "image/jpeg";
+        var contentType = "image/jpeg";
 
         when(servletRequest.getContentType()).thenReturn(contentType);
 
@@ -406,7 +401,7 @@ class RequestTest {
     @Test
     void testIp() {
 
-        final String ip = "216.58.197.106:80";
+        var ip = "216.58.197.106:80";
 
         when(servletRequest.getRemoteAddr()).thenReturn(ip);
 
@@ -417,7 +412,7 @@ class RequestTest {
     @Test
     void testContentLength() {
 
-        final int contentLength = 500;
+        var contentLength = 500;
 
         when(servletRequest.getContentLength()).thenReturn(contentLength);
 
@@ -428,8 +423,8 @@ class RequestTest {
     @Test
     void testHeaders() {
 
-        final String headerKey = "host";
-        final String host = "www.google.com";
+        var headerKey = "host";
+        var host = "www.google.com";
 
         when(servletRequest.getHeader(headerKey)).thenReturn(host);
 
@@ -440,7 +435,7 @@ class RequestTest {
     @Test
     void testQueryParamsValues_whenParamExists() {
 
-        final String[] paramValues = {"foo", "bar"};
+        String[] paramValues = {"foo", "bar"};
 
         when(servletRequest.getParameterValues("id")).thenReturn(paramValues);
 
@@ -475,7 +470,7 @@ class RequestTest {
     @Test
     void testURI() {
 
-        final String requestURI = "http://localhost:8080/myapp/";
+        var requestURI = "http://localhost:8080/myapp/";
 
         when(servletRequest.getRequestURI()).thenReturn(requestURI);
 
@@ -486,7 +481,7 @@ class RequestTest {
     @Test
     void testProtocol() {
 
-        final String protocol = "HTTP/1.1";
+        var protocol = "HTTP/1.1";
 
         when(servletRequest.getProtocol()).thenReturn(protocol);
 

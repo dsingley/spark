@@ -59,7 +59,7 @@ class CookiesIntegrationTest {
         });
 
         post("/assertHasCookie", (request, response) -> {
-            String cookieValue = request.cookie(request.queryParams("cookieName"));
+            var cookieValue = request.cookie(request.queryParams("cookieName"));
             if (!request.queryParams("cookieValue").equals(cookieValue)) {
                 halt(500);
             }
@@ -67,8 +67,8 @@ class CookiesIntegrationTest {
         });
 
         post("/removeCookie", (request, response) -> {
-            String cookieName = request.queryParams("cookieName");
-            String cookieValue = request.cookie(cookieName);
+            var cookieName = request.queryParams("cookieName");
+            var cookieValue = request.cookie(cookieName);
             if (!request.queryParams("cookieValue").equals(cookieValue)) {
                 halt(500);
             }
@@ -77,15 +77,15 @@ class CookiesIntegrationTest {
         });
 
         post("/path/setCookieWithPath", (request, response) -> {
-            String cookieName = request.queryParams("cookieName");
-            String cookieValue = request.queryParams("cookieValue");
+            var cookieName = request.queryParams("cookieName");
+            var cookieValue = request.queryParams("cookieValue");
             response.cookie("/path", cookieName, cookieValue, -1, false);
             return "";
         }) ;
 
         post("/path/removeCookieWithPath", (request, response) -> {
-            String cookieName = request.queryParams("cookieName");
-            String cookieValue = request.cookie(cookieName);
+            var cookieName = request.queryParams("cookieName");
+            var cookieValue = request.cookie(cookieName);
             if (!request.queryParams("cookieValue").equals(cookieValue)) {
                 halt(500);
             }
