@@ -41,7 +41,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -527,7 +526,7 @@ class GenericIntegrationTest {
             client.stop();
         }
 
-        List<String> events = WebSocketTestHandler.events;
+        var events = WebSocketTestHandler.events;
         assertAll(
             () -> assertThat(events).hasSize(3),
             () -> assertThat(events.get(0)).isEqualTo("onConnect"),

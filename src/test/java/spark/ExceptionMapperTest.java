@@ -14,7 +14,7 @@ class ExceptionMapperTest {
     void testGetInstance_whenDefaultInstanceIsNull() {
         //given
         ExceptionMapper exceptionMapper = null;
-        Field servletInstanceField = servletInstanceField();
+        var servletInstanceField = servletInstanceField();
         KiwiReflection.setFieldValue(null, servletInstanceField, exceptionMapper);
 
         //then

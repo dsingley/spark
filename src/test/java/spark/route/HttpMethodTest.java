@@ -27,15 +27,15 @@ class HttpMethodTest {
 
     @Test
     void testSupportedHttpMethod() {
-        HttpMethod get = HttpMethod.get;
-        HttpMethod method = HttpMethod.get(get.name());
+        var get = HttpMethod.get;
+        var method = HttpMethod.get(get.name());
 
         assertThat(method).isEqualTo(get);
     }
 
     @Test
     void testNotSupportedHttpMethod() {
-        HttpMethod method = HttpMethod.get("lock");
+        var method = HttpMethod.get("lock");
 
         assertThat(method).isEqualTo(HttpMethod.unsupported);
     }

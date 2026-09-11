@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 class RequestTest {
 
@@ -186,7 +185,7 @@ class RequestTest {
     void testSessionNpParams_afterSessionInvalidate() {
         when(servletRequest.getSession()).thenReturn(httpSession);
 
-        Session session = request.session();
+        var session = request.session();
         session.invalidate();
         request.session();
 
@@ -197,7 +196,7 @@ class RequestTest {
     void testSession_whenCreateIsTrue_afterSessionInvalidate() {
         when(servletRequest.getSession(true)).thenReturn(httpSession);
 
-        Session session = request.session(true);
+        var session = request.session(true);
         session.invalidate();
         request.session(true);
 
@@ -209,7 +208,7 @@ class RequestTest {
         when(servletRequest.getSession()).thenReturn(httpSession);
         when(servletRequest.getSession(false)).thenReturn(null);
 
-        Session session = request.session();
+        var session = request.session();
         session.invalidate();
         request.session(false);
 
@@ -267,7 +266,7 @@ class RequestTest {
 
         var cookies = List.of(new Cookie(cookieKey, cookieValue));
 
-        Cookie[] cookieArray = cookies.toArray(new Cookie[cookies.size()]);
+        var cookieArray = cookies.toArray(new Cookie[cookies.size()]);
         when(servletRequest.getCookies()).thenReturn(cookieArray);
 
         assertAll(
@@ -455,15 +454,16 @@ class RequestTest {
     @Test
     void testQueryParams() {
 
-        Map<String, String[]> params = new HashMap<>();
-        params.put("sort", new String[]{"asc"});
-        params.put("items", new String[]{"10"});
+        Map<String, String[]> params = Map.of(
+                "sort", new String[] { "asc" },
+                "items", new String[] { "10" }
+        );
 
         when(servletRequest.getParameterMap()).thenReturn(params);
 
-        Set<String> result = request.queryParams();
+        var queryParams = request.queryParams();
 
-        assertThat(result.toArray()).containsExactly(params.keySet().toArray());
+        assertThat(queryParams.toArray()).containsExactly(params.keySet().toArray());
 
     }
 

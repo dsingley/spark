@@ -66,7 +66,7 @@ class QueryParamsMapTest {
     @Test
     void parseKeyShouldParseRootKey() {
         var queryMap = new QueryParamsMap();
-        String[] parsed = queryMap.parseKey("user[name][more]");
+        var parsed = queryMap.parseKey("user[name][more]");
         assertThat(parsed).isNotNull();
 
         assertAll(
@@ -78,7 +78,7 @@ class QueryParamsMapTest {
     @Test
     void parseKeyShouldParseSubkeys() {
         var queryMap = new QueryParamsMap();
-        String[] parsedNameMore = queryMap.parseKey("[name][more]");
+        var parsedNameMore = queryMap.parseKey("[name][more]");
         assertThat(parsedNameMore).isNotNull();
 
         assertAll(
@@ -86,7 +86,7 @@ class QueryParamsMapTest {
                 () -> assertThat(parsedNameMore[1]).isEqualTo("[more]")
         );
 
-        String[] parsedMore = queryMap.parseKey("[more]");
+        var parsedMore = queryMap.parseKey("[more]");
         assertThat(parsedMore).isNotNull();
 
         assertAll(
@@ -99,9 +99,9 @@ class QueryParamsMapTest {
     void itShouldBeNullSafe() {
         var queryParamsMap = new QueryParamsMap();
         
-        String ret = queryParamsMap.get("x").get("z").get("y").value("w");
+        var value = queryParamsMap.get("x").get("z").get("y").value("w");
         
-        assertThat(ret).isNull();
+        assertThat(value).isNull();
     }
     
     @Test
@@ -118,14 +118,14 @@ class QueryParamsMapTest {
     
     @Test
     void testToMap() {
-        Map<String,String[]> params = new HashMap<>();
-        
-        params.put("user[info][name]",new String[] {"fede"});
-        params.put("user[info][last]",new String[] {"dayan"});
+        Map<String, String[]> params = Map.of(
+                "user[info][name]", new String[] { "fede" },
+                "user[info][last]", new String[] { "dayan" }
+        );
 
         var queryMap = new QueryParamsMap(params);
         
-        Map<String,String[]> map = queryMap.get("user","info").toMap();
+        Map<String, String[]> map = queryMap.get("user","info").toMap();
 
         assertThat(map).hasSize(2);
         assertAll(

@@ -93,13 +93,13 @@ public class MimeParse {
      * @param range
      */
     private static ParseResults parseMediaRange(String range) {
-        ParseResults results = parseMimeType(range);
-        String q = results.params.get("q");
+        var parseRresults = parseMimeType(range);
+        var q = parseRresults.params.get("q");
         var f = toFloat(q, 1);
         if (isBlank(q) || f < 0 || f > 1) {
-            results.params.put("q", "1");
+            parseRresults.params.put("q", "1");
         }
-        return results;
+        return parseRresults;
     }
 
     /**
@@ -152,7 +152,7 @@ public class MimeParse {
     private static FitnessAndQuality fitnessAndQualityParsed(String mimeType, Collection<ParseResults> parsedRanges) {
         int bestFitness = -1;
         float bestFitQ = 0;
-        ParseResults target = parseMediaRange(mimeType);
+        var target = parseMediaRange(mimeType);
 
         for (ParseResults range : parsedRanges) {
             if ((target.type.equals(range.type) || range.type.equals("*") || target.type.equals("*"))
@@ -180,25 +180,25 @@ public class MimeParse {
     /**
      * Finds best match
      *
-     * @param supported the supported types
+     * @param supportedMimeTypes the supported mime types
      * @param header    the header
      * @return the best match
      */
-    public static String bestMatch(Collection<String> supported, String header) {
+    public static String bestMatch(Collection<String> supportedMimeTypes, String header) {
         List<ParseResults> parseResults = new LinkedList<>();
         List<FitnessAndQuality> weightedMatches = new LinkedList<>();
-        for (String r : header.split(",")) {
-            parseResults.add(parseMediaRange(r));
+        for (var range : header.split(",")) {
+            parseResults.add(parseMediaRange(range));
         }
 
-        for (String s : supported) {
-            var fitnessAndQuality = fitnessAndQualityParsed(s, parseResults);
-            fitnessAndQuality.mimeType = s;
+        for (var mimeType : supportedMimeTypes) {
+            var fitnessAndQuality = fitnessAndQualityParsed(mimeType, parseResults);
+            fitnessAndQuality.mimeType = mimeType;
             weightedMatches.add(fitnessAndQuality);
         }
         Collections.sort(weightedMatches);
 
-        FitnessAndQuality lastOne = weightedMatches.get(weightedMatches.size() - 1);
+        var lastOne = weightedMatches.get(weightedMatches.size() - 1);
         return Float.compare(lastOne.quality, 0) != 0 ? lastOne.mimeType : NO_MIME_TYPE;
     }
 

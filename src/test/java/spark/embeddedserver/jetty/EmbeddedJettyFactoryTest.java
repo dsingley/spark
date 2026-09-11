@@ -30,10 +30,10 @@ class EmbeddedJettyFactoryTest {
 
     @Test
     void create() throws Exception {
-        final JettyServerFactory jettyServerFactory = mock(JettyServerFactory.class);
-        final StaticFilesConfiguration staticFilesConfiguration = mock(StaticFilesConfiguration.class);
-        final ExceptionMapper exceptionMapper = mock(ExceptionMapper.class);
-        final Routes routes = mock(Routes.class);
+        var jettyServerFactory = mock(JettyServerFactory.class);
+        var staticFilesConfiguration = mock(StaticFilesConfiguration.class);
+        var exceptionMapper = mock(ExceptionMapper.class);
+        var routes = mock(Routes.class);
 
         var server = new Server();
         when(jettyServerFactory.create(100, 10, 10000)).thenReturn(server);

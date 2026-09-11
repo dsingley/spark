@@ -16,7 +16,6 @@
  */
 package spark.embeddedserver.jetty;
 
-import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -140,7 +139,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
             connector = SocketConnectorFactory.createSocketConnector(server, host, port, trustForwardHeaders);
         }
 
-        Connector[] previousConnectors = server.getConnectors();
+        var previousConnectors = server.getConnectors();
         server = connector.getServer();
         if (previousConnectors.length != 0) {
             server.setConnectors(previousConnectors);
@@ -164,10 +163,10 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         // inside JettyHandler actually starts (it's wired up via a ServletContainerInitializer),
         // so mappings can only be registered after server.start() returns, not before.
         if (webSocketHandlers != null) {
-            JettyWebSocketServerContainer container = handler.getWebSocketContainer();
-            webSocketIdleTimeoutMillis.ifPresent(millis -> container.setIdleTimeout(Duration.ofMillis(millis)));
+            var webSocketServerContainer = handler.getWebSocketContainer();
+            webSocketIdleTimeoutMillis.ifPresent(millis -> webSocketServerContainer.setIdleTimeout(Duration.ofMillis(millis)));
             webSocketHandlers.forEach((path, handlerWrapper) ->
-                    container.addMapping(path, WebSocketCreatorFactory.create(handlerWrapper)));
+                    webSocketServerContainer.addMapping(path, WebSocketCreatorFactory.create(handlerWrapper)));
         }
 
         return port;

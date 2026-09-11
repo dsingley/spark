@@ -22,7 +22,6 @@ import spark.serialization.SerializerChain;
 import spark.utils.GzipUtils;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * Represents the 'body'
@@ -65,13 +64,13 @@ final class Body {
             }
 
             // Check if GZIP is wanted/accepted and in that case handle that
-            OutputStream responseStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, true);
+            var responseOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, true);
 
             // Serialize the body to output stream
-            serializerChain.process(responseStream, content);
+            serializerChain.process(responseOutputStream, content);
 
-            responseStream.flush(); // needed for GZIP stream. Not sure where the HTTP response actually gets cleaned up
-            responseStream.close(); // needed for GZIP
+            responseOutputStream.flush(); // needed for GZIP stream. Not sure where the HTTP response actually gets cleaned up
+            responseOutputStream.close(); // needed for GZIP
         }
     }
 
