@@ -77,7 +77,7 @@ public class EmbeddedServers {
                                         StaticFilesConfiguration staticFilesConfiguration,
                                         boolean multipleHandlers) {
 
-        EmbeddedServerFactory factory = FACTORIES.get(identifier);
+        var factory = FACTORIES.get(identifier);
 
         if (factory != null) {
             return factory.create(routeMatcher, staticFilesConfiguration, exceptionMapper, multipleHandlers);

@@ -14,8 +14,8 @@ import java.util.zip.GZIPInputStream;
 public class GzipClient {
 
     public static String getAndDecompress(String url) throws Exception {
-        InputStream compressed = get(url);
-        var gzipInputStream = new GZIPInputStream(compressed);
+        var compressedInputStream = get(url);
+        var gzipInputStream = new GZIPInputStream(compressedInputStream);
         return IOUtils.toString(gzipInputStream);
     }
 

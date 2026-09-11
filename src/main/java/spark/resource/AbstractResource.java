@@ -22,7 +22,6 @@ import spark.utils.ResourceUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -119,7 +118,7 @@ public abstract class AbstractResource implements Resource {
      */
     @Override
     public long contentLength() throws IOException {
-        InputStream is = this.getInputStream();
+        var is = this.getInputStream();
         Assert.state(is != null, "resource input stream must not be null");
         try {
             long size = 0;

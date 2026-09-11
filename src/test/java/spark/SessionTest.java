@@ -80,7 +80,7 @@ class SessionTest {
     @Test
     void testAttributes() {
 
-        Set<String> attributes = new HashSet<>(Arrays.asList("name", "location"));
+        var attributes = Set.of("name", "location");
 
         when(httpSession.getAttributeNames()).thenReturn(Collections.enumeration(attributes));
 

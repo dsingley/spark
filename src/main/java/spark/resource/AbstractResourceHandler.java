@@ -55,7 +55,7 @@ public abstract class AbstractResourceHandler {
             pathInfo = request.getPathInfo();
         }
 
-        String pathInContext = addPaths(servletPath, pathInfo);
+        var pathInContext = addPaths(servletPath, pathInfo);
         return getResource(pathInContext);
     }
 

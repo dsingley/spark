@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Test static files
@@ -149,12 +150,9 @@ class StaticFilesMemberTest {
 
     @Test
     void testStaticFileHeaders() throws Exception {
-        staticFiles.headers(new HashMap<>() {
-            {
-                put("Server", "Microsoft Word");
-                put("Cache-Control", "private, max-age=600");
-            }
-        });
+        staticFiles.headers(Map.of(
+                "Server", "Microsoft Word",
+                "Cache-Control", "private, max-age=600"));
         var response = testUtil.doMethod("GET", "/pages/index.html", null);
         assertAll(
                 () -> assertThat(response.headers).containsEntry("Server", "Microsoft Word"),

@@ -31,7 +31,7 @@ class ResponseTest {
 
     @Test
     void testConstructor_whenHttpServletResponseParameter() {
-        HttpServletResponse returnResponse = KiwiReflection.getTypedFieldValue(
+        var returnResponse = KiwiReflection.getTypedFieldValue(
             response, "httpServletResponse", HttpServletResponse.class);
         assertThat(returnResponse).isSameAs(httpServletResponse);
     }
@@ -84,7 +84,7 @@ class ResponseTest {
 
     @Test
     void testRaw() {
-        HttpServletResponse returnResponse = response.raw();
+        var returnResponse = response.raw();
         assertThat(returnResponse).isSameAs(httpServletResponse);
     }
 

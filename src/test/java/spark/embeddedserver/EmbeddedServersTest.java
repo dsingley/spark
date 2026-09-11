@@ -39,7 +39,7 @@ class EmbeddedServersTest {
 
         // Register custom server
         EmbeddedServers.add(id, new EmbeddedJettyFactory(serverFactory));
-        EmbeddedServer embeddedServer = EmbeddedServers.create(id, null, null, null, false);
+        var embeddedServer = EmbeddedServers.create(id, null, null, null, false);
         assertThat(embeddedServer).isNotNull();
         embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 0, (SslStores) null, 0, 0, 0);

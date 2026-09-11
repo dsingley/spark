@@ -64,7 +64,7 @@ public class ExternalResourceHandler extends AbstractResourceHandler {
         try {
             path = UriPath.canonical(path);
 
-            final String addedPath = addPaths(baseResource, path);
+            var addedPath = addPaths(baseResource, path);
 
             var resource = new ExternalResource(addedPath);
 

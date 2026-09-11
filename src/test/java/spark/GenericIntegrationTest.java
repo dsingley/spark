@@ -41,7 +41,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -280,8 +279,7 @@ class GenericIntegrationTest {
     @Test
     void testXForwardedFor() throws Exception {
         var xForwardedFor = "XXX.XXX.XXX.XXX";
-        Map<String, String> headers = new HashMap<>();
-        headers.put("X-Forwarded-For", xForwardedFor);
+        var headers = Map.of("X-Forwarded-For", xForwardedFor);
 
         var response = testUtil.doMethod("GET", "/ip", null, false, "text/html", headers);
         assertThat(response.body).isEqualTo(xForwardedFor);
@@ -439,9 +437,8 @@ class GenericIntegrationTest {
 
     @Test
     void testPostViaGetWithMethodOverrideHeader() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("X-HTTP-Method-Override", "POST");
-        var response = testUtil.doMethod("GET", "/post_via_get", "Fo shizzy", false, "*/*", map);
+        var headers = Map.of("X-HTTP-Method-Override", "POST");
+        var response = testUtil.doMethod("GET", "/post_via_get", "Fo shizzy", false, "*/*", headers);
         LOG.info(response.body);
         assertAll(
             () -> assertThat(response.status).isEqualTo(201),
@@ -527,7 +524,7 @@ class GenericIntegrationTest {
             client.stop();
         }
 
-        List<String> events = WebSocketTestHandler.events;
+        var events = WebSocketTestHandler.events;
         assertAll(
             () -> assertThat(events).hasSize(3),
             () -> assertThat(events.get(0)).isEqualTo("onConnect"),

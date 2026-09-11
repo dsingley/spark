@@ -145,7 +145,7 @@ public class SparkFilter implements Filter {
         var httpRequest = (HttpServletRequest) request;
         var httpResponse = (HttpServletResponse) response;
 
-        final String relativePath = FilterTools.getRelativePath(httpRequest, filterPath);
+        var relativePath = FilterTools.getRelativePath(httpRequest, filterPath);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(relativePath);

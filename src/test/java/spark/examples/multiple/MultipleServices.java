@@ -16,8 +16,6 @@
  */
 package spark.examples.multiple;
 
-import static spark.Service.ignite;
-
 import spark.Service;
 
 /**
@@ -32,21 +30,21 @@ public class MultipleServices {
     }
 
     public static Service igniteFirstService() {
-        Service http = ignite(); // I give the variable the name 'http' for the code to make sense when adding routes.
-        http.get("/hello", (q, a) -> "Hello World!");
-        return http;
+        var service = Service.ignite();
+        service.get("/hello", (q, a) -> "Hello World!");
+        return service;
     }
 
     public static Service igniteSecondService() {
-        Service http = ignite()
+        var service = Service.ignite()
                 .port(1234)
                 .staticFileLocation("/public")
                 .threadPool(40);
 
-        http.get("/hello", (q, a) -> "Hello World!");
+        service.get("/hello", (q, a) -> "Hello World!");
 
-        http.redirect.any("/hi", "/hello");
-        return http;
+        service.redirect.any("/hi", "/hello");
+        return service;
     }
 
 }
