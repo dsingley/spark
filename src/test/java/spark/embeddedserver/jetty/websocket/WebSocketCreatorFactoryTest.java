@@ -12,11 +12,11 @@ class WebSocketCreatorFactoryTest {
 
     @Test
     void testCreateWebSocketHandler() {
-        var creator =
+        var webSocketCreator =
                 WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(AnnotatedHandler.class));
         assertAll(
-                () -> assertThat(creator).isInstanceOf(SparkWebSocketCreator.class),
-                () -> assertThat(SparkWebSocketCreator.class.cast(creator).getHandler()).isInstanceOf(AnnotatedHandler.class)
+                () -> assertThat(webSocketCreator).isInstanceOf(SparkWebSocketCreator.class),
+                () -> assertThat(SparkWebSocketCreator.class.cast(webSocketCreator).getHandler()).isInstanceOf(AnnotatedHandler.class)
         );
     }
 
