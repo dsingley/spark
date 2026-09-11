@@ -52,9 +52,9 @@ class RouteImplTest {
 
     @Test
     void testRender_whenElementParameterValid_thenReturnValidObject() throws Exception {
-        String finalObjValue = "object_value";
+        var finalObjValue = "object_value";
         route = RouteImpl.create(PATH_TEST, null);
-        Object value = route.render(finalObjValue);
+        var value = route.render(finalObjValue);
         assertAll(
                 () -> assertThat(value).isNotNull(),
                 () -> assertThat(value).hasToString(finalObjValue)
@@ -64,7 +64,7 @@ class RouteImplTest {
     @Test
     void testRender_whenElementParameterIsNull_thenReturnNull() throws Exception {
         route = RouteImpl.create(PATH_TEST, null);
-        Object value = route.render(null);
+        var value = route.render(null);
         assertThat(value).isNull();
     }
 }

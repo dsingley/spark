@@ -34,7 +34,7 @@ public class ServiceStopExtension implements AfterAllCallback {
 
     @Override
     public void afterAll(ExtensionContext context) {
-        List<Service> services = serviceSuppliers.stream().map(Supplier::get).toList();
+        var services = serviceSuppliers.stream().map(Supplier::get).toList();
         services.forEach(Service::stop);
         services.forEach(service -> service.awaitStop(DEFAULT_TIMEOUT));
     }

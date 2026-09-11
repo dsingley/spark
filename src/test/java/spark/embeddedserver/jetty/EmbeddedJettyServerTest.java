@@ -2,7 +2,6 @@ package spark.embeddedserver.jetty;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketServerContainer;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ class EmbeddedJettyServerTest {
 
     @Test
     void testIgnite_whenWebSocketIdleTimeoutPresent_thenSetOnContainer() throws Exception {
-        JettyHandler handler = newHandler();
+        var handler = newJettyHandler();
         embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), handler);
 
         Map<String, WebSocketHandlerWrapper> webSocketHandlers = new HashMap<>();
@@ -41,13 +40,13 @@ class EmbeddedJettyServerTest {
 
         embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
 
-        JettyWebSocketServerContainer container = handler.getWebSocketContainer();
-        assertThat(container.getIdleTimeout()).isEqualTo(Duration.ofMillis(12345L));
+        var webSocketServerContainer = handler.getWebSocketContainer();
+        assertThat(webSocketServerContainer.getIdleTimeout()).isEqualTo(Duration.ofMillis(12345L));
     }
 
     @Test
     void testIgnite_whenWebSocketIdleTimeoutAbsent_thenContainerStillAvailable() throws Exception {
-        JettyHandler handler = newHandler();
+        var handler = newJettyHandler();
         embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), handler);
 
         Map<String, WebSocketHandlerWrapper> webSocketHandlers = new HashMap<>();
@@ -63,7 +62,7 @@ class EmbeddedJettyServerTest {
 
     @Test
     void testIgnite_whenNoWebSocketHandlersConfigured_thenNoMappingsRegistered() throws Exception {
-        JettyHandler handler = newHandler();
+        var handler = newJettyHandler();
         embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), handler);
 
         embeddedJettyServer.configureWebSockets(null, Optional.empty());
@@ -75,7 +74,7 @@ class EmbeddedJettyServerTest {
         assertThat(handler.getWebSocketContainer()).isNotNull();
     }
 
-    private static JettyHandler newHandler() {
+    private static JettyHandler newJettyHandler() {
         var matcherFilter = new MatcherFilter(
                 Routes.create(), new StaticFilesConfiguration(), new ExceptionMapper(), MatcherFilter.UnmatchedRequestHandling.RESPOND_NOT_FOUND);
         return new JettyHandler(matcherFilter);

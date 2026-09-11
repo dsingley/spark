@@ -49,7 +49,7 @@ class SessionTest {
     @Test
     void testSession() {
 
-        HttpSession internalSession = KiwiReflection.getTypedFieldValue(
+        var internalSession = KiwiReflection.getTypedFieldValue(
             session, "httpSession", HttpSession.class);
         assertThat(internalSession).isEqualTo(httpSession);
     }

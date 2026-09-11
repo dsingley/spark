@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.junit.jupiter.api.Test;
 import org.kiwiproject.reflect.KiwiReflection;
@@ -13,7 +12,7 @@ class JettyServerTest {
 
     @Test
     void testCreateServer_useDefaults() {
-        Server server = new JettyServer().create(0, 0, 0);
+        var server = new JettyServer().create(0, 0, 0);
 
         var threadPool = (QueuedThreadPool) server.getThreadPool();
 
@@ -30,7 +29,7 @@ class JettyServerTest {
 
     @Test
     void testCreateServer_whenNonDefaultMaxThreadsOnly_thenUseDefaultMinThreadsAndTimeout() {
-        Server server = new JettyServer().create(9, 0, 0);
+        var server = new JettyServer().create(9, 0, 0);
 
         var threadPool = (QueuedThreadPool) server.getThreadPool();
 

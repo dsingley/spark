@@ -122,21 +122,21 @@ class ServiceTest {
 
     @Test
     void testGetPort_whenInitializedTrue() {
-        int expectedPort = 8080;
+        var expectedPort = 8080;
         KiwiReflection.setFieldValue(service, "initialized", true);
         KiwiReflection.setFieldValue(service, "port", expectedPort);
 
-        int actualPort = service.port();
+        var actualPort = service.port();
 
         assertThat(actualPort).isEqualTo(expectedPort);
     }
 
     @Test
     void testGetPort_whenInitializedTrue_Default() {
-        int expectedPort = Service.SPARK_DEFAULT_PORT;
+        var expectedPort = Service.SPARK_DEFAULT_PORT;
         KiwiReflection.setFieldValue(service, "initialized", true);
 
-        int actualPort = service.port();
+        var actualPort = service.port();
 
         assertThat(actualPort).isEqualTo(expectedPort);
     }
@@ -179,7 +179,7 @@ class ServiceTest {
     @Test
     void testSecure_thenReturnNewSslStores() {
         service.secure("keyfile", "keypassword", "truststorefile", "truststorepassword");
-        SslStores sslStores = KiwiReflection.getTypedFieldValue(service, "sslStores", SslStores.class);
+        var sslStores = KiwiReflection.getTypedFieldValue(service, "sslStores", SslStores.class);
 
         assertThat(sslStores).isNotNull();
         assertAll(
@@ -250,9 +250,9 @@ class ServiceTest {
 
     @Test
     void stopExtinguishesServer() {
-        Service theService = Service.ignite();
-        Routes routes = mock(Routes.class);
-        EmbeddedServer server = mock(EmbeddedServer.class);
+        var theService = Service.ignite();
+        var routes = mock(Routes.class);
+        var server = mock(EmbeddedServer.class);
         theService.routes = routes;
         theService.server = server;
         theService.initialized = true;
@@ -273,9 +273,9 @@ class ServiceTest {
     // OS thread-scheduling latency under contention, not this test's logic, was tripping it.
     @Timeout(value = 5, unit = TimeUnit.SECONDS)
     void awaitStopBlocksUntilExtinguished() {
-        Service theService = Service.ignite();
-        Routes routes = mock(Routes.class);
-        EmbeddedServer server = mock(EmbeddedServer.class);
+        var theService = Service.ignite();
+        var routes = mock(Routes.class);
+        var server = mock(EmbeddedServer.class);
         theService.routes = routes;
         theService.server = server;
         theService.initialized = true;

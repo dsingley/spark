@@ -38,7 +38,7 @@ class ResponseTest {
 
     @Test
     void testSetStatus() {
-        final int finalStatusCode = HttpServletResponse.SC_OK;
+        var finalStatusCode = HttpServletResponse.SC_OK;
 
         response.status(finalStatusCode);
         verify(httpServletResponse).setStatus(finalStatusCode);
@@ -52,7 +52,7 @@ class ResponseTest {
 
     @Test
     void testSetType() {
-        final String finalType = "text/html";
+        var finalType = "text/html";
 
         response.type(finalType);
         verify(httpServletResponse).setContentType(finalType);
@@ -66,19 +66,19 @@ class ResponseTest {
 
     @Test
     void testSetBody() {
-        final String finalBody = "Hello world!";
+        var finalBody = "Hello world!";
 
         response.body(finalBody);
-        String returnBody = KiwiReflection.getTypedFieldValue(response, "body", String.class);
+        var returnBody = KiwiReflection.getTypedFieldValue(response, "body", String.class);
         assertThat(returnBody).isEqualTo(finalBody);
     }
 
     @Test
     void testGetBody() {
-        final String finalBody = "Hello world!";
+        var finalBody = "Hello world!";
 
         KiwiReflection.setFieldValue(response, "body", finalBody);
-        String returnBody = response.body();
+        var returnBody = response.body();
         assertThat(returnBody).isEqualTo(finalBody);
     }
 
@@ -90,8 +90,8 @@ class ResponseTest {
 
     @Test
     void testHeader() {
-        final String finalHeaderKey = "Content-Length";
-        final String finalHeaderValue = "32";
+        var finalHeaderKey = "Content-Length";
+        var finalHeaderValue = "32";
 
         response.header(finalHeaderKey, finalHeaderValue);
         verify(httpServletResponse).addHeader(finalHeaderKey, finalHeaderValue);
@@ -144,13 +144,13 @@ class ResponseTest {
     @Test
     void testCookie_whenNameAndValueParameters_shouldAddCookieSuccessfully() {
 
-        final String finalDomain = "";
-        final String finalPath = "";
-        final String finalName = "cookie_name";
-        final String finalValue = "Test Cookie";
-        final int finalMaxAge = -1;
-        final boolean finalSecured = false;
-        final boolean finalHttpOnly = false;
+        var finalDomain = "";
+        var finalPath = "";
+        var finalName = "cookie_name";
+        var finalValue = "Test Cookie";
+        var finalMaxAge = -1;
+        var finalSecured = false;
+        var finalHttpOnly = false;
 
         response.cookie(finalName, finalValue);
 
@@ -161,13 +161,13 @@ class ResponseTest {
     @Test
     void testCookie_whenNameValueAndMaxAgeParameters_shouldAddCookieSuccessfully() {
 
-        final String finalDomain = "";
-        final String finalPath = "";
-        final String finalName = "cookie_name";
-        final String finalValue = "Test Cookie";
-        final int finalMaxAge = 86400;
-        final boolean finalSecured = false;
-        final boolean finalHttpOnly = false;
+        var finalDomain = "";
+        var finalPath = "";
+        var finalName = "cookie_name";
+        var finalValue = "Test Cookie";
+        var finalMaxAge = 86400;
+        var finalSecured = false;
+        var finalHttpOnly = false;
 
         response.cookie(finalName, finalValue, finalMaxAge);
 
@@ -177,13 +177,13 @@ class ResponseTest {
 
     @Test
     void testCookie_whenNameValueMaxAgeAndSecuredParameters_shouldAddCookieSuccessfully() {
-        final String finalDomain = "";
-        final String finalPath = "";
-        final String finalName = "cookie_name";
-        final String finalValue = "Test Cookie";
-        final int finalMaxAge = 86400;
-        final boolean finalSecured = true;
-        final boolean finalHttpOnly = false;
+        var finalDomain = "";
+        var finalPath = "";
+        var finalName = "cookie_name";
+        var finalValue = "Test Cookie";
+        var finalMaxAge = 86400;
+        var finalSecured = true;
+        var finalHttpOnly = false;
 
         response.cookie(finalName, finalValue, finalMaxAge, finalSecured);
 
@@ -193,13 +193,13 @@ class ResponseTest {
 
     @Test
     void testCookie_whenNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
-        final String finalDomain = "";
-        final String finalPath = "";
-        final String finalName = "cookie_name";
-        final String finalValue = "Test Cookie";
-        final int finalMaxAge = 86400;
-        final boolean finalSecured = true;
-        final boolean finalHttpOnly = true;
+        var finalDomain = "";
+        var finalPath = "";
+        var finalName = "cookie_name";
+        var finalValue = "Test Cookie";
+        var finalMaxAge = 86400;
+        var finalSecured = true;
+        var finalHttpOnly = true;
 
         response.cookie(finalName, finalValue, finalMaxAge, finalSecured, finalHttpOnly);
 
@@ -209,13 +209,13 @@ class ResponseTest {
 
     @Test
     void testCookie_whenPathNameValueMaxAgeAndSecuredParameters_shouldAddCookieSuccessfully() {
-        final String finalDomain = "";
-        final String finalPath = "/cookie/SetCookie";
-        final String finalName = "cookie_name";
-        final String finalValue = "Test Cookie";
-        final int finalMaxAge = 86400;
-        final boolean finalSecured = true;
-        final boolean finalHttpOnly = false;
+        var finalDomain = "";
+        var finalPath = "/cookie/SetCookie";
+        var finalName = "cookie_name";
+        var finalValue = "Test Cookie";
+        var finalMaxAge = 86400;
+        var finalSecured = true;
+        var finalHttpOnly = false;
 
         response.cookie(finalPath, finalName, finalValue, finalMaxAge, finalSecured);
 
@@ -225,13 +225,13 @@ class ResponseTest {
 
     @Test
     void testCookie_whenPathNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
-        final String finalDomain = "";
-        final String finalPath = "/cookie/SetCookie";
-        final String finalName = "cookie_name";
-        final String finalValue = "Test Cookie";
-        final int finalMaxAge = 86400;
-        final boolean finalSecured = true;
-        final boolean finalHttpOnly = true;
+        var finalDomain = "";
+        var finalPath = "/cookie/SetCookie";
+        var finalName = "cookie_name";
+        var finalValue = "Test Cookie";
+        var finalMaxAge = 86400;
+        var finalSecured = true;
+        var finalHttpOnly = true;
 
         response.cookie(finalPath, finalName, finalValue, finalMaxAge, finalSecured, finalHttpOnly);
 
@@ -241,13 +241,13 @@ class ResponseTest {
 
     @Test
     void testCookie_whenDomainPathNameValueMaxAgeSecuredAndHttpOnlyParameters_shouldAddCookieSuccessfully() {
-        final String finalDomain = "example.com";
-        final String finalPath = "/cookie/SetCookie";
-        final String finalName = "cookie_name";
-        final String finalValue = "Test Cookie";
-        final int finalMaxAge = 86400;
-        final boolean finalSecured = true;
-        final boolean finalHttpOnly = true;
+        var finalDomain = "example.com";
+        var finalPath = "/cookie/SetCookie";
+        var finalName = "cookie_name";
+        var finalValue = "Test Cookie";
+        var finalMaxAge = 86400;
+        var finalSecured = true;
+        var finalHttpOnly = true;
 
         response.cookie(finalDomain, finalPath, finalName, finalValue, finalMaxAge, finalSecured, finalHttpOnly);
 
@@ -257,12 +257,12 @@ class ResponseTest {
 
     @Test
     void testRemoveCookie_shouldModifyPropertiesFromCookieSuccessfully() {
-        final String finalPath = "/cookie/SetCookie";
-        final String finalName = "cookie_name";
-        final String finalValue = "Test Cookie";
-        final int finalMaxAge = 86400;
-        final boolean finalSecured = true;
-        final boolean finalHttpOnly = true;
+        var finalPath = "/cookie/SetCookie";
+        var finalName = "cookie_name";
+        var finalValue = "Test Cookie";
+        var finalMaxAge = 86400;
+        var finalSecured = true;
+        var finalHttpOnly = true;
 
         response.cookie(finalPath, finalName, finalValue, finalMaxAge, finalSecured, finalHttpOnly);
 
@@ -277,7 +277,7 @@ class ResponseTest {
 
     @Test
     void testRedirect_whenLocationParameter_shouldModifyStatusCodeSuccessfully() throws Exception {
-        final String finalLocation = "/test";
+        var finalLocation = "/test";
 
         response.redirect(finalLocation);
         verify(httpServletResponse).sendRedirect(finalLocation);
@@ -287,8 +287,8 @@ class ResponseTest {
     void testRedirect_whenLocationAndHttpStatusCodeParameters_shouldModifyStatusCodeSuccessfully()
         throws Exception {
         
-        final String finalLocation = "/test";
-        int finalStatusCode = HttpServletResponse.SC_BAD_GATEWAY;
+        var finalLocation = "/test";
+        var finalStatusCode = HttpServletResponse.SC_BAD_GATEWAY;
 
         response.redirect(finalLocation, finalStatusCode);
 

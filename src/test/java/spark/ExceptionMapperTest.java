@@ -30,7 +30,7 @@ class ExceptionMapperTest {
         ExceptionMapper.getServletInstance(); //initialize Singleton
 
         //then
-        ExceptionMapper exceptionMapper = ExceptionMapper.getServletInstance();
+        var exceptionMapper = ExceptionMapper.getServletInstance();
         assertThat(exceptionMapper)
                 .describedAs("Should be same because ExceptionMapper is a singleton")
                 .isSameAs(KiwiReflection.getTypedFieldValue(null, servletInstanceField(), ExceptionMapper.class));
