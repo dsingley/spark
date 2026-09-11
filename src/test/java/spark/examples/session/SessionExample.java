@@ -17,7 +17,7 @@ public class SessionExample {
         });
 
         post("/entry", (request, response) -> {
-            String name = request.queryParams("name");
+            var name = request.queryParams("name");
             if (name != null) {
                 request.session().attribute(SESSION_NAME, name);
             }

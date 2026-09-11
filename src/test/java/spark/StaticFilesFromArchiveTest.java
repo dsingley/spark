@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import spark.util.SparkTestUtil;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
@@ -42,15 +41,15 @@ class StaticFilesFromArchiveTest {
         setupClassLoader();
         testUtil = new SparkTestUtil(4567);
 
-        Class<?> sparkClass = classLoader.loadClass("spark.Spark");
+        var sparkClass = classLoader.loadClass("spark.Spark");
 
-        Method staticFileLocationMethod = sparkClass.getMethod("staticFileLocation", String.class);
+        var staticFileLocationMethod = sparkClass.getMethod("staticFileLocation", String.class);
         staticFileLocationMethod.invoke(null, "/public-jar");
 
-        Method initMethod = sparkClass.getMethod("init");
+        var initMethod = sparkClass.getMethod("init");
         initMethod.invoke(null);
 
-        Method awaitInitializationMethod = sparkClass.getMethod("awaitInitialization");
+        var awaitInitializationMethod = sparkClass.getMethod("awaitInitialization");
         awaitInitializationMethod.invoke(null);
     }
 
@@ -74,8 +73,8 @@ class StaticFilesFromArchiveTest {
             urls.add(Paths.get(entry).toUri().toURL());
         }
 
-        URL publicJar = StaticFilesFromArchiveTest.class.getResource("/public-jar.zip");
-        urls.add(publicJar);
+        var publicJarURL = StaticFilesFromArchiveTest.class.getResource("/public-jar.zip");
+        urls.add(publicJarURL);
 
         // no parent classLoader because Spark and the static resources need to be loaded from the same classloader
         return new URLClassLoader(urls.toArray(new URL[0]), null);
@@ -85,10 +84,10 @@ class StaticFilesFromArchiveTest {
     void testCss() throws Exception {
         var response = testUtil.doMethod("GET", "/css/style.css", null);
 
-        String expectedContentType = response.headers.get("Content-Type");
+        var expectedContentType = response.headers.get("Content-Type");
         assertThat(expectedContentType).isEqualTo("text/css");
 
-        String body = response.body;
+        var body = response.body;
         assertThat(body).isEqualTo("Content of css file");
     }
 }

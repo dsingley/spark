@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 class SparkUtilsTest {
@@ -12,9 +11,9 @@ class SparkUtilsTest {
     @Test
     void testConvertRouteToList() {
 
-        List<String> expected = Arrays.asList("api", "person", ":id");
+        var expected = List.of("api", "person", ":id");
 
-        List<String> actual = SparkUtils.convertRouteToList("/api/person/:id");
+        var actual = SparkUtils.convertRouteToList("/api/person/:id");
 
         assertThat(actual).isEqualTo(expected);
 

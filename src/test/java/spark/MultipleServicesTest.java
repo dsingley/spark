@@ -18,13 +18,11 @@ package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Service.ignite;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import spark.route.HttpMethod;
-import spark.routematch.RouteMatch;
 import spark.util.ServiceStopExtension;
 import spark.util.SparkTestUtil;
 
@@ -104,47 +102,49 @@ class MultipleServicesTest {
 
     @Test
     void testGetAllRoutesFromBothServices(){
-        for(RouteMatch routeMatch : first.routes()){
-            assertThat(routeMatch.getAcceptType()).isEqualTo("*/*");
-            assertThat(routeMatch.getHttpMethod()).isEqualTo(HttpMethod.get);
-            assertThat(routeMatch.getMatchUri()).isEqualTo("/hello");
-            assertThat(routeMatch.getRequestURI()).isEqualTo("ALL_ROUTES");
-            assertThat(routeMatch.getTarget()).isInstanceOf(RouteImpl.class);
+        for (var routeMatch : first.routes()) {
+            assertAll(
+                    () -> assertThat(routeMatch.getAcceptType()).isEqualTo("*/*"),
+                    () -> assertThat(routeMatch.getHttpMethod()).isEqualTo(HttpMethod.get),
+                    () -> assertThat(routeMatch.getMatchUri()).isEqualTo("/hello"),
+                    () -> assertThat(routeMatch.getRequestURI()).isEqualTo("ALL_ROUTES"),
+                    () -> assertThat(routeMatch.getTarget()).isInstanceOf(RouteImpl.class)
+            );
         }
 
-        for(RouteMatch routeMatch : second.routes()){
-            assertThat(routeMatch.getAcceptType()).isEqualTo("*/*");
-            assertThat(routeMatch.getHttpMethod()).isInstanceOf(HttpMethod.class);
-            boolean isUriOnList = ("/hello/hi/uniqueforsecond").contains(routeMatch.getMatchUri());
-            assertThat(isUriOnList).isTrue();
-            assertThat(routeMatch.getRequestURI()).isEqualTo("ALL_ROUTES");
-            assertThat(routeMatch.getTarget()).isInstanceOf(RouteImpl.class);
+        for (var routeMatch : second.routes()) {
+            assertAll(
+                    () -> assertThat(routeMatch.getAcceptType()).isEqualTo("*/*"),
+                    () -> assertThat(routeMatch.getHttpMethod()).isInstanceOf(HttpMethod.class),
+                    () -> assertThat(routeMatch.getMatchUri()).isSubstringOf("/hello/hi/uniqueforsecond"),
+                    () -> assertThat(routeMatch.getRequestURI()).isEqualTo("ALL_ROUTES"),
+                    () -> assertThat(routeMatch.getTarget()).isInstanceOf(RouteImpl.class)
+            );
         }
     }
 
     private static Service igniteFirstService() {
 
-        Service http = ignite(); // I give the variable the name 'http' for the code to make sense when adding routes.
+        var service = Service.ignite();
 
-        http.get("/hello", (q, a) -> "Hello World!");
+        service.get("/hello", (q, a) -> "Hello World!");
 
-        return http;
+        return service;
     }
 
     private static Service igniteSecondService() {
 
-        Service http = ignite()
+        var service = Service.ignite()
                 .port(1234)
                 .staticFileLocation("/public")
                 .threadPool(40);
 
-        http.get("/hello", (q, a) -> "Hello World!");
-        http.get("/uniqueforsecond", (q, a) -> "Bompton");
+        service.get("/hello", (q, a) -> "Hello World!");
+        service.get("/uniqueforsecond", (q, a) -> "Bompton");
 
-        http.redirect.any("/hi", "/hello");
+        service.redirect.any("/hi", "/hello");
 
-        return http;
+        return service;
     }
-
 
 }

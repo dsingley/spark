@@ -13,13 +13,9 @@ import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
-import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
 import org.apache.hc.core5.http.ClassicHttpResponse;
-import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
@@ -58,9 +54,9 @@ public class SparkTestUtil {
     }
 
     private HttpClientBuilder httpClientBuilder() {
-        TlsSocketStrategy tlsSocketStrategy =
+        var tlsSocketStrategy =
                 new DefaultClientTlsStrategy(getSslContext(), (paramString, paramSSLSession) -> true);
-        PoolingHttpClientConnectionManager connManager = PoolingHttpClientConnectionManagerBuilder.create()
+        var connManager = PoolingHttpClientConnectionManagerBuilder.create()
                 .setTlsSocketStrategy(tlsSocketStrategy)
                 .build();
         return HttpClientBuilder.create().setConnectionManager(connManager);
@@ -74,7 +70,7 @@ public class SparkTestUtil {
     // redirect following entirely and do it ourselves in doMethod().
     public void setFollowRedirectStrategy(Integer... codes) {
         this.followRedirectCodes = Arrays.asList(codes);
-        RequestConfig requestConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
+        var requestConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
         this.httpClient = httpClientBuilder().setDefaultRequestConfig(requestConfig).build();
     }
 
@@ -108,12 +104,12 @@ public class SparkTestUtil {
 
     public UrlResponse doMethod(String requestMethod, String path, String body, boolean secureConnection,
                                 String acceptType, Map<String, String> reqHeaders) throws IOException {
-        HttpUriRequest httpRequest = getHttpRequest(requestMethod, path, body, secureConnection, acceptType, reqHeaders);
+        var httpRequest = getHttpRequest(requestMethod, path, body, secureConnection, acceptType, reqHeaders);
 
         var response = httpClient.execute(httpRequest, this::toUrlResponse);
 
         if (followRedirectCodes != null && followRedirectCodes.contains(response.status)) {
-            String location = response.headers.get("Location");
+            var location = response.headers.get("Location");
             if (location != null) {
                 URI redirectUri;
                 try {
@@ -121,7 +117,7 @@ public class SparkTestUtil {
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
-                HttpUriRequest redirectRequest = "HEAD".equalsIgnoreCase(requestMethod)
+                var redirectRequest = "HEAD".equalsIgnoreCase(requestMethod)
                         ? new HttpHead(redirectUri)
                         : new HttpGet(redirectUri);
                 response = httpClient.execute(redirectRequest, this::toUrlResponse);
@@ -134,10 +130,10 @@ public class SparkTestUtil {
     private UrlResponse toUrlResponse(ClassicHttpResponse httpResponse) throws IOException, ParseException {
         var response = new UrlResponse();
         response.status = httpResponse.getCode();
-        HttpEntity entity = httpResponse.getEntity();
+        var entity = httpResponse.getEntity();
         response.body = entity != null ? EntityUtils.toString(entity) : "";
         Map<String, String> headers = new HashMap<>();
-        for (Header header : httpResponse.getHeaders()) {
+        for (var header : httpResponse.getHeaders()) {
             headers.put(header.getName(), header.getValue());
         }
         response.headers = headers;
@@ -146,8 +142,8 @@ public class SparkTestUtil {
 
     private HttpUriRequest getHttpRequest(String requestMethod, String path, String body, boolean secureConnection,
                                           String acceptType, Map<String, String> reqHeaders) {
-        String protocol = secureConnection ? "https" : "http";
-        String uri = protocol + "://localhost:" + port + path;
+        var protocol = secureConnection ? "https" : "http";
+        var uri = protocol + "://localhost:" + port + path;
 
         if (requestMethod.equals("GET")) {
             var httpGet = new HttpGet(uri);
@@ -216,7 +212,7 @@ public class SparkTestUtil {
 
     private void addHeaders(Map<String, String> reqHeaders, HttpRequest req) {
         if (reqHeaders != null) {
-            for (Map.Entry<String, String> header : reqHeaders.entrySet()) {
+            for (var header : reqHeaders.entrySet()) {
                 req.addHeader(header.getKey(), header.getValue());
             }
         }
@@ -266,7 +262,7 @@ public class SparkTestUtil {
      * @return Keystore location as string
      */
     public static String getKeyStoreLocation() {
-        String keyStoreLoc = System.getProperty("javax.net.ssl.keyStore");
+        var keyStoreLoc = System.getProperty("javax.net.ssl.keyStore");
         return keyStoreLoc == null ? DefaultCertificate.STORES.requiredKeyStorePathAsString() : keyStoreLoc;
     }
 
@@ -276,7 +272,7 @@ public class SparkTestUtil {
      * @return Keystore password as string
      */
     public static String getKeystorePassword() {
-        String password = System.getProperty("javax.net.ssl.keyStorePassword");
+        var password = System.getProperty("javax.net.ssl.keyStorePassword");
         return password == null ? DefaultCertificate.STORES.keyStorePassword() : password;
     }
 
@@ -287,7 +283,7 @@ public class SparkTestUtil {
      * @return truststore location as string
      */
     public static String getTrustStoreLocation() {
-        String trustStoreLoc = System.getProperty("javax.net.ssl.trustStore");
+        var trustStoreLoc = System.getProperty("javax.net.ssl.trustStore");
         if (trustStoreLoc != null) {
             return trustStoreLoc;
         }
@@ -303,7 +299,7 @@ public class SparkTestUtil {
      * @return truststore password as string
      */
     public static String getTrustStorePassword() {
-        String password = System.getProperty("javax.net.ssl.trustStorePassword");
+        var password = System.getProperty("javax.net.ssl.trustStorePassword");
         if (password != null) {
             return password;
         }

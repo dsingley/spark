@@ -38,7 +38,7 @@ public class FilterExampleAttributes {
         });
 
         after("/hi", (request, response) -> {
-            for (String attr : request.attributes()) {
+            for (var attr : request.attributes()) {
                 LOG.info("attr: {}", attr);
             }
         });
