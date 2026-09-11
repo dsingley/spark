@@ -49,7 +49,7 @@ public class MyApp implements SparkApplication {
         });
 
         post("/poster", (request, response) -> {
-            String body = request.body();
+            var body = request.body();
             response.status(201); // created
             return "Body was: " + body;
         });

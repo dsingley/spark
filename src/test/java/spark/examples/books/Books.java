@@ -42,8 +42,8 @@ public class Books {
         // Creates a new book resource, will return the ID to the created resource
         // author and title are sent as query parameters e.g. /books?author=Foo&title=Bar
         post("/books", (request, response) -> {
-            String author = request.queryParams("author");
-            String title = request.queryParams("title");
+            var author = request.queryParams("author");
+            var title = request.queryParams("title");
             var book = new Book(author, title);
             var random = new Random();
             var id = random.nextInt(Integer.MAX_VALUE);
@@ -55,7 +55,7 @@ public class Books {
 
         // Gets the book resource for the provided id
         get("/books/:id", (request, response) -> {
-            Book book = books.get(request.params(":id"));
+            var book = books.get(request.params(":id"));
             if (book != null) {
                 return "Title: " + book.getTitle() + ", Author: " + book.getAuthor();
             } else {
@@ -67,11 +67,11 @@ public class Books {
         // Updates the book resource for the provided id with new information
         // author and title are sent as query parameters e.g. /books/<id>?author=Foo&title=Bar
         put("/books/:id", (request, response) -> {
-            String id = request.params(":id");
-            Book book = books.get(id);
+            var id = request.params(":id");
+            var book = books.get(id);
             if (book != null) {
-                String newAuthor = request.queryParams("author");
-                String newTitle = request.queryParams("title");
+                var newAuthor = request.queryParams("author");
+                var newTitle = request.queryParams("title");
                 if (newAuthor != null) {
                     book.setAuthor(newAuthor);
                 }
@@ -87,8 +87,8 @@ public class Books {
 
         // Deletes the book resource for the provided id 
         delete("/books/:id", (request, response) -> {
-            String id = request.params(":id");
-            Book book = books.remove(id);
+            var id = request.params(":id");
+            var book = books.remove(id);
             if (book != null) {
                 return "Book with id '" + id + "' deleted";
             } else {

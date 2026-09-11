@@ -81,7 +81,7 @@ class ServiceTest {
     void testIpAddress_whenInitializedFalse() {
         service.ipAddress(IP_ADDRESS);
 
-        String ipAddress = KiwiReflection.getTypedFieldValue(service, "ipAddress", String.class);
+        var ipAddress = KiwiReflection.getTypedFieldValue(service, "ipAddress", String.class);
         assertThat(ipAddress).isEqualTo(IP_ADDRESS);
     }
 

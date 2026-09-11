@@ -107,10 +107,10 @@ class StaticFilesMemberTest {
     void testStaticFileMjs() throws Exception {
         var response = testUtil.doMethod("GET", "/js/module.mjs", null);
 
-        String expectedContentType = response.headers.get("Content-Type");
+        var expectedContentType = response.headers.get("Content-Type");
         assertThat(expectedContentType).isEqualTo("application/javascript");
 
-        String body = response.body;
+        var body = response.body;
         assertThat(body).isEqualTo("export default function () { console.log(\"Hello, I'm a .mjs file\"); }\n");
     }
 

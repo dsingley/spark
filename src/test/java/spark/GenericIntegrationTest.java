@@ -105,7 +105,7 @@ class GenericIntegrationTest {
         get("/", (q, a) -> "Hello Root!");
 
         post("/poster", (q, a) -> {
-            String body = q.body();
+            var body = q.body();
             a.status(201); // created
             return "Body was: " + body;
         });
@@ -118,14 +118,14 @@ class GenericIntegrationTest {
         get("/post_via_get", (q, a) -> "Method Override Did Not Work");
 
         patch("/patcher", (q, a) -> {
-            String body = q.body();
+            var body = q.body();
             a.status(200);
             return "Body was: " + body;
         });
 
         get("/session_reset", (q, a) -> {
-            String key = "session_reset";
-            Session session = q.session();
+            var key = "session_reset";
+            var session = q.session();
             session.attribute(key, "11111");
             session.invalidate();
             session = q.session();
@@ -329,7 +329,7 @@ class GenericIntegrationTest {
     @Test
     void testEchoParam3() throws Exception {
         var polyglot = "жξ Ä 聊";
-        String encoded = URIUtil.encodePath(polyglot);
+        var encoded = URIUtil.encodePath(polyglot);
         var response = testUtil.doMethod("GET", "/param/" + encoded, null);
         assertAll(
             () -> assertThat(response.status).isEqualTo(200),
@@ -350,7 +350,7 @@ class GenericIntegrationTest {
     @Test
     void testParamWithEncodedSlash() throws Exception {
         var polyglot = "te/st";
-        String encoded = URLEncoder.encode(polyglot, UTF_8);
+        var encoded = URLEncoder.encode(polyglot, UTF_8);
         var response = testUtil.doMethod("GET", "/param/" + encoded, null);
         assertAll(
             () -> assertThat(response.status).isEqualTo(200),
@@ -361,9 +361,9 @@ class GenericIntegrationTest {
     @Test
     void testSplatWithEncodedSlash() throws Exception {
         var param = "fo/shizzle";
-        String encodedParam = URLEncoder.encode(param, UTF_8);
+        var encodedParam = URLEncoder.encode(param, UTF_8);
         var splat = "mah/FRIEND";
-        String encodedSplat = URLEncoder.encode(splat, UTF_8);
+        var encodedSplat = URLEncoder.encode(splat, UTF_8);
         var response = testUtil.doMethod("GET",
             "/paramandwild/" + encodedParam + "/stuff/" + encodedSplat, null);
         assertAll(

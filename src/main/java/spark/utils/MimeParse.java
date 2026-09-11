@@ -55,13 +55,13 @@ public class MimeParse {
         results.params = new HashMap<>();
 
         for (int i = 1; i < parts.length; ++i) {
-            String p = parts[i];
-            String[] subParts = p.split("=");
+            var part = parts[i];
+            String[] subParts = part.split("=");
             if (subParts.length == 2) {
                 results.params.put(subParts[0].trim(), subParts[1].trim());
             }
         }
-        String fullType = parts[0].trim();
+        var fullType = parts[0].trim();
 
         // Java URLConnection class sends an Accept header that includes a
         // single "*" - Turn it into a legal wildcard.

@@ -13,7 +13,7 @@ class MimeParseTest {
     @Test
     void testBestMatch() {
 
-        final String header = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+        var header = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 
         Collection<String> supported = List.of("application/xml", "text/html");
 
@@ -29,7 +29,7 @@ class MimeParseTest {
     @Test
     void testBestMatch_whenSupportedIsLowQualityFactor() {
 
-        final String header = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+        var header = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 
         Collection<String> supported = List.of("application/json");
 

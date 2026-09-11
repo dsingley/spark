@@ -78,7 +78,7 @@ class StaticFilesExternalTest {
         folderOutsideStaticFiles = new File(directoryRoot.getAbsolutePath() + "/../dumpsterstuff");
         folderOutsideStaticFiles.mkdirs();
 
-        String newFilePath = directoryRoot.getAbsolutePath() + "/../dumpsterstuff/Spark.class";
+        var newFilePath = directoryRoot.getAbsolutePath() + "/../dumpsterstuff/Spark.class";
         tmpExternalFile2 = new File(newFilePath);
         tmpExternalFile2.createNewFile();
 
@@ -125,7 +125,7 @@ class StaticFilesExternalTest {
 
     @Test
     void testDirectoryTraversalProtectionExternal() throws Exception {
-        String path = "/" + URLEncoder.encode("..\\..\\spark\\", UTF_8) + "Spark.class";
+        var path = "/" + URLEncoder.encode("..\\..\\spark\\", UTF_8) + "Spark.class";
         var response = doGet(path);
 
         assertAll(

@@ -543,7 +543,7 @@ public class Request {
 
         for (int i = 0; (i < nbrOfRequestParts) && (i < nbrOfMatchedParts); i++) {
 
-            String matchedPart = matched.get(i);
+            var matchedPart = matched.get(i);
 
             if (SparkUtils.isSplat(matchedPart)) {
 
