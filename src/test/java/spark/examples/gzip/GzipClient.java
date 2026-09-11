@@ -5,7 +5,7 @@ import spark.utils.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -20,7 +20,7 @@ public class GzipClient {
     }
 
     public static InputStream get(String url) throws IOException {
-        var connection = (HttpURLConnection) new URL(url).openConnection();
+        var connection = (HttpURLConnection) URI.create(url).toURL().openConnection();
         connection.addRequestProperty("Accept-Encoding", "gzip");
         connection.connect();
 
