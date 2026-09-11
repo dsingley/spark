@@ -30,7 +30,6 @@ import spark.CustomErrorPages;
 import spark.ExceptionMapper;
 import spark.HaltException;
 import spark.RequestResponseFactory;
-import spark.Response;
 import spark.embeddedserver.jetty.HttpRequestWrapper;
 import spark.route.HttpMethod;
 import spark.serialization.SerializerChain;
@@ -141,22 +140,22 @@ public class MatcherFilter implements Filter {
             return;
         }
 
-        String method = getHttpMethodFrom(httpRequest);
+        var method = getHttpMethodFrom(httpRequest);
 
-        String httpMethodStr = method.toLowerCase();
-        String uri = httpRequest.getRequestURI();
-        String acceptType = httpRequest.getHeader(ACCEPT_TYPE_REQUEST_MIME_HEADER);
+        var httpMethodStr = method.toLowerCase();
+        var uri = httpRequest.getRequestURI();
+        var acceptType = httpRequest.getHeader(ACCEPT_TYPE_REQUEST_MIME_HEADER);
 
-        Body body = Body.create();
+        var body = Body.create();
 
-        RequestWrapper requestWrapper = RequestWrapper.create();
-        ResponseWrapper responseWrapper = ResponseWrapper.create();
+        var requestWrapper = RequestWrapper.create();
+        var responseWrapper = ResponseWrapper.create();
 
-        Response response = RequestResponseFactory.create(httpResponse);
+        var response = RequestResponseFactory.create(httpResponse);
 
-        HttpMethod httpMethod = HttpMethod.get(httpMethodStr);
+        var httpMethod = HttpMethod.get(httpMethodStr);
 
-        RouteContext context = RouteContext.create()
+        var context = RouteContext.create()
                 .withMatcher(routeMatcher)
                 .withHttpRequest(httpRequest)
                 .withUri(uri)

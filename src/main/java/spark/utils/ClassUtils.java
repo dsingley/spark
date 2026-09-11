@@ -74,7 +74,7 @@ public class ClassUtils {
         primitiveWrapperTypeMap.put(Long.class, long.class);
         primitiveWrapperTypeMap.put(Short.class, short.class);
 
-        for (Map.Entry<Class<?>, Class<?>> entry : primitiveWrapperTypeMap.entrySet()) {
+        for (var entry : primitiveWrapperTypeMap.entrySet()) {
             primitiveTypeToWrapperMap.put(entry.getValue(), entry.getKey());
             registerCommonClasses(entry.getKey());
         }
@@ -85,7 +85,7 @@ public class ClassUtils {
             boolean[].class, byte[].class, char[].class, double[].class,
             float[].class, int[].class, long[].class, short[].class));
         primitiveTypes.add(void.class);
-        for (Class<?> primitiveType : primitiveTypes) {
+        for (var primitiveType : primitiveTypes) {
             primitiveTypeNameMap.put(primitiveType.getName(), primitiveType);
         }
 
@@ -102,7 +102,7 @@ public class ClassUtils {
      * Register the given common classes with the ClassUtils cache.
      */
     private static void registerCommonClasses(Class<?>... commonClasses) {
-        for (Class<?> clazz : commonClasses) {
+        for (var clazz : commonClasses) {
             commonClassCache.put(clazz.getName(), clazz);
         }
     }
@@ -150,12 +150,12 @@ public class ClassUtils {
         if (clazz == null) {
             return "";
         }
-        String className = clazz.getName();
+        var className = clazz.getName();
         int packageEndIndex = className.lastIndexOf('.');
         if (packageEndIndex == -1) {
             return "";
         }
-        String packageName = className.substring(0, packageEndIndex);
+        var packageName = className.substring(0, packageEndIndex);
         return packageName.replace('.', '/');
     }
 

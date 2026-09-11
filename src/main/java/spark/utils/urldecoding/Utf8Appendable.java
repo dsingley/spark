@@ -135,13 +135,13 @@ public abstract class Utf8Appendable {
                     if (codep < Character.MIN_HIGH_SURROGATE) {
                         appendable.append((char) codep);
                     } else {
-                        for (char c : Character.toChars(codep))
+                        for (var c : Character.toChars(codep))
                             appendable.append(c);
                     }
                     break;
 
                 case UTF8_REJECT:
-                    String reason = "byte " + TypeUtil.toHexString(b) + " in state " + (state / 12);
+                    var reason = "byte " + TypeUtil.toHexString(b) + " in state " + (state / 12);
                     codep = 0;
                     state = UTF8_ACCEPT;
                     appendable.append(REPLACEMENT);

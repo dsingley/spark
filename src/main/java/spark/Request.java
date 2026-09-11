@@ -18,9 +18,7 @@ package spark;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.routematch.RouteMatch;
@@ -32,7 +30,6 @@ import spark.utils.urldecoding.UrlDecode;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -121,8 +118,8 @@ public class Request {
     }
 
     protected void changeMatch(RouteMatch match) {
-        List<String> requestList = SparkUtils.convertRouteToList(match.getRequestURI());
-        List<String> matchedList = SparkUtils.convertRouteToList(match.getMatchUri());
+        var requestList = SparkUtils.convertRouteToList(match.getRequestURI());
+        var matchedList = SparkUtils.convertRouteToList(match.getMatchUri());
 
         this.matchedPath = match.getMatchUri();
         params = getParams(requestList, matchedList);
@@ -318,7 +315,7 @@ public class Request {
      * Example: query parameter 'id' from the following request URI: /hello?id=foo
      */
     public String queryParamOrDefault(String queryParam, String defaultValue) {
-        String value = queryParams(queryParam);
+        var value = queryParams(queryParam);
         return value != null ? value : defaultValue;
     }
 
@@ -356,7 +353,7 @@ public class Request {
     public Set<String> headers() {
         if (headers == null) {
             headers = new TreeSet<>();
-            Enumeration<String> enumeration = servletRequest.getHeaderNames();
+            var enumeration = servletRequest.getHeaderNames();
             while (enumeration.hasMoreElements()) {
                 headers.add(enumeration.nextElement());
             }
@@ -399,7 +396,7 @@ public class Request {
      */
     public Set<String> attributes() {
         Set<String> attrList = new HashSet<>();
-        Enumeration<String> attributes = servletRequest.getAttributeNames();
+        var attributes = servletRequest.getAttributeNames();
         while (attributes.hasMoreElements()) {
             attrList.add(attributes.nextElement());
         }
@@ -461,7 +458,7 @@ public class Request {
      */
     public Session session(boolean create) {
         if (session == null || !validSession) {
-            HttpSession httpSession = servletRequest.getSession(create);
+            var httpSession = servletRequest.getSession(create);
             if (httpSession != null) {
                 validSession(true);
                 session = new Session(httpSession, this);
@@ -477,9 +474,9 @@ public class Request {
      */
     public Map<String, String> cookies() {
         Map<String, String> result = new HashMap<>();
-        Cookie[] cookies = servletRequest.getCookies();
+        var cookies = servletRequest.getCookies();
         if (cookies != null) {
-            for (Cookie cookie : cookies) {
+            for (var cookie : cookies) {
                 result.put(cookie.getName(), cookie.getValue());
             }
         }
@@ -493,9 +490,9 @@ public class Request {
      * @return cookie value or null if the cookie was not found
      */
     public String cookie(String name) {
-        Cookie[] cookies = servletRequest.getCookies();
+        var cookies = servletRequest.getCookies();
         if (cookies != null) {
-            for (Cookie cookie : cookies) {
+            for (var cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     return cookie.getValue();
                 }
@@ -522,11 +519,11 @@ public class Request {
         Map<String, String> params = new HashMap<>();
 
         for (int i = 0; (i < request.size()) && (i < matched.size()); i++) {
-            String matchedPart = matched.get(i);
+            var matchedPart = matched.get(i);
 
             if (SparkUtils.isParam(matchedPart)) {
 
-                String decodedReq = UrlDecode.path(request.get(i));
+                var decodedReq = UrlDecode.path(request.get(i));
 
                 LOG.debug("matchedPart: {} = {}", matchedPart, decodedReq);
 
@@ -537,10 +534,10 @@ public class Request {
     }
 
     private static List<String> getSplat(List<String> request, List<String> matched) {
-        int nbrOfRequestParts = request.size();
-        int nbrOfMatchedParts = matched.size();
+        var nbrOfRequestParts = request.size();
+        var nbrOfMatchedParts = matched.size();
 
-        boolean sameLength = (nbrOfRequestParts == nbrOfMatchedParts);
+        var sameLength = (nbrOfRequestParts == nbrOfMatchedParts);
 
         List<String> splat = new ArrayList<>();
 
@@ -558,7 +555,7 @@ public class Request {
                         splatParam.append(request.get(j));
                     }
                 }
-                String decodedSplat = URLDecoder.decode(splatParam.toString(), UTF_8);
+                var decodedSplat = URLDecoder.decode(splatParam.toString(), UTF_8);
                 splat.add(decodedSplat);
             }
         }

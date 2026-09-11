@@ -22,7 +22,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.CustomErrorPages;
-import spark.ExceptionHandlerImpl;
 import spark.ExceptionMapper;
 import spark.RequestResponseFactory;
 
@@ -47,17 +46,18 @@ final class GeneralError {
                        ExceptionMapper exceptionMapper,
                        Exception e) {
 
-        ExceptionHandlerImpl handler = exceptionMapper.getHandler(e);
+        var handler = exceptionMapper.getHandler(e);
 
         if (handler != null) {
             handler.handle(e, requestWrapper, responseWrapper);
-            String bodyAfterFilter = responseWrapper.getDelegate().body();
+            var bodyAfterFilter = responseWrapper.getDelegate().body();
 
             if (bodyAfterFilter != null) {
                 body.set(bodyAfterFilter);
             }
         } else {
-            LOG.error("", e);
+            LOG.error("No exception handler registered for {}, returning 500 for {} {}",
+                    e.getClass().getName(), httpRequest.getMethod(), httpRequest.getRequestURI(), e);
 
             httpResponse.setStatus(500);
 

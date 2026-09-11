@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -107,7 +106,7 @@ public class QueryParamsMap {
      * @param value the values
      */
     protected final void loadKeys(String key, String[] value) {
-        String[] parsed = parseKey(key);
+        var parsed = parseKey(key);
 
         if (parsed == null) {
             return;
@@ -124,7 +123,7 @@ public class QueryParamsMap {
     }
 
     protected final String[] parseKey(String key) {
-        Matcher m = KEY_PATTERN.matcher(key);
+        var m = KEY_PATTERN.matcher(key);
 
         if (m.find()) {
             return new String[] {cleanKey(m.group()), key.substring(m.end())};
@@ -159,7 +158,7 @@ public class QueryParamsMap {
      */
     public QueryParamsMap get(String... keys) {
         QueryParamsMap ret = this;
-        for (String key : keys) {
+        for (var key : keys) {
             if (ret.queryMap.containsKey(key)) {
                 ret = ret.queryMap.get(key);
             } else {

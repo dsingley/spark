@@ -3,7 +3,6 @@ package spark;
 import jakarta.servlet.http.HttpSession;
 import spark.utils.Assert;
 
-import java.util.Enumeration;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -63,8 +62,8 @@ public class Session {
      * containing the names of all the objects bound to this session.
      */
     public Set<String> attributes() {
-        TreeSet<String> attributes = new TreeSet<>();
-        Enumeration<String> enumeration = httpSession.getAttributeNames();
+        var attributes = new TreeSet<String>();
+        var enumeration = httpSession.getAttributeNames();
         while (enumeration.hasMoreElements()) {
             attributes.add(enumeration.nextElement());
         }

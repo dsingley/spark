@@ -35,7 +35,7 @@ public class StaticFilesFolder {
     @Deprecated(since = "2.9.0")
     public static void externalConfiguredTo(String folder) {
 
-        String unixLikeFolder = Paths.get(folder).toAbsolutePath().toString().replace("\\", "/");
+        var unixLikeFolder = Paths.get(folder).toAbsolutePath().toString().replace("\\", "/");
         LOG.warn("Registering external static files folder [{}] as [{}].", folder, unixLikeFolder);
         external = removeLeadingAndTrailingSlashesFrom(unixLikeFolder);
     }

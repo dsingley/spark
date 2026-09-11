@@ -64,7 +64,7 @@ public class SparkFilter implements Filter {
 
         applications = getApplications(filterConfig);
 
-        for (SparkApplication application : applications) {
+        for (var application : applications) {
             application.init();
         }
 
@@ -100,7 +100,7 @@ public class SparkFilter implements Filter {
      */
     protected SparkApplication getApplication(String applicationClassName) throws ServletException {
         try {
-            Class<?> applicationClass = Class.forName(applicationClassName);
+            var applicationClass = Class.forName(applicationClassName);
             return (SparkApplication) applicationClass.getDeclaredConstructor().newInstance();
         } catch (Exception exc) {
             throw new ServletException(exc);
@@ -118,11 +118,11 @@ public class SparkFilter implements Filter {
      */
     protected SparkApplication[] getApplications(final FilterConfig filterConfig) throws ServletException {
 
-        String configuredApplications = filterConfig.getInitParameter(APPLICATION_CLASS_PARAM);
+        var configuredApplications = filterConfig.getInitParameter(APPLICATION_CLASS_PARAM);
         SparkApplication[] solvedApplications = null;
 
         if (StringUtils.isNotBlank(configuredApplications)) {
-            final String[] sparkApplications = configuredApplications.split(",");
+            var sparkApplications = configuredApplications.split(",");
 
             if (sparkApplications.length > 0) {
                 solvedApplications = new SparkApplication[sparkApplications.length];

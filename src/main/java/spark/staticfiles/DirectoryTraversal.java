@@ -19,8 +19,8 @@ public class DirectoryTraversal {
     }
 
     public static void protectAgainstForExternal(String path, String externalFolder) {
-    	String unixLikeFolder = unixifyPath(externalFolder);
-        String nixLikePath = unixifyPath(path);
+    	var unixLikeFolder = unixifyPath(externalFolder);
+        var nixLikePath = unixifyPath(path);
         if (!isPathWithinFolder(nixLikePath, unixLikeFolder)) {
             throw new DirectoryTraversalDetection("external");
         }
@@ -31,8 +31,8 @@ public class DirectoryTraversal {
     }
     
     private static boolean isPathWithinFolder(String path, String folder) {
-    	String rlatsPath = removeLeadingAndTrailingSlashesFrom(path);
-    	String rlatsFolder = removeLeadingAndTrailingSlashesFrom(folder);
+    	var rlatsPath = removeLeadingAndTrailingSlashesFrom(path);
+    	var rlatsFolder = removeLeadingAndTrailingSlashesFrom(folder);
     	return rlatsPath.startsWith(rlatsFolder);
     }
 

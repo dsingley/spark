@@ -28,7 +28,7 @@ public enum HttpMethod {
     private static final HashMap<String, HttpMethod> METHODS = new HashMap<>();
 
     static {
-        for (HttpMethod method : values()) {
+        for (var method : values()) {
             METHODS.put(method.toString(), method);
         }
     }
@@ -41,7 +41,7 @@ public enum HttpMethod {
      * @return          The HttpMethod corresponding to the provided string
      */
     public static HttpMethod get(String methodStr) {
-        HttpMethod method = METHODS.get(methodStr);
+        var method = METHODS.get(methodStr);
         return method != null ? method : unsupported;
     }
 }

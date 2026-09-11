@@ -31,8 +31,8 @@ final class FilterTools {
     }
 
     static String getRelativePath(HttpServletRequest request, String filterPath) {
-        String path = request.getRequestURI();
-        String contextPath = request.getContextPath();
+        var path = request.getRequestURI();
+        var contextPath = request.getContextPath();
 
         path = path.substring(contextPath.length());
 
@@ -60,16 +60,16 @@ final class FilterTools {
     }
 
     static String getFilterPath(FilterConfig config) {
-        String result = config.getInitParameter(FILTER_MAPPING_PARAM);
-        if (result == null || result.equals(SLASH_WILDCARD)) {
+        var filterMappingUrlPattern = config.getInitParameter(FILTER_MAPPING_PARAM);
+        if (filterMappingUrlPattern == null || filterMappingUrlPattern.equals(SLASH_WILDCARD)) {
             return "";
-        } else if (!result.startsWith(SLASH) || !result.endsWith(SLASH_WILDCARD)) {
+        } else if (!filterMappingUrlPattern.startsWith(SLASH) || !filterMappingUrlPattern.endsWith(SLASH_WILDCARD)) {
             throw new IllegalStateException(
                     "The " + FILTER_MAPPING_PARAM + " must start with \"/\" and end with \"/*\". It's: "
-                            + result
+                            + filterMappingUrlPattern
             );
         }
-        return result.substring(1, result.length() - 1);
+        return filterMappingUrlPattern.substring(1, filterMappingUrlPattern.length() - 1);
     }
 
 }

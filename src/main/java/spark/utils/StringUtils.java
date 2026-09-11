@@ -229,7 +229,7 @@ public abstract class StringUtils {
             pathToUse = pathToUse.substring(1);
         }
 
-        String[] pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
+        var pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
         List<String> pathElements = new LinkedList<>();
         int tops = 0;
 
@@ -344,7 +344,7 @@ public abstract class StringUtils {
             return "";
         }
         var sb = new StringBuilder();
-        Iterator<?> it = coll.iterator();
+        var it = coll.iterator();
         while (it.hasNext()) {
             sb.append(prefix).append(it.next()).append(suffix);
             if (it.hasNext()) {

@@ -145,7 +145,7 @@ public abstract class ResourceUtils {
      * @return whether the URL has been identified as a file system URL
      */
     public static boolean isFileURL(URL url) {
-        String protocol = url.getProtocol();
+        var protocol = url.getProtocol();
         return (URL_PROTOCOL_FILE.equals(protocol));
     }
 
@@ -159,8 +159,8 @@ public abstract class ResourceUtils {
      * @return whether the URL has been identified as a JAR URL
      */
     public static boolean isJarURL(URL url) {
-        String up = url.getProtocol();
-        return (URL_PROTOCOL_JAR.equals(up) || URL_PROTOCOL_ZIP.equals(up) || URL_PROTOCOL_WSJAR.equals(up));
+        var protocol = url.getProtocol();
+        return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_ZIP.equals(protocol) || URL_PROTOCOL_WSJAR.equals(protocol));
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class ResourceUtils {
         String urlFile = jarUrl.getFile();
         int separatorIndex = urlFile.indexOf(JAR_URL_SEPARATOR);
         if (separatorIndex != -1) {
-            String jarFile = urlFile.substring(0, separatorIndex);
+            var jarFile = urlFile.substring(0, separatorIndex);
             try {
                 return new URL(jarFile);
             } catch (MalformedURLException ex) {

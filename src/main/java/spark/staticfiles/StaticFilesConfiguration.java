@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.resource.AbstractFileResolvingResource;
 import spark.resource.AbstractResourceHandler;
 import spark.resource.ClassPathResourceHandler;
 import spark.resource.ExternalResource;
@@ -85,9 +84,9 @@ public class StaticFilesConfiguration {
                                                     HttpServletResponse httpResponse) throws IOException {
         if (staticResourceHandlers != null) {
 
-            for (AbstractResourceHandler staticResourceHandler : staticResourceHandlers) {
+            for (var staticResourceHandler : staticResourceHandlers) {
 
-                AbstractFileResolvingResource resource = staticResourceHandler.getResource(httpRequest);
+                var resource = staticResourceHandler.getResource(httpRequest);
 
                 if (resource != null && resource.isReadable()) {
 
@@ -96,8 +95,8 @@ public class StaticFilesConfiguration {
                     }
                     customHeaders.forEach(httpResponse::setHeader); //add all user-defined headers to response
 
-                    try (InputStream inputStream = resource.getInputStream();
-                         OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false)) {
+                    try (var inputStream = resource.getInputStream();
+                         var wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false)) {
                         IOUtils.copy(inputStream, wrappedOutputStream);
                     }
 
