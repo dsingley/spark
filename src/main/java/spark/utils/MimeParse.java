@@ -50,7 +50,7 @@ public class MimeParse {
      * ('application', 'xhtml', {'q', '0.5'})
      */
     private static ParseResults parseMimeType(String mimeType) {
-        String[] parts = mimeType.split(";");
+        var parts = mimeType.split(";");
         var results = new ParseResults();
         results.params = new HashMap<>();
 
