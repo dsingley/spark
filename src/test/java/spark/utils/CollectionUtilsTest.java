@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 class CollectionUtilsTest {
 
@@ -21,9 +22,7 @@ class CollectionUtilsTest {
     @Test
     void testIsEmpty_whenCollectionIsNotEmpty_thenReturnFalse() {
 
-        Collection<Integer> testCollection = new ArrayList<>();
-        testCollection.add(1);
-        testCollection.add(2);
+        Collection<Integer> testCollection = List.of(1, 2);
 
         assertThat(CollectionUtils.isEmpty(testCollection)).isFalse();
 
@@ -50,9 +49,7 @@ class CollectionUtilsTest {
     @Test
     void testIsNotEmpty_whenCollectionIsNotEmpty_thenReturnTrue() {
 
-        Collection<Integer> testCollection = new ArrayList<>();
-        testCollection.add(1);
-        testCollection.add(2);
+        Collection<Integer> testCollection = List.of(1, 2);
 
         assertThat(CollectionUtils.isNotEmpty(testCollection)).isTrue();
 
