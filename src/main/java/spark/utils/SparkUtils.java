@@ -32,14 +32,14 @@ public final class SparkUtils {
     }
 
     public static List<String> convertRouteToList(String route) {
-        String[] pathArray = route.split("/");
-        List<String> path = new ArrayList<>();
-        for (String p : pathArray) {
-            if (!p.isEmpty()) {
-                path.add(p);
+        var pathArray = route.split("/");
+        List<String> paths = new ArrayList<>();
+        for (var path : pathArray) {
+            if (!path.isEmpty()) {
+                paths.add(path);
             }
         }
-        return path;
+        return paths;
     }
 
     public static boolean isParam(String routePart) {

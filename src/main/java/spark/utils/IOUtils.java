@@ -174,7 +174,7 @@ public final class IOUtils {
     */
     public static long copyLarge(final InputStream input, final OutputStream output)
         throws IOException {
-        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        var buffer = new byte[DEFAULT_BUFFER_SIZE];
         long count = 0;
         int n;
         while (-1 != (n = input.read(buffer))) {
@@ -249,7 +249,7 @@ public final class IOUtils {
      * @since Commons IO 1.3
      */
     public static long copyLarge(Reader input, Writer output) throws IOException {
-        char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+        var buffer = new char[DEFAULT_BUFFER_SIZE];
         long count = 0;
         int n;
         while (-1 != (n = input.read(buffer))) {

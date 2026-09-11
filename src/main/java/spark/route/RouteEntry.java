@@ -18,8 +18,6 @@ package spark.route;
 
 import spark.utils.SparkUtils;
 
-import java.util.List;
-
 /**
  * Class that holds information about routes
  *
@@ -49,7 +47,7 @@ class RouteEntry {
             // Is filter and matches all
             return true;
         }
-        boolean match = false;
+        var match = false;
         if (this.httpMethod == httpMethod) {
             match = matchPath(path);
         }
@@ -68,16 +66,16 @@ class RouteEntry {
         }
 
         // check params
-        List<String> thisPathList = SparkUtils.convertRouteToList(this.path);
-        List<String> pathList = SparkUtils.convertRouteToList(path);
+        var thisPathList = SparkUtils.convertRouteToList(this.path);
+        var pathList = SparkUtils.convertRouteToList(path);
 
-        int thisPathSize = thisPathList.size();
-        int pathSize = pathList.size();
+        var thisPathSize = thisPathList.size();
+        var pathSize = pathList.size();
 
         if (thisPathSize == pathSize) {
             for (int i = 0; i < thisPathSize; i++) {
-                String thisPathPart = thisPathList.get(i);
-                String pathPart = pathList.get(i);
+                var thisPathPart = thisPathList.get(i);
+                var pathPart = pathList.get(i);
 
                 if ((i == thisPathSize - 1) && (thisPathPart.equals("*") && this.path.endsWith("*"))) {
                     // wildcard match
@@ -105,8 +103,8 @@ class RouteEntry {
 
                 if (thisPathSize < pathSize) {
                     for (int i = 0; i < thisPathSize; i++) {
-                        String thisPathPart = thisPathList.get(i);
-                        String pathPart = pathList.get(i);
+                        var thisPathPart = thisPathList.get(i);
+                        var pathPart = pathList.get(i);
                         if (thisPathPart.equals("*") && (i == thisPathSize - 1) && this.path.endsWith("*")) {
                             // wildcard match
                             return true;

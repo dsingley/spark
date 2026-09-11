@@ -110,12 +110,12 @@ public class MimeType {
     }
 
     public static String fromResource(AbstractFileResolvingResource resource) {
-        String filename = Optional.ofNullable(resource.getFilename()).orElse("");
+        var filename = Optional.ofNullable(resource.getFilename()).orElse("");
         return getMimeType(filename);
     }
 
     protected static String getMimeType(String filename) {
-        String fileExtension = filename.replaceAll("^.*\\.(.*)$", "$1");
+        var fileExtension = filename.replaceAll("^.*\\.(.*)$", "$1");
         return MAPPINGS.getOrDefault(fileExtension, "application/octet-stream");
     }
 

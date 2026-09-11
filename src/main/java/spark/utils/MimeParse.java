@@ -95,7 +95,7 @@ public class MimeParse {
     private static ParseResults parseMediaRange(String range) {
         ParseResults results = parseMimeType(range);
         String q = results.params.get("q");
-        float f = toFloat(q, 1);
+        var f = toFloat(q, 1);
         if (isBlank(q) || f < 0 || f > 1) {
             results.params.put("q", "1");
         }
@@ -192,7 +192,7 @@ public class MimeParse {
         }
 
         for (String s : supported) {
-            FitnessAndQuality fitnessAndQuality = fitnessAndQualityParsed(s, parseResults);
+            var fitnessAndQuality = fitnessAndQualityParsed(s, parseResults);
             fitnessAndQuality.mimeType = s;
             weightedMatches.add(fitnessAndQuality);
         }

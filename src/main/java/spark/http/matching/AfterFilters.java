@@ -17,7 +17,6 @@
 package spark.http.matching;
 
 import spark.FilterImpl;
-import spark.Request;
 import spark.RequestResponseFactory;
 import spark.route.HttpMethod;
 import spark.routematch.RouteMatch;
@@ -34,19 +33,19 @@ final class AfterFilters {
 
     static void execute(RouteContext context) throws Exception {
 
-        Object content = context.body().get();
+        var content = context.body().get();
 
         List<RouteMatch> matchSet = context.routeMatcher().findMultiple(HttpMethod.after,
                                                                         context.uri(),
                                                                         context.acceptType());
 
         for (RouteMatch filterMatch : matchSet) {
-            Object filterTarget = filterMatch.getTarget();
+            var filterTarget = filterMatch.getTarget();
 
             if (filterTarget instanceof FilterImpl filter) {
 
                 if (context.requestWrapper().getDelegate() == null) {
-                    Request request = RequestResponseFactory.create(filterMatch, context.httpRequest());
+                    var request = RequestResponseFactory.create(filterMatch, context.httpRequest());
                     context.requestWrapper().setDelegate(request);
                 } else {
                     context.requestWrapper().changeMatch(filterMatch);
@@ -56,7 +55,7 @@ final class AfterFilters {
 
                 filter.handle(context.requestWrapper(), context.responseWrapper());
 
-                String bodyAfterFilter = context.response().body();
+                var bodyAfterFilter = context.response().body();
 
                 if (bodyAfterFilter != null) {
                     content = bodyAfterFilter;

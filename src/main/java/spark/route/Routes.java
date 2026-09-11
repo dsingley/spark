@@ -83,8 +83,8 @@ public class Routes {
      * @return the target
      */
     public RouteMatch find(HttpMethod httpMethod, String path, String acceptType) {
-        List<RouteEntry> targetRouteEntries = this.findTargetsForRequestedRoute(httpMethod, path);
-        RouteEntry entry = findTargetWithGivenAcceptType(targetRouteEntries, acceptType);
+        var targetRouteEntries = this.findTargetsForRequestedRoute(httpMethod, path);
+        var entry = findTargetWithGivenAcceptType(targetRouteEntries, acceptType);
         return entry != null ? new RouteMatch(entry.target, entry.path, path, acceptType, httpMethod) : null;
     }
 
@@ -98,9 +98,9 @@ public class Routes {
      */
     public List<RouteMatch> findMultiple(HttpMethod httpMethod, String path, String acceptType) {
         List<RouteMatch> matchSet = new ArrayList<>();
-        List<RouteEntry> targetRouteEntries = findTargetsForRequestedRoute(httpMethod, path);
+        var targetRouteEntries = findTargetsForRequestedRoute(httpMethod, path);
 
-        for (RouteEntry routeEntry : targetRouteEntries) {
+        for (var routeEntry : targetRouteEntries) {
             if (acceptType != null) {
                 String bestMatch = MimeParse.bestMatch(Collections.singletonList(routeEntry.acceptedType), acceptType);
 
@@ -121,7 +121,7 @@ public class Routes {
     public List<RouteMatch> findAll() {
         List<RouteMatch> matchSet = new ArrayList<>();
 
-        for (RouteEntry routeEntry : routeEntries) {
+        for (var routeEntry : routeEntries) {
             matchSet.add(new RouteMatch(routeEntry.target, routeEntry.path, "ALL_ROUTES", routeEntry.acceptedType, routeEntry.httpMethod));
         }
 
@@ -157,7 +157,7 @@ public class Routes {
         }
 
         // Catches invalid input and throws IllegalArgumentException
-        HttpMethod method = HttpMethod.valueOf(httpMethod);
+        var method = HttpMethod.valueOf(httpMethod);
 
         return removeRoute(method, path);
     }
@@ -220,8 +220,8 @@ public class Routes {
     // TODO: I believe this feature has impacted performance. Optimization?
     private RouteEntry findTargetWithGivenAcceptType(List<RouteEntry> routeMatches, String acceptType) {
         if (acceptType != null && !routeMatches.isEmpty()) {
-            Map<String, RouteEntry> acceptedMimeTypes = getAcceptedMimeTypes(routeMatches);
-            String bestMatch = MimeParse.bestMatch(acceptedMimeTypes.keySet(), acceptType);
+            var acceptedMimeTypes = getAcceptedMimeTypes(routeMatches);
+            var bestMatch = MimeParse.bestMatch(acceptedMimeTypes.keySet(), acceptType);
 
             if (routeWithGivenAcceptType(bestMatch)) {
                 return acceptedMimeTypes.get(bestMatch);
@@ -241,7 +241,7 @@ public class Routes {
         List<RouteEntry> forRemoval = new ArrayList<>();
 
         for (RouteEntry routeEntry : routeEntries) {
-            HttpMethod httpMethodToMatch = httpMethod;
+            var httpMethodToMatch = httpMethod;
 
             if (httpMethod == null) {
                 // Use the routeEntry's HTTP method if none was given, so that only path is used to match.
@@ -272,11 +272,11 @@ public class Routes {
     @Deprecated(since = "2.6.0")
     public void add(String route, String acceptType, Object target) {
         try {
-            int singleQuoteIndex = route.indexOf(SINGLE_QUOTE);
-            String httpMethod = route.substring(0, singleQuoteIndex).trim().toLowerCase();
-            String url = route.substring(singleQuoteIndex + 1, route.length() - 1).trim();
+            var singleQuoteIndex = route.indexOf(SINGLE_QUOTE);
+            var httpMethod = route.substring(0, singleQuoteIndex).trim().toLowerCase();
+            var url = route.substring(singleQuoteIndex + 1, route.length() - 1).trim();
 
-            HttpMethod method = parseHttpMethod(route, httpMethod);
+            var method = parseHttpMethod(route, httpMethod);
             if (method == null) {
                 return;
             }

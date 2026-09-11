@@ -226,7 +226,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
     @Override
     public String getDescription() {
         var builder = new StringBuilder("class path resource [");
-        String pathToUse = path;
+        var pathToUse = path;
         if (this.clazz != null && !pathToUse.startsWith("/")) {
             builder.append(ClassUtils.classPackageAsResourcePath(this.clazz));
             builder.append('/');
@@ -250,8 +250,8 @@ public class ClassPathResource extends AbstractFileResolvingResource {
             return true;
         }
         if (obj instanceof ClassPathResource classPathResource) {
-            ClassLoader thisLoader = this.classLoader;
-            ClassLoader otherLoader = classPathResource.classLoader;
+            var thisLoader = this.classLoader;
+            var otherLoader = classPathResource.classLoader;
 
             return (this.path.equals(classPathResource.path) &&
                     thisLoader.equals(otherLoader) &&

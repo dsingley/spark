@@ -52,7 +52,7 @@ public abstract class AbstractResource implements Resource {
         } catch (IOException ex) {
             // Fall back to stream existence: can we open the stream?
             try {
-                InputStream is = getInputStream();
+                var is = getInputStream();
                 is.close();
                 return true;
             } catch (Exception isEx) {
@@ -92,7 +92,7 @@ public abstract class AbstractResource implements Resource {
      */
     @Override
     public URI getURI() throws IOException {
-        URL url = getURL();
+        var url = getURL();
         try {
             return ResourceUtils.toURI(url);
         } catch (URISyntaxException ex) {
@@ -123,7 +123,7 @@ public abstract class AbstractResource implements Resource {
         Assert.state(is != null, "resource input stream must not be null");
         try {
             long size = 0;
-            byte[] buf = new byte[255];
+            var buf = new byte[255];
             int read;
             while ((read = is.read(buf)) != -1) {
                 size += read;

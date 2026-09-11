@@ -20,9 +20,7 @@ import spark.utils.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLConnection;
 
 /**
@@ -42,7 +40,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
      */
     @Override
     public File getFile() throws IOException {
-        URL url = getURL();
+        var url = getURL();
         return ResourceUtils.getFile(url, getDescription());
     }
 
@@ -52,9 +50,9 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
      */
     @Override
     protected File getFileForLastModifiedCheck() throws IOException {
-        URL url = getURL();
+        var url = getURL();
         if (ResourceUtils.isJarURL(url)) {
-            URL actualUrl = ResourceUtils.extractJarFileURL(url);
+            var actualUrl = ResourceUtils.extractJarFileURL(url);
             return ResourceUtils.getFile(actualUrl, "Jar URL");
         } else {
             return getFile();
@@ -65,7 +63,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
     @Override
     public boolean exists() {
         try {
-            URL url = getURL();
+            var url = getURL();
             if (ResourceUtils.isFileURL(url)) {
                 // Proceed with file system resolution...
                 return getFile().exists();
@@ -73,7 +71,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
                 // Try a URL connection content-length header...
                 URLConnection con = url.openConnection();
                 customizeConnection(con);
-                HttpURLConnection httpCon =
+                var httpCon =
                     con instanceof HttpURLConnection httpURLConnection ? httpURLConnection : null;
                 if (httpCon != null) {
                     int code = httpCon.getResponseCode();
@@ -92,7 +90,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
                     return false;
                 } else {
                     // Fall back to stream existence: can we open the stream?
-                    InputStream is = getInputStream();
+                    var is = getInputStream();
                     is.close();
                     return true;
                 }
@@ -105,7 +103,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
     @Override
     public boolean isReadable() {
         try {
-            URL url = getURL();
+            var url = getURL();
             if (ResourceUtils.isFileURL(url)) {
                 // Proceed with file system resolution...
                 File file = getFile();
@@ -120,7 +118,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 
     @Override
     public long contentLength() throws IOException {
-        URL url = getURL();
+        var url = getURL();
         if (ResourceUtils.isFileURL(url)) {
             // Proceed with file system resolution...
             return getFile().length();
@@ -134,7 +132,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 
     @Override
     public long lastModified() throws IOException {
-        URL url = getURL();
+        var url = getURL();
         if (ResourceUtils.isFileURL(url) || ResourceUtils.isJarURL(url)) {
             // Proceed with file system resolution...
             return super.lastModified();

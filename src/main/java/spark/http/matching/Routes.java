@@ -16,11 +16,9 @@
  */
 package spark.http.matching;
 
-import spark.Request;
 import spark.RequestResponseFactory;
 import spark.RouteImpl;
 import spark.route.HttpMethod;
-import spark.routematch.RouteMatch;
 
 /**
  * Created by Per Wendel on 2016-01-28.
@@ -32,9 +30,9 @@ final class Routes {
 
     static void execute(RouteContext context) throws Exception {
 
-        Object content = context.body().get();
+        var content = context.body().get();
 
-        RouteMatch match = context.routeMatcher().find(context.httpMethod(), context.uri(), context.acceptType());
+        var match = context.routeMatcher().find(context.httpMethod(), context.uri(), context.acceptType());
 
         Object target = null;
         if (match != null) {
@@ -51,7 +49,7 @@ final class Routes {
 
             if (target instanceof RouteImpl route) {
                 if (context.requestWrapper().getDelegate() == null) {
-                    Request request = RequestResponseFactory.create(match, context.httpRequest());
+                    var request = RequestResponseFactory.create(match, context.httpRequest());
                     context.requestWrapper().setDelegate(request);
                 } else {
                     context.requestWrapper().changeMatch(match);
@@ -59,7 +57,7 @@ final class Routes {
 
                 context.responseWrapper().setDelegate(context.response());
 
-                Object element = route.handle(context.requestWrapper(), context.responseWrapper());
+                var element = route.handle(context.requestWrapper(), context.responseWrapper());
                 if (!context.responseWrapper().isRedirected()) {
                 	result = route.render(element);
                 }
