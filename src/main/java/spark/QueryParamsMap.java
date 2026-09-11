@@ -157,7 +157,7 @@ public class QueryParamsMap {
      * @return the query params map
      */
     public QueryParamsMap get(String... keys) {
-        QueryParamsMap ret = this;
+        var ret = this;
         for (var key : keys) {
             if (ret.queryMap.containsKey(key)) {
                 ret = ret.queryMap.get(key);

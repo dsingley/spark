@@ -28,7 +28,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 
 class StaticFilesFromArchiveTest {
 
@@ -68,9 +67,10 @@ class StaticFilesFromArchiveTest {
     private static URLClassLoader createExtendedClassLoader() throws Exception {
         // The system classloader is no longer a URLClassLoader as of JDK 9, so its
         // entries have to come from java.class.path rather than a cast + getURLs().
-        List<URL> urls = new ArrayList<>();
-        for (String entry : System.getProperty("java.class.path").split(File.pathSeparator)) {
-            urls.add(Paths.get(entry).toUri().toURL());
+        var urls = new ArrayList<URL>();
+        var paths = System.getProperty("java.class.path").split(File.pathSeparator);
+        for (var path : paths) {
+            urls.add(Paths.get(path).toUri().toURL());
         }
 
         var publicJarURL = StaticFilesFromArchiveTest.class.getResource("/public-jar.zip");
