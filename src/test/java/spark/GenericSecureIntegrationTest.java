@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @ExtendWith(SparkStopExtension.class)

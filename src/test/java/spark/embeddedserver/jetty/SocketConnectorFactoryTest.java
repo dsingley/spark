@@ -8,7 +8,6 @@ import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.kiwiproject.reflect.KiwiReflection;
