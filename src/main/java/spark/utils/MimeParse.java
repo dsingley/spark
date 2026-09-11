@@ -56,7 +56,7 @@ public class MimeParse {
 
         for (int i = 1; i < parts.length; ++i) {
             var part = parts[i];
-            String[] subParts = part.split("=");
+            var subParts = part.split("=");
             if (subParts.length == 2) {
                 results.params.put(subParts[0].trim(), subParts[1].trim());
             }
