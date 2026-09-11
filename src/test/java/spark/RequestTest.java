@@ -104,8 +104,7 @@ class RequestTest {
 
     @Test
     void queryParamShouldBeParsedAsHashMap() {
-        Map<String, String[]> params = new HashMap<>();
-        params.put("user[name]", new String[] {"Federico"});
+        var params = Map.of("user[name]", new String[] {"Federico"});
 
         when(servletRequest.getParameterMap()).thenReturn(params);
 

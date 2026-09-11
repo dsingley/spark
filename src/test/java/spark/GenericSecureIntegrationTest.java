@@ -82,8 +82,7 @@ class GenericSecureIntegrationTest {
     @Test
     void testXForwardedFor() throws Exception {
         var xForwardedFor = "XXX.XXX.XXX.XXX";
-        Map<String, String> headers = new HashMap<>();
-        headers.put("X-Forwarded-For", xForwardedFor);
+        var headers = Map.of("X-Forwarded-For", xForwardedFor);
 
         var response = testUtil.doMethod("GET", "/ip", null, true, "text/html", headers);
         assertThat(response.body).isEqualTo(xForwardedFor);

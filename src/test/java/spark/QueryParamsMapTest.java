@@ -5,16 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 class QueryParamsMapTest {
     
     @Test
     void constructorWithParametersMap() {
-        Map<String,String[]> params = new HashMap<>();
-        
-        params.put("user[info][name]",new String[] {"fede"});
+        var params = Map.of("user[info][name]", new String[] { "fede" });
 
         var queryMap = new QueryParamsMap(params);
         

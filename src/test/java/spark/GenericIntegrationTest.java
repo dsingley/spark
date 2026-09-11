@@ -279,8 +279,7 @@ class GenericIntegrationTest {
     @Test
     void testXForwardedFor() throws Exception {
         var xForwardedFor = "XXX.XXX.XXX.XXX";
-        Map<String, String> headers = new HashMap<>();
-        headers.put("X-Forwarded-For", xForwardedFor);
+        var headers = Map.of("X-Forwarded-For", xForwardedFor);
 
         var response = testUtil.doMethod("GET", "/ip", null, false, "text/html", headers);
         assertThat(response.body).isEqualTo(xForwardedFor);
@@ -438,9 +437,8 @@ class GenericIntegrationTest {
 
     @Test
     void testPostViaGetWithMethodOverrideHeader() throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("X-HTTP-Method-Override", "POST");
-        var response = testUtil.doMethod("GET", "/post_via_get", "Fo shizzy", false, "*/*", map);
+        var headers = Map.of("X-HTTP-Method-Override", "POST");
+        var response = testUtil.doMethod("GET", "/post_via_get", "Fo shizzy", false, "*/*", headers);
         LOG.info(response.body);
         assertAll(
             () -> assertThat(response.status).isEqualTo(201),
