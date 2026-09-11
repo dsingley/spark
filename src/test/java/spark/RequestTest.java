@@ -454,7 +454,7 @@ class RequestTest {
     @Test
     void testQueryParams() {
 
-        Map<String, String[]> params = Map.of(
+        var params = Map.of(
                 "sort", new String[] { "asc" },
                 "items", new String[] { "10" }
         );
