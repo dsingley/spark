@@ -103,9 +103,9 @@ public abstract class ResourceUtils {
             return true;
         }
         try {
-            new URL(resourceLocation);
+            toURI(resourceLocation).toURL();
             return true;
-        } catch (MalformedURLException ex) {
+        } catch (URISyntaxException | IllegalArgumentException | MalformedURLException ex) {
             return false;
         }
     }
@@ -177,14 +177,18 @@ public abstract class ResourceUtils {
         if (separatorIndex != -1) {
             var jarFile = urlFile.substring(0, separatorIndex);
             try {
-                return new URL(jarFile);
-            } catch (MalformedURLException ex) {
+                return toURI(jarFile).toURL();
+            } catch (URISyntaxException | IllegalArgumentException | MalformedURLException ex) {
                 // Probably no protocol in original jar URL, like "jar:C:/mypath/myjar.jar".
                 // This usually indicates that the jar file resides in the file system.
                 if (!jarFile.startsWith("/")) {
                     jarFile = "/" + jarFile;
                 }
-                return new URL(FILE_URL_PREFIX + jarFile);
+                try {
+                    return toURI(FILE_URL_PREFIX + jarFile).toURL();
+                } catch (URISyntaxException fallbackEx) {
+                    throw new MalformedURLException(fallbackEx.getMessage());
+                }
             }
         } else {
             return jarUrl;
