@@ -187,7 +187,9 @@ public abstract class ResourceUtils {
                 try {
                     return toURI(FILE_URL_PREFIX + jarFile).toURL();
                 } catch (URISyntaxException fallbackEx) {
-                    throw new MalformedURLException(fallbackEx.getMessage());
+                    var wrapped = new MalformedURLException(fallbackEx.getMessage());
+                    wrapped.initCause(fallbackEx);
+                    throw wrapped;
                 }
             }
         } else {
