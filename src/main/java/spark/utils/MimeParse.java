@@ -106,9 +106,9 @@ public class MimeParse {
      * Structure for holding a fitness/quality combo
      */
     static class FitnessAndQuality implements Comparable<FitnessAndQuality> {
-        int fitness;
+        final int fitness;
 
-        float quality;
+        final float quality;
 
         String mimeType; // optionally used
 

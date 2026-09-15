@@ -21,12 +21,12 @@ package spark.ssl;
  */
 public class SslStores {
 
-    protected String keystoreFile;
-    protected String keystorePassword;
-    protected String certAlias;
-    protected String truststoreFile;
-    protected String truststorePassword;
-    protected boolean needsClientCert;
+    protected final String keystoreFile;
+    protected final String keystorePassword;
+    protected final String certAlias;
+    protected final String truststoreFile;
+    protected final String truststorePassword;
+    protected final boolean needsClientCert;
 
     /**
      * Creates a Stores instance.
