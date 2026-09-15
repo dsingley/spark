@@ -16,9 +16,11 @@
  */
 package spark.servlet;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
+
 import java.net.URLDecoder;
 
 final class FilterTools {
@@ -51,11 +53,7 @@ final class FilterTools {
             path = SLASH + path;
         }
 
-        try {
-            path = URLDecoder.decode(path, "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            // this can't really ever happen
-        }
+        path = URLDecoder.decode(path, UTF_8);
         return path;
     }
 

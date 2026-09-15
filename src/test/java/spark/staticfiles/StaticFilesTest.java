@@ -16,6 +16,7 @@
  */
 package spark.staticfiles;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static spark.Spark.exception;
@@ -151,7 +152,7 @@ class StaticFilesTest {
 
     @Test
     void testDirectoryTraversalProtectionLocal() throws Exception {
-        var path = "/" + URLEncoder.encode("..\\spark\\", "UTF-8") + "Spark.class";
+        var path = "/" + URLEncoder.encode("..\\spark\\", UTF_8) + "Spark.class";
         var response = doGet(path);
 
         assertThat(response.status).isEqualTo(400);
