@@ -49,7 +49,7 @@ class BooksExampleTest {
 
     @AfterEach
     void tearDown() {
-        Books.books.clear();
+        Books.BOOKS.clear();
     }
 
     @Test

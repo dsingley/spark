@@ -35,7 +35,7 @@ public class Books {
     /**
      * Map holding the books
      */
-    public static Map<String, Book> books = new HashMap<>();
+    public static final Map<String, Book> BOOKS = new HashMap<>();
 
     public static void main(String[] args) {
 
@@ -47,7 +47,7 @@ public class Books {
             var book = new Book(author, title);
             var random = new Random();
             var id = random.nextInt(Integer.MAX_VALUE);
-            books.put(String.valueOf(id), book);
+            BOOKS.put(String.valueOf(id), book);
 
             response.status(201); // 201 Created
             return id;
@@ -55,7 +55,7 @@ public class Books {
 
         // Gets the book resource for the provided id
         get("/books/:id", (request, response) -> {
-            var book = books.get(request.params(":id"));
+            var book = BOOKS.get(request.params(":id"));
             if (book != null) {
                 return "Title: " + book.getTitle() + ", Author: " + book.getAuthor();
             } else {
@@ -68,7 +68,7 @@ public class Books {
         // author and title are sent as query parameters e.g. /books/<id>?author=Foo&title=Bar
         put("/books/:id", (request, response) -> {
             var id = request.params(":id");
-            var book = books.get(id);
+            var book = BOOKS.get(id);
             if (book != null) {
                 var newAuthor = request.queryParams("author");
                 var newTitle = request.queryParams("title");
@@ -88,7 +88,7 @@ public class Books {
         // Deletes the book resource for the provided id 
         delete("/books/:id", (request, response) -> {
             var id = request.params(":id");
-            var book = books.remove(id);
+            var book = BOOKS.remove(id);
             if (book != null) {
                 return "Book with id '" + id + "' deleted";
             } else {
@@ -100,7 +100,7 @@ public class Books {
         // Gets all available book resources (id's)
         get("/books", (request, response) -> {
             var ids = new StringBuilder();
-            for (String id : books.keySet()) {
+            for (String id : BOOKS.keySet()) {
                 ids.append(id).append(" ");
             }
             return ids.toString();
