@@ -78,7 +78,7 @@ public final class Service extends Routable {
     protected Optional<Long> webSocketIdleTimeoutMillis = Optional.empty();
 
     protected EmbeddedServer server;
-    protected Deque<String> pathDeque = new ArrayDeque<>();
+    protected final Deque<String> pathDeque = new ArrayDeque<>();
     protected Routes routes;
 
     private CountDownLatch initLatch = new CountDownLatch(1);

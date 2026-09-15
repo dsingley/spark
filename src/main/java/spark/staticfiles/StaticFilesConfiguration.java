@@ -48,7 +48,7 @@ public class StaticFilesConfiguration {
     private boolean staticResourcesSet = false;
     private boolean externalStaticResourcesSet = false;
 
-    public static StaticFilesConfiguration servletInstance = new StaticFilesConfiguration();
+    public static final StaticFilesConfiguration servletInstance = new StaticFilesConfiguration();
 
     private final Map<String, String> customHeaders = new HashMap<>();
 
