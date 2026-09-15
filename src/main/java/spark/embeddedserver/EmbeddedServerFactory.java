@@ -41,5 +41,5 @@ public interface EmbeddedServerFactory {
      * @param hasMultipleHandler true if other handlers exist
      * @return the created instance
      */
-    public EmbeddedServer create(Routes routeMatcher, StaticFilesConfiguration staticFilesConfiguration, ExceptionMapper exceptionMapper, boolean hasMultipleHandler);
+    EmbeddedServer create(Routes routeMatcher, StaticFilesConfiguration staticFilesConfiguration, ExceptionMapper exceptionMapper, boolean hasMultipleHandler);
 }
