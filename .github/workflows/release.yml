@@ -25,7 +25,7 @@ jobs:
 
             -   name: Maven Deploy
                 run: |
-                    mvn --batch-mode \
+                    ./mvnw --batch-mode \
                         --activate-profiles release \
                         deploy
                 env:
