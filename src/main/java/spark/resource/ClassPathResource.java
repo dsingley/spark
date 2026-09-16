@@ -101,11 +101,9 @@ public class ClassPathResource extends AbstractFileResolvingResource {
                 return true;
             }
         }
-        if (path.contains("")) {
+        if (path.contains("..")) {
             path = StringUtils.cleanPath(path);
-            if (path.contains("../")) {
-                return true;
-            }
+            return path.equals("..") || path.startsWith("../");
         }
         return false;
     }
@@ -119,6 +117,9 @@ public class ClassPathResource extends AbstractFileResolvingResource {
      * @param clazz       the class to load resources with, if any
      */
     protected ClassPathResource(String path, ClassLoader classLoader, Class<?> clazz) {
+        Assert.notNull(path, "Path must not be null");
+        Assert.isTrue(isValid(path), "Path is not valid");
+
         this.path = StringUtils.cleanPath(path);
         this.classLoader = classLoader;
         this.clazz = clazz;
