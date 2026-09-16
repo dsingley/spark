@@ -19,4 +19,4 @@ jobs:
                     cache: maven
 
             -   name: Maven Test
-                run: mvn --batch-mode test
+                run: ./mvnw --batch-mode test
