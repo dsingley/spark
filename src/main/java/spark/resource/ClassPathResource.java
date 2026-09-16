@@ -103,9 +103,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
         }
         if (path.contains("..")) {
             path = StringUtils.cleanPath(path);
-            if (path.equals("..") || path.startsWith("../")) {
-                return true;
-            }
+            return path.equals("..") || path.startsWith("../");
         }
         return false;
     }
