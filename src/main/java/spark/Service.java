@@ -60,26 +60,26 @@ public final class Service extends Routable {
     private static final Logger LOG = LoggerFactory.getLogger("spark.Spark");
 
     public static final int SPARK_DEFAULT_PORT = 4567;
-    protected static final String DEFAULT_ACCEPT_TYPE = "*/*";
+    static final String DEFAULT_ACCEPT_TYPE = "*/*";
 
-    protected boolean initialized = false;
+    boolean initialized = false;
 
-    protected int port = SPARK_DEFAULT_PORT;
-    protected String ipAddress = "0.0.0.0";
+    int port = SPARK_DEFAULT_PORT;
+    String ipAddress = "0.0.0.0";
 
-    protected SslStores sslStores;
-    protected SslContextFactory.Server sslContextFactory;
+    SslStores sslStores;
+    SslContextFactory.Server sslContextFactory;
 
-    protected Map<String, WebSocketHandlerWrapper> webSocketHandlers = null;
+    Map<String, WebSocketHandlerWrapper> webSocketHandlers = null;
 
-    protected int maxThreads = -1;
-    protected int minThreads = -1;
-    protected int threadIdleTimeoutMillis = -1;
-    protected Optional<Long> webSocketIdleTimeoutMillis = Optional.empty();
+    int maxThreads = -1;
+    int minThreads = -1;
+    int threadIdleTimeoutMillis = -1;
+    Optional<Long> webSocketIdleTimeoutMillis = Optional.empty();
 
-    protected EmbeddedServer server;
-    protected final Deque<String> pathDeque = new ArrayDeque<>();
-    protected Routes routes;
+    EmbeddedServer server;
+    final Deque<String> pathDeque = new ArrayDeque<>();
+    Routes routes;
 
     private CountDownLatch initLatch = new CountDownLatch(1);
     private CountDownLatch stopLatch = new CountDownLatch(0);
