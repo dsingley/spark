@@ -34,6 +34,7 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -236,23 +237,20 @@ public class SparkTestUtil {
      * keystore specified in JVM params
      */
     private SSLContext getSslContext() {
-        KeyStore keyStore;
         try {
-            keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            var fis = new FileInputStream(getTrustStoreLocation());
-            keyStore.load(fis, getTrustStorePassword().toCharArray());
-            fis.close();
+            var keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            try (var fis = new FileInputStream(getTrustStoreLocation())) {
+                keyStore.load(fis, getTrustStorePassword().toCharArray());
+            }
 
             var tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmf.init(keyStore);
             var ctx = SSLContext.getInstance("TLS");
             ctx.init(null, tmf.getTrustManagers(), null);
             return ctx;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException("Failed to create SSL context", e);
         }
-
-        return null;
     }
 
     /**
