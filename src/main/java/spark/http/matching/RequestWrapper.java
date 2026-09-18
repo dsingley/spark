@@ -105,16 +105,6 @@ final class RequestWrapper extends Request {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return delegate.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return delegate.hashCode();
-    }
-
-    @Override
     public Map<String, String> params() {
         return delegate.params();
     }
