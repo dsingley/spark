@@ -63,16 +63,6 @@ class ResponseWrapper extends Response {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return delegate.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return delegate.hashCode();
-    }
-
-    @Override
     public HttpServletResponse raw() {
         return delegate.raw();
     }
