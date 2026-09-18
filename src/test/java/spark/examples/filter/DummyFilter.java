@@ -29,15 +29,11 @@ public class DummyFilter {
     private static final Logger LOG = LoggerFactory.getLogger(DummyFilter.class);
 
     public static void main(String[] args) {
-        before((request, response) -> {
-            LOG.info("Before");
-        });
+        before((request, response) -> LOG.info("Before"));
 
         get("/hello", (request, response) -> "Hello World!");
 
-        after((request, response) -> {
-            LOG.info("After");
-        });
+        after((request, response) -> LOG.info("After"));
     }
 
 }

@@ -44,9 +44,7 @@ class ResponseWrapperDelegationTest {
             }
         });
 
-        exception(Exception.class, (exception, q, a) -> {
-            exception.printStackTrace();
-        });
+        exception(Exception.class, (exception, q, a) -> exception.printStackTrace());
 
         Spark.awaitInitialization();
     }
