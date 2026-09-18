@@ -74,7 +74,7 @@ public class UriPath {
                 case 2: // possible single dot
                     if (builder.charAt(start + 1) != '.') {
                         if (skip > 0 && --skip == 0) {
-                            delStart = start >= 0 ? start : 0;
+                            delStart = Math.max(start, 0);
                             if (delStart > 0 && delEnd == builder.length() && builder.charAt(delEnd - 1) == '.') {
                                 delStart++;
                             }
@@ -110,7 +110,7 @@ public class UriPath {
                 case 3: // possible double dot
                     if (builder.charAt(start + 1) != '.' || builder.charAt(start + 2) != '.') {
                         if (skip > 0 && --skip == 0) {
-                            delStart = start >= 0 ? start : 0;
+                            delStart = Math.max(start, 0);
                             if (delStart > 0 && delEnd == builder.length() && builder.charAt(delEnd - 1) == '.') {
                                 delStart++;
                             }
@@ -132,7 +132,7 @@ public class UriPath {
 
                 default:
                     if (skip > 0 && --skip == 0) {
-                        delStart = start >= 0 ? start : 0;
+                        delStart = Math.max(start, 0);
                         if (delEnd == builder.length() && builder.charAt(delEnd - 1) == '.') {
                             delStart++;
                         }
