@@ -236,7 +236,7 @@ public class SparkTestUtil {
      * keystore specified in JVM params
      */
     private SSLContext getSslContext() {
-        KeyStore keyStore = null;
+        KeyStore keyStore;
         try {
             keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             var fis = new FileInputStream(getTrustStoreLocation());
