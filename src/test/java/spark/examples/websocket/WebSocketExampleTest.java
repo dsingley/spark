@@ -54,27 +54,21 @@ class WebSocketExampleTest {
 
     @Test
     void echoesMessage() throws Exception {
-        var client = new WebSocketClient();
-        var echoingClient = new EchoingClient("hello ws");
-        try {
+        try (var client = new WebSocketClient()) {
+            var echoingClient = new EchoingClient("hello ws");
             client.start();
             client.connect(echoingClient, URI.create("ws://localhost:4567/echo"));
             assertThat(echoingClient.awaitMessage()).isEqualTo("hello ws");
-        } finally {
-            client.stop();
         }
     }
 
     @Test
     void respondsToPing() throws Exception {
-        var client = new WebSocketClient();
-        var echoingClient = new EchoingClient("PING");
-        try {
+        try (var client = new WebSocketClient()) {
+            var echoingClient = new EchoingClient("PING");
             client.start();
             client.connect(echoingClient, URI.create("ws://localhost:4567/ping"));
             assertThat(echoingClient.awaitMessage()).isEqualTo("PONG");
-        } finally {
-            client.stop();
         }
     }
 }
