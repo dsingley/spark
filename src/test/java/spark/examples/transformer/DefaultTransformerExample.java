@@ -11,13 +11,10 @@ public class DefaultTransformerExample {
 
         defaultResponseTransformer(json);
 
-        get("/hello", "application/json", (request, response) -> {
-            return new MyMessage("Hello World");
-        });
+        get("/hello", "application/json", (request, response) -> new MyMessage("Hello World"));
 
-        get("/hello2", "application/json", (request, response) -> {
-            return new MyMessage("Hello World");
-        }, model -> "custom transformer");
+        get("/hello2", "application/json", (request, response) -> new MyMessage("Hello World"),
+            model -> "custom transformer");
     }
 
     private static final ResponseTransformer json = new JsonTransformer();

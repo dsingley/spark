@@ -36,9 +36,7 @@ class GenericSecureIntegrationTest {
         Spark.secure(SparkTestUtil.getKeyStoreLocation(),
                      SparkTestUtil.getKeystorePassword(), null, null);
 
-        before("/protected/*", (request, response) -> {
-            halt(401, "Go Away!");
-        });
+        before("/protected/*", (request, response) -> halt(401, "Go Away!"));
 
         get("/hi", (request, response) -> "Hello World!");
 
@@ -62,9 +60,7 @@ class GenericSecureIntegrationTest {
             return "Body was: " + body;
         });
 
-        after("/hi", (request, response) -> {
-            response.header("after", "foobar");
-        });
+        after("/hi", (request, response) -> response.header("after", "foobar"));
 
         Spark.awaitInitialization();
     }

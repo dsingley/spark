@@ -27,9 +27,7 @@ public class HelloSecureWorld {
             return;
         }
 
-        get("/hello", (request, response) -> {
-            return "Hello Secure World!";
-        });
+        get("/hello", (request, response) -> "Hello Secure World!");
 
     }
 }

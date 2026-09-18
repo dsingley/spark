@@ -57,17 +57,11 @@ public class FilterExample {
             }
         });
 
-        before("/hello", (request, response) -> {
-            response.header("Foo", "Set by second before filter");
-        });
+        before("/hello", (request, response) -> response.header("Foo", "Set by second before filter"));
 
-        get("/hello", (request, response) -> {
-            return "Hello World!";
-        });
+        get("/hello", (request, response) -> "Hello World!");
 
-        after("/hello", (request, response) -> {
-            response.header("spark", "added by after-filter");
-        });
+        after("/hello", (request, response) -> response.header("spark", "added by after-filter"));
 
     }
 }
