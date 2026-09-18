@@ -2,6 +2,7 @@ package spark.util;
 
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.jspecify.annotations.NonNull;
 import spark.Spark;
 
 import java.time.Duration;
@@ -18,7 +19,7 @@ public class SparkStopExtension implements AfterAllCallback {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(5);
 
     @Override
-    public void afterAll(ExtensionContext context) {
+    public void afterAll(@NonNull ExtensionContext context) {
         Spark.stop();
         Spark.awaitStop(DEFAULT_TIMEOUT);
     }
