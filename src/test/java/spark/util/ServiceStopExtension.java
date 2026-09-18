@@ -2,6 +2,7 @@ package spark.util;
 
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.jspecify.annotations.NonNull;
 import spark.Service;
 
 import java.time.Duration;
@@ -33,7 +34,7 @@ public class ServiceStopExtension implements AfterAllCallback {
     }
 
     @Override
-    public void afterAll(ExtensionContext context) {
+    public void afterAll(@NonNull ExtensionContext context) {
         var services = serviceSuppliers.stream().map(Supplier::get).toList();
         services.forEach(Service::stop);
         services.forEach(service -> service.awaitStop(DEFAULT_TIMEOUT));
