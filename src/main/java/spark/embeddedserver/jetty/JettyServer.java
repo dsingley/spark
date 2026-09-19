@@ -37,11 +37,10 @@ class JettyServer implements JettyServerFactory {
         Server server;
 
         if (maxThreads > 0) {
-            int max = maxThreads;
             int min = (minThreads > 0) ? minThreads : 8;
             int idleTimeout = (threadTimeoutMillis > 0) ? threadTimeoutMillis : 60000;
 
-            server = new Server(new QueuedThreadPool(max, min, idleTimeout));
+            server = new Server(new QueuedThreadPool(maxThreads, min, idleTimeout));
         } else {
             server = new Server();
         }
