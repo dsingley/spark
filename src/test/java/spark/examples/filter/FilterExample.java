@@ -27,12 +27,14 @@ import java.util.Map;
 /**
  * Example showing a very simple (and stupid) authentication filter that is
  * executed before all other resources.
- * When requesting the resource with e.g.
- * http://localhost:4567/hello?user=some&password=guy the filter will stop the
- * execution and the client will get a 401 UNAUTHORIZED with the content 'You
- * are not welcome here'
- * When requesting the resource with e.g.
- * http://localhost:4567/hello?user=foo&password=bar the filter will accept the
+ * <p>
+ * When requesting the resource with e.g.,
+ * <a href="http://localhost:4567/hello?user=some&password=guy">http://localhost:4567/hello?user=some&password=guy</a> the filter will stop the
+ * execution, and the client will get a 401 UNAUTHORIZED with the content 'You
+ * are not welcome here'.
+ * <p>
+ * When requesting the resource with e.g.,
+ * <a href="http://localhost:4567/hello?user=foo&password=bar">http://localhost:4567/hello?user=foo&password=bar</a> the filter will accept the
  * request and the request will continue to the /hello route.
  * Note: There is also an "after filter" that adds a header to the response
  *

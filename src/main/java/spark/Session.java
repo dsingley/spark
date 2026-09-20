@@ -17,8 +17,8 @@ public class Session {
     /**
      * Creates a session with the <code>HttpSession</code>.
      *
-     * @param session
-     * @param request
+     * @param session the underlying <code>HttpSession</code> object
+     * @param request the request the session belongs to
      * @throws IllegalArgumentException If the session or the request is null.
      */
     Session(HttpSession session, Request request) {

@@ -822,7 +822,7 @@ abstract class Routable {
     /**
      * Sets default response transformer
      *
-     * @param transformer
+     * @param transformer the response transformer
      */
     public void defaultResponseTransformer(ResponseTransformer transformer) {
         defaultResponseTransformer = transformer;
