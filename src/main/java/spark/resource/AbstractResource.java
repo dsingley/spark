@@ -120,7 +120,7 @@ public abstract class AbstractResource implements Resource {
     public long contentLength() throws IOException {
         var is = this.getInputStream();
         Assert.state(is != null, "resource input stream must not be null");
-        try {
+        try (is) {
             long size = 0;
             var buf = new byte[255];
             int read;
@@ -128,12 +128,6 @@ public abstract class AbstractResource implements Resource {
                 size += read;
             }
             return size;
-        } finally {
-            try {
-                is.close();
-            } catch (IOException ignored) {
-                // ignored
-            }
         }
     }
 
