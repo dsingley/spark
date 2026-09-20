@@ -16,7 +16,7 @@ class WebSocketCreatorFactoryTest {
                 WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(AnnotatedHandler.class));
         assertAll(
                 () -> assertThat(webSocketCreator).isInstanceOf(SparkWebSocketCreator.class),
-                () -> assertThat(SparkWebSocketCreator.class.cast(webSocketCreator).getHandler()).isInstanceOf(AnnotatedHandler.class)
+                () -> assertThat(((SparkWebSocketCreator) webSocketCreator).getHandler()).isInstanceOf(AnnotatedHandler.class)
         );
     }
 
@@ -24,7 +24,7 @@ class WebSocketCreatorFactoryTest {
     void testCreateWebSocket_alwaysReturnsSameHandlerInstance() {
         var webSocketCreator =
                 WebSocketCreatorFactory.create(new WebSocketHandlerClassWrapper(AnnotatedHandler.class));
-        var handler = SparkWebSocketCreator.class.cast(webSocketCreator).getHandler();
+        var handler = ((SparkWebSocketCreator) webSocketCreator).getHandler();
 
         assertAll(
                 () -> assertThat(webSocketCreator.createWebSocket(null, null)).isSameAs(handler),

@@ -203,7 +203,7 @@ public class MimeParse {
     }
 
     private static boolean isBlank(String s) {
-        return s == null || "".equals(s.trim());
+        return s == null || s.trim().isEmpty();
     }
 
     private static float toFloat(final String str, final float defaultValue) {

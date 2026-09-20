@@ -159,11 +159,7 @@ public class QueryParamsMap {
     public QueryParamsMap get(String... keys) {
         var ret = this;
         for (var key : keys) {
-            if (ret.queryMap.containsKey(key)) {
-                ret = ret.queryMap.get(key);
-            } else {
-                ret = NULL;
-            }
+            ret = ret.queryMap.getOrDefault(key, NULL);
         }
         return ret;
     }

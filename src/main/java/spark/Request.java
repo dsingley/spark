@@ -158,7 +158,7 @@ public class Request {
      * @return an array containing the splat (wildcard) parameters
      */
     public String[] splat() {
-        return splat.toArray(new String[splat.size()]);
+        return splat.toArray(new String[0]);
     }
 
     /**
