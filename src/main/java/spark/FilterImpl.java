@@ -20,7 +20,8 @@ package spark;
 import spark.utils.Wrapper;
 
 /**
- * FilterImpl is created from a path, acceptType and Filter. This is encapsulate the information needed in the route
+ * FilterImpl is created from a path, accept type and Filter.
+ * This encapsulates the information needed in the route
  * matcher in a single container.
  *
  * @author Per Wendel
@@ -59,7 +60,7 @@ public abstract class FilterImpl implements Filter, Wrapper {
      * Wraps the filter in FilterImpl
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the type corresponding to the {@code Accept} header
      * @param filter     the filter
      * @return the wrapped route
      */

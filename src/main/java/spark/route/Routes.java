@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * Holds the routes and performs matching from HTTP requests to routes.
- * Works as Sinatra's, ie. if there are more than one match the one that was mapped first is chosen.
+ * Works as Sinatra's, i.e., if there is more than one match, the one that was mapped first is chosen.
  *
  * @author Per Wendel
  */
@@ -137,7 +137,7 @@ public class Routes {
 
     /**
      * Removes a particular route from the collection of those that have been previously routed.
-     * Search for a previously established routes using the given path and HTTP method, removing
+     * Search for previously established routes using the given path and HTTP method, removing
      * any matches that are found.
      *
      * @param path       the route path

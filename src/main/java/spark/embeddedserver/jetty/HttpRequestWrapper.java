@@ -27,7 +27,7 @@ import java.io.IOException;
 
 /**
  * Http request wrapper. Wraps the request so 'getInputStream()' can be called multiple times.
- * Also has methods for checking if request has been consumed.
+ * Also has methods for checking if a request has been consumed.
  */
 public class HttpRequestWrapper extends HttpServletRequestWrapper {
     private byte[] cachedBytes;

@@ -24,7 +24,7 @@ import java.net.MalformedURLException;
 
 /**
  * Abstract class providing functionality for finding resources based on an Http Servlet request.
- * Code snippets copied from Eclipse Jetty source. Modifications made by Per Wendel.
+ * Code snippets copied from the Eclipse Jetty source. Modifications made by Per Wendel.
  */
 public abstract class AbstractResourceHandler {
 
@@ -60,18 +60,18 @@ public abstract class AbstractResourceHandler {
     }
 
     /**
-     * Gets resource from path
+     * Gets resource from {@code path}.
      *
      * @param path the path
-     * @return the resource or null if resource doesn't exist
+     * @return the resource or null if it doesn't exist
      * @throws java.net.MalformedURLException thrown when malformed URL.
      */
     protected abstract AbstractFileResolvingResource getResource(String path) throws MalformedURLException;
 
     /**
      * Add two URI path segments.
-     * Handles null and empty paths, path and query params (eg ?a=b or
-     * ;JSESSIONID=xxx) and avoids duplicate '/'
+     * Handles null and empty paths, path and query params (e.g. {@code ?a=b} or
+     * {@code ;JSESSIONID=xxx}) and avoids duplicate {@code /}.
      *
      * @param segment1 URI path segment (should be encoded)
      * @param segment2 URI path segment (should be encoded)

@@ -276,7 +276,7 @@ public class Request {
     }
 
     /**
-     * @return the length of request.body
+     * @return the length of the request body
      */
     public int contentLength() {
         return servletRequest.getContentLength();
@@ -299,20 +299,20 @@ public class Request {
      * Gets the query param and encode it
      *
      * @param queryParam the query parameter
-     * @return the encode value of the provided queryParam
-     * Example: query parameter 'me' from the URI: /hello?id=fool.
+     * @return the encoded value of the provided {@code queryParam}
+     * Example: query parameter 'id' from the URI: {@code /hello?id=fool}.
      */
     public String queryParamsSafe(final String queryParam) {
         return Base64.encode(servletRequest.getParameter(queryParam));
     }
 
     /**
-     * Gets the query param, or returns default value
+     * Gets the query parameter or returns the default value.
      *
      * @param queryParam   the query parameter
      * @param defaultValue the default value
-     * @return the value of the provided queryParam, or default if value is null
-     * Example: query parameter 'id' from the following request URI: /hello?id=foo
+     * @return the value of the provided queryParam, or the default if its value is null
+     * Example: query parameter 'id' from the following request URI: {@code /hello?id=foo}
      */
     public String queryParamOrDefault(String queryParam, String defaultValue) {
         var value = queryParams(queryParam);
@@ -324,7 +324,7 @@ public class Request {
      * Example: query parameter 'id' from the following request URI: /hello?id=foo&amp;id=bar
      *
      * @param queryParam the query parameter
-     * @return the values of the provided queryParam, null if it doesn't exists
+     * @return the values of the provided queryParam, null if it doesn't exist
      */
     public String[] queryParamsValues(String queryParam) {
         return servletRequest.getParameterValues(queryParam);
@@ -449,7 +449,7 @@ public class Request {
 
     /**
      * Returns the current session associated with this request, or if there is
-     * no current session and <code>create</code> is true, returns  a new session.
+     * no current session and <code>create</code> is true, returns a new session.
      *
      * @param create <code>true</code> to create a new session for this request if necessary;
      *               <code>false</code> to return null if there's no current session

@@ -47,12 +47,15 @@ import java.util.function.Consumer;
 
 /**
  * Represents a Spark server "session".
- * If a user wants multiple 'Sparks' in his application the method {@link Service#ignite()} should be statically
- * imported and used to create instances. The instance should typically be named so when prefixing the 'routing' methods
- * the semantic makes sense. For example 'http' is a good variable name since when adding routes it would be:
+ * <p>
+ * If a user wants multiple 'Sparks' in his application, the method {@link Service#ignite()} should be statically
+ * imported and used to create instances. The instance should typically be named so that when prefixing the 'routing'
+ * methods, the semantic makes sense. For example, 'http' is a good variable name; when adding new routes, it would be:
+ * <pre>
  * Service http = ignite();
  * ...
  * http.get("/hello", (q, a) {@literal ->} "Hello World");
+ * </pre>
  */
 public final class Service extends Routable {
     private static final Logger LOG = LoggerFactory.getLogger("spark.Spark");
@@ -141,12 +144,12 @@ public final class Service extends Routable {
     }
 
     /**
-     * Set the IP address that Spark should listen on. If not called the default
+     * Set the IP address that Spark should listen on. If not called, the default
      * address is '0.0.0.0'. This has to be called before any route mapping is
      * done.
      *
      * @param ipAddress The ipAddress
-     * @return the object with IP address set
+     * @return the object with the IP address set
      */
     public synchronized Service ipAddress(String ipAddress) {
         if (initialized) {
@@ -158,9 +161,9 @@ public final class Service extends Routable {
     }
 
     /**
-     * Set the port that Spark should listen on. If not called the default port
+     * Set the port that Spark should listen on. If not called, the default port
      * is 4567. This has to be called before any route mapping is done.
-     * If provided port = 0 then the an arbitrary available port will be used.
+     * If provided port = 0, then an arbitrary available port will be used.
      *
      * @param port The port number
      * @return the object with port set
@@ -190,13 +193,13 @@ public final class Service extends Routable {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused). By default, client certificates are not checked.
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
      * @param truststoreFile     the truststore file location as string, leave null to reuse
      *                           keystore
@@ -213,13 +216,13 @@ public final class Service extends Routable {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused). By default, client certificates are not checked.
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
      * @param certAlias          the default certificate Alias
      * @param truststoreFile     the truststore file location as string, leave null to reuse
@@ -238,18 +241,18 @@ public final class Service extends Routable {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused).
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
      * @param truststoreFile     the truststore file location as string, leave null to reuse
      *                           keystore
-     * @param needsClientCert    Whether to require client certificate to be supplied in
-     *                           request
+     * @param needsClientCert    Whether to require a client certificate to be supplied in
+     *                           the request
      * @param truststorePassword the trust store password
      * @return the object with connection set to be secure
      */
@@ -264,19 +267,19 @@ public final class Service extends Routable {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused).
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
      * @param certAlias          the default certificate Alias
      * @param truststoreFile     the truststore file location as string, leave null to reuse
      *                           keystore
-     * @param needsClientCert    Whether to require client certificate to be supplied in
-     *                           request
+     * @param needsClientCert    Whether to require a client certificate to be supplied in
+     *                           the request
      * @param truststorePassword the trust store password
      * @return the object with connection set to be secure
      */
@@ -352,11 +355,11 @@ public final class Service extends Routable {
     }
 
     /**
-     * Sets the folder in classpath serving static files. Observe: this method
+     * Sets the folder in the classpath serving static files. Observe: this method
      * must be called before all other methods.
      *
-     * @param folder the folder in classpath.
-     * @return the object with folder set
+     * @param folder the folder in the classpath.
+     * @return the object with the folder set
      */
     public synchronized Service staticFileLocation(String folder) {
         if (initialized && !isRunningFromServlet()) {
@@ -376,7 +379,7 @@ public final class Service extends Routable {
      * must be called before all other methods.</b>
      *
      * @param externalFolder the external folder serving static files.
-     * @return the object with external folder set
+     * @return the object with the external folder set
      */
     public synchronized Service externalStaticFileLocation(String externalFolder) {
         if (initialized && !isRunningFromServlet()) {
@@ -396,7 +399,7 @@ public final class Service extends Routable {
      * Search for previously established routes using the given path and unmaps any matches that are found.
      *
      * @param path the route path
-     * @return <tt>true</tt> if this is a matching route which has been previously routed
+     * @return <tt>true</tt> if this is a matching route that has been previously routed
      * @throws IllegalArgumentException if <tt>path</tt> is null or blank
      */
     public boolean unmap(String path) {
@@ -545,7 +548,7 @@ public final class Service extends Routable {
 
     /**
      * Waits, with no timeout, for the Spark server to stop.
-     * <b>Warning:</b> this can block indefinitely if the server never finishes stopping (e.g. an
+     * <b>Warning:</b> this can block indefinitely if the server never finishes stopping (e.g., an
      * exception during shutdown prevents the internal latch from ever counting down). Prefer
      * {@link #awaitStop(Duration)} for a bounded wait.
      * <b>Warning:</b> this method should not be called from a request handler.
@@ -597,12 +600,14 @@ public final class Service extends Routable {
      * Add a path-prefix to the routes declared in the routeGroup
      * The path() method adds a path-fragment to a path-stack, adds
      * routes from the routeGroup, then pops the path-fragment again.
-     * It's used for separating routes into groups, for example:
+     * It's used for separating routes into groups. For example:
+     * <pre>
      * path("/api/email", () -> {
-     * ....post("/add",       EmailApi::addEmail);
-     * ....put("/change",     EmailApi::changeEmail);
-     * ....etc
+     *     post("/add", EmailApi::addEmail);
+     *     put("/change", EmailApi::changeEmail);
+     *     // etc.
      * });
+     * </pre>
      * Multiple path() calls can be nested.
      *
      * @param path       the path to prefix routes with
@@ -754,8 +759,8 @@ public final class Service extends Routable {
 
     /**
      * Immediately stops a request within a filter or route
-     * NOTE: When using this don't catch exceptions of type HaltException, or if catched, re-throw otherwise
-     * halt will not work
+     * NOTE: When using this, don't catch exceptions of type HaltException. Or if caught, re-throw otherwise
+     * halt will not work.
      *
      * @return HaltException object
      */
@@ -764,37 +769,40 @@ public final class Service extends Routable {
     }
 
     /**
-     * Immediately stops a request within a filter or route with specified status code
-     * NOTE: When using this don't catch exceptions of type HaltException, or if catched, re-throw otherwise
-     * halt will not work
+     * Immediately stops a request within a filter or route with the specified status code.
+     * <p>
+     * NOTE: When using this don't catch exceptions of type HaltException. Or if caught, re-throw otherwise
+     * halt will not work.
      *
      * @param status the status code
-     * @return HaltException object with status code set
+     * @return HaltException object with the status code set
      */
     public HaltException halt(int status) {
         throw new HaltException(status);
     }
 
     /**
-     * Immediately stops a request within a filter or route with specified body content
-     * NOTE: When using this don't catch exceptions of type HaltException, or if catched, re-throw otherwise
-     * halt will not work
+     * Immediately stops a request within a filter or route with specified body content.
+     * <p>
+     * NOTE: When using this don't catch exceptions of type HaltException, or if caught, re-throw otherwise
+     * halt will not work.
      *
      * @param body The body content
-     * @return HaltException object with body set
+     * @return HaltException object with the body set
      */
     public HaltException halt(String body) {
         throw new HaltException(body);
     }
 
     /**
-     * Immediately stops a request within a filter or route with specified status code and body content
-     * NOTE: When using this don't catch exceptions of type HaltException, or if catched, re-throw otherwise
-     * halt will not work
+     * Immediately stops a request within a filter or route with the specified status code and body content.
+     * <p>
+     * NOTE: When using this don't catch exceptions of type HaltException. Or if caught, re-throw otherwise
+     * halt will not work.
      *
      * @param status The status code
      * @param body   The body content
-     * @return HaltException object with status and body set
+     * @return HaltException object with the status and body set
      */
     public HaltException halt(int status, String body) {
         throw new HaltException(status, body);
@@ -829,7 +837,7 @@ public final class Service extends Routable {
     }
 
     /**
-     * Overrides default exception handler during initialization phase
+     * Overrides the default exception handler during the initialization phase.
      *
      * @param initExceptionHandler The custom init exception handler
      */
@@ -846,10 +854,10 @@ public final class Service extends Routable {
     public final class StaticFiles {
 
         /**
-         * Sets the folder in classpath serving static files. Observe: this method
+         * Sets the folder in the classpath serving static files. Observe: this method
          * must be called before all other methods.
          *
-         * @param folder the folder in classpath.
+         * @param folder the folder in the classpath.
          */
         public void location(String folder) {
             staticFileLocation(folder);
@@ -889,7 +897,7 @@ public final class Service extends Routable {
         /**
          * Sets the expire-time for static resources
          *
-         * @param seconds the expire time in seconds
+         * @param seconds the expiry time in seconds
          */
         @Experimental("Functionality will not be removed. The API might change")
         public void expireTime(long seconds) {
@@ -907,7 +915,7 @@ public final class Service extends Routable {
         }
 
         /**
-         * Disables the automatic setting of Content-Type header made from a guess based on extension.
+         * Disables the automatic setting of the {@code Content-Type} header made from a guess based on extension.
          */
         public void disableMimeTypeGuessing() {
             MimeType.disableGuessing();

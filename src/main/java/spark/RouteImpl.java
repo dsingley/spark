@@ -20,7 +20,8 @@ package spark;
 import spark.utils.Wrapper;
 
 /**
- * RouteImpl is created from a path, acceptType and Route. This is encapsulate the information needed in the route
+ * RouteImpl is created from a path, accept type and Route.
+ * This encapsulates the information needed in the route
  * matcher in a single container.
  *
  * @author Per Wendel
@@ -116,9 +117,10 @@ public abstract class RouteImpl implements Route, Wrapper {
      */
     public abstract Object handle(Request request, Response response) throws Exception;
 
+    // TODO check this Javadoc; it doesn't make sense, and the "By default" sentence seems incorrect.
     /**
-     * This method should render the given element into something that can be send through Response element.
-     * By default this method returns the result of calling toString method in given element, but can be overridden.
+     * This method should render the given element into something that can be sent through Response element.
+     * By default, this method returns the result of calling toString method in given element, but can be overridden.
      *
      * @param element to be rendered.
      * @return body content.

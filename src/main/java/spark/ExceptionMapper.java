@@ -95,7 +95,7 @@ public class ExceptionMapper {
                 superclass = superclass.getSuperclass();
             } while (superclass != null);
 
-            // No handler found either for the superclasses of the exception class
+            // No handler found for the superclasses of the exception class
             // We cache the null value to prevent future
             this.exceptionMap.put(exceptionClass, null);
             return null;

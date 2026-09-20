@@ -48,7 +48,7 @@ public class JettyHandler extends Handler.Wrapper {
         var contextHandler = new ServletContextHandler("/", ServletContextHandler.SESSIONS);
         // Installs Jetty's WebSocketUpgradeFilter, which prepends itself to the front of the
         // filter chain (ServletHandler.prependFilter) regardless of registration order, so it
-        // always gets first look at upgrade requests and lets everything else fall through to
+        // always gets the first look at upgrade requests and lets everything else fall through to
         // the filter added below. No mappings are registered here; EmbeddedJettyServer adds
         // them via getWebSocketContainer() once Spark's registered handlers are known.
         JettyWebSocketServletContainerInitializer.configure(contextHandler, null);
