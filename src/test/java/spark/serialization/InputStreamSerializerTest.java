@@ -41,7 +41,7 @@ class InputStreamSerializerTest {
         assertThat(input.closed).isTrue();
     }
 
-    private class MockInputStream extends FilterInputStream {
+    private static class MockInputStream extends FilterInputStream {
 
         boolean closed = false;
 

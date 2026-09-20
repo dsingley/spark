@@ -14,11 +14,10 @@ public class HelloSecureWorld {
 
         if (args.length == 0) {
             secure(SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(), null, null);
-            System.out.println("""
-                    Using generated keystore: %s
-
-                    Try: curl --cacert %s https://localhost:4567/hello"""
-                    .formatted(SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getCaCertificateLocation()));
+            System.out.printf("""
+                Using generated keystore: %s
+                
+                Try: curl --cacert %s https://localhost:4567/hello%n""", SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getCaCertificateLocation());
         } else if (args.length == 2) {
             secure(args[0], args[1], null, null);
         } else {

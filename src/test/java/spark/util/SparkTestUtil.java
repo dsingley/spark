@@ -145,69 +145,62 @@ public class SparkTestUtil {
         var protocol = secureConnection ? "https" : "http";
         var uri = protocol + "://localhost:" + port + path;
 
-        if (requestMethod.equals("GET")) {
-            var httpGet = new HttpGet(uri);
-            httpGet.setHeader("Accept", acceptType);
-            addHeaders(reqHeaders, httpGet);
-            return httpGet;
+        switch (requestMethod) {
+            case "GET" -> {
+                var httpGet = new HttpGet(uri);
+                httpGet.setHeader("Accept", acceptType);
+                addHeaders(reqHeaders, httpGet);
+                return httpGet;
+            }
+            case "POST" -> {
+                var httpPost = new HttpPost(uri);
+                httpPost.setHeader("Accept", acceptType);
+                addHeaders(reqHeaders, httpPost);
+                httpPost.setEntity(new StringEntity(body));
+                return httpPost;
+            }
+            case "PATCH" -> {
+                var httpPatch = new HttpPatch(uri);
+                httpPatch.setHeader("Accept", acceptType);
+                addHeaders(reqHeaders, httpPatch);
+                httpPatch.setEntity(new StringEntity(body));
+                return httpPatch;
+            }
+            case "DELETE" -> {
+                var httpDelete = new HttpDelete(uri);
+                addHeaders(reqHeaders, httpDelete);
+                httpDelete.setHeader("Accept", acceptType);
+                return httpDelete;
+            }
+            case "PUT" -> {
+                var httpPut = new HttpPut(uri);
+                httpPut.setHeader("Accept", acceptType);
+                addHeaders(reqHeaders, httpPut);
+                httpPut.setEntity(new StringEntity(body));
+                return httpPut;
+            }
+            case "HEAD" -> {
+                var httpHead = new HttpHead(uri);
+                addHeaders(reqHeaders, httpHead);
+                return httpHead;
+            }
+            case "TRACE" -> {
+                var httpTrace = new HttpTrace(uri);
+                addHeaders(reqHeaders, httpTrace);
+                return httpTrace;
+            }
+            case "OPTIONS" -> {
+                var httpOptions = new HttpOptions(uri);
+                addHeaders(reqHeaders, httpOptions);
+                return httpOptions;
+            }
+            case "LOCK" -> {
+                var httpLock = new HttpLock(uri);
+                addHeaders(reqHeaders, httpLock);
+                return httpLock;
+            }
+            default -> throw new IllegalArgumentException("Unknown method " + requestMethod);
         }
-
-        if (requestMethod.equals("POST")) {
-            var httpPost = new HttpPost(uri);
-            httpPost.setHeader("Accept", acceptType);
-            addHeaders(reqHeaders, httpPost);
-            httpPost.setEntity(new StringEntity(body));
-            return httpPost;
-        }
-
-        if (requestMethod.equals("PATCH")) {
-            var httpPatch = new HttpPatch(uri);
-            httpPatch.setHeader("Accept", acceptType);
-            addHeaders(reqHeaders, httpPatch);
-            httpPatch.setEntity(new StringEntity(body));
-            return httpPatch;
-        }
-
-        if (requestMethod.equals("DELETE")) {
-            var httpDelete = new HttpDelete(uri);
-            addHeaders(reqHeaders, httpDelete);
-            httpDelete.setHeader("Accept", acceptType);
-            return httpDelete;
-        }
-
-        if (requestMethod.equals("PUT")) {
-            var httpPut = new HttpPut(uri);
-            httpPut.setHeader("Accept", acceptType);
-            addHeaders(reqHeaders, httpPut);
-            httpPut.setEntity(new StringEntity(body));
-            return httpPut;
-        }
-
-        if (requestMethod.equals("HEAD")) {
-            var httpHead = new HttpHead(uri);
-            addHeaders(reqHeaders, httpHead);
-            return httpHead;
-        }
-
-        if (requestMethod.equals("TRACE")) {
-            var httpTrace = new HttpTrace(uri);
-            addHeaders(reqHeaders, httpTrace);
-            return httpTrace;
-        }
-
-        if (requestMethod.equals("OPTIONS")) {
-            var httpOptions = new HttpOptions(uri);
-            addHeaders(reqHeaders, httpOptions);
-            return httpOptions;
-        }
-
-        if (requestMethod.equals("LOCK")) {
-            var httpLock = new HttpLock(uri);
-            addHeaders(reqHeaders, httpLock);
-            return httpLock;
-        }
-
-        throw new IllegalArgumentException("Unknown method " + requestMethod);
     }
 
     private void addHeaders(Map<String, String> reqHeaders, HttpRequest req) {

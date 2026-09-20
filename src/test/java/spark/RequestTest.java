@@ -264,7 +264,7 @@ class RequestTest {
 
         var cookies = List.of(new Cookie(cookieKey, cookieValue));
 
-        var cookieArray = cookies.toArray(new Cookie[cookies.size()]);
+        var cookieArray = cookies.toArray(new Cookie[0]);
         when(servletRequest.getCookies()).thenReturn(cookieArray);
 
         assertAll(

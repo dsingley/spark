@@ -41,17 +41,16 @@ public class SimpleSecureExample {
                 SparkTestUtil.getKeystorePassword(), null, null);
 
         var caCertLocation = SparkTestUtil.getCaCertificateLocation();
-        System.out.println("""
+        System.out.printf(
+            """
                 Keystore:   %s (password: %s)
                 Truststore: %s (password: %s)
                 CA cert:    %s
-
-                Try: curl --cacert %s https://localhost:4567/hello"""
-                .formatted(
-                        SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(),
-                        SparkTestUtil.getTrustStoreLocation(), SparkTestUtil.getTrustStorePassword(),
-                        caCertLocation,
-                        caCertLocation));
+                
+                Try: curl --cacert %s https://localhost:4567/hello%n""", SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(),
+                SparkTestUtil.getTrustStoreLocation(), SparkTestUtil.getTrustStorePassword(),
+                caCertLocation,
+                caCertLocation);
 
         get("/hello", (request, response) -> "Hello Secure World!");
 
