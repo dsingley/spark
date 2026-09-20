@@ -73,6 +73,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     /**
      * @deprecated use {@link #configureWebSockets(Map, Long)} instead
      */
+    @SuppressWarnings({ "deprecation", "DeprecatedIsStillUsed" })
     @Override
     @Deprecated(since = "3.0.0")
     public void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,

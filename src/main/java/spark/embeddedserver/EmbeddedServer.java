@@ -88,6 +88,7 @@ public interface EmbeddedServer {
      * @deprecated use {@link #configureWebSockets(Map, Long)} instead
      */
     @Deprecated(since = "3.0.0")
+    @SuppressWarnings({ "OptionalUsedAsFieldOrParameterType", "DeprecatedIsStillUsed" })
     default void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
                                      Optional<Long> webSocketIdleTimeoutMillis) {
 
