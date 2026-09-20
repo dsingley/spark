@@ -41,7 +41,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -677,7 +676,7 @@ public final class Service extends Routable {
                                                     staticFilesConfiguration,
                                                     hasMultipleHandlers());
 
-                    server.configureWebSockets(webSocketHandlers, Optional.ofNullable(webSocketIdleTimeoutMillis));
+                    server.configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis);
                     server.trustForwardHeaders(trustForwardHeaders);
 
                     if (sslContextFactory != null) {

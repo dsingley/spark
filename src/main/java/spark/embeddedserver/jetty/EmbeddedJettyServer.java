@@ -21,6 +21,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.embeddedserver.EmbeddedServer;
@@ -63,10 +64,22 @@ public class EmbeddedJettyServer implements EmbeddedServer {
 
     @Override
     public void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
-                                    Optional<Long> webSocketIdleTimeoutMillis) {
+                                    @Nullable Long webSocketIdleTimeoutMillis) {
 
         this.webSocketHandlers = webSocketHandlers;
-        this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis.orElse(null);
+        this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis;
+    }
+
+    /**
+     * @deprecated use {@link #configureWebSockets(Map, Long)} instead
+     */
+    @Override
+    @Deprecated(since = "3.0.0")
+    @SuppressWarnings({ "deprecation", "DeprecatedIsStillUsed" })
+    public void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
+                                    Optional<Long> webSocketIdleTimeoutMillis) {
+
+        configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis.orElse(null));
     }
 
     @Override
