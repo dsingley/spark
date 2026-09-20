@@ -24,7 +24,7 @@ public class GzipClient {
         connection.addRequestProperty("Accept-Encoding", "gzip");
         connection.connect();
 
-        return (InputStream) connection.getInputStream();
+        return connection.getInputStream();
     }
 
 }
