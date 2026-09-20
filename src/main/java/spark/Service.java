@@ -802,7 +802,8 @@ public final class Service extends Routable {
 
     /**
      * Sets Spark to trust the HTTP headers that are commonly used in reverse proxies.
-     * More info at https://www.eclipse.org/jetty/javadoc/current/org/eclipse/jetty/server/ForwardedRequestCustomizer.html
+     * More info at
+     * <a href="https://javadoc.io/doc/org.eclipse.jetty/jetty-server/latest/org.eclipse.jetty.server/org/eclipse/jetty/server/ForwardedRequestCustomizer.html">ForwardedRequestCustomizer</a>.
      */
     public synchronized Service trustForwardHeaders() {
         if (initialized) {
@@ -815,7 +816,8 @@ public final class Service extends Routable {
 
     /**
      * Sets Spark to NOT trust the HTTP headers that are commonly used in reverse proxies.
-     * More info at https://www.eclipse.org/jetty/javadoc/current/org/eclipse/jetty/server/ForwardedRequestCustomizer.html
+     * More info at
+     * <a href="https://javadoc.io/doc/org.eclipse.jetty/jetty-server/latest/org.eclipse.jetty.server/org/eclipse/jetty/server/ForwardedRequestCustomizer.html">ForwardedRequestCustomizer</a>.
      */
     public synchronized Service untrustForwardHeaders() {
         if (initialized) {

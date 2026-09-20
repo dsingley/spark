@@ -1280,7 +1280,8 @@ public class Spark {
 
     /**
      * Sets Spark to trust Forwarded, X-Forwarded-Host, X-Forwarded-Server, X-Forwarded-For, X-Forwarded-Proto, X-Proxied-Https headers
-     * as defined at https://www.eclipse.org/jetty/javadoc/current/org/eclipse/jetty/server/ForwardedRequestCustomizer.html
+     * as defined at
+     * <a href="https://javadoc.io/doc/org.eclipse.jetty/jetty-server/latest/org.eclipse.jetty.server/org/eclipse/jetty/server/ForwardedRequestCustomizer.html">ForwardedRequestCustomizer</a>.
      */
     public static void trustForwardHeaders() {
         getInstance().trustForwardHeaders();
@@ -1288,7 +1289,8 @@ public class Spark {
 
     /**
      * Sets Spark to NOT trust Forwarded, X-Forwarded-Host, X-Forwarded-Server, X-Forwarded-For, X-Forwarded-Proto, X-Proxied-Https headers
-     * as defined at https://www.eclipse.org/jetty/javadoc/current/org/eclipse/jetty/server/ForwardedRequestCustomizer.html
+     * as defined at
+     * <a href="https://javadoc.io/doc/org.eclipse.jetty/jetty-server/latest/org.eclipse.jetty.server/org/eclipse/jetty/server/ForwardedRequestCustomizer.html">ForwardedRequestCustomizer</a>.
      */
     public static void untrustForwardHeaders() {
         getInstance().untrustForwardHeaders();
