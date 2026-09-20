@@ -22,11 +22,13 @@ import java.io.IOException;
 /* ------------------------------------------------------------ */
 
 /**
- * Utf8 Appendable abstract base class
- * This abstract class wraps a standard {@link java.lang.Appendable} and provides methods to append UTF-8 encoded bytes, that are converted into characters.
+ * Utf8 Appendable abstract base class.
+ * <p>
+ * This abstract class wraps a standard {@link Appendable} and provides methods to append UTF-8 encoded bytes that are converted into characters.
  * This class is stateful and up to 4 calls to {@link #append(byte)} may be needed before state a character is appended to the string buffer.
  * The UTF-8 decoding is done by this class and no additional buffers or Readers are used. The UTF-8 code was inspired by
- * http://bjoern.hoehrmann.de/utf-8/decoder/dfa/
+ * <a href="http://bjoern.hoehrmann.de/utf-8/decoder/dfa/">Flexible and Economical UTF-8 Decoder</a>
+ * <p>
  * License information for Bjoern Hoehrmann's code:
  * Copyright (c) 2008-2009 Bjoern Hoehrmann &lt;bjoern@hoehrmann.de&gt;
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal

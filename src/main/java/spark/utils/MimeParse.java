@@ -90,7 +90,7 @@ public class MimeParse {
      * in the params dictionary, filling it in with a proper default if
      * necessary.
      *
-     * @param range
+     * @param range the media range to parse
      */
     private static ParseResults parseMediaRange(String range) {
         var parseRresults = parseMimeType(range);
@@ -146,8 +146,8 @@ public class MimeParse {
      * the best match, or (-1, 0) if no match was found. Just as for
      * quality_parsed(), 'parsed_ranges' must be a list of parsed media ranges.
      *
-     * @param mimeType
-     * @param parsedRanges
+     * @param mimeType the mime type to find the best match for
+     * @param parsedRanges the already-parsed media ranges to match against
      */
     private static FitnessAndQuality fitnessAndQualityParsed(String mimeType, Collection<ParseResults> parsedRanges) {
         int bestFitness = -1;

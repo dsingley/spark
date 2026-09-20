@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 /**
  * Holds the custom error pages. A page can be defined as a String or a Route.
- * Note that this class is always used statically therefore custom error pages will
+ * Note that this class is always used statically; therefore, custom error pages will
  * be shared between different instances of the Service class.
  */
 public class CustomErrorPages {
@@ -35,7 +35,7 @@ public class CustomErrorPages {
 
     /**
      * Verifies that a custom error page exists for the given status code
-     * @param status
+     * @param status the HTTP status code
      * @return true if error page exists
      */
     public static boolean existsFor(int status) {
@@ -46,9 +46,9 @@ public class CustomErrorPages {
      * Gets the custom error page for a given status code.  If the custom
      * error page is a route, the output of its handle method is returned.
      * If the custom error page is a String, it is returned as an Object.  
-     * @param status
-     * @param request
-     * @param response
+     * @param status the HTTP status code
+     * @param request the request object providing information about the HTTP request
+     * @param response the response object providing functionality for modifying the response
      * @return Object representing the custom error page
      */
     public static Object getFor(int status, Request request, Response response) {
@@ -73,7 +73,7 @@ public class CustomErrorPages {
     /**
      * Returns the default error page for a given status code.
      * Guaranteed to never be null.
-     * @param status
+     * @param status the HTTP status code
      * @return String representation of the default error page.
      */
     public String getDefaultFor(int status){
@@ -83,8 +83,8 @@ public class CustomErrorPages {
     
     /**
      * Add a custom error page as a String
-     * @param status
-     * @param page
+     * @param status the HTTP status code
+     * @param page the HTML content of the custom error page
      */
     static void add(int status, String page) {
         CustomErrorPages.getInstance().customPages.put(status, page);
@@ -92,8 +92,8 @@ public class CustomErrorPages {
 
     /**
      * Add a custom error page as a Route handler
-     * @param status
-     * @param route
+     * @param status the HTTP status code
+     * @param route the route handler that renders the custom error page
      */
     static void add(int status, Route route) {
         CustomErrorPages.getInstance().customPages.put(status, route);

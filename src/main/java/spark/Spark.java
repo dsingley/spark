@@ -971,7 +971,7 @@ public class Spark {
     /**
      * Set the default response transformer. All requests not using a custom transformer will use this one
      *
-     * @param transformer
+     * @param transformer the response transformer
      */
     public static void defaultResponseTransformer(ResponseTransformer transformer) {
         getInstance().defaultResponseTransformer(transformer);

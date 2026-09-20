@@ -301,10 +301,10 @@ public final class Service extends Routable {
 
     /**
      * Set the connection to be secure, using the specified {@link SslContextFactory}.
-     *
+     * <p>
      * The SslContextFactory should already be configured with keystore, truststore,
      * and client certificate options.
-     *
+     * <p>
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container.
