@@ -16,6 +16,7 @@ import spark.staticfiles.StaticFilesConfiguration;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 class EmbeddedJettyServerTest {
 
@@ -36,6 +37,25 @@ class EmbeddedJettyServerTest {
         Map<String, WebSocketHandlerWrapper> webSocketHandlers = new HashMap<>();
         webSocketHandlers.put("/ws", new WebSocketHandlerClassWrapper(DummyWebSocketHandler.class));
         embeddedJettyServer.configureWebSockets(webSocketHandlers, 12345L);
+
+        embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
+
+        var webSocketServerContainer = handler.getWebSocketContainer();
+        assertThat(webSocketServerContainer.getIdleTimeout()).isEqualTo(Duration.ofMillis(12345L));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    void testConfigureWebSockets_whenCalledViaDeprecatedOptionalOverload_thenStillWorks() throws Exception {
+        var handler = newJettyHandler();
+        embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), handler);
+
+        Map<String, WebSocketHandlerWrapper> webSocketHandlers = new HashMap<>();
+        webSocketHandlers.put("/ws", new WebSocketHandlerClassWrapper(DummyWebSocketHandler.class));
+        // Calling the deprecated Optional<Long> overload directly, not the newer Long one -
+        // must still reach the real implementation rather than the interface's default
+        // "not supported" fallback.
+        embeddedJettyServer.configureWebSockets(webSocketHandlers, Optional.of(12345L));
 
         embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
 

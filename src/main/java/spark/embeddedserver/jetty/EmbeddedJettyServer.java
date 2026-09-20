@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Spark server implementation
@@ -67,6 +68,17 @@ public class EmbeddedJettyServer implements EmbeddedServer {
 
         this.webSocketHandlers = webSocketHandlers;
         this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis;
+    }
+
+    /**
+     * @deprecated use {@link #configureWebSockets(Map, Long)} instead
+     */
+    @Override
+    @Deprecated(since = "3.0.0")
+    public void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
+                                    Optional<Long> webSocketIdleTimeoutMillis) {
+
+        configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis.orElse(null));
     }
 
     @Override
