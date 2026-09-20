@@ -20,7 +20,6 @@ import static java.util.Objects.requireNonNull;
 import static spark.globalstate.ServletFlag.isRunningFromServlet;
 
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.embeddedserver.EmbeddedServer;
@@ -74,7 +73,7 @@ public final class Service extends Routable {
     int maxThreads = -1;
     int minThreads = -1;
     int threadIdleTimeoutMillis = -1;
-    @Nullable Long webSocketIdleTimeoutMillis;
+    Long webSocketIdleTimeoutMillis;
 
     EmbeddedServer server;
     final Deque<String> pathDeque = new ArrayDeque<>();

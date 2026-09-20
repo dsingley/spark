@@ -51,7 +51,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedJettyServer.class);
 
     private Map<String, WebSocketHandlerWrapper> webSocketHandlers;
-    private @Nullable Long webSocketIdleTimeoutMillis;
+    private Long webSocketIdleTimeoutMillis;
 
     private ThreadPool threadPool = null;
     private boolean trustForwardHeaders = true; // true by default
