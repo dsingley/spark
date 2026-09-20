@@ -20,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 import static spark.globalstate.ServletFlag.isRunningFromServlet;
 
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.embeddedserver.EmbeddedServer;
@@ -41,7 +42,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -74,7 +74,7 @@ public final class Service extends Routable {
     int maxThreads = -1;
     int minThreads = -1;
     int threadIdleTimeoutMillis = -1;
-    Long webSocketIdleTimeoutMillis;
+    @Nullable Long webSocketIdleTimeoutMillis;
 
     EmbeddedServer server;
     final Deque<String> pathDeque = new ArrayDeque<>();
@@ -677,7 +677,7 @@ public final class Service extends Routable {
                                                     staticFilesConfiguration,
                                                     hasMultipleHandlers());
 
-                    server.configureWebSockets(webSocketHandlers, Optional.ofNullable(webSocketIdleTimeoutMillis));
+                    server.configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis);
                     server.trustForwardHeaders(trustForwardHeaders);
 
                     if (sslContextFactory != null) {

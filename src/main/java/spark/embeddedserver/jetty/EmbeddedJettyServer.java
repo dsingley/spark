@@ -21,6 +21,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.embeddedserver.EmbeddedServer;
@@ -32,7 +33,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.time.Duration;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Spark server implementation
@@ -51,7 +51,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedJettyServer.class);
 
     private Map<String, WebSocketHandlerWrapper> webSocketHandlers;
-    private Long webSocketIdleTimeoutMillis;
+    private @Nullable Long webSocketIdleTimeoutMillis;
 
     private ThreadPool threadPool = null;
     private boolean trustForwardHeaders = true; // true by default
@@ -63,10 +63,10 @@ public class EmbeddedJettyServer implements EmbeddedServer {
 
     @Override
     public void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
-                                    Optional<Long> webSocketIdleTimeoutMillis) {
+                                    @Nullable Long webSocketIdleTimeoutMillis) {
 
         this.webSocketHandlers = webSocketHandlers;
-        this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis.orElse(null);
+        this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis;
     }
 
     @Override

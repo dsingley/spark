@@ -17,6 +17,7 @@
 package spark.embeddedserver;
 
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.jspecify.annotations.Nullable;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
 import spark.ssl.SslStores;
 
@@ -84,11 +85,25 @@ public interface EmbeddedServer {
      *
      * @param webSocketHandlers          - web socket handlers.
      * @param webSocketIdleTimeoutMillis - Optional WebSocket idle timeout (ms).
+     * @deprecated use {@link #configureWebSockets(Map, Long)} instead
      */
+    @Deprecated(since = "3.0.0")
     default void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
                                      Optional<Long> webSocketIdleTimeoutMillis) {
 
         NotSupportedException.raise(getClass().getSimpleName(), "Web Sockets");
+    }
+
+    /**
+     * Configures the web sockets for the embedded server.
+     *
+     * @param webSocketHandlers          - web socket handlers.
+     * @param webSocketIdleTimeoutMillis - WebSocket idle timeout (ms), or {@code null} for none.
+     */
+    default void configureWebSockets(Map<String, WebSocketHandlerWrapper> webSocketHandlers,
+                                     @Nullable Long webSocketIdleTimeoutMillis) {
+
+        configureWebSockets(webSocketHandlers, Optional.ofNullable(webSocketIdleTimeoutMillis));
     }
 
     /**

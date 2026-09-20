@@ -16,7 +16,6 @@ import spark.staticfiles.StaticFilesConfiguration;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 class EmbeddedJettyServerTest {
 
@@ -36,7 +35,7 @@ class EmbeddedJettyServerTest {
 
         Map<String, WebSocketHandlerWrapper> webSocketHandlers = new HashMap<>();
         webSocketHandlers.put("/ws", new WebSocketHandlerClassWrapper(DummyWebSocketHandler.class));
-        embeddedJettyServer.configureWebSockets(webSocketHandlers, Optional.of(12345L));
+        embeddedJettyServer.configureWebSockets(webSocketHandlers, 12345L);
 
         embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
 
@@ -51,7 +50,7 @@ class EmbeddedJettyServerTest {
 
         Map<String, WebSocketHandlerWrapper> webSocketHandlers = new HashMap<>();
         webSocketHandlers.put("/ws", new WebSocketHandlerClassWrapper(DummyWebSocketHandler.class));
-        embeddedJettyServer.configureWebSockets(webSocketHandlers, Optional.empty());
+        embeddedJettyServer.configureWebSockets(webSocketHandlers, (Long) null);
 
         embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
 
@@ -65,7 +64,7 @@ class EmbeddedJettyServerTest {
         var handler = newJettyHandler();
         embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), handler);
 
-        embeddedJettyServer.configureWebSockets(null, Optional.empty());
+        embeddedJettyServer.configureWebSockets(null, (Long) null);
 
         embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
 

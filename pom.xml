@@ -52,6 +52,7 @@
         <!-- Required dependency versions -->
         <slf4j.version>2.0.19</slf4j.version>
         <jetty.version>12.1.12</jetty.version>
+        <jspecify.version>1.0.0</jspecify.version>
 
         <!-- Test dependency versions -->
         <assertj.version>3.27.7</assertj.version>
@@ -139,6 +140,12 @@
         <dependency>
             <groupId>org.eclipse.jetty.ee11.websocket</groupId>
             <artifactId>jetty-ee11-websocket-jetty-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>${jspecify.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
