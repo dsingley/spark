@@ -74,7 +74,7 @@ public final class Service extends Routable {
     int maxThreads = -1;
     int minThreads = -1;
     int threadIdleTimeoutMillis = -1;
-    Optional<Long> webSocketIdleTimeoutMillis = Optional.empty();
+    Long webSocketIdleTimeoutMillis;
 
     EmbeddedServer server;
     final Deque<String> pathDeque = new ArrayDeque<>();
@@ -471,7 +471,7 @@ public final class Service extends Routable {
         if (isRunningFromServlet()) {
             throw new IllegalStateException("WebSockets are only supported in the embedded server");
         }
-        webSocketIdleTimeoutMillis = Optional.of(timeoutMillis);
+        webSocketIdleTimeoutMillis = timeoutMillis;
         return this;
     }
 
@@ -677,7 +677,7 @@ public final class Service extends Routable {
                                                     staticFilesConfiguration,
                                                     hasMultipleHandlers());
 
-                    server.configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis);
+                    server.configureWebSockets(webSocketHandlers, Optional.ofNullable(webSocketIdleTimeoutMillis));
                     server.trustForwardHeaders(trustForwardHeaders);
 
                     if (sslContextFactory != null) {

@@ -51,7 +51,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedJettyServer.class);
 
     private Map<String, WebSocketHandlerWrapper> webSocketHandlers;
-    private Optional<Long> webSocketIdleTimeoutMillis;
+    private Long webSocketIdleTimeoutMillis;
 
     private ThreadPool threadPool = null;
     private boolean trustForwardHeaders = true; // true by default
@@ -66,7 +66,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
                                     Optional<Long> webSocketIdleTimeoutMillis) {
 
         this.webSocketHandlers = webSocketHandlers;
-        this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis;
+        this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis.orElse(null);
     }
 
     @Override
@@ -164,7 +164,9 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         // so mappings can only be registered after server.start() returns, not before.
         if (webSocketHandlers != null) {
             var webSocketServerContainer = handler.getWebSocketContainer();
-            webSocketIdleTimeoutMillis.ifPresent(millis -> webSocketServerContainer.setIdleTimeout(Duration.ofMillis(millis)));
+            if (webSocketIdleTimeoutMillis != null) {
+                webSocketServerContainer.setIdleTimeout(Duration.ofMillis(webSocketIdleTimeoutMillis));
+            }
             webSocketHandlers.forEach((path, handlerWrapper) ->
                     webSocketServerContainer.addMapping(path, WebSocketCreatorFactory.create(handlerWrapper)));
         }
