@@ -45,7 +45,6 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Represents a Spark server "session".
@@ -617,7 +616,7 @@ public final class Service extends Routable {
     }
 
     public String getPaths() {
-        return pathDeque.stream().collect(Collectors.joining(""));
+        return String.join("", pathDeque);
     }
     /**
      * @return all routes information from this service
