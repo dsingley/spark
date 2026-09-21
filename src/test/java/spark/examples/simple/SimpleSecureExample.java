@@ -34,7 +34,7 @@ public class SimpleSecureExample {
     public static void main(String[] args) {
 
         // port(5678); <- Uncomment this if you want spark to listen on a
-        // port different than 4567.
+        // port different from 4567.
 
         secure(
                 SparkTestUtil.getKeyStoreLocation(),

@@ -78,7 +78,7 @@ public abstract class RouteImpl implements Route, Wrapper {
     /**
      * Constructor
      *
-     * @param path The route path which is used for matching. (e.g. /hello, users/:name)
+     * @param path The route path that is used for matching. (e.g., /hello, users/:name)
      */
     protected RouteImpl(String path) {
         this(path, DEFAULT_ACCEPT_TYPE);
@@ -87,8 +87,8 @@ public abstract class RouteImpl implements Route, Wrapper {
     /**
      * Constructor
      *
-     * @param path       The route path which is used for matching. (e.g. /hello, users/:name)
-     * @param acceptType The accept type which is used for matching.
+     * @param path       The route path that is used for matching. (e.g., /hello, users/:name)
+     * @param acceptType The accept type that is used for matching.
      */
     protected RouteImpl(String path, String acceptType) {
         this.path = path;
@@ -98,8 +98,8 @@ public abstract class RouteImpl implements Route, Wrapper {
     /**
      * Constructor
      *
-     * @param path       The route path which is used for matching. (e.g. /hello, users/:name)
-     * @param acceptType The accept type which is used for matching.
+     * @param path       The route path that is used for matching. (e.g., /hello, users/:name)
+     * @param acceptType The accept type that is used for matching.
      * @param route      The route used to create the route implementation
      */
     protected RouteImpl(String path, String acceptType, Object route) {
@@ -108,7 +108,7 @@ public abstract class RouteImpl implements Route, Wrapper {
     }
 
     /**
-     * Invoked when a request is made on this route's corresponding path e.g. '/hello'
+     * Invoked when a request is made on this route's corresponding path e.g., '/hello'.
      *
      * @param request  The request object providing information about the HTTP request
      * @param response The response object providing functionality for modifying the response
@@ -117,10 +117,12 @@ public abstract class RouteImpl implements Route, Wrapper {
      */
     public abstract Object handle(Request request, Response response) throws Exception;
 
-    // TODO check this Javadoc; it doesn't make sense, and the "By default" sentence seems incorrect.
     /**
-     * This method should render the given element into something that can be sent through Response element.
-     * By default, this method returns the result of calling toString method in given element, but can be overridden.
+     * This method should render the given element into something that can be sent back as the response body.
+     * By default, this method just returns the given element unchanged; subclasses (e.g., for template engines)
+     * override this to produce the actual rendered output. If the returned value isn't a String, it's later
+     * converted to one via its toString() method by the default serializer, unless a more specific serializer
+     * applies.
      *
      * @param element to be rendered.
      * @return body content.

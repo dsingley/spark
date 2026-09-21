@@ -217,13 +217,13 @@ public class SparkTestUtil {
 
     /**
      * Convenience method to use own truststore on SSL Sockets. Will default to
-     * the self signed keystore provided in resources, but will respect
-     * <p/>
+     * the self-signed keystore provided in resources, but will respect
+     * <pre>
      * -Djavax.net.ssl.keyStore=serverKeys
      * -Djavax.net.ssl.keyStorePassword=password
      * -Djavax.net.ssl.trustStore=serverTrust
-     * -Djavax.net.ssl.trustStorePassword=password SSLApplication
-     * <p/>
+     * -Djavax.net.ssl.trustStorePassword=password
+     * </pre>
      * So these can be used to specify other key/trust stores if required.
      *
      * @return an SSL Context using either provided keystore OR the
@@ -259,7 +259,7 @@ public class SparkTestUtil {
     /**
      * Return JVM param set keystore password or default if not set.
      *
-     * @return Keystore password as string
+     * @return Keystore password as a string
      */
     public static String getKeystorePassword() {
         var password = System.getProperty("javax.net.ssl.keyStorePassword");
@@ -267,7 +267,7 @@ public class SparkTestUtil {
     }
 
     /**
-     * Return JVM param set truststore location, or keystore location if only that is set.
+     * Return JVM param set truststore location or keystore location if only that is set.
      * If neither is set, returns the default truststore location.
      *
      * @return truststore location as string
@@ -286,7 +286,7 @@ public class SparkTestUtil {
      * Return JVM param set truststore password, or keystore password if only that is set.
      * If neither is set, returns the default truststore password.
      *
-     * @return truststore password as string
+     * @return truststore password as a string
      */
     public static String getTrustStorePassword() {
         var password = System.getProperty("javax.net.ssl.trustStorePassword");
@@ -301,7 +301,7 @@ public class SparkTestUtil {
     /**
      * Return the location of a PEM file containing the CA certificate that issued the
      * default keystore/truststore. Only meaningful when the default keystore/truststore
-     * are in use, i.e. none of the {@code javax.net.ssl.*} JVM params above are set.
+     * is in use, i.e., none of the {@code javax.net.ssl.*} JVM params above are set.
      * <p/>
      * Unlike the keystore/truststore (Java {@link KeyStore} formats), this is a plain PEM
      * file, so it can be handed directly to non-Java TLS clients, e.g. {@code curl --cacert}.

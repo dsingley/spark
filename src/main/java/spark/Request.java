@@ -162,7 +162,7 @@ public class Request {
     }
 
     /**
-     * @return request method e.g. GET, POST, PUT, ...
+     * @return request method e.g., GET, POST, PUT, ...
      */
     public String requestMethod() {
         return servletRequest.getMethod();

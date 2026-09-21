@@ -35,7 +35,7 @@ public class TypeUtil {
      *
      * @param s      String
      * @param offset Offset within string
-     * @param length Length of integer or -1 for remainder of string
+     * @param length Length of integer or -1 for the remainder of string
      * @param base   base of the integer
      * @return the parsed integer
      * @throws NumberFormatException if the string cannot be parsed
@@ -61,8 +61,8 @@ public class TypeUtil {
     }
 
     /**
-     * @param c An ASCII encoded character 0-9 a-f A-F
-     * @return The byte value of the character 0-16.
+     * @param c An ASCII encoded character ({@code 0-9}, {@code a-f}, {@code A-F})
+     * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(char c) {
         int d = ((c & 0x1f) + ((c >> 6) * 0x19) - 0x10);
@@ -73,8 +73,8 @@ public class TypeUtil {
     }
 
     /**
-     * @param c An ASCII encoded character 0-9 a-f A-F
-     * @return The byte value of the character 0-16.
+     * @param c An ASCII encoded character ({@code 0-9}, {@code a-f}, {@code A-F})
+     * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(int c) {
         int d = ((c & 0x1f) + ((c >> 6) * 0x19) - 0x10);

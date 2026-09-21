@@ -33,11 +33,13 @@ import java.util.function.Consumer;
  * <li>A callback (request, response)</li>
  * </ul>
  * Example:
+ * <pre>
  * get("/hello", (request, response) -&#62; {
- * return "Hello World!";
+ *   return "Hello World!";
  * });
+ * </pre>
  * The public methods and fields in this class should be statically imported for the semantic to make sense.
- * Ie. one should use:
+ * I.e., one should use:
  * 'post("/books")' without the prefix 'Spark.'
  *
  * @author Per Wendel
@@ -73,12 +75,14 @@ public class Spark {
      * Add a path-prefix to the routes declared in the routeGroup
      * The path() method adds a path-fragment to a path-stack, adds
      * routes from the routeGroup, then pops the path-fragment again.
-     * It's used for separating routes into groups, for example:
+     * It's used for separating routes into groups. For example:
+     * <pre>
      * path("/api/email", () -> {
-     * ....post("/add",       EmailApi::addEmail);
-     * ....put("/change",     EmailApi::changeEmail);
-     * ....etc
+     *     post("/add", EmailApi::addEmail);
+     *     put("/change", EmailApi::changeEmail);
+     *     // etc.
      * });
+     * </pre>
      * Multiple path() calls can be nested.
      *
      * @param path       the path to prefix routes with
@@ -863,7 +867,7 @@ public class Spark {
      * Search for previously established routes using the given path and unmaps any matches that are found.
      *
      * @param path          the route path
-     * @return              <tt>true</tt> if this is a matching route which has been previously routed
+     * @return              <tt>true</tt> if this is a matching route that has been previously routed
      * @throws IllegalArgumentException if <tt>path</tt> is null or blank
      */
     public static boolean unmap(String path) {
@@ -978,9 +982,9 @@ public class Spark {
     }
 
     /**
-     * Set the port that Spark should listen on. If not called the default port
+     * Set the port that Spark should listen on. If not called, the default port
      * is 4567. This has to be called before any route mapping is done.
-     * If provided port = 0 then the an arbitrary available port will be used.
+     * If provided port = 0, then an arbitrary available port will be used.
      *
      * @param port The port number
      * @deprecated replaced by {@link #port(int)}
@@ -991,9 +995,9 @@ public class Spark {
     }
 
     /**
-     * Set the port that Spark should listen on. If not called the default port
+     * Set the port that Spark should listen on. If not called, the default port
      * is 4567. This has to be called before any route mapping is done.
-     * If provided port = 0 then the an arbitrary available port will be used.
+     * If provided port = 0, then an arbitrary available port will be used.
      *
      * @param port The port number
      */
@@ -1014,15 +1018,15 @@ public class Spark {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused).
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
-     * @param truststoreFile     the truststore file location as string, leave null to reuse
+     * @param truststoreFile     the truststore file location as a string, leave null to reuse
      *                           keystore
      * @param truststorePassword the trust store password
      * @deprecated replaced by {@link #secure(String, String, String, String)}
@@ -1038,15 +1042,15 @@ public class Spark {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused).
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
-     * @param truststoreFile     the truststore file location as string, leave null to reuse
+     * @param truststoreFile     the truststore file location as a string, leave null to reuse
      *                           keystore
      * @param truststorePassword the trust store password
      */
@@ -1060,16 +1064,16 @@ public class Spark {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused).
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
      * @param certAlias          the default certificate Alias
-     * @param truststoreFile     the truststore file location as string, leave null to reuse
+     * @param truststoreFile     the truststore file location as a string, leave null to reuse
      *                           keystore
      * @param truststorePassword the trust store password
      */
@@ -1082,7 +1086,7 @@ public class Spark {
     }
 
     /**
-     * Overrides default exception handler during initialization phase
+     * Overrides default exception handler during the initialization phase
      *
      * @param initExceptionHandler The custom init exception handler
      */
@@ -1093,18 +1097,18 @@ public class Spark {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused).
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
-     * @param truststoreFile     the truststore file location as string, leave null to reuse
+     * @param truststoreFile     the truststore file location as a string, leave null to reuse
      *                           keystore
-     * @param needsClientCert    Whether to require client certificate to be supplied in
-     *                           request
+     * @param needsClientCert    Whether to require a client certificate to be supplied in
+     *                           the request
      * @param truststorePassword the trust store password
      */
     public static void secure(String keystoreFile,
@@ -1118,19 +1122,19 @@ public class Spark {
     /**
      * Set the connection to be secure, using the specified keystore and
      * truststore. This has to be called before any route mapping is done. You
-     * have to supply a keystore file, truststore file is optional (keystore
+     * have to supply a keystore file; the truststore file is optional (keystore
      * will be reused).
      * This method is only relevant when using embedded Jetty servers. It should
      * not be used if you are using Servlets, where you will need to secure the
      * connection in the servlet container
      *
-     * @param keystoreFile       The keystore file location as string
+     * @param keystoreFile       The keystore file location as a string
      * @param keystorePassword   the password for the keystore
      * @param certAlias          the default certificate Alias
-     * @param truststoreFile     the truststore file location as string, leave null to reuse
+     * @param truststoreFile     the truststore file location as a string, leave null to reuse
      *                           keystore
-     * @param needsClientCert    Whether to require client certificate to be supplied in
-     *                           request
+     * @param needsClientCert    Whether to require a client certificate to be supplied in
+     *                           the request
      * @param truststorePassword the trust store password
      */
     public static void secure(String keystoreFile,
@@ -1163,12 +1167,12 @@ public class Spark {
     }
 
     /**
-     * Sets the folder in classpath serving static files. Observe: this method
+     * Sets the folder in the classpath serving static files. Observe: this method
      * must be called before all other methods.
-     * -
-     * Note: contemplate changing tonew static files paradigm {@link spark.Service.StaticFiles}
+     * <p>
+     * Note: contemplate changing to new static files paradigm {@link spark.Service.StaticFiles}
      *
-     * @param folder the folder in classpath.
+     * @param folder the folder in the classpath.
      */
     public static void staticFileLocation(String folder) {
         getInstance().staticFileLocation(folder);
@@ -1203,7 +1207,7 @@ public class Spark {
     
     /**
      * Waits, with no timeout, for the Spark server to be stopped.
-     * If it's already stopped, will return immediately.
+     * If it's already stopped, it will return immediately.
      * See {@link Service#awaitStop()} for the risk of an unbounded wait.
      */
     public static void awaitStop() {
@@ -1212,7 +1216,7 @@ public class Spark {
 
     /**
      * Waits for the Spark server to be stopped, for up to the given timeout.
-     * If it's already stopped, will return immediately.
+     * If it's already stopped, it will return immediately.
      *
      * @param timeout the maximum time to wait
      * @return true if the server stopped before the timeout elapsed, false if the timeout elapsed first
