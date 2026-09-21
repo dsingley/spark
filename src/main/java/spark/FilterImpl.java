@@ -60,7 +60,7 @@ public abstract class FilterImpl implements Filter, Wrapper {
      * Wraps the filter in FilterImpl
      *
      * @param path       the path
-     * @param acceptType the type corresponding to the {@code Accept} header
+     * @param acceptType the accepted media type
      * @param filter     the filter
      * @return the wrapped route
      */

@@ -172,7 +172,7 @@ abstract class Routable {
      * Map the route for HTTP GET requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void get(String path, String acceptType, Route route) {
@@ -183,7 +183,7 @@ abstract class Routable {
      * Map the route for HTTP POST requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void post(String path, String acceptType, Route route) {
@@ -194,7 +194,7 @@ abstract class Routable {
      * Map the route for HTTP PUT requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void put(String path, String acceptType, Route route) {
@@ -205,7 +205,7 @@ abstract class Routable {
      * Map the route for HTTP PATCH requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void patch(String path, String acceptType, Route route) {
@@ -216,7 +216,7 @@ abstract class Routable {
      * Map the route for HTTP DELETE requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void delete(String path, String acceptType, Route route) {
@@ -227,7 +227,7 @@ abstract class Routable {
      * Map the route for HTTP HEAD requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void head(String path, String acceptType, Route route) {
@@ -238,7 +238,7 @@ abstract class Routable {
      * Map the route for HTTP TRACE requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void trace(String path, String acceptType, Route route) {
@@ -249,7 +249,7 @@ abstract class Routable {
      * Map the route for HTTP CONNECT requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void connect(String path, String acceptType, Route route) {
@@ -260,7 +260,7 @@ abstract class Routable {
      * Map the route for HTTP OPTIONS requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      */
     public void options(String path, String acceptType, Route route) {
@@ -290,7 +290,7 @@ abstract class Routable {
      * Maps a filter to be executed before any matching routes
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param filter     The filter
      */
     public void before(String path, String acceptType, Filter filter) {
@@ -301,7 +301,7 @@ abstract class Routable {
      * Maps a filter to be executed after any matching routes
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param filter     The filter
      */
     public void after(String path, String acceptType, Filter filter) {
@@ -345,7 +345,7 @@ abstract class Routable {
      * Map the route for HTTP GET requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -371,7 +371,7 @@ abstract class Routable {
      * Map the route for HTTP POST requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -397,7 +397,7 @@ abstract class Routable {
      * Map the route for HTTP PUT requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -423,7 +423,7 @@ abstract class Routable {
      * Map the route for HTTP DELETE requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -449,7 +449,7 @@ abstract class Routable {
      * Map the route for HTTP PATCH requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -475,7 +475,7 @@ abstract class Routable {
      * Map the route for HTTP HEAD requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -501,7 +501,7 @@ abstract class Routable {
      * Map the route for HTTP TRACE requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -527,7 +527,7 @@ abstract class Routable {
      * Map the route for HTTP CONNECT requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -553,7 +553,7 @@ abstract class Routable {
      * Map the route for HTTP OPTIONS requests
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      The route
      * @param engine     the template engine
      */
@@ -583,7 +583,7 @@ abstract class Routable {
      * Map the route for HTTP GET requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -606,7 +606,7 @@ abstract class Routable {
      * Map the route for HTTP POST requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -629,7 +629,7 @@ abstract class Routable {
      * Map the route for HTTP PUT requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -652,7 +652,7 @@ abstract class Routable {
      * Map the route for HTTP DELETE requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -678,7 +678,7 @@ abstract class Routable {
      * Map the route for HTTP HEAD requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -701,7 +701,7 @@ abstract class Routable {
      * Map the route for HTTP CONNECT requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -727,7 +727,7 @@ abstract class Routable {
      * Map the route for HTTP TRACE requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -753,7 +753,7 @@ abstract class Routable {
      * Map the route for HTTP OPTIONS requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -779,7 +779,7 @@ abstract class Routable {
      * Map the route for HTTP PATCH requests
      *
      * @param path        the path
-     * @param acceptType  the accept type
+     * @param acceptType  the accepted media type
      * @param route       The route
      * @param transformer the response transformer
      */
@@ -794,7 +794,7 @@ abstract class Routable {
      * Create a route implementation or use the default response transformer.
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      the route
      * @return ResponseTransformerRouteImpl or RouteImpl
      */

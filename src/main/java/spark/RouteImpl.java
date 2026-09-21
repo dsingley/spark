@@ -59,7 +59,7 @@ public abstract class RouteImpl implements Route, Wrapper {
      * Wraps the route in RouteImpl
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      the route
      * @return the wrapped route
      */
@@ -88,7 +88,7 @@ public abstract class RouteImpl implements Route, Wrapper {
      * Constructor
      *
      * @param path       The route path that is used for matching. (e.g., /hello, users/:name)
-     * @param acceptType The accept type that is used for matching.
+     * @param acceptType The accepted media type used for matching.
      */
     protected RouteImpl(String path, String acceptType) {
         this.path = path;
@@ -99,7 +99,7 @@ public abstract class RouteImpl implements Route, Wrapper {
      * Constructor
      *
      * @param path       The route path that is used for matching. (e.g., /hello, users/:name)
-     * @param acceptType The accept type that is used for matching.
+     * @param acceptType The accepted media type used for matching.
      * @param route      The route used to create the route implementation
      */
     protected RouteImpl(String path, String acceptType, Object route) {
@@ -135,7 +135,7 @@ public abstract class RouteImpl implements Route, Wrapper {
     }
 
     /**
-     * @return the accept type
+     * @return the accepted media type
      */
     public String getAcceptType() {
         return acceptType;

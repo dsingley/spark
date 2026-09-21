@@ -79,7 +79,7 @@ public class Routes {
      *
      * @param httpMethod the http method
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @return the target
      */
     public RouteMatch find(HttpMethod httpMethod, String path, String acceptType) {
@@ -93,7 +93,7 @@ public class Routes {
      *
      * @param httpMethod the http method
      * @param path       the route path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @return the targets
      */
     public List<RouteMatch> findMultiple(HttpMethod httpMethod, String path, String acceptType) {
@@ -265,7 +265,7 @@ public class Routes {
      * Parse and validates a route and adds it
      *
      * @param route      the route path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param target     the invocation target
      * @deprecated use {@link #add(HttpMethod, RouteImpl)} or {@link #add(HttpMethod, FilterImpl)}
      */
