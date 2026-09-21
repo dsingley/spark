@@ -45,7 +45,7 @@ public abstract class TemplateViewRouteImpl extends RouteImpl {
      * factory method
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      the route
      * @param engine     the engine
      * @return the wrapper template view route
@@ -72,7 +72,7 @@ public abstract class TemplateViewRouteImpl extends RouteImpl {
      * Constructor
      *
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param route      the route handler that renders the template view
      */
     protected TemplateViewRouteImpl(String path, String acceptType, TemplateViewRoute route) {

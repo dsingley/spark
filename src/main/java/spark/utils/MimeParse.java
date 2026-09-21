@@ -46,7 +46,7 @@ public class MimeParse {
     }
 
     /**
-     * Carves up a mime-type and returns a ParseResults object
+     * Carves up a mime-type and returns a ParseResults object.
      * For example, the media range 'application/xhtml;q=0.5' would get parsed
      * into:
      * ('application', 'xhtml', {'q', '0.5'})

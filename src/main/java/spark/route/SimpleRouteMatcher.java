@@ -30,7 +30,7 @@ public class SimpleRouteMatcher extends Routes {
 
     /**
      * @param route      the route
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @param target     the target
      * @deprecated see {@link spark.route.Routes}
      */
@@ -42,7 +42,7 @@ public class SimpleRouteMatcher extends Routes {
     /**
      * @param httpMethod the HttpMethod
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @return the RouteMatch object
      * @deprecated see {@link spark.route.Routes}
      */
@@ -54,7 +54,7 @@ public class SimpleRouteMatcher extends Routes {
     /**
      * @param httpMethod the HttpMethod
      * @param path       the path
-     * @param acceptType the accept type
+     * @param acceptType the accepted media type
      * @return list of RouteMatch objects
      * @deprecated see {@link spark.route.Routes}
      */

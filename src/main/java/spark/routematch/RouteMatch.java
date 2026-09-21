@@ -43,14 +43,14 @@ public class RouteMatch {
     }
 
     /**
-     * @return the accept type
+     * @return the HTTP method
      */
     public HttpMethod getHttpMethod() {
         return httpMethod;
     }
 
     /**
-     * @return the accept type
+     * @return the accepted media type
      */
     public String getAcceptType() {
         return acceptType;
