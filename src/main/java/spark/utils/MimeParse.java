@@ -95,13 +95,13 @@ public class MimeParse {
      * @param range the media range to parse
      */
     private static ParseResults parseMediaRange(String range) {
-        var parseRresults = parseMimeType(range);
-        var q = parseRresults.params.get("q");
+        var parseResults = parseMimeType(range);
+        var q = parseResults.params.get("q");
         var f = toFloat(q, 1);
         if (isBlank(q) || f < 0 || f > 1) {
-            parseRresults.params.put("q", "1");
+            parseResults.params.put("q", "1");
         }
-        return parseRresults;
+        return parseResults;
     }
 
     /**
