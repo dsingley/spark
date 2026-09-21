@@ -19,7 +19,9 @@ public class MimeParse {
     public static final String NO_MIME_TYPE = "";
 
     /**
-     * Parse results container
+     * Holds the type, subtype, and parameters parsed from a mime-type or media-range string.
+     * For example, {@code application/xhtml;q=0.5} parses into type {@code application},
+     * subType {@code xhtml}, and params {@code {q=0.5}}.
      */
     private static class ParseResults {
         String type;
@@ -86,7 +88,7 @@ public class MimeParse {
      * Carves up a media range and returns a ParseResults.
      * For example, the media range 'application/*;q=0.5' would get parsed into:
      * ('application', '*', {'q', '0.5'})
-     * In addition this function also guarantees that there is a value for 'q'
+     * In addition, this function also guarantees that there is a value for 'q'
      * in the params dictionary, filling it in with a proper default if
      * necessary.
      *

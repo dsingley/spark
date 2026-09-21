@@ -20,12 +20,12 @@ package spark.utils.urldecoding;
 /** UTF-8 StringBuilder.
  * <p>
  * This class wraps a standard {@link StringBuilder} and provides methods to append
- * UTF-8 encoded bytes, that are converted into characters.
+ * UTF-8 encoded bytes that are converted into characters.
  * <p>
  * This class is stateful and up to 4 calls to {@link #append(byte)} may be needed before
  * state a character is appended to the string buffer.
  * <p>
- * The UTF-8 decoding is done by this class and no additional buffers or Readers are used.
+ * The UTF-8 decoding is done by this class, and no additional buffers or Readers are used.
  * The UTF-8 code was inspired by
  * <a href="http://bjoern.hoehrmann.de/utf-8/decoder/dfa/">Flexible and Economical UTF-8 Decoder</a>.
  */

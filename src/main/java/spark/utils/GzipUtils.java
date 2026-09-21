@@ -49,10 +49,18 @@ public class GzipUtils {
      * Checks if the HTTP request/response accepts and wants GZIP,
      * and in that case wraps the response output stream in a
      * {@link java.util.zip.GZIPOutputStream}.
+     * <p>
+     * When {@code requireWantsHeader} is {@code true}, gzip is only applied if the response already
+     * has a {@code Content-Encoding: gzip} header set - used for regular route responses, so Spark
+     * doesn't silently compress output without an explicit signal that it should. When {@code false},
+     * gzip is applied whenever the client's {@code Accept-Encoding} allows it, regardless of
+     * {@code Content-Encoding}, and the header is then set automatically - used for static file
+     * serving, which Spark manages end to end.
      *
      * @param httpRequest        the HTTP servlet request.
      * @param httpResponse       the HTTP servlet response.
-     * @param requireWantsHeader if wants header is required
+     * @param requireWantsHeader whether a {@code Content-Encoding: gzip} header must already be
+     *                           present on the response for gzip to be applied
      * @return if accepted and wanted a {@link java.util.zip.GZIPOutputStream} otherwise the unchanged response
      * output stream.
      * @throws IOException in case of IO error.

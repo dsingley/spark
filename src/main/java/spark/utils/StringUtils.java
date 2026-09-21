@@ -79,7 +79,7 @@ public abstract class StringUtils {
      * will never return {@code true} for a non-null non-String object.
      * <p>The Object signature is useful for general attribute handling code
      * that commonly deals with Strings but generally has to iterate over
-     * Objects since attributes may e.g. be primitive value objects as well.
+     * Objects since attributes may, e.g., be primitive value objects as well.
      *
      * @param str the candidate String
      * @return if the String is empty
@@ -92,7 +92,7 @@ public abstract class StringUtils {
     /**
      * Check that the given CharSequence is neither {@code null} nor of length 0.
      *
-     * @param str the CharSequence to check (may be {@code null})
+     * @param str the CharSequence to check (can be {@code null})
      * @return {@code true} if the CharSequence is not null and has length
      */
     public static boolean hasLength(CharSequence str) {
@@ -103,7 +103,7 @@ public abstract class StringUtils {
      * Check that the given String is neither {@code null} nor of length 0.
      * Note: Will return {@code true} for a String that purely consists of whitespace.
      *
-     * @param str the String to check (may be {@code null})
+     * @param str the String to check (can be {@code null})
      * @return {@code true} if the String is not null and has length
      * @see #hasLength(CharSequence)
      */
@@ -145,7 +145,7 @@ public abstract class StringUtils {
      *
      * @param inString      the original String
      * @param charsToDelete a set of characters to delete.
-     *                      E.g. "az\n" will delete 'a's, 'z's and new lines.
+     *                      E.g., "az\n" will delete all 'a's, 'z's, and new lines.
      * @return the resulting String
      */
     public static String deleteAny(String inString, String charsToDelete) {
@@ -165,7 +165,7 @@ public abstract class StringUtils {
     /**
      * Extract the filename from the given path.
      *
-     * @param path the file path (may be {@code null})
+     * @param path the file path (can be {@code null})
      * @return the extracted filename, or {@code null} if none
      */
     public static String getFilename(String path) {
@@ -199,7 +199,7 @@ public abstract class StringUtils {
     }
 
     /**
-     * Normalize the path by suppressing sequences like "path/.." and
+     * Normalize the path by suppressing sequences like {@code "path/.."} and
      * inner simple dots.
      * <p>The result is convenient for path comparison. For other uses,
      * notice that Windows separators ("\") are replaced by simple slashes.
@@ -275,13 +275,13 @@ public abstract class StringUtils {
 
     /**
      * Take a String which is a delimited list and convert it to a String array.
-     * <p>A single delimiter can consists of more than one character: It will still
-     * be considered as single delimiter string, rather than as bunch of potential
+     * <p>A single delimiter can consist of more than one character: It will still
+     * be considered as a single delimiter string, rather than as a bunch of potential
      * delimiter characters - in contrast to {@code tokenizeToStringArray}.
      *
      * @param str       the input String
      * @param delimiter the delimiter between elements (this is a single delimiter,
-     *                  rather than a bunch individual delimiter characters)
+     *                  rather than a bunch of individual delimiter characters)
      * @return an array of the tokens in the list
      */
     public static String[] delimitedListToStringArray(String str, String delimiter) {
@@ -290,13 +290,13 @@ public abstract class StringUtils {
 
     /**
      * Take a String which is a delimited list and convert it to a String array.
-     * <p>A single delimiter can consists of more than one character: It will still
-     * be considered as single delimiter string, rather than as bunch of potential
+     * <p>A single delimiter can consist of more than one character: It will still
+     * be considered as a single delimiter string, rather than as a bunch of potential
      * delimiter characters - in contrast to {@code tokenizeToStringArray}.
      *
      * @param str           the input String
      * @param delimiter     the delimiter between elements (this is a single delimiter,
-     *                      rather than a bunch individual delimiter characters)
+     *                      rather than a bunch of individual delimiter characters)
      * @param charsToDelete a set of characters to delete. Useful for deleting unwanted
      *                      line breaks: e.g. "\r\n\f" will delete all new lines and line feeds in a String.
      * @return an array of the tokens in the list
@@ -329,8 +329,8 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convenience method to return a Collection as a delimited (e.g. CSV)
-     * String. E.g. useful for {@code toString()} implementations.
+     * Convenience method to return a Collection as a delimited (e.g., CSV)
+     * String. E.g., useful for {@code toString()} implementations.
      *
      * @param coll   the Collection to display
      * @param delim  the delimiter to use (probably a ",")
@@ -354,8 +354,8 @@ public abstract class StringUtils {
     }
 
     /**
-     * Convenience method to return a Collection as a delimited (e.g. CSV)
-     * String. E.g. useful for {@code toString()} implementations.
+     * Convenience method to return a Collection as a delimited (e.g., CSV)
+     * String. E.g., useful for {@code toString()} implementations.
      *
      * @param coll  the Collection to display
      * @param delim the delimiter to use (probably a ",")

@@ -22,7 +22,7 @@ import spark.route.HttpMethod;
 import spark.route.Routes;
 
 /**
- * Holds the parameters needed in the Before filters, Routes and After filters execution.
+ * Holds the parameters needed in the Before filters, Routes, and After filters execution.
  */
 final class RouteContext {
 

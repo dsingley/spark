@@ -25,9 +25,9 @@ public class UriPath {
     }
 
     /**
-     * Convert a path to a cananonical form.
-     * All instances of "." and ".." are factored out.  Null is returned
-     * if the path tries to .. above its root.
+     * Convert a path to a canonical form.
+     * All instances of {@code "."} and {@code ".."} are factored out.  Null is returned
+     * if the path tries to {@code ..} above its root.
      *
      * @param path the path to convert
      * @return path or null.
@@ -139,7 +139,7 @@ public class UriPath {
                     }
             }
 
-            // Do the delete
+            // Do the delete operation
             if (skip <= 0 && delStart >= 0 && delEnd >= delStart) {
                 builder.delete(delStart, delEnd);
                 delStart = delEnd = -1;
@@ -151,12 +151,12 @@ public class UriPath {
             }
         }
 
-        // Too many ..
+        // Too many ".."
         if (skip > 0) {
             return null;
         }
 
-        // Do the delete
+        // Do the delete operation
         if (delEnd >= 0) {
             builder.delete(delStart, delEnd);
         }

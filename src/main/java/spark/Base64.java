@@ -45,8 +45,8 @@ class Base64 {
     //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
 
     /**
-     * @param toDecodeContent the String to be decode
-     * @return String after decode
+     * @param toDecodeContent the String to be decoded
+     * @return String after decoding
      */
     // TODO (sleberknight): only used by tests, remove it?
     public static String decode(String toDecodeContent) {

@@ -70,7 +70,7 @@ public abstract class AbstractResourceHandler {
 
     /**
      * Add two URI path segments.
-     * Handles null and empty paths, path and query params (e.g. {@code ?a=b} or
+     * Handles null and empty paths, path and query params (e.g., {@code ?a=b} or
      * {@code ;JSESSIONID=xxx}) and avoids duplicate {@code /}.
      *
      * @param segment1 URI path segment (should be encoded)
