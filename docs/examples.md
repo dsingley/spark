@@ -243,7 +243,7 @@ connect since this server only listens on the IPv4 wildcard address.
 | Class | `spark.examples.gzip.GzipExample` |
 | What it shows | Serving gzip-encoded content. |
 
-On startup it makes one request to itself and prints the decompressed response, then stays up
+On startup, it makes one request to itself and prints the decompressed response, then stays up
 like every other example so you can try it yourself:
 
 ```

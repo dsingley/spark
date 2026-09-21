@@ -57,8 +57,8 @@ public class EmbeddedJettyFactory implements EmbeddedServerFactory {
     }
 
     /**
-     * Sets optional thread pool for jetty server.  This is useful for overriding the default thread pool
-     * behaviour for example io.dropwizard.metrics.jetty9.InstrumentedQueuedThreadPool.
+     * Sets optional thread pool for jetty server. This is useful for overriding the default thread pool
+     * behavior, for example, {@code io.dropwizard.metrics.jetty9.InstrumentedQueuedThreadPool}.
      *
      * @param threadPool thread pool
      * @return Builder pattern - returns this instance

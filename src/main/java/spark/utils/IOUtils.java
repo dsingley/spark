@@ -52,7 +52,7 @@ import java.io.Writer;
  * <p>
  * Wherever possible, the methods in this class do <em>not</em> flush or close
  * the stream. This is to avoid making non-portable assumptions about the
- * streams' origin and further use. Thus the caller is still responsible for
+ * streams' origin and further use. Thus, the caller is still responsible for
  * closing streams after use.
  * <p>
  * Origin of code: Excalibur.
@@ -67,7 +67,7 @@ import java.io.Writer;
  * @author Sandy McArthur
  * @version $Id: IOUtils.java 481854 2006-12-03 18:30:07Z scolebourne $
  *
- * Code copied from apache commons io source. Changes made (mostly removal of methods) by Per Wendel.
+ * Code copied from the Apache Commons IO source. Changes made (mostly removal of methods) by Per Wendel.
  */
 public final class IOUtils {
 

@@ -41,7 +41,7 @@ public class SocketConnectorFactory {
     }
 
     /**
-     * Creates an ordinary, non-secured Jetty server jetty.
+     * Creates an ordinary, non-secured Jetty server.
      *
      * @param server Jetty server
      * @param host   host
@@ -59,7 +59,7 @@ public class SocketConnectorFactory {
     }
 
     /**
-     * Creates a ssl jetty socket jetty based on the provided {@link SslStores}.
+     * Creates a ssl Jetty socket based on the provided {@link SslStores}.
      *
      * @param server    Jetty server
      * @param sslStores the security sslStores.
@@ -80,7 +80,7 @@ public class SocketConnectorFactory {
     }
 
     /**
-     * Creates a ssl jetty socket jetty using the provided {@link SslContextFactory}.
+     * Creates a ssl Jetty socket using the provided {@link SslContextFactory}.
      *
      * @param server    Jetty server
      * @param sslContextFactory the SslContextFactory
@@ -150,7 +150,7 @@ public class SocketConnectorFactory {
     private static HttpConnectionFactory createHttpConnectionFactory(boolean trustForwardHeaders) {
         var httpConfig = new HttpConfiguration();
         httpConfig.setSecureScheme("https");
-        // Jetty defaults to rejecting ambiguous URIs (e.g. an encoded slash within a path
+        // Jetty defaults to rejecting ambiguous URIs (e.g., an encoded slash within a path
         // segment) with a 400 since a hardening change several versions back; Spark has always
         // allowed them (routes/splats built from URL-decoded segments), so opt back in to the
         // permissive compliance mode to preserve that existing, documented behavior.

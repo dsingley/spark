@@ -791,7 +791,7 @@ abstract class Routable {
     }
 
     /**
-     * Create route implementation or use default response transformer
+     * Create a route implementation or use the default response transformer.
      *
      * @param path       the path
      * @param acceptType the accept type
@@ -806,7 +806,7 @@ abstract class Routable {
     }
 
     /**
-     * Create route implementation or use default response transformer
+     * Create a route implementation or use the default response transformer.
      *
      * @param path  the path
      * @param route the route

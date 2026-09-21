@@ -32,8 +32,8 @@ class Base64 {
     private static final java.util.Base64.Decoder decoder = java.util.Base64.getDecoder();
 
     /**
-     * @param toEncodeContent the String to be encode
-     * @return String after encode
+     * @param toEncodeContent the String to be encoded
+     * @return String after encoding
      */
     public static String encode(String toEncodeContent) {
         if (toEncodeContent == null) {
