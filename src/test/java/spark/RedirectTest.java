@@ -23,11 +23,14 @@ import static spark.Spark.redirect;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
 /**
  * Tests the redirect utility methods in {@link spark.Redirect}
  */
+@ExtendWith(SparkStopExtension.class)
 class RedirectTest {
 
     private static final String REDIRECTED = "Redirected";

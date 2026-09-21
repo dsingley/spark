@@ -18,13 +18,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import spark.routematch.RouteMatch;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@ExtendWith(SparkStopExtension.class)
 class RequestTest {
 
     private static final String THE_SERVLET_PATH = "/the/servlet/path";
