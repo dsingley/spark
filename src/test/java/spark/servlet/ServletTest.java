@@ -16,8 +16,13 @@ import org.slf4j.LoggerFactory;
 import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
-import java.util.concurrent.CountDownLatch;
-
+/**
+ * Verifies {@link SparkFilter} by deploying it as a real servlet filter in a Jetty
+ * {@link WebAppContext}, rather than through Spark's own embedded server. The deployment
+ * descriptor is src/test/webapp/WEB-INF/web.xml, which maps SparkFilter to every path and
+ * points it at {@link MyApp} (via the applicationClass init-param) as the application whose
+ * routes it should serve.
+ */
 @ExtendWith(SparkStopExtension.class)
 class ServletTest {
 
@@ -27,12 +32,13 @@ class ServletTest {
     private static final int PORT = 9393;
 
     private static SparkTestUtil testUtil;
+    private static Server server;
 
     @BeforeAll
-    static void beforeAll() throws InterruptedException {
+    static void beforeAll() throws Exception {
         testUtil = new SparkTestUtil(PORT);
 
-        var server = new Server();
+        server = new Server();
         var connector = new ServerConnector(server);
 
         // Set some timeout options to make debugging easier.
@@ -46,28 +52,14 @@ class ServletTest {
         context.setWar("src/test/webapp");
 
         server.setHandler(context);
-        var latch = new CountDownLatch(1);
-
-        new Thread(() -> {
-            try {
-                LOG.info(">>> STARTING EMBEDDED JETTY SERVER for jUnit testing of SparkFilter");
-                server.start();
-                latch.countDown();
-                System.in.read();
-                LOG.info(">>> STOPPING EMBEDDED JETTY SERVER");
-                server.stop();
-                server.join();
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(100);
-            }
-        }).start();
-
-        latch.await();
+        server.start();
     }
 
     @AfterAll
-    static void afterAll() {
+    static void afterAll() throws Exception {
+        server.stop();
+        server.join();
+
         if (MyApp.tmpExternalFile != null) {
             LOG.debug("tearDown().deleting: {}", MyApp.tmpExternalFile);
             MyApp.tmpExternalFile.delete();

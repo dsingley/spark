@@ -6,24 +6,27 @@ import static spark.Spark.awaitInitialization;
 import static spark.Spark.get;
 import static spark.Spark.unmap;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
+@ExtendWith(SparkStopExtension.class)
 class UnmapTest {
 
-    private SparkTestUtil testUtil;
+    private static SparkTestUtil testUtil;
 
-    @BeforeEach 
-    void setUp() {
+    @BeforeAll
+    static void beforeAll() {
         testUtil = new SparkTestUtil(4567);
+
+        get("/tobeunmapped", (q, a) -> "tobeunmapped");
+        awaitInitialization();
     }
 
     @Test
     void testUnmap() throws Exception {
-        get("/tobeunmapped", (q, a) -> "tobeunmapped");
-        awaitInitialization();
-
         var response = testUtil.doMethod("GET", "/tobeunmapped", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
