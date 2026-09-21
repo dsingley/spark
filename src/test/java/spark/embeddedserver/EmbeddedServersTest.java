@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.RequestLogWriter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -26,6 +27,15 @@ class EmbeddedServersTest {
     @TempDir
     File temporaryFolder;
 
+    private EmbeddedServer embeddedServer;
+
+    @AfterEach
+    void tearDown() {
+        if (embeddedServer != null) {
+            embeddedServer.extinguish();
+        }
+    }
+
     @Test
     void testAddAndCreate_whenCreate_createsCustomServer() throws Exception {
         // Create custom Server
@@ -39,13 +49,12 @@ class EmbeddedServersTest {
 
         // Register custom server
         EmbeddedServers.add(id, new EmbeddedJettyFactory(serverFactory));
-        var embeddedServer = EmbeddedServers.create(id, null, null, null, false);
+        embeddedServer = EmbeddedServers.create(id, null, null, null, false);
         assertThat(embeddedServer).isNotNull();
         embeddedServer.trustForwardHeaders(true);
         embeddedServer.ignite("localhost", 0, (SslStores) null, 0, 0, 0);
 
         assertThat(requestLogFile).exists();
-        embeddedServer.extinguish();
         verify(serverFactory).create(0, 0, 0);
     }
 
