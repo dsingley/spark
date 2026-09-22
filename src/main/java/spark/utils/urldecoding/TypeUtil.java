@@ -20,9 +20,13 @@ package spark.utils.urldecoding;
 import java.util.Objects;
 
 /**
- * TYPE Utilities.
- * Provides various static utility methods for manipulating types and their
- * string representations.
+ * Hex-digit and hex-string conversion utilities, used by this package's URL percent-encoding
+ * decoder to parse {@code %XX} escapes and by {@link Utf8Appendable} to render bytes for
+ * diagnostic messages.
+ * <p>
+ * Copied from Eclipse Jetty's own {@code org.eclipse.jetty.util.TypeUtil}, trimmed down to just
+ * the methods this package actually uses - the original is a much larger, general-purpose type
+ * utility class.
  *
  * @since Jetty 4.1
  */
