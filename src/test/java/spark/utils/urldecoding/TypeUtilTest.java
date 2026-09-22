@@ -93,17 +93,66 @@ class TypeUtilTest {
     }
 
     @Test
-    void parseInt_whenRequestedLengthExceedsStringLength_thenDoesNotThrowIndexException() {
+    void parseInt_whenNullString_thenThrows() {
+        assertThatThrownBy(() -> TypeUtil.parseInt(null, 0, 2, 16))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("s must not be null");
+    }
+
+    @Test
+    void parseInt_whenOffsetIsNegative_thenThrows() {
+        assertThatThrownBy(() -> TypeUtil.parseInt("ff", -1, 2, 16))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("offset -1 is out of bounds for a string of length 2");
+    }
+
+    @Test
+    void parseInt_whenOffsetExceedsStringLength_thenThrows() {
+        assertThatThrownBy(() -> TypeUtil.parseInt("ff", 3, 2, 16))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("offset 3 is out of bounds for a string of length 2");
+    }
+
+    @Test
+    void parseInt_whenRequestedLengthExceedsStringLength_thenThrowsWithClearMessage() {
         // offset=0, length=10 asks for far more characters than "9a" (length 2) actually
         // has. The old code built its exception message via s.substring(offset, offset +
         // length), which itself threw StringIndexOutOfBoundsException here rather than
-        // reporting the real problem, masking it entirely. No current caller uses a base
-        // other than 16 - for which this path is unreachable, since convertHexDigit never
-        // returns a value >= 16 - so this wasn't reachable through existing code, but it's
-        // a real latent defect in this public static utility method.
+        // reporting the real problem, masking it entirely - see issue #260. Now this is
+        // caught immediately, before the parsing loop ever runs.
         assertThatThrownBy(() -> TypeUtil.parseInt("9a", 0, 10, 10))
-                .isInstanceOf(NumberFormatException.class)
-                .hasMessage("'a' at index 1 is not a valid base-10 digit (in \"9a\")");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("offset 0 + length 10 exceeds string length 2");
+    }
+
+    @Test
+    void toHexString_byte_whenValidByte_thenReturnsHexRepresentation() {
+        // The high nibble is rendered uppercase and the low nibble lowercase - surprising,
+        // but existing, long-standing behavior; not something to silently change here.
+        assertAll(
+                () -> assertThat(TypeUtil.toHexString((byte) 0x00)).isEqualTo("00"),
+                () -> assertThat(TypeUtil.toHexString((byte) 0x0F)).isEqualTo("0f"),
+                () -> assertThat(TypeUtil.toHexString((byte) 0xAB)).isEqualTo("Ab"),
+                () -> assertThat(TypeUtil.toHexString((byte) 0xFF)).isEqualTo("Ff")
+        );
+    }
+
+    @Test
+    void toHexString_byteArray_whenFullRange_thenReturnsHexRepresentation() {
+        byte[] bytes = {(byte) 0xDE, (byte) 0xAD, (byte) 0xBE, (byte) 0xEF};
+        assertThat(TypeUtil.toHexString(bytes, 0, bytes.length)).isEqualTo("DeAdBeEf");
+    }
+
+    @Test
+    void toHexString_byteArray_whenSlice_thenReturnsHexRepresentationOfSliceOnly() {
+        byte[] bytes = {(byte) 0xDE, (byte) 0xAD, (byte) 0xBE, (byte) 0xEF};
+        assertThat(TypeUtil.toHexString(bytes, 1, 2)).isEqualTo("AdBe");
+    }
+
+    @Test
+    void toHexString_byteArray_whenZeroLength_thenReturnsEmptyString() {
+        byte[] bytes = {(byte) 0xDE, (byte) 0xAD};
+        assertThat(TypeUtil.toHexString(bytes, 0, 0)).isEmpty();
     }
 
 }
