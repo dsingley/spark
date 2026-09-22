@@ -83,8 +83,12 @@ public class TypeUtil {
     }
 
     /**
+     * Converts a single ASCII hex digit character to its numeric value.
+     * For example, {@code convertHexDigit('a')} returns {@code 10}.
+     *
      * @param c An ASCII encoded character ({@code 0-9}, {@code a-f}, {@code A-F})
      * @return The integer value of the hex digit, in the range 0-15.
+     * @throws NumberFormatException if c is not a valid hex digit character
      */
     public static int convertHexDigit(char c) {
         if (c >= '0' && c <= '9') {
@@ -100,8 +104,13 @@ public class TypeUtil {
     }
 
     /**
+     * Same as {@link #convertHexDigit(char)}, but takes the character as an int code point
+     * rather than a char.
+     * For example, {@code convertHexDigit((int) 'a')} returns {@code 10}.
+     *
      * @param c An ASCII encoded character ({@code 0-9}, {@code a-f}, {@code A-F})
      * @return The integer value of the hex digit, in the range 0-15.
+     * @throws NumberFormatException if c is not a valid hex digit character
      */
     public static int convertHexDigit(int c) {
         if (c >= '0' && c <= '9') {
