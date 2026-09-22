@@ -17,6 +17,8 @@
 //
 package spark.utils.urldecoding;
 
+import java.util.function.Supplier;
+
 /**
  * TYPE Utilities.
  * Provides various static utility methods for manipulating types and their
@@ -53,7 +55,8 @@ public class TypeUtil {
 
             int digit = convertHexDigit((int) c);
             if (digit < 0 || digit >= base) {
-                throw new NumberFormatException(s.substring(offset, offset + length));
+                throw new NumberFormatException("'" + c + "' at index " + (offset + i)
+                        + " is not a valid base-" + base + " digit (in \"" + s + "\")");
             }
             value = value * base + digit;
         }
@@ -65,7 +68,7 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(char c) {
-        return requireValidHexDigit(Character.digit(c, 16), "'" + c + "' is not a valid hex digit");
+        return requireValidHexDigit(Character.digit(c, 16), () -> "'" + c + "' is not a valid hex digit");
     }
 
     /**
@@ -73,12 +76,12 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(int c) {
-        return requireValidHexDigit(Character.digit(c, 16), "'" + c + "' is not a valid hex digit");
+        return requireValidHexDigit(Character.digit(c, 16), () -> "'" + c + "' is not a valid hex digit");
     }
 
-    private static int requireValidHexDigit(int d, String errorMessage) {
+    private static int requireValidHexDigit(int d, Supplier<String> errorMessage) {
         if (d < 0) {
-            throw new NumberFormatException(errorMessage);
+            throw new NumberFormatException(errorMessage.get());
         }
         return d;
     }
