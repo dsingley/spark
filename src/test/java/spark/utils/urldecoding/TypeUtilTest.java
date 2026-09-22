@@ -35,7 +35,7 @@ class TypeUtilTest {
         for (char c : new char[] {':', ';', '<', '=', '>', '?', '@', '`'}) {
             assertThatThrownBy(() -> TypeUtil.convertHexDigit(c))
                     .isInstanceOf(NumberFormatException.class)
-                    .hasMessage("!hex " + c);
+                    .hasMessage("'" + c + "' is not a valid hex digit");
         }
     }
 
@@ -45,7 +45,7 @@ class TypeUtilTest {
             int codePoint = c;
             assertThatThrownBy(() -> TypeUtil.convertHexDigit(codePoint))
                     .isInstanceOf(NumberFormatException.class)
-                    .hasMessage("!hex " + codePoint);
+                    .hasMessage("'" + codePoint + "' is not a valid hex digit");
         }
     }
 
@@ -53,10 +53,10 @@ class TypeUtilTest {
     void convertHexDigit_whenClearlyInvalidCharacter_thenThrows() {
         assertThatThrownBy(() -> TypeUtil.convertHexDigit('g'))
                 .isInstanceOf(NumberFormatException.class)
-                .hasMessage("!hex g");
+                .hasMessage("'g' is not a valid hex digit");
         assertThatThrownBy(() -> TypeUtil.convertHexDigit(' '))
                 .isInstanceOf(NumberFormatException.class)
-                .hasMessage("!hex  ");
+                .hasMessage("' ' is not a valid hex digit");
     }
 
     @Test

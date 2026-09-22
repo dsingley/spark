@@ -65,7 +65,7 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(char c) {
-        return requireValidHexDigit(Character.digit(c, 16), "!hex " + c);
+        return requireValidHexDigit(Character.digit(c, 16), "'" + c + "' is not a valid hex digit");
     }
 
     /**
@@ -73,7 +73,7 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(int c) {
-        return requireValidHexDigit(Character.digit(c, 16), "!hex " + c);
+        return requireValidHexDigit(Character.digit(c, 16), "'" + c + "' is not a valid hex digit");
     }
 
     private static int requireValidHexDigit(int d, String errorMessage) {
