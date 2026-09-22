@@ -13,4 +13,9 @@ class Base64Test {
         assertThat(in).isNotEqualTo(encode);
     }
 
+    @Test
+    final void test_encode_whenInputIsNull_thenReturnsNull() {
+        assertThat(Base64.encode(null)).isNull();
+    }
+
 }
