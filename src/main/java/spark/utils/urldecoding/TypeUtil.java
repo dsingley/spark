@@ -17,7 +17,7 @@
 //
 package spark.utils.urldecoding;
 
-import java.util.function.Supplier;
+import java.util.Objects;
 
 /**
  * TYPE Utilities.
@@ -41,13 +41,25 @@ public class TypeUtil {
      * @param base   base of the integer
      * @return the parsed integer
      * @throws NumberFormatException if the string cannot be parsed
+     * @throws NullPointerException if s is null
+     * @throws IllegalArgumentException if offset or length is out of bounds for s
      */
     public static int parseInt(String s, int offset, int length, int base)
         throws NumberFormatException {
+        Objects.requireNonNull(s, "s must not be null");
+        if (offset < 0 || offset > s.length()) {
+            throw new IllegalArgumentException("offset " + offset + " is out of bounds for a string of length " + s.length());
+        }
+
         int value = 0;
 
         if (length < 0) {
             length = s.length() - offset;
+        }
+
+        if (offset + length > s.length()) {
+            throw new IllegalArgumentException("offset " + offset + " + length " + length
+                    + " exceeds string length " + s.length());
         }
 
         for (int i = 0; i < length; i++) {
@@ -68,7 +80,11 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(char c) {
-        return requireValidHexDigit(Character.digit(c, 16), () -> "'" + c + "' is not a valid hex digit");
+        int d = Character.digit(c, 16);
+        if (d < 0) {
+            throw new NumberFormatException("'" + c + "' is not a valid hex digit");
+        }
+        return d;
     }
 
     /**
@@ -76,12 +92,9 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(int c) {
-        return requireValidHexDigit(Character.digit(c, 16), () -> "'" + c + "' is not a valid hex digit");
-    }
-
-    private static int requireValidHexDigit(int d, Supplier<String> errorMessage) {
+        int d = Character.digit(c, 16);
         if (d < 0) {
-            throw new NumberFormatException(errorMessage.get());
+            throw new NumberFormatException("'" + c + "' is not a valid hex digit");
         }
         return d;
     }
