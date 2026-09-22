@@ -36,8 +36,11 @@ public class TypeUtil {
     }
 
     /**
-     * Parse an int from a substring.
+     * Parse an int from a substring, using the specified base (radix).
      * Negative numbers are not handled.
+     * <p>
+     * For example, {@code parseInt("id=ff", 3, 2, 16)} parses the two characters at index 3
+     * ({@code "ff"}) as base-16, returning {@code 255}.
      *
      * @param s      String
      * @param offset Offset within string
