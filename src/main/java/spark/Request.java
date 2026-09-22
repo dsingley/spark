@@ -270,8 +270,6 @@ public class Request {
         return servletRequest.getParameter(queryParam);
     }
 
-    //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
-
     /**
      * Gets the query param and encode it
      *
