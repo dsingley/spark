@@ -116,10 +116,33 @@ public class TypeUtil {
         throw new NumberFormatException("'" + c + "' is not a valid hex digit");
     }
 
+    /**
+     * Convert a byte to its 2-character hex string representation.
+     * <p>
+     * The high nibble is rendered uppercase and the low nibble lowercase - for example,
+     * {@code toHexString((byte) 0xAB)} returns {@code "Ab"}, not {@code "AB"} or {@code "ab"}.
+     * This has been the behavior since this class was introduced and is documented here
+     * rather than changed.
+     *
+     * @param b the byte to convert
+     * @return the 2-character hex string representation of b
+     */
     public static String toHexString(byte b) {
         return toHexString(new byte[] {b}, 0, 1);
     }
 
+    /**
+     * Convert a range of a byte array to its hex string representation, two characters per
+     * byte. See {@link #toHexString(byte)} for the per-byte character casing.
+     * <p>
+     * For example, {@code toHexString(new byte[] {(byte) 0xDE, (byte) 0xAD}, 0, 2)} returns
+     * {@code "DeAd"}.
+     *
+     * @param b      the byte array to convert
+     * @param offset offset of the first byte to convert
+     * @param length number of bytes to convert
+     * @return the hex string representation of the specified range of b
+     */
     public static String toHexString(byte[] b, int offset, int length) {
         var builder = new StringBuilder();
         for (int i = offset; i < offset + length; i++) {
