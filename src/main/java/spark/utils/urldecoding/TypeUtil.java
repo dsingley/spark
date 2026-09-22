@@ -65,11 +65,7 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(char c) {
-        int d = ((c & 0x1f) + ((c >> 6) * 0x19) - 0x10);
-        if (d < 0 || d > 15) {
-            throw new NumberFormatException("!hex " + c);
-        }
-        return d;
+        return requireValidHexDigit(Character.digit(c, 16), "!hex " + c);
     }
 
     /**
@@ -77,9 +73,12 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(int c) {
-        int d = ((c & 0x1f) + ((c >> 6) * 0x19) - 0x10);
-        if (d < 0 || d > 15) {
-            throw new NumberFormatException("!hex " + c);
+        return requireValidHexDigit(Character.digit(c, 16), "!hex " + c);
+    }
+
+    private static int requireValidHexDigit(int d, String errorMessage) {
+        if (d < 0) {
+            throw new NumberFormatException(errorMessage);
         }
         return d;
     }
