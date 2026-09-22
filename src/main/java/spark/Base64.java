@@ -16,51 +16,24 @@
  */
 package spark;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jspecify.annotations.Nullable;
 
 class Base64 {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Base64.class);
 
     private Base64() {
     }
 
-    //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
-
     private static final java.util.Base64.Encoder urlEncoder = java.util.Base64.getUrlEncoder();
-    private static final java.util.Base64.Decoder decoder = java.util.Base64.getDecoder();
 
     /**
-     * @param toEncodeContent the String to be encoded
-     * @return String after encoding
+     * @param toEncodeContent the String to be encoded, or null
+     * @return String after encoding, or null if toEncodeContent was null
      */
-    public static String encode(String toEncodeContent) {
+    public static @Nullable String encode(@Nullable String toEncodeContent) {
         if (toEncodeContent == null) {
             return null;
         }
         return urlEncoder.encodeToString(toEncodeContent.getBytes());
     }
-
-    //CS304 Issue link:https://github.com/perwendel/spark/issues/1061
-
-    /**
-     * @param toDecodeContent the String to be decoded
-     * @return String after decoding
-     */
-    // TODO (sleberknight): only used by tests, remove it?
-    public static String decode(String toDecodeContent) {
-        if (toDecodeContent == null) {
-            return null;
-        }
-        byte[] buf = null;
-        try {
-            buf = decoder.decode(toDecodeContent);
-        } catch (Exception e) {
-            LOG.warn("Error decoding", e);
-        }
-        return new String(buf);  // TODO (sleberknight): if this method is not removed, need to fix this waiting-to-happen NPE
-    }
-
 
 }
