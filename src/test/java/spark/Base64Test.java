@@ -7,14 +7,20 @@ import org.junit.jupiter.api.Test;
 class Base64Test {
 
     @Test
-    final void test_encode() {
-        var in = "hello";
-        var encode = Base64.encode(in);
-        assertThat(in).isNotEqualTo(encode);
+    void test_encode() {
+        assertThat(Base64.encode("hello")).isEqualTo("aGVsbG8=");
     }
 
     @Test
-    final void test_encode_whenInputIsNull_thenReturnsNull() {
+    void test_encode_usesUrlSafeAlphabet() {
+        // "???" is the shortest input whose standard base64 encoding ("Pz8/") contains
+        // a character ('/') that the URL-safe alphabet replaces (with '_'), proving encode()
+        // actually uses the URL-safe encoder rather than the standard one.
+        assertThat(Base64.encode("???")).isEqualTo("Pz8_");
+    }
+
+    @Test
+    void test_encode_whenInputIsNull_thenReturnsNull() {
         assertThat(Base64.encode(null)).isNull();
     }
 
