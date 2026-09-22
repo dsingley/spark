@@ -65,7 +65,7 @@ public class TypeUtil {
         for (int i = 0; i < length; i++) {
             char c = s.charAt(offset + i);
 
-            int digit = convertHexDigit((int) c);
+            int digit = convertHexDigit(c);
             if (digit < 0 || digit >= base) {
                 throw new NumberFormatException("'" + c + "' at index " + (offset + i)
                         + " is not a valid base-" + base + " digit (in \"" + s + "\")");

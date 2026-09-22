@@ -80,7 +80,7 @@ class TypeUtilTest {
         // validation before parseInt's digit < 0 / digit >= base check is ever reached.
         assertThatThrownBy(() -> TypeUtil.parseInt("1G", 0, 2, 16))
                 .isInstanceOf(NumberFormatException.class)
-                .hasMessage("'71' is not a valid hex digit");
+                .hasMessage("'G' is not a valid hex digit");
     }
 
     @Test
