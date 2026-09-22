@@ -66,6 +66,32 @@ class TypeUtilTest {
         );
     }
 
+    // Character.digit(c, 16) - which an earlier version of this fix delegated to - accepts
+    // various non-ASCII Unicode characters that represent or look like hex digits (fullwidth
+    // forms, Arabic-Indic digits, Devanagari digits, etc.), which is broader than the
+    // documented ASCII-only contract (0-9, a-f, A-F). An explicit ASCII range check closes
+    // that gap; this locks it in.
+    @ParameterizedTest
+    @ValueSource(chars = {
+            '１', // fullwidth digit one, looks like '1'
+            'Ａ', // fullwidth Latin capital letter A
+            'ａ', // fullwidth Latin small letter a
+            '١', // Arabic-Indic digit one
+            '०', // Devanagari digit zero
+    })
+    void convertHexDigit_char_whenNonAsciiDigitLookAlike_thenThrows(char c) {
+        assertThatThrownBy(() -> TypeUtil.convertHexDigit(c))
+                .isInstanceOf(NumberFormatException.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(chars = {'１', 'Ａ', 'ａ', '١', '०'})
+    void convertHexDigit_int_whenNonAsciiDigitLookAlike_thenThrows(char c) {
+        int codePoint = c;
+        assertThatThrownBy(() -> TypeUtil.convertHexDigit(codePoint))
+                .isInstanceOf(NumberFormatException.class);
+    }
+
     @Test
     void parseInt_whenValidHex_thenReturnsParsedValue() {
         assertAll(

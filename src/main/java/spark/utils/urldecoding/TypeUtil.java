@@ -80,11 +80,16 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(char c) {
-        int d = Character.digit(c, 16);
-        if (d < 0) {
-            throw new NumberFormatException("'" + c + "' is not a valid hex digit");
+        if (c >= '0' && c <= '9') {
+            return c - '0';
         }
-        return d;
+        if (c >= 'a' && c <= 'f') {
+            return c - 'a' + 10;
+        }
+        if (c >= 'A' && c <= 'F') {
+            return c - 'A' + 10;
+        }
+        throw new NumberFormatException("'" + c + "' is not a valid hex digit");
     }
 
     /**
@@ -92,11 +97,16 @@ public class TypeUtil {
      * @return The integer value of the hex digit, in the range 0-15.
      */
     public static int convertHexDigit(int c) {
-        int d = Character.digit(c, 16);
-        if (d < 0) {
-            throw new NumberFormatException("'" + c + "' is not a valid hex digit");
+        if (c >= '0' && c <= '9') {
+            return c - '0';
         }
-        return d;
+        if (c >= 'a' && c <= 'f') {
+            return c - 'a' + 10;
+        }
+        if (c >= 'A' && c <= 'F') {
+            return c - 'A' + 10;
+        }
+        throw new NumberFormatException("'" + c + "' is not a valid hex digit");
     }
 
     public static String toHexString(byte b) {
