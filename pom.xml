@@ -40,15 +40,9 @@
         </developer>
     </developers>
 
-    <distributionManagement>
-        <!-- TODO: I think this can be removed when move to central-publishing-maven-plugin -->
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <properties>
+        <arguments />
+
         <!-- Required dependency versions -->
         <slf4j.version>2.0.19</slf4j.version>
         <jetty.version>12.1.12</jetty.version>
@@ -67,7 +61,8 @@
         <mockito.version>5.23.0</mockito.version>
         <netty-pkitesting.version>4.2.17.Final</netty-pkitesting.version>
         
-        <!-- Maven plugin versions -->        
+        <!-- Maven plugin versions -->
+        <central-publishing.version>0.11.0</central-publishing.version>
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <jshell-maven-plugin.version>1.4</jshell-maven-plugin.version>
@@ -82,8 +77,7 @@
         <maven-resources.version>3.5.0</maven-resources.version>
         <maven-source.version>3.4.0</maven-source.version>
         <maven-surefire.version>3.6.0</maven-surefire.version>
-        <nexus-staging.version>1.7.0</nexus-staging.version>
-        
+
         <!-- Project/build infrastructure properties -->
         <maven.min.version>3.6.3</maven.min.version>
         <maven-compiler-plugin.encoding>UTF-8</maven-compiler-plugin.encoding>
@@ -326,30 +320,15 @@
                 <extensions>true</extensions>
             </plugin>
 
-            <!-- TODO: this will need to change to the central-publishing-maven-plugin -->
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${nexus-staging.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-
-            <!-- TODO: check the properties/configuration before trying to release 3.0.0 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven-release.version}</version>
                 <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
                     <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy</goals>
-                    <tagNameFormat>@{project.version}</tagNameFormat>
+                    <arguments>${arguments} -Prelease</arguments>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
         </plugins>
@@ -378,9 +357,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>${maven-javadoc.version}</version>
-                        <configuration>
-                            <failOnError>false</failOnError>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -390,19 +366,11 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>${maven-gpg.version}</version>
-                        <!-- TODO: revisit configuration and executions before publishing -->
-                        <configuration>
-                            <gpgArguments>
-                                <arg>--pinentry-mode</arg>
-                                <arg>loopback</arg>
-                                <arg>--verbose</arg>
-                            </gpgArguments>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -412,6 +380,18 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central-publishing.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>validated</waitUntil>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
