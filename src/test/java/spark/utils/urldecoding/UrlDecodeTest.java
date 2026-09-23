@@ -44,7 +44,7 @@ class UrlDecodeTest {
         // %uXXXX codepoint escape. Already handled correctly today.
         assertThatThrownBy(() -> UrlDecode.path("/foo%1"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Bad URI % encoding");
+                .hasMessage("Bad URI % encoding: %1");
     }
 
     @Test
@@ -54,7 +54,7 @@ class UrlDecodeTest {
         // is enough for a %XX escape but not a %uXXXX one - see issue #260.
         assertThatThrownBy(() -> UrlDecode.path("/foo%u12"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Bad URI %u encoding");
+                .hasMessage("Bad URI %u encoding: %u12");
     }
 
     @Test
@@ -65,7 +65,7 @@ class UrlDecodeTest {
         // tracked separately and deliberately not exercised by this test.)
         assertThatThrownBy(() -> UrlDecode.path("/caf%FF%u12"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Bad URI %u encoding");
+                .hasMessage("Bad URI %u encoding: %u12");
     }
 
 }
