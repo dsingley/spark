@@ -95,72 +95,8 @@ public class UrlDecode {
             }
             return path.substring(offset, end);
         } catch (Utf8Appendable.NotUtf8Exception e) {
-            return decodeISO88591Path(path, offset, length);
+            throw new IllegalArgumentException("cannot decode URI", e);
         }
-    }
-
-    /* ------------------------------------------------------------ */
-    /* Decode a URI path and strip parameters of ISO-8859-1 path
-     */
-    private static String decodeISO88591Path(String path, int offset, int length) {
-        StringBuilder builder = null;
-        int end = offset + length;
-        for (int i = offset; i < end; i++) {
-            char c = path.charAt(i);
-            switch (c) {
-                case '%':
-                    if (builder == null) {
-                        builder = new StringBuilder(path.length());
-                        builder.append(path, offset, i - offset);
-                    }
-                    if ((i + 2) < end) {
-                        char u = path.charAt(i + 1);
-                        if (u == 'u') {
-                            if ((i + 5) >= end) {
-                                throw new IllegalArgumentException("Bad URI %u encoding: " + path.substring(i, end));
-                            }
-                            // TODO this is wrong. This is a codepoint not a char
-                            builder.append((char) (0xffff & TypeUtil.parseInt(path, i + 2, 4, 16)));
-                            i += 5;
-                        } else {
-                            builder.append((byte) (0xff & (TypeUtil.convertHexDigit(u) * 16
-                                + TypeUtil.convertHexDigit(path.charAt(i + 2)))));
-                            i += 2;
-                        }
-                    } else {
-                        throw new IllegalArgumentException("Bad URI % encoding: " + path.substring(i, end));
-                    }
-
-                    break;
-
-                case ';':
-                    if (builder == null) {
-                        builder = new StringBuilder(path.length());
-                        builder.append(path, offset, i - offset);
-                    }
-                    while (++i < end) {
-                        if (path.charAt(i) == '/') {
-                            builder.append('/');
-                            break;
-                        }
-                    }
-                    break;
-
-                default:
-                    if (builder != null) {
-                        builder.append(c);
-                    }
-                    break;
-            }
-        }
-
-        if (builder != null) {
-            return builder.toString();
-        }
-        if (offset == 0 && length == path.length()) {
-            return path;
-        }
-        return path.substring(offset, end);
     }
 
 }
