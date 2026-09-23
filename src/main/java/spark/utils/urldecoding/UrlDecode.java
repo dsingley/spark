@@ -47,6 +47,9 @@ public class UrlDecode {
                         if ((i + 2) < end) {
                             char u = path.charAt(i + 1);
                             if (u == 'u') {
+                                if ((i + 5) >= end) {
+                                    throw new IllegalArgumentException("Bad URI %u encoding: " + path.substring(i, end));
+                                }
                                 // TODO this is wrong. This is a codepoint not a char
                                 builder.append((char) (0xffff & TypeUtil.parseInt(path, i + 2, 4, 16)));
                                 i += 5;
@@ -56,7 +59,7 @@ public class UrlDecode {
                                 i += 2;
                             }
                         } else {
-                            throw new IllegalArgumentException("Bad URI % encoding");
+                            throw new IllegalArgumentException("Bad URI % encoding: " + path.substring(i, end));
                         }
 
                         break;
@@ -113,6 +116,9 @@ public class UrlDecode {
                     if ((i + 2) < end) {
                         char u = path.charAt(i + 1);
                         if (u == 'u') {
+                            if ((i + 5) >= end) {
+                                throw new IllegalArgumentException("Bad URI %u encoding: " + path.substring(i, end));
+                            }
                             // TODO this is wrong. This is a codepoint not a char
                             builder.append((char) (0xffff & TypeUtil.parseInt(path, i + 2, 4, 16)));
                             i += 5;
@@ -122,7 +128,7 @@ public class UrlDecode {
                             i += 2;
                         }
                     } else {
-                        throw new IllegalArgumentException();
+                        throw new IllegalArgumentException("Bad URI % encoding: " + path.substring(i, end));
                     }
 
                     break;
