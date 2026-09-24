@@ -58,14 +58,16 @@ class UrlDecodeTest {
     }
 
     @Test
-    void path_whenInvalidUtf8ByteFollowedByTruncatedPercentUEscape_thenThrowsBadUriUEncoding() {
-        // %FF isn't a valid UTF-8 lead byte, so this falls back to decodeISO88591Path, which
-        // has the identical truncated-%u bounds-check gap as path() itself - see issue #260.
-        // (decodeISO88591Path's own separate, unrelated bug in how it appends decoded bytes is
-        // tracked separately and deliberately not exercised by this test.)
-        assertThatThrownBy(() -> UrlDecode.path("/caf%FF%u12"))
+    void path_whenInvalidUtf8Byte_thenThrowsCannotDecodeUri() {
+        // %FF is never a valid UTF-8 lead byte. This used to silently fall back to a
+        // separately-broken ISO-8859-1 reinterpretation (see issue #262) - now removed in
+        // favor of matching Jetty's own current approach: reject non-UTF-8 percent-encoded
+        // input outright, rather than accept it under a second, ambiguous interpretation.
+        assertThatThrownBy(() -> UrlDecode.path("/caf%FF"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Bad URI %u encoding: %u12");
+                .hasMessage("cannot decode URI")
+                .cause()
+                .isInstanceOf(Utf8Appendable.NotUtf8Exception.class);
     }
 
 }
