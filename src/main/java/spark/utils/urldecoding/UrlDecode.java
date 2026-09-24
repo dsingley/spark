@@ -60,9 +60,9 @@ public class UrlDecode {
                                     throw new IllegalArgumentException("Bad URI %u encoding: " + path.substring(i, end));
                                 }
                                 int[] codePoints = {0xffff & TypeUtil.parseInt(path, i + 2, 4, 16)};
-                                String str = new String(codePoints, 0, 1);
-                                byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
-                                for (byte b : bytes) {
+                                var str = new String(codePoints, 0, 1);
+                                var bytes = str.getBytes(StandardCharsets.UTF_8);
+                                for (var b : bytes) {
                                     builder.append(b);
                                 }
                                 i += 5;
