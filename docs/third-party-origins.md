@@ -56,6 +56,18 @@ rather than reusing one that's already there - a bigger tradeoff than the Jetty 
 | `resource/ClassPathResource.java` | `org.springframework.core.io.ClassPathResource` | |
 | `resource/InputStreamResource.java` | `org.springframework.core.io.InputStreamResource` | |
 
+## Apache Commons
+
+Copied from Apache Commons IO (ASF license header - "Licensed to the Apache Software
+Foundation" - rather than a literal `Copyright` line, plus `@author`/`@version`/`@since`
+tags naming Commons IO committers like Stephen Colebourne and pinning `Commons IO 1.1`/
+`2.2`). Spark does not currently depend on Commons IO, so replacing this would mean
+adding it as a new dependency, the same tradeoff as the Spring group below.
+
+| File | Upstream class | Notes |
+|---|---|---|
+| `utils/IOUtils.java` | `org.apache.commons.io.IOUtils` | Subset of the upstream API. No `@implNote` yet. |
+
 ## None of these are the Jetty 12 migration
 
 This list is unrelated to the [Jetty 12 migration roadmap](jetty12-migration-roadmap.md).
