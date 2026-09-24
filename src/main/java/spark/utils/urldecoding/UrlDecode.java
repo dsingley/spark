@@ -17,6 +17,13 @@
 //
 package spark.utils.urldecoding;
 
+/**
+ * URL path decoding utilities.
+ *
+ * @implNote Extracted from Eclipse Jetty's much larger, general-purpose
+ * {@code org.eclipse.jetty.util.URIUtil} - {@code decodePath} became {@link #path(String)}/
+ * {@link #path(String, int, int)}.
+ */
 public class UrlDecode {
 
     private UrlDecode() {
