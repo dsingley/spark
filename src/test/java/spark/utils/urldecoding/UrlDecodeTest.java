@@ -70,4 +70,29 @@ class UrlDecodeTest {
                 .isInstanceOf(Utf8Appendable.NotUtf8Exception.class);
     }
 
+    @Test
+    void path_whenPercentUEscapedLoneHighSurrogate_thenReplacesWithReplacementChar() {
+        // 0xD83D is only ever valid as the first half of a surrogate pair, never a
+        // standalone character - see issue #243. Encoding it alone to UTF-8, as Jetty's
+        // current decodePath() does, replaces it with '?' rather than letting the raw,
+        // invalid surrogate code unit through unvalidated.
+        assertThat(UrlDecode.path("/%uD83D")).isEqualTo("/?");
+    }
+
+    @Test
+    void path_whenPercentUEscapedLoneLowSurrogate_thenReplacesWithReplacementChar() {
+        assertThat(UrlDecode.path("/%uDC00")).isEqualTo("/?");
+    }
+
+    @Test
+    void path_whenPercentUEscapedSurrogatePair_thenEachHalfIsReplacedIndependently() {
+        // %uD83D%uDE00 is a legitimate UTF-16 surrogate pair for U+1F600 (grinning face)
+        // if read together, but each %uXXXX escape is decoded independently - matching
+        // Jetty's own current behavior - so the pair is not reassembled. This is a known,
+        // accepted tradeoff: the encoding is legacy/non-standard, and a supplementary
+        // character split across two %u escapes is expected to be vanishingly rare in
+        // real traffic compared to the value of rejecting unvalidated invalid surrogates.
+        assertThat(UrlDecode.path("/%uD83D%uDE00")).isEqualTo("/??");
+    }
+
 }

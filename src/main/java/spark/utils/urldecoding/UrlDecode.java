@@ -17,6 +17,8 @@
 //
 package spark.utils.urldecoding;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * URL path decoding utilities.
  *
@@ -57,8 +59,12 @@ public class UrlDecode {
                                 if ((i + 5) >= end) {
                                     throw new IllegalArgumentException("Bad URI %u encoding: " + path.substring(i, end));
                                 }
-                                // TODO this is wrong. This is a codepoint not a char
-                                builder.append((char) (0xffff & TypeUtil.parseInt(path, i + 2, 4, 16)));
+                                int[] codePoints = {0xffff & TypeUtil.parseInt(path, i + 2, 4, 16)};
+                                String str = new String(codePoints, 0, 1);
+                                byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
+                                for (byte b : bytes) {
+                                    builder.append(b);
+                                }
                                 i += 5;
                             } else {
                                 builder.append((byte) (0xff & (TypeUtil.convertHexDigit(u) * 16
