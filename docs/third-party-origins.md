@@ -17,6 +17,15 @@ copied from another project's source, as opposed to code Spark's own authors wro
 scratch (most of the codebase carries a `Copyright ... Per Wendel` header, which is
 Spark's own original copyright, not a third-party one, and isn't listed here).
 
+This list was cross-checked against the repo's own `NOTICE` file, which independently
+attributes third-party code by filename. That caught one file (`UriPath.java`) whose
+in-file header had been rewritten to a plain `Per Wendel` copyright at some point,
+losing the "copied from Jetty" comment its sibling files still carry - `NOTICE` was the
+only remaining trace of its real origin. The reverse is also true: `NOTICE` itself is
+stale and does not mention the four `urldecoding` classes below, which were evidently
+added after `NOTICE` was last updated. Worth fixing in `NOTICE` at some point, separately
+from this doc.
+
 ## Eclipse Jetty
 
 Copied from Jetty (Mort Bay Consulting copyright headers, dual EPL v1.0 / Apache 2.0
@@ -33,6 +42,7 @@ embedded server), so these are prime candidates for replacement with direct call
 | `resource/AbstractResourceHandler.java` | Jetty resource-handling source (unattributed to a specific class in the header) | Header says "Code snippets copied from the Eclipse Jetty source. Modifications made by Per Wendel." No `@implNote` yet; upstream class not yet pinned down. |
 | `resource/ClassPathResourceHandler.java` | same as above | Same header pattern. |
 | `resource/ExternalResourceHandler.java` | same as above | Same header pattern. |
+| `resource/UriPath.java` | Jetty's dot-segment path canonicalization (`URIUtil.canonicalPath` in modern Jetty) | In-file header now just says `Copyright 2016 - Per Wendel`, no Jetty mention at all - only found via `NOTICE`, which still correctly attributes it to Mort Bay Consulting. No `@implNote` yet. |
 
 ## Spring Framework
 
