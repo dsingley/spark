@@ -30,7 +30,9 @@ import java.util.HashMap;
 public class CustomErrorPages {
 
     private static final Logger LOG = LoggerFactory.getLogger(CustomErrorPages.class);
+    /** The default 404 Not Found page body. */
     public static final String NOT_FOUND = "<html><body><h2>404 Not found</h2></body></html>";
+    /** The default 500 Internal Server Error page body. */
     public static final String INTERNAL_ERROR = "<html><body><h2>500 Internal Server Error</h2></body></html>";
 
     /**

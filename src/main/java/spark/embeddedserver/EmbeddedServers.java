@@ -29,24 +29,36 @@ import java.util.Map;
  */
 public class EmbeddedServers {
 
-    // Default alternatives.
+    /** Default alternatives. */
     public enum Identifiers {
+        /** The default, Jetty-backed embedded server. */
         JETTY
     }
 
     private static final Map<Object, EmbeddedServerFactory> FACTORIES = new HashMap<>();
 
+    /**
+     * Registers the default (Jetty) embedded server factory if one isn't already registered.
+     */
     public static void initialize() {
         if (!FACTORIES.containsKey(Identifiers.JETTY)) {
             add(Identifiers.JETTY, new EmbeddedJettyFactory());
         }
     }
 
+    /**
+     * @return the default embedded server identifier
+     */
     public static Identifiers defaultIdentifier() {
         return Identifiers.JETTY;
     }
 
     /**
+     * @param identifier               the identifier
+     * @param routeMatcher             the route matcher
+     * @param staticFilesConfiguration the static files configuration object
+     * @param multipleHandlers         true if other handlers exist
+     * @return the created EmbeddedServer object
      * @deprecated use {@link #create(Object, Routes, ExceptionMapper, StaticFilesConfiguration, boolean)}
      */
     @Deprecated(since = "2.9.0")
@@ -67,6 +79,7 @@ public class EmbeddedServers {
      *
      * @param identifier               the identifier
      * @param routeMatcher             the route matcher
+     * @param exceptionMapper          the exception mapper
      * @param staticFilesConfiguration the static files configuration object
      * @param multipleHandlers         true if other handlers exist
      * @return the created EmbeddedServer object

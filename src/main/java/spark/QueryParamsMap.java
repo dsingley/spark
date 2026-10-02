@@ -61,7 +61,9 @@ public class QueryParamsMap {
         loadQueryString(request.getParameterMap());
     }
 
-    // Just for testing
+    /**
+     * Used only for testing.
+     */
     protected QueryParamsMap() {
     }
 
@@ -122,6 +124,13 @@ public class QueryParamsMap {
         }
     }
 
+    /**
+     * Parses the first bracketed segment off the given key.
+     *
+     * @param key the key, e.g. {@code user[info][name]}
+     * @return a 2-element array holding the first segment's cleaned name and the remainder of
+     *         the key, or null if key doesn't match the expected format
+     */
     protected final String[] parseKey(String key) {
         var m = KEY_PATTERN.matcher(key);
 
@@ -132,6 +141,12 @@ public class QueryParamsMap {
         }
     }
 
+    /**
+     * Strips the surrounding brackets from a matched key segment, if present.
+     *
+     * @param group the matched segment, e.g. {@code [name]} or {@code user}
+     * @return the segment with surrounding brackets removed
+     */
     protected static String cleanKey(String group) {
         if (group.startsWith("[")) {
             return group.substring(1, group.length() - 1);
@@ -202,6 +217,7 @@ public class QueryParamsMap {
     }
 
     /**
+     * @param key the key to check for
      * @return true if the map contains the given key
      */
     public boolean hasKey(String key) {

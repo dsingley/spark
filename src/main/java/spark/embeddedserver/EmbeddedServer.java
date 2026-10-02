@@ -38,7 +38,9 @@ public interface EmbeddedServer {
      * @param sslStores               - The SSL sslStores.
      * @param maxThreads              - max nbr of threads.
      * @param minThreads              - min nbr of threads.
+     * @param threadIdleTimeoutMillis - idle timeout (ms).
      * @return The port number the server was launched on.
+     * @throws Exception if the server fails to start
      */
     // throws Exception is part of the public API; narrowing it would break existing implementations
     @SuppressWarnings("java:S112")
@@ -54,6 +56,8 @@ public interface EmbeddedServer {
      * Must be called before ignite()
      * <p>
      * Must be its own default method to maintain backwards compatibility. Move to ignite method in 3.0.
+     *
+     * @param trust true to trust commonly-used reverse-proxy headers
      */
     default void trustForwardHeaders(boolean trust) {
 
@@ -70,6 +74,7 @@ public interface EmbeddedServer {
      * @param minThreads              - min nbr of threads.
      * @param threadIdleTimeoutMillis - idle timeout (ms).
      * @return The port number the server was launched on.
+     * @throws Exception if the server fails to start
      */
     // throws Exception is part of the public API; narrowing it would break existing implementations
     @SuppressWarnings("java:S112")
@@ -109,6 +114,8 @@ public interface EmbeddedServer {
 
     /**
      * Joins the embedded server thread(s).
+     *
+     * @throws InterruptedException if interrupted while waiting
      */
     void join() throws InterruptedException;
 

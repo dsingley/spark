@@ -40,6 +40,9 @@ public class Response {
     private HttpServletResponse httpServletResponse;
     private String body;
 
+    /**
+     * Used by wrapper.
+     */
     protected Response() {
         // Used by wrapper
     }

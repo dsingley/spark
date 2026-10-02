@@ -39,6 +39,9 @@ public class JettyHandler extends Handler.Wrapper {
 
     private final ServletContextHandler context;
 
+    /**
+     * @param filter the Spark filter to dispatch every request through
+     */
     public JettyHandler(Filter filter) {
         context = newContext(filter);
         setHandler(context);
@@ -61,10 +64,16 @@ public class JettyHandler extends Handler.Wrapper {
         return contextHandler;
     }
 
+    /**
+     * @return the session cookie configuration for this handler's servlet context
+     */
     public SessionCookieConfig getSessionCookieConfig() {
         return context.getSessionHandler().getSessionCookieConfig();
     }
 
+    /**
+     * @return the WebSocket container for this handler's servlet context
+     */
     public JettyWebSocketServerContainer getWebSocketContainer() {
         return JettyWebSocketServerContainer.getContainer(context.getServletContext());
     }

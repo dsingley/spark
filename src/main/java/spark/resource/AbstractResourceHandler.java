@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
  */
 public abstract class AbstractResourceHandler {
 
+    /** The path separator. */
     protected static final String SLASH = "/";
 
     /**

@@ -65,6 +65,9 @@ public class Request {
 
     private Set<String> headers = null;
 
+    /**
+     * Used by wrapper.
+     */
     protected Request() {
         // Used by wrapper
     }
@@ -94,6 +97,11 @@ public class Request {
         splat = new ArrayList<>();
     }
 
+    /**
+     * Updates this request's matched path, params, and splat values for the given route match.
+     *
+     * @param match the new route match
+     */
     protected void changeMatch(RouteMatch match) {
         var requestList = SparkUtils.convertRouteToList(match.getRequestURI());
         var matchedList = SparkUtils.convertRouteToList(match.getMatchUri());
@@ -237,6 +245,9 @@ public class Request {
         return body;
     }
 
+    /**
+     * @return the request body sent by the client, as raw bytes
+     */
     public byte[] bodyAsBytes() {
         if (bodyAsBytes == null) {
             readBodyAsBytes();

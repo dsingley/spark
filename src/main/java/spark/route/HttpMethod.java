@@ -23,7 +23,32 @@ import java.util.HashMap;
  */
 @SuppressWarnings("java:S115")  // ignore lowercase enum constants
 public enum HttpMethod {
-    get, post, put, patch, delete, head, trace, connect, options, before, after, afterafter, unsupported;
+    /** HTTP GET. */
+    get,
+    /** HTTP POST. */
+    post,
+    /** HTTP PUT. */
+    put,
+    /** HTTP PATCH. */
+    patch,
+    /** HTTP DELETE. */
+    delete,
+    /** HTTP HEAD. */
+    head,
+    /** HTTP TRACE. */
+    trace,
+    /** HTTP CONNECT. */
+    connect,
+    /** HTTP OPTIONS. */
+    options,
+    /** Spark's "before" filter, matched like an HTTP method internally. */
+    before,
+    /** Spark's "after" filter, matched like an HTTP method internally. */
+    after,
+    /** Spark's "afterAfter" filter, run after matching routes even if one throws. */
+    afterafter,
+    /** Returned when a request's method string doesn't match any known value. */
+    unsupported;
 
     private static final HashMap<String, HttpMethod> METHODS = new HashMap<>();
 

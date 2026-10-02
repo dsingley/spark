@@ -33,14 +33,23 @@ public class HttpRequestWrapper extends HttpServletRequestWrapper {
     private byte[] cachedBytes;
     private boolean notConsumed = false;
 
+    /**
+     * @param request the servlet request to wrap
+     */
     public HttpRequestWrapper(HttpServletRequest request) {
         super(request);
     }
 
+    /**
+     * @return true if the wrapped request's body has not been consumed
+     */
     public boolean notConsumed() {
         return notConsumed;
     }
 
+    /**
+     * @param notConsumed whether the wrapped request's body has not been consumed
+     */
     public void notConsumed(boolean notConsumed) {
         this.notConsumed = notConsumed;
     }

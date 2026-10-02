@@ -76,11 +76,20 @@ public abstract class FilterImpl implements Filter, Wrapper {
         };
     }
 
+    /**
+     * @param path       the path
+     * @param acceptType the accepted media type
+     */
     protected FilterImpl(String path, String acceptType) {
         this.path = path;
         this.acceptType = acceptType;
     }
 
+    /**
+     * @param path       the path
+     * @param acceptType the accepted media type
+     * @param filter     the filter to delegate to
+     */
     protected FilterImpl(String path, String acceptType, Filter filter) {
         this(path, acceptType);
         this.delegate = filter;
@@ -94,12 +103,17 @@ public abstract class FilterImpl implements Filter, Wrapper {
      */
     public abstract void handle(Request request, Response response) throws Exception;
 
+    /**
+     * @return this filter's accepted media type
+     */
     public String getAcceptType() {
         return acceptType;
     }
 
     /**
      * Returns this route's path
+     *
+     * @return this filter's path
      */
     public String getPath() {
         return this.path;

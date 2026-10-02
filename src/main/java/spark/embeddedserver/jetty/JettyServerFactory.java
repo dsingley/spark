@@ -18,5 +18,11 @@ public interface JettyServerFactory {
      */
     Server create(int maxThreads, int minThreads, int threadTimeoutMillis);
 
+    /**
+     * Creates a Jetty server using the given thread pool.
+     *
+     * @param threadPool the thread pool to use
+     * @return a new jetty server instance
+     */
     Server create(ThreadPool threadPool);
 }
