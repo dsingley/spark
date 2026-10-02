@@ -4,6 +4,7 @@
     <groupId>com.dsingley.sparkjava</groupId>
     <artifactId>spark-core</artifactId>
     <version>3.0.0-alpha.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>Spark</name>
     <description>A micro framework for creating web applications in Java with minimal effort</description>
