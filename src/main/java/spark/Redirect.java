@@ -25,14 +25,23 @@ public final class Redirect {
      * The available redirect status codes.
      */
     public enum Status {
+        /** 300 Multiple Choices. */
         MULTIPLE_CHOICES(300),
+        /** 301 Moved Permanently. */
         MOVED_PERMANENTLY(301),
+        /** 302 Found. */
         FOUND(302),
+        /** 303 See Other. */
         SEE_OTHER(303),
+        /** 304 Not Modified. */
         NOT_MODIFIED(304),
+        /** 305 Use Proxy. */
         USE_PROXY(305),
+        /** 306 Switch Proxy. */
         SWITCH_PROXY(306),
+        /** 307 Temporary Redirect. */
         TEMPORARY_REDIRECT(307),
+        /** 308 Permanent Redirect. */
         PERMANENT_REDIRECT(308);
 
         private final int intValue;
@@ -41,6 +50,9 @@ public final class Redirect {
             this.intValue = intValue;
         }
 
+        /**
+         * @return the numeric HTTP status code
+         */
         public int intValue() {
             return intValue;
         }

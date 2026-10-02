@@ -21,6 +21,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import spark.routematch.RouteMatch;
 
+/**
+ * Factory for creating {@link Request} and {@link Response} wrappers around the underlying
+ * servlet request/response objects.
+ */
 public final class RequestResponseFactory {
 
     private RequestResponseFactory() {
@@ -28,15 +32,31 @@ public final class RequestResponseFactory {
 
     /**
      * Used to create a request and no RouteMatch is available.
+     *
+     * @param request the servlet request
+     * @return the created request
      */
     public static Request create(HttpServletRequest request) {
         return new Request(request);
     }
 
+    /**
+     * Creates a request for the given route match.
+     *
+     * @param match   the route match
+     * @param request the servlet request
+     * @return the created request
+     */
     public static Request create(RouteMatch match, HttpServletRequest request) {
         return new Request(match, request);
     }
 
+    /**
+     * Creates a response wrapping the given servlet response.
+     *
+     * @param response the servlet response
+     * @return the created response
+     */
     public static Response create(HttpServletResponse response) {
         return new Response(response);
     }

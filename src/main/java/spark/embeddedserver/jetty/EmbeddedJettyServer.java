@@ -57,6 +57,10 @@ public class EmbeddedJettyServer implements EmbeddedServer {
     private ThreadPool threadPool = null;
     private boolean trustForwardHeaders = true; // true by default
 
+    /**
+     * @param serverFactory the factory used to create the underlying Jetty server
+     * @param handler       the handler Spark requests are dispatched through
+     */
     public EmbeddedJettyServer(JettyServerFactory serverFactory, JettyHandler handler) {
         this.serverFactory = serverFactory;
         this.handler = handler;

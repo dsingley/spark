@@ -30,5 +30,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Experimental {
+    /**
+     * @return an optional note about the experimental status
+     */
     String value() default "";
 }

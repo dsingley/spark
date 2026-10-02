@@ -19,6 +19,9 @@ package spark;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Maps exception types to the handlers registered to handle them.
+ */
 public class ExceptionMapper {
 
     /**
@@ -27,6 +30,7 @@ public class ExceptionMapper {
     private static ExceptionMapper servletInstance;
 
     /**
+     * @return servlet instance
      * @deprecated use {@link #getServletInstance()}
      */
     @Deprecated(since = "2.9.0")

@@ -5,6 +5,9 @@ package spark.utils;
  */
 public interface Wrapper {
 
+    /**
+     * @return the underlying object this instance wraps
+     */
     Object delegate();
 
 }

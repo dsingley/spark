@@ -101,28 +101,58 @@ public class MimeType {
         MAPPINGS.put("zip", "application/zip,application/x-compressed-zip");
     }
 
+    /**
+     * Registers or overrides the MIME type mapped to the given file extension.
+     *
+     * @param extension the file extension, without a leading dot
+     * @param mimeType  the MIME type to map it to
+     */
     public static void register(String extension, String mimeType) {
         MAPPINGS.put(extension, mimeType);
     }
 
+    /**
+     * Disables guessing a MIME type from a file extension that has no registered mapping.
+     */
     public static void disableGuessing() {
         guessingOn = false;
     }
 
+    /**
+     * Resolves the MIME type for the given resource, based on its filename's extension.
+     *
+     * @param resource the resource to resolve a MIME type for
+     * @return the resolved MIME type, or {@code application/octet-stream} if unknown
+     */
     public static String fromResource(AbstractFileResolvingResource resource) {
         var filename = Optional.ofNullable(resource.getFilename()).orElse("");
         return getMimeType(filename);
     }
 
+    /**
+     * Resolves the MIME type mapped to the given filename's extension.
+     *
+     * @param filename the filename to resolve a MIME type for
+     * @return the resolved MIME type, or {@code application/octet-stream} if unknown
+     */
     protected static String getMimeType(String filename) {
         var fileExtension = filename.replaceAll("^.*\\.(.*)$", "$1");
         return MAPPINGS.getOrDefault(fileExtension, "application/octet-stream");
     }
 
+    /**
+     * Resolves the MIME type mapped to the given path's extension.
+     *
+     * @param pathInfo the path to resolve a MIME type for
+     * @return the resolved MIME type, or {@code application/octet-stream} if unknown
+     */
     protected static String fromPathInfo(String pathInfo) {
         return getMimeType(pathInfo);
     }
 
+    /**
+     * @return true if guessing a MIME type from an unmapped file extension is enabled
+     */
     protected static boolean shouldGuess() {
         return guessingOn;
     }

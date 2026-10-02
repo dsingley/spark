@@ -28,10 +28,23 @@ package spark;
  */
 public abstract class ResponseTransformerRouteImpl extends RouteImpl {
 
+    /**
+     * @param path        the route's path
+     * @param route       the route to wrap
+     * @param transformer transforms the route's result into the response body
+     * @return the created route
+     */
     public static ResponseTransformerRouteImpl create(String path, Route route, ResponseTransformer transformer) {
         return create(path, Service.DEFAULT_ACCEPT_TYPE, route, transformer);
     }
 
+    /**
+     * @param path        the route's path
+     * @param acceptType  the accepted media type
+     * @param route       the route to wrap
+     * @param transformer transforms the route's result into the response body
+     * @return the created route
+     */
     public static ResponseTransformerRouteImpl create(String path,
                                                       String acceptType,
                                                       Route route,
@@ -49,6 +62,11 @@ public abstract class ResponseTransformerRouteImpl extends RouteImpl {
         };
     }
 
+    /**
+     * @param path       the route's path
+     * @param acceptType the accepted media type
+     * @param route      the route to wrap
+     */
     protected ResponseTransformerRouteImpl(String path, String acceptType, Route route) {
         super(path, acceptType, route);
     }

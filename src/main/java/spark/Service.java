@@ -138,6 +138,8 @@ public final class Service extends Routable {
     /**
      * Get the identifier used to select the EmbeddedServer;
      * null for the default.
+     *
+     * @return the identifier, or null for the default
      */
     public synchronized Object embeddedServerIdentifier() {
         return embeddedServerIdentifier;
@@ -497,6 +499,8 @@ public final class Service extends Routable {
 
     /**
      * Maps 404 errors to the provided route.
+     *
+     * @param route the route to invoke for 404s
      */
     public synchronized void notFound(Route route) {
         CustomErrorPages.add(404, route);
@@ -504,6 +508,8 @@ public final class Service extends Routable {
 
     /**
      * Maps 500 internal server errors to the provided route.
+     *
+     * @param route the route to invoke for 500s
      */
     public synchronized void internalServerError(Route route) {
         CustomErrorPages.add(500, route);
@@ -740,6 +746,7 @@ public final class Service extends Routable {
     /**
      * Maps an exception handler to be executed when an exception occurs during routing
      *
+     * @param <T>            the exception type
      * @param exceptionClass the exception class
      * @param handler        The handler
      */
@@ -812,6 +819,8 @@ public final class Service extends Routable {
      * Sets Spark to trust the HTTP headers that are commonly used in reverse proxies.
      * More info at
      * <a href="https://javadoc.io/doc/org.eclipse.jetty/jetty-server/latest/org.eclipse.jetty.server/org/eclipse/jetty/server/ForwardedRequestCustomizer.html">ForwardedRequestCustomizer</a>.
+     *
+     * @return this service instance for chaining
      */
     public synchronized Service trustForwardHeaders() {
         if (initialized) {
@@ -826,6 +835,8 @@ public final class Service extends Routable {
      * Sets Spark to NOT trust the HTTP headers that are commonly used in reverse proxies.
      * More info at
      * <a href="https://javadoc.io/doc/org.eclipse.jetty/jetty-server/latest/org.eclipse.jetty.server/org/eclipse/jetty/server/ForwardedRequestCustomizer.html">ForwardedRequestCustomizer</a>.
+     *
+     * @return this service instance for chaining
      */
     public synchronized Service untrustForwardHeaders() {
         if (initialized) {

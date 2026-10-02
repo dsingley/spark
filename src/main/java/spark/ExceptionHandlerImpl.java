@@ -16,6 +16,11 @@
  */
 package spark;
 
+/**
+ * Wraps an {@link ExceptionHandler} together with the exception type it's registered for.
+ *
+ * @param <T> the exception type
+ */
 public abstract class ExceptionHandlerImpl<T extends Exception> implements ExceptionHandler<T> {
 
     /**

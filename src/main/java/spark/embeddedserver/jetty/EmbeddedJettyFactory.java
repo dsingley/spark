@@ -33,10 +33,18 @@ public class EmbeddedJettyFactory implements EmbeddedServerFactory {
     private ThreadPool threadPool;
     private boolean httpOnly = true;
 
+    /**
+     * Creates a factory using the default Jetty server implementation.
+     */
     public EmbeddedJettyFactory() {
         this.serverFactory = new JettyServer();
     }
 
+    /**
+     * Creates a factory using a custom Jetty server implementation.
+     *
+     * @param serverFactory the factory used to create the underlying Jetty server
+     */
     public EmbeddedJettyFactory(JettyServerFactory serverFactory) {
         this.serverFactory = serverFactory;
     }
@@ -68,6 +76,12 @@ public class EmbeddedJettyFactory implements EmbeddedServerFactory {
         return this;
     }
 
+    /**
+     * Sets whether the session cookie is marked HttpOnly.
+     *
+     * @param httpOnly true to mark the session cookie HttpOnly
+     * @return Builder pattern - returns this instance
+     */
     public EmbeddedJettyFactory withHttpOnly(boolean httpOnly) {
         this.httpOnly = httpOnly;
         return this;

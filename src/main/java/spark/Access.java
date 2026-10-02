@@ -27,6 +27,10 @@ public final class Access {
         // hidden
     }
 
+    /**
+     * @param request the request to update
+     * @param match   the new route match
+     */
     public static void changeMatch(Request request, RouteMatch match) {
         request.changeMatch(match);
     }
