@@ -7,8 +7,8 @@
     <packaging>bundle</packaging>
 
     <name>Spark</name>
-    <description>A micro framework for creating web applications in Kotlin and Java 8 with minimal effort</description>
-    <url>https://sparkjava.com</url>
+    <description>A micro framework for creating web applications in Java with minimal effort</description>
+    <url>https://github.com/dsingley/spark</url>
 
     <licenses>
         <license>
