@@ -298,6 +298,11 @@
                 </executions>
             </plugin>
             
+            <!--
+            Ignore alpha, beta, release candidate, and milestone versions so the versions:*
+            goals only suggest stable releases. Each regex must match the whole version
+            string (hence the leading .+ and trailing .*) and is case-insensitive.
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
