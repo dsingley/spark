@@ -12,3 +12,4 @@ bin
 reports
 .java-version
 .DS_Store
+pom.xml.versionsBackup
