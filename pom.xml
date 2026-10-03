@@ -67,6 +67,7 @@
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <jshell-maven-plugin.version>1.4</jshell-maven-plugin.version>
         <maven-compiler.version>3.16.0</maven-compiler.version>
+        <maven-dependency.version>3.11.0</maven-dependency.version>
         <maven-deploy.version>3.2.0</maven-deploy.version>
         <maven-enforcer.version>3.6.3</maven-enforcer.version>
         <maven-gpg.version>3.2.8</maven-gpg.version>
@@ -81,6 +82,9 @@
         <!-- Project/build infrastructure properties -->
         <maven.min.version>3.6.3</maven.min.version>
         <maven-compiler-plugin.encoding>UTF-8</maven-compiler-plugin.encoding>
+
+        <!-- Must exist (empty) so surefire's @{argLine} late replacement works; see the surefire config -->
+        <argLine/>
 
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -331,11 +335,27 @@
                 </configuration>
             </plugin>
             
+            <!-- Exposes ${org.mockito:mockito-core:jar} for the Mockito java agent in the surefire argLine -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency.version}</version>
+                <executions>
+                    <execution>
+                        <id>define-mockito-agent-property</id>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire.version}</version>
                 <configuration>
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
                 </configuration>
