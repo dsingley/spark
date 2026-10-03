@@ -76,6 +76,7 @@
         <maven-resources.version>3.5.0</maven-resources.version>
         <maven-source.version>3.4.0</maven-source.version>
         <maven-surefire.version>3.6.0</maven-surefire.version>
+        <versions-maven-plugin.version>2.22.0</versions-maven-plugin.version>
 
         <!-- Project/build infrastructure properties -->
         <maven.min.version>3.6.3</maven.min.version>
@@ -293,6 +294,34 @@
                 </executions>
             </plugin>
             
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+                <configuration>
+                    <ruleSet>
+                        <ignoreVersions>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).+-alpha.*</version>
+                            </ignoreVersion>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).+-beta.*</version>
+                            </ignoreVersion>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).+-rc.*</version>
+                            </ignoreVersion>
+                            <ignoreVersion>
+                                <type>regex</type>
+                                <version>(?i).+-m\d.*</version>
+                            </ignoreVersion>
+                        </ignoreVersions>
+                    </ruleSet>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
