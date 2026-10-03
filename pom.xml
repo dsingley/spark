@@ -360,6 +360,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire.version}</version>
                 <configuration>
+                    <!--
+                    Load Mockito as a java agent to avoid the JDK 21+ warning about dynamic agent loading.
+                    See the section "Explicitly setting up instrumentation for inline mocking" in
+                    https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html
+                    -->
                     <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
