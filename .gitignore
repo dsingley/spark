@@ -13,3 +13,4 @@ reports
 .java-version
 .DS_Store
 pom.xml.versionsBackup
+maven-central-deploy.log
