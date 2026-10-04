@@ -340,14 +340,18 @@
                 </configuration>
             </plugin>
             
-            <!-- Exposes ${org.mockito:mockito-core:jar} for the Mockito java agent in the surefire argLine -->
+            <!--
+            Sets a property for each dependency holding the path to its jar, e.g. ${org.mockito:mockito-core:jar}.
+            Currently this is needed only for the Mockito property, which the surefire argLine below uses
+            to load Mockito as a java agent.
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>${maven-dependency.version}</version>
                 <executions>
                     <execution>
-                        <id>define-mockito-agent-property</id>
+                        <id>define-dependency-path-properties</id>
                         <goals>
                             <goal>properties</goal>
                         </goals>
