@@ -4,12 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import spark.Service;
 import spark.testing.SparkServerExtension.SparkStarter;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicReference;
 
 class SparkServerExtensionUnitTest {
 
@@ -67,6 +73,27 @@ class SparkServerExtensionUnitTest {
         starter.close();
 
         assertThatIllegalStateException().isThrownBy(starter::service);
-        assertThat(service.awaitStop(java.time.Duration.ofSeconds(5))).isTrue();
+        assertThat(service.awaitStop(Duration.ofSeconds(5))).isTrue();
+    }
+
+    @Test
+    void shouldRethrowCheckedExceptionFromInitializer_AndStillStopServerWhenClosed() {
+        var starter = new SparkStarter();
+        var ignited = new AtomicReference<Service>();
+
+        assertThatThrownBy(() -> starter.runSpark(http -> {
+            http.ipAddress("127.0.0.1");
+            http.port(6556);
+            http.get("/ping", (request, response) -> "pong");
+            http.awaitInitialization();
+            ignited.set(http);
+            throw new IOException("could not load keystore");
+        }))
+                .isExactlyInstanceOf(IOException.class)
+                .hasMessage("could not load keystore");
+
+        starter.close();
+
+        assertThat(ignited.get().awaitStop(Duration.ofSeconds(5))).isTrue();
     }
 }

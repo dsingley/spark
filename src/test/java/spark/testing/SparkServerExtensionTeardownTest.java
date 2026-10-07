@@ -194,7 +194,7 @@ class SparkServerExtensionTeardownTest {
             http.get("/ping", (request, response) -> "pong");
             http.awaitInitialization();
             SERVICES.add(http);
-            throw new IllegalStateException("initializer failed");
+            throw new IOException("initializer failed");
         });
 
         @Test
@@ -275,7 +275,7 @@ class SparkServerExtensionTeardownTest {
         assertThat(summary.getFailures())
                 .singleElement()
                 .satisfies(failure -> assertThat(failure.getException())
-                        .isInstanceOf(IllegalStateException.class)
+                        .isExactlyInstanceOf(IOException.class)
                         .hasMessage("initializer failed"));
 
         assertThat(FailingInitializerFixture.SERVICES).hasSize(1);
