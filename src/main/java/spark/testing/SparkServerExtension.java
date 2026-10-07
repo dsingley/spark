@@ -39,6 +39,10 @@ import java.util.Objects;
  *     // tests can use SPARK.port() or SPARK.service()
  * }
  * </pre>
+ * Note that if the test class uses {@code @TestInstance(Lifecycle.PER_CLASS)}, there is only one test
+ * instance, so an instance field behaves like a static field: one server is shared by all the tests.
+ * <p>
+ * An extension created with an initializer does not inject {@link SparkStarter} parameters.
  *
  * <h2>Injected with {@code @ExtendWith}</h2>
  * Annotate the test class with {@code @ExtendWith(SparkServerExtension.class)} and declare a
@@ -79,14 +83,23 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
          * Ignites a new {@link Service}, passes it to the given initializer so that it can be
          * configured, and then blocks until the service has been initialized.
          * <p>
+         * The initializer must define at least one route, because a service is only initialized once
+         * its first route is defined. Otherwise this method fails with an {@link IllegalStateException}.
+         * <p>
          * If the initializer throws, the service that was ignited is still stopped when this
          * instance is closed.
          *
          * @param initializer configures the service, e.g. sets the port and defines routes
          * @return this instance
-         * @throws Exception if the initializer throws
+         * @throws IllegalStateException if this instance already started a service, or the
+         *                               initializer did not define any routes
+         * @throws Exception             if the initializer throws
          */
         public SparkStarter runSpark(ServiceInitializer initializer) throws Exception {
+            if (service != null) {
+                throw new IllegalStateException("This SparkStarter has already started Spark");
+            }
+
             var newService = Service.ignite();
             service = newService;
             initializer.init(newService);
@@ -222,7 +235,7 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return appliesTo(parameterContext.getParameter().getType());
+        return initializer == null && appliesTo(parameterContext.getParameter().getType());
     }
 
     private boolean appliesTo(Class<?> type) {

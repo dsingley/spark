@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
@@ -34,6 +35,12 @@ class SparkServerExtensionTeardownTest {
 
     private static final Duration STOP_TIMEOUT = Duration.ofSeconds(5);
 
+    // The fixture classes below are only meant to be run by this test, through the Launcher. They are
+    // enabled by this system property so they are skipped if a runner (such as an IDE) finds and runs
+    // them directly, which would also fail on purpose in FailingInitializerFixture.
+    private static final String FIXTURES_PROPERTY = "spark.testing.runFixtures";
+
+    @EnabledIfSystemProperty(named = FIXTURES_PROPERTY, matches = "true")
     @ExtendWith(SparkServerExtension.class)
     static class BeforeAllFixture {
 
@@ -56,6 +63,7 @@ class SparkServerExtensionTeardownTest {
         }
     }
 
+    @EnabledIfSystemProperty(named = FIXTURES_PROPERTY, matches = "true")
     @ExtendWith(SparkServerExtension.class)
     static class BeforeEachFixture {
 
@@ -86,6 +94,7 @@ class SparkServerExtensionTeardownTest {
         }
     }
 
+    @EnabledIfSystemProperty(named = FIXTURES_PROPERTY, matches = "true")
     @ExtendWith(SparkServerExtension.class)
     static class TestMethodFixture {
 
@@ -105,6 +114,7 @@ class SparkServerExtensionTeardownTest {
         }
     }
 
+    @EnabledIfSystemProperty(named = FIXTURES_PROPERTY, matches = "true")
     static class RegisteredStaticFixture {
 
         static final int PORT = 6552;
@@ -129,6 +139,7 @@ class SparkServerExtensionTeardownTest {
         }
     }
 
+    @EnabledIfSystemProperty(named = FIXTURES_PROPERTY, matches = "true")
     static class RegisteredInstanceFixture {
 
         static final int PORT = 6553;
@@ -153,6 +164,7 @@ class SparkServerExtensionTeardownTest {
         }
     }
 
+    @EnabledIfSystemProperty(named = FIXTURES_PROPERTY, matches = "true")
     static class RegisteredNestedFixture {
 
         static final int PORT = 6554;
@@ -183,6 +195,7 @@ class SparkServerExtensionTeardownTest {
         }
     }
 
+    @EnabledIfSystemProperty(named = FIXTURES_PROPERTY, matches = "true")
     static class FailingInitializerFixture {
 
         static final int PORT = 6555;
@@ -307,7 +320,12 @@ class SparkServerExtensionTeardownTest {
                 .selectors(selectClass(fixtureClass))
                 .build();
         var listener = new SummaryGeneratingListener();
-        LauncherFactory.create().execute(request, listener);
+        System.setProperty(FIXTURES_PROPERTY, "true");
+        try {
+            LauncherFactory.create().execute(request, listener);
+        } finally {
+            System.clearProperty(FIXTURES_PROPERTY);
+        }
         return listener.getSummary();
     }
 

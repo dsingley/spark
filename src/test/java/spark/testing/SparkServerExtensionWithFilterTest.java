@@ -14,7 +14,7 @@ class SparkServerExtensionWithFilterTest {
 
     private static final int PORT = 56789;
 
-    private static boolean authenticated;
+    private static volatile boolean authenticated;
 
     @BeforeAll
     static void startServer(SparkStarter starter) throws Exception {

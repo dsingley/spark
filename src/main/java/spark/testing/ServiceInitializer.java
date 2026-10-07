@@ -6,7 +6,7 @@ import spark.Service;
  * Configures a newly ignited Spark {@link Service}: its port, IP address, security, routes, filters, etc.
  * <p>
  * Things like the port and IP address must be configured before routes, because defining the first
- * route initializes the server.
+ * route initializes the server. At least one route must be defined for the server to start.
  * <p>
  * This is a functional interface so that it can be written as a lambda, for example:
  * <pre>
