@@ -82,6 +82,25 @@ class SparkServerExtensionTeardownTest {
         }
     }
 
+    @ExtendWith(SparkServerExtension.class)
+    static class TestMethodFixture {
+
+        static final int PORT = 6547;
+        static volatile Service service;
+
+        @Test
+        void shouldBeRunningDuringTest(SparkStarter starter) throws Exception {
+            starter.runSpark(http -> {
+                http.ipAddress("127.0.0.1");
+                http.port(PORT);
+                http.get("/ping", (request, response) -> "pong");
+                service = http;
+            });
+
+            assertThat(new SparkTestUtil(PORT).get("/ping").body).isEqualTo("pong");
+        }
+    }
+
     @Test
     void shouldStopServerAfterAllTests_WhenStartedInBeforeAll() {
         var summary = execute(BeforeAllFixture.class);
@@ -101,6 +120,16 @@ class SparkServerExtensionTeardownTest {
 
         assertThat(BeforeEachFixture.SERVICES).hasSize(2);
         BeforeEachFixture.SERVICES.forEach(service -> assertStopped(service, BeforeEachFixture.PORT));
+    }
+
+    @Test
+    void shouldStopServerAfterTest_WhenStartedInTestMethod() {
+        var summary = execute(TestMethodFixture.class);
+
+        assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
+        assertThat(summary.getTestsFailedCount()).isZero();
+
+        assertStopped(TestMethodFixture.service, TestMethodFixture.PORT);
     }
 
     @Test
