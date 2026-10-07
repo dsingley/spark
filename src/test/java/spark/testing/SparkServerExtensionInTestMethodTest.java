@@ -1,6 +1,7 @@
 package spark.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,9 @@ class SparkServerExtensionInTestMethodTest {
 
         var response = new SparkTestUtil(PORT).get("/ping");
 
-        assertThat(response.status).isEqualTo(200);
-        assertThat(response.body).isEqualTo("pong");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("pong")
+        );
     }
 }

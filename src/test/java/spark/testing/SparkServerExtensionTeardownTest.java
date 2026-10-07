@@ -3,6 +3,7 @@ package spark.testing;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -207,8 +208,10 @@ class SparkServerExtensionTeardownTest {
     void shouldStopServerAfterAllTests_WhenStartedInBeforeAll() {
         var summary = execute(BeforeAllFixture.class);
 
-        assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
-        assertThat(summary.getTestsFailedCount()).isZero();
+        assertAll(
+                () -> assertThat(summary.getTestsSucceededCount()).isEqualTo(1),
+                () -> assertThat(summary.getTestsFailedCount()).isZero()
+        );
 
         assertStopped(BeforeAllFixture.service, BeforeAllFixture.PORT);
     }
@@ -217,8 +220,10 @@ class SparkServerExtensionTeardownTest {
     void shouldStopServerAfterEachTest_WhenStartedInBeforeEach() {
         var summary = execute(BeforeEachFixture.class);
 
-        assertThat(summary.getTestsSucceededCount()).isEqualTo(2);
-        assertThat(summary.getTestsFailedCount()).isZero();
+        assertAll(
+                () -> assertThat(summary.getTestsSucceededCount()).isEqualTo(2),
+                () -> assertThat(summary.getTestsFailedCount()).isZero()
+        );
 
         assertThat(BeforeEachFixture.SERVICES).hasSize(2);
         BeforeEachFixture.SERVICES.forEach(service -> assertStopped(service, BeforeEachFixture.PORT));
@@ -228,8 +233,10 @@ class SparkServerExtensionTeardownTest {
     void shouldStopServerAfterTest_WhenStartedInTestMethod() {
         var summary = execute(TestMethodFixture.class);
 
-        assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
-        assertThat(summary.getTestsFailedCount()).isZero();
+        assertAll(
+                () -> assertThat(summary.getTestsSucceededCount()).isEqualTo(1),
+                () -> assertThat(summary.getTestsFailedCount()).isZero()
+        );
 
         assertStopped(TestMethodFixture.service, TestMethodFixture.PORT);
     }
@@ -238,8 +245,10 @@ class SparkServerExtensionTeardownTest {
     void shouldStopServerAfterAllTests_WhenRegisteredOnStaticField() {
         var summary = execute(RegisteredStaticFixture.class);
 
-        assertThat(summary.getTestsSucceededCount()).isEqualTo(2);
-        assertThat(summary.getTestsFailedCount()).isZero();
+        assertAll(
+                () -> assertThat(summary.getTestsSucceededCount()).isEqualTo(2),
+                () -> assertThat(summary.getTestsFailedCount()).isZero()
+        );
 
         assertThat(RegisteredStaticFixture.SERVICES).hasSize(1);
         assertStopped(RegisteredStaticFixture.SERVICES.get(0), RegisteredStaticFixture.PORT);
@@ -249,8 +258,10 @@ class SparkServerExtensionTeardownTest {
     void shouldStopServerAfterEachTest_WhenRegisteredOnInstanceField() {
         var summary = execute(RegisteredInstanceFixture.class);
 
-        assertThat(summary.getTestsSucceededCount()).isEqualTo(2);
-        assertThat(summary.getTestsFailedCount()).isZero();
+        assertAll(
+                () -> assertThat(summary.getTestsSucceededCount()).isEqualTo(2),
+                () -> assertThat(summary.getTestsFailedCount()).isZero()
+        );
 
         assertThat(RegisteredInstanceFixture.SERVICES).hasSize(2);
         RegisteredInstanceFixture.SERVICES.forEach(service -> assertStopped(service, RegisteredInstanceFixture.PORT));
@@ -260,8 +271,10 @@ class SparkServerExtensionTeardownTest {
     void shouldStartOnlyOneServer_WhenRegisteredOnStaticFieldAndTestsAreNested() {
         var summary = execute(RegisteredNestedFixture.class);
 
-        assertThat(summary.getTestsSucceededCount()).isEqualTo(2);
-        assertThat(summary.getTestsFailedCount()).isZero();
+        assertAll(
+                () -> assertThat(summary.getTestsSucceededCount()).isEqualTo(2),
+                () -> assertThat(summary.getTestsFailedCount()).isZero()
+        );
 
         assertThat(RegisteredNestedFixture.START_COUNT).hasValue(1);
         assertStopped(RegisteredNestedFixture.SERVICES.get(0), RegisteredNestedFixture.PORT);
@@ -271,12 +284,14 @@ class SparkServerExtensionTeardownTest {
     void shouldStopServer_WhenInitializerThrows() {
         var summary = execute(FailingInitializerFixture.class);
 
-        assertThat(summary.getContainersFailedCount()).isEqualTo(1);
-        assertThat(summary.getFailures())
-                .singleElement()
-                .satisfies(failure -> assertThat(failure.getException())
-                        .isExactlyInstanceOf(IOException.class)
-                        .hasMessage("initializer failed"));
+        assertAll(
+                () -> assertThat(summary.getContainersFailedCount()).isEqualTo(1),
+                () -> assertThat(summary.getFailures())
+                        .singleElement()
+                        .satisfies(failure -> assertThat(failure.getException())
+                                .isExactlyInstanceOf(IOException.class)
+                                .hasMessage("initializer failed"))
+        );
 
         assertThat(FailingInitializerFixture.SERVICES).hasSize(1);
         assertStopped(FailingInitializerFixture.SERVICES.get(0), FailingInitializerFixture.PORT);
@@ -297,11 +312,12 @@ class SparkServerExtensionTeardownTest {
     }
 
     private static void assertStopped(Service service, int port) {
-        assertThat(service.awaitStop(STOP_TIMEOUT))
-                .describedAs("service on port %d should have been stopped", port)
-                .isTrue();
-
-        assertThatThrownBy(() -> new SparkTestUtil(port).get("/ping"))
-                .isInstanceOf(IOException.class);
+        assertAll(
+                () -> assertThat(service.awaitStop(STOP_TIMEOUT))
+                        .describedAs("service on port %d should have been stopped", port)
+                        .isTrue(),
+                () -> assertThatThrownBy(() -> new SparkTestUtil(port).get("/ping"))
+                        .isInstanceOf(IOException.class)
+        );
     }
 }

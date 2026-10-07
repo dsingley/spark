@@ -1,6 +1,7 @@
 package spark.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,15 +26,19 @@ class SparkServerExtensionBeforeAllTest {
     void shouldHandlePingRequest() throws Exception {
         var response = new SparkTestUtil(Service.SPARK_DEFAULT_PORT).get("/ping");
 
-        assertThat(response.status).isEqualTo(200);
-        assertThat(response.body).isEqualTo("pong");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("pong")
+        );
     }
 
     @Test
     void shouldHandleHealthRequest() throws Exception {
         var response = new SparkTestUtil(Service.SPARK_DEFAULT_PORT).get("/health");
 
-        assertThat(response.status).isEqualTo(200);
-        assertThat(response.body).isEqualTo("healthy");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("healthy")
+        );
     }
 }

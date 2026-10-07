@@ -1,6 +1,7 @@
 package spark.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,8 +36,10 @@ class SparkServerExtensionWithFilterTest {
 
         var response = new SparkTestUtil(PORT).get("/secret");
 
-        assertThat(response.status).isEqualTo(200);
-        assertThat(response.body).isEqualTo("Don't forget to drink your Ovaltine!");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("Don't forget to drink your Ovaltine!")
+        );
     }
 
     @Test
@@ -45,7 +48,9 @@ class SparkServerExtensionWithFilterTest {
 
         var response = new SparkTestUtil(PORT).get("/secret");
 
-        assertThat(response.status).isEqualTo(401);
-        assertThat(response.body).isEqualTo("Go away!");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(401),
+                () -> assertThat(response.body).isEqualTo("Go away!")
+        );
     }
 }

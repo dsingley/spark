@@ -1,6 +1,7 @@
 package spark.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
@@ -36,26 +37,32 @@ class SparkServerExtensionUnitTest {
             extension.beforeEach(context);
         }).doesNotThrowAnyException();
 
-        verifyNoInteractions(context);
-        assertThatIllegalStateException().isThrownBy(extension::service);
+        assertAll(
+                () -> verifyNoInteractions(context),
+                () -> assertThatIllegalStateException().isThrownBy(extension::service)
+        );
     }
 
     @Test
     void shouldNotHaveServiceOrPort_BeforeServerIsStarted() {
         var extension = new SparkServerExtension(http -> { });
 
-        assertThatIllegalStateException()
-                .isThrownBy(extension::service)
-                .withMessage("Spark is not running");
-        assertThatIllegalStateException().isThrownBy(extension::port);
+        assertAll(
+                () -> assertThatIllegalStateException()
+                        .isThrownBy(extension::service)
+                        .withMessage("Spark is not running"),
+                () -> assertThatIllegalStateException().isThrownBy(extension::port)
+        );
     }
 
     @Test
     void shouldNotHaveServiceOrPort_BeforeStarterIsRun() {
         var starter = new SparkStarter();
 
-        assertThatIllegalStateException().isThrownBy(starter::service);
-        assertThatIllegalStateException().isThrownBy(starter::port);
+        assertAll(
+                () -> assertThatIllegalStateException().isThrownBy(starter::service),
+                () -> assertThatIllegalStateException().isThrownBy(starter::port)
+        );
     }
 
     @Test
@@ -67,13 +74,17 @@ class SparkServerExtensionUnitTest {
         });
         var service = starter.service();
 
-        assertThat(starter.port()).isEqualTo(6551);
-        assertThat(service.port()).isEqualTo(6551);
+        assertAll(
+                () -> assertThat(starter.port()).isEqualTo(6551),
+                () -> assertThat(service.port()).isEqualTo(6551)
+        );
 
         starter.close();
 
-        assertThatIllegalStateException().isThrownBy(starter::service);
-        assertThat(service.awaitStop(Duration.ofSeconds(5))).isTrue();
+        assertAll(
+                () -> assertThatIllegalStateException().isThrownBy(starter::service),
+                () -> assertThat(service.awaitStop(Duration.ofSeconds(5))).isTrue()
+        );
     }
 
     @Test

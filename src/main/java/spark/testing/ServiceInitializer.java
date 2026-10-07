@@ -9,12 +9,12 @@ import spark.Service;
  * route initializes the server.
  * <p>
  * This is a functional interface so that it can be written as a lambda, for example:
- * <pre>{@code
+ * <pre>
  * http -> {
  *     http.port(56789);
  *     http.get("/ping", (request, response) -> "pong");
  * }
- * }</pre>
+ * </pre>
  */
 @FunctionalInterface
 public interface ServiceInitializer {
