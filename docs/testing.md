@@ -99,8 +99,9 @@ Injection is the better fit when the configuration depends on something only ava
 method, or when a single test needs to start its own server.
 
 In both forms the server is stopped automatically when its scope ends, even if the lambda that
-configures it throws. A `SparkServerExtension` that was created with a lambda does not also inject
-`SparkStarter` parameters.
+configures it throws, and the extension waits for the server to finish stopping before moving on, so
+the next test can use the same port. A `SparkServerExtension` that was created with a lambda does not
+also inject `SparkStarter` parameters.
 
 ## Configuring the server
 
