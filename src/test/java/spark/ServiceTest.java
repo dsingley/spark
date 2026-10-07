@@ -326,6 +326,55 @@ class ServiceTest {
         assertThat(stopped).isFalse();
     }
 
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    void stopAndAwait_whenServerStopsInTime_returnsTrue() {
+        var theService = Service.ignite();
+        var routes = mock(Routes.class);
+        var server = mock(EmbeddedServer.class);
+        theService.routes = routes;
+        theService.server = server;
+        theService.initialized = true;
+
+        var stopped = theService.stopAndAwait(Duration.ofSeconds(5));
+
+        verify(server).extinguish();
+        assertAll(
+                () -> assertThat(stopped).isTrue(),
+                () -> assertThat(theService.initialized).isFalse()
+        );
+    }
+
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    void stopAndAwait_whenServerDoesNotStopInTime_returnsFalse() {
+        var theService = Service.ignite();
+        var routes = mock(Routes.class);
+        var server = mock(EmbeddedServer.class);
+        // simulates a slow/hung shutdown, so the timeout genuinely elapses first
+        doAnswer(invocation -> {
+            Thread.sleep(500);
+            return null;
+        }).when(server).extinguish();
+        theService.routes = routes;
+        theService.server = server;
+        theService.initialized = true;
+
+        var stopped = theService.stopAndAwait(Duration.ofMillis(50));
+
+        assertThat(stopped).isFalse();
+    }
+
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    void stopAndAwait_whenServerWasNeverInitialized_returnsTrueImmediately() {
+        var theService = Service.ignite();
+
+        var stopped = theService.stopAndAwait(Duration.ofSeconds(5));
+
+        assertThat(stopped).isTrue();
+    }
+
     protected static class DummyWebSocketListener {
     }
 
