@@ -57,6 +57,9 @@ JUnit 4:
 | `static` | all the tests in the class (and its `@Nested` classes) |
 | instance | one test; a new server is started for each test |
 
+If the class uses `@TestInstance(Lifecycle.PER_CLASS)` there is only one test instance, so an instance
+field behaves like a static one: all the tests share a single server.
+
 ## Injecting a SparkStarter
 
 Alternatively, annotate the class with `@ExtendWith(SparkServerExtension.class)` and declare a
@@ -96,12 +99,14 @@ Injection is the better fit when the configuration depends on something only ava
 method, or when a single test needs to start its own server.
 
 In both forms the server is stopped automatically when its scope ends, even if the lambda that
-configures it throws.
+configures it throws. A `SparkServerExtension` that was created with a lambda does not also inject
+`SparkStarter` parameters.
 
 ## Configuring the server
 
 The lambda is a `ServiceInitializer`, which receives the `Service` and may throw checked exceptions.
-Use the usual configuration methods. The port and address must be set before the first route:
+Use the usual configuration methods. The port and address must be set before the first route, and the
+lambda must define at least one route, because that is what initializes the server:
 
 ```java
 new SparkServerExtension(http -> {
