@@ -25,10 +25,10 @@ import java.util.Optional;
  * starts one server for all the tests in the class, before any {@code @BeforeAll} method of the test
  * class runs; an instance field starts a new server for each test, before any {@code @BeforeEach}
  * method of the test class runs:
- * <pre>{@code
+ * <pre>
  * class MyTest {
  *
- *     @RegisterExtension
+ *     {@literal @}RegisterExtension
  *     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
  *         http.port(56789);
  *         http.get("/ping", (request, response) -> "pong");
@@ -36,7 +36,7 @@ import java.util.Optional;
  *
  *     // tests can use SPARK.port() or SPARK.service()
  * }
- * }</pre>
+ * </pre>
  *
  * <h2>Injected with {@code @ExtendWith}</h2>
  * Annotate the test class with {@code @ExtendWith(SparkServerExtension.class)} and declare a
@@ -44,11 +44,11 @@ import java.util.Optional;
  * {@link SparkStarter#runSpark(ServiceInitializer)} to start the server. Where the parameter is
  * declared determines the lifecycle: a static {@code @BeforeAll} method gives one server for the class,
  * a {@code @BeforeEach} method one server per test, and a {@code @Test} method a server for that test:
- * <pre>{@code
- * @ExtendWith(SparkServerExtension.class)
+ * <pre>
+ * {@literal @}ExtendWith(SparkServerExtension.class)
  * class MyTest {
  *
- *     @BeforeAll
+ *     {@literal @}BeforeAll
  *     static void startServer(SparkStarter starter) throws Exception {
  *         starter.runSpark(http -> {
  *             http.port(56789);
@@ -56,7 +56,7 @@ import java.util.Optional;
  *         });
  *     }
  * }
- * }</pre>
+ * </pre>
  * <p>
  * This class requires {@code junit-jupiter-api} on the classpath. It is an optional dependency of
  * spark-core, so it is not brought in transitively; code that uses this extension is a test and
