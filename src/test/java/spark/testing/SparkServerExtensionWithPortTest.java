@@ -14,7 +14,7 @@ class SparkServerExtensionWithPortTest {
     private static final int PORT = 6543;
 
     @BeforeAll
-    static void startServer(SparkStarter starter) {
+    static void startServer(SparkStarter starter) throws Exception {
         starter.runSpark(http -> {
             http.ipAddress("127.0.0.1");
             http.port(PORT);

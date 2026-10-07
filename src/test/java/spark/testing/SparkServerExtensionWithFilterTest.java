@@ -16,7 +16,7 @@ class SparkServerExtensionWithFilterTest {
     private static boolean authenticated;
 
     @BeforeAll
-    static void startServer(SparkStarter starter) {
+    static void startServer(SparkStarter starter) throws Exception {
         starter.runSpark(http -> {
             http.ipAddress("127.0.0.1");
             http.port(PORT);

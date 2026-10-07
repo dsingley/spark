@@ -13,7 +13,7 @@ import spark.util.SparkTestUtil;
 class SparkServerExtensionBeforeAllTest {
 
     @BeforeAll
-    static void startServer(SparkStarter starter) {
+    static void startServer(SparkStarter starter) throws Exception {
         starter.runSpark(http -> {
             http.ipAddress("127.0.0.1");
             http.get("/ping", (request, response) -> "pong");

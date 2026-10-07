@@ -14,7 +14,7 @@ class SparkServerExtensionWithSecurityTest {
     private static final int PORT = 9876;
 
     @BeforeAll
-    static void startServer(SparkStarter starter) {
+    static void startServer(SparkStarter starter) throws Exception {
         starter.runSpark(https -> {
             https.ipAddress("127.0.0.1");
             https.port(PORT);

@@ -8,7 +8,9 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Runs fixture test classes with the extension via the JUnit Launcher, and then verifies that
@@ -37,7 +40,7 @@ class SparkServerExtensionTeardownTest {
         static volatile Service service;
 
         @BeforeAll
-        static void startServer(SparkStarter starter) {
+        static void startServer(SparkStarter starter) throws Exception {
             starter.runSpark(http -> {
                 http.ipAddress("127.0.0.1");
                 http.port(PORT);
@@ -61,7 +64,7 @@ class SparkServerExtensionTeardownTest {
         private Service service;
 
         @BeforeEach
-        void startServer(SparkStarter starter) {
+        void startServer(SparkStarter starter) throws Exception {
             starter.runSpark(http -> {
                 http.ipAddress("127.0.0.1");
                 http.port(PORT);
@@ -101,6 +104,105 @@ class SparkServerExtensionTeardownTest {
         }
     }
 
+    static class RegisteredStaticFixture {
+
+        static final int PORT = 6552;
+        static final List<Service> SERVICES = new CopyOnWriteArrayList<>();
+
+        @RegisterExtension
+        static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+            http.ipAddress("127.0.0.1");
+            http.port(PORT);
+            http.get("/ping", (request, response) -> "pong");
+            SERVICES.add(http);
+        });
+
+        @Test
+        void shouldBeRunningDuringFirstTest() throws Exception {
+            assertThat(new SparkTestUtil(PORT).get("/ping").body).isEqualTo("pong");
+        }
+
+        @Test
+        void shouldBeRunningDuringSecondTest() throws Exception {
+            assertThat(new SparkTestUtil(PORT).get("/ping").body).isEqualTo("pong");
+        }
+    }
+
+    static class RegisteredInstanceFixture {
+
+        static final int PORT = 6553;
+        static final List<Service> SERVICES = new CopyOnWriteArrayList<>();
+
+        @RegisterExtension
+        final SparkServerExtension spark = new SparkServerExtension(http -> {
+            http.ipAddress("127.0.0.1");
+            http.port(PORT);
+            http.get("/ping", (request, response) -> "pong");
+            SERVICES.add(http);
+        });
+
+        @Test
+        void shouldBeRunningDuringFirstTest() throws Exception {
+            assertThat(new SparkTestUtil(PORT).get("/ping").body).isEqualTo("pong");
+        }
+
+        @Test
+        void shouldBeRunningDuringSecondTest() throws Exception {
+            assertThat(new SparkTestUtil(PORT).get("/ping").body).isEqualTo("pong");
+        }
+    }
+
+    static class RegisteredNestedFixture {
+
+        static final int PORT = 6554;
+        static final AtomicInteger START_COUNT = new AtomicInteger();
+        static final List<Service> SERVICES = new CopyOnWriteArrayList<>();
+
+        @RegisterExtension
+        static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+            http.ipAddress("127.0.0.1");
+            http.port(PORT);
+            http.get("/ping", (request, response) -> "pong");
+            START_COUNT.incrementAndGet();
+            SERVICES.add(http);
+        });
+
+        @Test
+        void shouldBeRunningInOuterClass() throws Exception {
+            assertThat(new SparkTestUtil(PORT).get("/ping").body).isEqualTo("pong");
+        }
+
+        @Nested
+        class Inner {
+
+            @Test
+            void shouldBeRunningInNestedClass() throws Exception {
+                assertThat(new SparkTestUtil(PORT).get("/ping").body).isEqualTo("pong");
+            }
+        }
+    }
+
+    static class FailingInitializerFixture {
+
+        static final int PORT = 6555;
+        static final List<Service> SERVICES = new CopyOnWriteArrayList<>();
+
+        @RegisterExtension
+        static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+            http.ipAddress("127.0.0.1");
+            http.port(PORT);
+            http.get("/ping", (request, response) -> "pong");
+            http.awaitInitialization();
+            SERVICES.add(http);
+            throw new IllegalStateException("initializer failed");
+        });
+
+        @Test
+        void shouldNotRun() {
+            // never runs because the extension fails in beforeAll
+        }
+    }
+
     @Test
     void shouldStopServerAfterAllTests_WhenStartedInBeforeAll() {
         var summary = execute(BeforeAllFixture.class);
@@ -130,6 +232,54 @@ class SparkServerExtensionTeardownTest {
         assertThat(summary.getTestsFailedCount()).isZero();
 
         assertStopped(TestMethodFixture.service, TestMethodFixture.PORT);
+    }
+
+    @Test
+    void shouldStopServerAfterAllTests_WhenRegisteredOnStaticField() {
+        var summary = execute(RegisteredStaticFixture.class);
+
+        assertThat(summary.getTestsSucceededCount()).isEqualTo(2);
+        assertThat(summary.getTestsFailedCount()).isZero();
+
+        assertThat(RegisteredStaticFixture.SERVICES).hasSize(1);
+        assertStopped(RegisteredStaticFixture.SERVICES.get(0), RegisteredStaticFixture.PORT);
+    }
+
+    @Test
+    void shouldStopServerAfterEachTest_WhenRegisteredOnInstanceField() {
+        var summary = execute(RegisteredInstanceFixture.class);
+
+        assertThat(summary.getTestsSucceededCount()).isEqualTo(2);
+        assertThat(summary.getTestsFailedCount()).isZero();
+
+        assertThat(RegisteredInstanceFixture.SERVICES).hasSize(2);
+        RegisteredInstanceFixture.SERVICES.forEach(service -> assertStopped(service, RegisteredInstanceFixture.PORT));
+    }
+
+    @Test
+    void shouldStartOnlyOneServer_WhenRegisteredOnStaticFieldAndTestsAreNested() {
+        var summary = execute(RegisteredNestedFixture.class);
+
+        assertThat(summary.getTestsSucceededCount()).isEqualTo(2);
+        assertThat(summary.getTestsFailedCount()).isZero();
+
+        assertThat(RegisteredNestedFixture.START_COUNT).hasValue(1);
+        assertStopped(RegisteredNestedFixture.SERVICES.get(0), RegisteredNestedFixture.PORT);
+    }
+
+    @Test
+    void shouldStopServer_WhenInitializerThrows() {
+        var summary = execute(FailingInitializerFixture.class);
+
+        assertThat(summary.getContainersFailedCount()).isEqualTo(1);
+        assertThat(summary.getFailures())
+                .singleElement()
+                .satisfies(failure -> assertThat(failure.getException())
+                        .isInstanceOf(IllegalStateException.class)
+                        .hasMessage("initializer failed"));
+
+        assertThat(FailingInitializerFixture.SERVICES).hasSize(1);
+        assertStopped(FailingInitializerFixture.SERVICES.get(0), FailingInitializerFixture.PORT);
     }
 
     @Test
