@@ -1225,6 +1225,18 @@ public class Spark {
         return getInstance().awaitStop(timeout);
     }
 
+    /**
+     * Stops the Spark server and clears all routes, and then waits for it to stop, for up to the given
+     * timeout. This is the same as calling {@link #stop()} followed by {@link #awaitStop(Duration)}.
+     * If the server was never initialized it returns {@code true} immediately.
+     *
+     * @param timeout the maximum time to wait
+     * @return true if the server stopped before the timeout elapsed, false if the timeout elapsed first
+     */
+    public static boolean stopAndAwait(Duration timeout) {
+        return getInstance().stopAndAwait(timeout);
+    }
+
     // Websockets //
 
     /**

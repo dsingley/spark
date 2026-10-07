@@ -585,6 +585,21 @@ public final class Service extends Routable {
         }
     }
 
+    /**
+     * Stops the Spark server and clears all routes, and then waits for it to stop, for up to the given
+     * timeout. This is the same as calling {@link #stop()} followed by {@link #awaitStop(Duration)}.
+     * If the server was never initialized there is nothing to stop, so this returns {@code true}
+     * immediately.
+     * <b>Warning:</b> this method should not be called from a request handler.
+     *
+     * @param timeout the maximum time to wait
+     * @return true if the server stopped before the timeout elapsed, false if the timeout elapsed first
+     */
+    public boolean stopAndAwait(Duration timeout) {
+        stop();
+        return awaitStop(timeout);
+    }
+
     private void initiateStop() {
     	stopLatch = new CountDownLatch(1);
         var stopThread = new Thread(() -> {
