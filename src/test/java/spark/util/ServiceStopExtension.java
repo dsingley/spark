@@ -36,6 +36,9 @@ public class ServiceStopExtension implements AfterAllCallback {
     @Override
     public void afterAll(@NonNull ExtensionContext context) {
         var services = serviceSuppliers.stream().map(Supplier::get).toList();
+
+        // Deliberately not Service.stopAndAwait: start stopping all the services first and then wait,
+        // so that they shut down concurrently instead of one after another
         services.forEach(Service::stop);
         services.forEach(service -> service.awaitStop(DEFAULT_TIMEOUT));
     }
