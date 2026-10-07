@@ -99,12 +99,10 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
          * @throws IllegalStateException if no service was started, or it has been stopped
          */
         public Service service() {
-            // Read the volatile field once, so the null check and the return use the same value
-            var current = service;
-            if (current == null || closed) {
+            if (service == null || closed) {
                 throw new IllegalStateException("Spark is not running");
             }
-            return current;
+            return service;
         }
 
         /**
@@ -160,12 +158,10 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
      * @throws IllegalStateException if this extension has no running server
      */
     public Service service() {
-        // Read the volatile field once, so the null check and the use of it see the same value
-        var current = starter;
-        if (current == null) {
+        if (starter == null) {
             throw new IllegalStateException("Spark is not running");
         }
-        return current.service();
+        return starter.service();
     }
 
     /**
