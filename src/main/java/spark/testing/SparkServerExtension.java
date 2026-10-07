@@ -9,10 +9,12 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Service;
 
+import java.time.Duration;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * A JUnit Jupiter extension that starts and stops a Spark {@link Service} for tests. The server is
@@ -116,15 +118,28 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
         }
 
         /**
-         * Stops the service if one was started. Called by JUnit when the extension context is closed,
-         * and does nothing if {@link #runSpark(ServiceInitializer)} was never called.
+         * Stops the service if one was started, and waits (for a bounded time) for it to finish
+         * stopping, so that the next server can use the same port. Called by JUnit when the extension
+         * context is closed, and does nothing if {@link #runSpark(ServiceInitializer)} was never called.
          */
         @Override
         public void close() {
             closed = true;
-            Optional.ofNullable(service).ifPresent(Service::stop);
+            if (service == null) {
+                return;
+            }
+
+            service.stop();
+            if (!service.awaitStop(STOP_TIMEOUT)) {
+                LOG.warn("Spark did not stop within {}", STOP_TIMEOUT);
+            }
         }
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(SparkServerExtension.class);
+
+    // Normally the server stops in a few milliseconds; this only bounds a shutdown that is stuck
+    private static final Duration STOP_TIMEOUT = Duration.ofSeconds(5);
 
     private static final Namespace NAMESPACE = create(SparkServerExtension.class);
 

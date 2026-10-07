@@ -83,7 +83,9 @@ class SparkServerExtensionUnitTest {
 
         assertAll(
                 () -> assertThatIllegalStateException().isThrownBy(starter::service),
-                () -> assertThat(service.awaitStop(Duration.ofSeconds(5))).isTrue()
+                () -> assertThat(service.awaitStop(Duration.ZERO))
+                        .describedAs("close() should not return until the service has stopped")
+                        .isTrue()
         );
     }
 
