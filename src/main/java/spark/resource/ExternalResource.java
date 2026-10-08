@@ -25,7 +25,8 @@ import java.io.InputStream;
 import java.net.URL;
 
 /**
- * Created by Per Wendel on 2014-05-18.
+ * A {@link Resource} for a file on the file system, outside the classpath. It is used to serve
+ * static files from an external folder, see {@link spark.Service#externalStaticFileLocation(String)}.
  */
 // equals/hashCode inherited from AbstractResource are description-based and
 // already cover the "file" field added here, via getDescription()

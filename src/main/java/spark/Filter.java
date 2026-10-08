@@ -1,7 +1,10 @@
 package spark;
 
 /**
- * Created by Per Wendel on 2014-05-10.
+ * Code that runs before or after the routes that handle a request, for example to check
+ * authentication or to log requests. A filter is mapped with {@code before}, {@code after} or
+ * {@code afterAfter}, on {@link Spark} or {@link Service}, to every path or to a given one. It can
+ * stop the request by calling {@code halt}.
  */
 @FunctionalInterface
 public interface Filter {

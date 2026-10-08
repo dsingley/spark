@@ -26,9 +26,6 @@ import spark.route.HttpMethod;
 import spark.util.ServiceStopExtension;
 import spark.util.SparkTestUtil;
 
-/**
- * Created by Per Wendel on 2016-02-18.
- */
 class MultipleServicesTest {
 
     private static Service first;
