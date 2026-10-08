@@ -33,7 +33,6 @@ import java.net.URL;
  * be opened; "isOpen" will always return false; "getURL" and "getFile"
  * throw an exception; and "toString" will return the description.
  *
- * @author Juergen Hoeller
  * Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
  */
 public abstract class AbstractResource implements Resource {

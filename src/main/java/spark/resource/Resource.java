@@ -28,7 +28,6 @@ import java.net.URL;
  * physical form, but a URL or File handle can just be returned for
  * certain resources. The actual behavior is implementation-specific.
  *
- * @author Juergen Hoeller
  * @see #getInputStream()
  * @see #getURL()
  * @see #getURI()

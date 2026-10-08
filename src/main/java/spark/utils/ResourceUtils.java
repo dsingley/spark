@@ -39,11 +39,9 @@ import java.net.URLConnection;
  * Spring's {@code Resource} abstraction in the core package, on the other hand,
  * already expects the logging system to be available.
  *
- * @author Juergen Hoeller
  * @since 1.1.5
  *
  * Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
- *
  */
 public abstract class ResourceUtils {
 

@@ -33,12 +33,6 @@ import java.util.List;
  * substring in a target string. It also provides easy-to-use methods to convert
  * between delimited strings, such as CSV strings, and collections and arrays.
  *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @author Keith Donald
- * @author Rob Harrop
- * @author Rick Evans
- * @author Arjen Poutsma
  *         Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
  */
 public abstract class StringUtils {

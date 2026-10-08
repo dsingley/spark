@@ -22,12 +22,8 @@ import java.util.Collection;
  * Miscellaneous collection utility methods.
  * Mainly for internal use within the framework.
  *
- * @author Juergen Hoeller
- * @author Rob Harrop
- * @author Arjen Poutsma
  *
  * Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
- *
  */
 public class CollectionUtils {
 

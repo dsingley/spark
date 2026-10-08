@@ -30,10 +30,6 @@ package spark.utils;
  * <p>This class is similar to JUnit's assertion library. If an argument value is
  * deemed invalid, an {@link IllegalArgumentException} is thrown (typically).
  *
- * @author Keith Donald
- * @author Juergen Hoeller
- * @author Colin Sampaleanu
- * @author Rob Harrop
  *
  * Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
  */

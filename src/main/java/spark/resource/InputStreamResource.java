@@ -29,7 +29,6 @@ import java.io.InputStream;
  * This makes this interface useful as an abstract content source for mail
  * attachments, for example.
  *
- * @author Juergen Hoeller
  * @see java.io.InputStream
  * @see Resource
  * @see InputStreamResource
