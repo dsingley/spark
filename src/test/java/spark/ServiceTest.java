@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -20,7 +21,11 @@ import spark.embeddedserver.EmbeddedServers;
 import spark.route.Routes;
 import spark.ssl.SslStores;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 class ServiceTest {
@@ -373,6 +378,50 @@ class ServiceTest {
         var stopped = theService.stopAndAwait(Duration.ofSeconds(5));
 
         assertThat(stopped).isTrue();
+    }
+
+    @Test
+    void noMethodIsSynchronized_soCallersCannotInterfereByLockingTheService() {
+        var synchronizedMethods = Arrays.stream(Service.class.getDeclaredMethods())
+                .filter(method -> Modifier.isSynchronized(method.getModifiers()))
+                .map(Method::getName)
+                .toList();
+
+        assertThat(synchronizedMethods).isEmpty();
+    }
+
+    @Test
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    void configuringTheService_isNotBlockedWhenACallerHoldsItsMonitor() throws Exception {
+        var theService = Service.ignite();
+        var monitorHeld = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+
+        var holder = new Thread(() -> {
+            synchronized (theService) {
+                monitorHeld.countDown();
+                try {
+                    release.await();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        holder.start();
+        monitorHeld.await();
+
+        try {
+            // These would block until the monitor was released if Service synchronized on itself
+            assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+                theService.ipAddress("127.0.0.1");
+                theService.port(6600);
+                theService.threadPool(10);
+                theService.trustForwardHeaders();
+            });
+        } finally {
+            release.countDown();
+            holder.join();
+        }
     }
 
     protected static class DummyWebSocketListener {
