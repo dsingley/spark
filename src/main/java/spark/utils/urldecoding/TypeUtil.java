@@ -27,8 +27,6 @@ import java.util.Objects;
  * Copied from Eclipse Jetty's own {@code org.eclipse.jetty.util.TypeUtil}, trimmed down to just
  * the methods this package actually uses - the original is a much larger, general-purpose type
  * utility class.
- *
- * @since Jetty 4.1
  */
 public class TypeUtil {
 

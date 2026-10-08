@@ -24,8 +24,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Example showing the use of attributes
- *
- * @author Per Wendel
  */
 public class FilterExampleAttributes {
 

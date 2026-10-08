@@ -20,8 +20,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Exception used for stopping the execution
- *
- * @author Per Wendel
  */
 public class HaltException extends RuntimeException {
     private static final long serialVersionUID = 1L;

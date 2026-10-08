@@ -24,8 +24,6 @@ import java.io.OutputStream;
 
 /**
  * Input stream serializer.
- *
- * @author alex
  */
 class InputStreamSerializer extends Serializer {
 

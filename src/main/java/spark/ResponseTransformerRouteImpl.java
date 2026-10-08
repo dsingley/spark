@@ -23,8 +23,6 @@ package spark;
  * calling render method.
  * The primary purpose of this kind of Route is provide a way to create generic
  * and reusable transformers. For example to convert an Object to JSON format.
- *
- * @author alex
  */
 public abstract class ResponseTransformerRouteImpl extends RouteImpl {
 

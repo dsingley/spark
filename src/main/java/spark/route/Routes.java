@@ -33,8 +33,6 @@ import java.util.Map;
 /**
  * Holds the routes and performs matching from HTTP requests to routes.
  * Works as Sinatra's, i.e., if there is more than one match, the one that was mapped first is chosen.
- *
- * @author Per Wendel
  */
 public class Routes {
 

@@ -12,9 +12,9 @@ doesn't have to start from a fresh source-diffing exercise every time it comes u
 
 ## How a class ended up in this list
 
-A class is listed here if its Javadoc, header comment, or `@author` tags show it was
-copied from another project's source, as opposed to code Spark's own authors wrote from
-scratch (most of the codebase carries a `Copyright ... Per Wendel` header, which is
+A class is listed here if its Javadoc or header comment shows it was copied from another
+project's source (or, before the `@author` tags were removed from the whole codebase, if
+its tags did), as opposed to code Spark's own authors wrote from scratch (most of the codebase carries a `Copyright ... Per Wendel` header, which is
 Spark's own original copyright, not a third-party one, and isn't listed here).
 
 This list was cross-checked against the repo's own `NOTICE` file, which independently
@@ -35,7 +35,7 @@ embedded server), so these are prime candidates for replacement with direct call
 
 | File | Upstream class | Notes |
 |---|---|---|
-| `utils/urldecoding/TypeUtil.java` | `org.eclipse.jetty.util.TypeUtil` | Hex parsing helpers only; upstream class is much larger. Has an `@implNote` (PR #259). |
+| `utils/urldecoding/TypeUtil.java` | `org.eclipse.jetty.util.TypeUtil` | Hex parsing helpers only; upstream class is much larger (its `@since` was Jetty 4.1). Has an `@implNote` (PR #259). |
 | `utils/urldecoding/UrlDecode.java` | `org.eclipse.jetty.util.URIUtil` (`decodePath` methods) | Extracted and renamed (`decodePath` -> `path`). Has an `@implNote` (this session). `decodeISO88591Path` was removed entirely in PR #264, matching Jetty's own current approach. |
 | `utils/urldecoding/Utf8Appendable.java` | `org.eclipse.jetty.util.Utf8Appendable` | No `@implNote` yet. |
 | `utils/urldecoding/Utf8StringBuilder.java` | `org.eclipse.jetty.util.Utf8StringBuilder` | No `@implNote` yet. |
@@ -47,36 +47,38 @@ embedded server), so these are prime candidates for replacement with direct call
 ## Spring Framework
 
 Copied from Spring (`Copyright 2002-201x the original author or authors`, Apache 2.0
-licensed, `@author` tags naming Spring core committers - Juergen Hoeller, Keith Donald,
-Rob Harrop, Sam Brannen). Spark does not currently depend on Spring at all, so replacing
+licensed). These files used to carry `@author` tags naming Spring core committers; the tags
+were removed so that the whole codebase is consistent, and the names are kept in the table
+below. Spark does not currently depend on Spring at all, so replacing
 these would mean adding `spring-core` (or a similar minimal artifact) as a new dependency
 rather than reusing one that's already there - a bigger tradeoff than the Jetty group.
 
-| File | Upstream class | Notes |
-|---|---|---|
-| `utils/StringUtils.java` | `org.springframework.util.StringUtils` | Subset of the upstream API. |
-| `utils/CollectionUtils.java` | `org.springframework.util.CollectionUtils` | |
-| `utils/ClassUtils.java` | `org.springframework.util.ClassUtils` | |
-| `utils/Assert.java` | `org.springframework.util.Assert` | |
-| `utils/ObjectUtils.java` | `org.springframework.util.ObjectUtils` | |
-| `utils/ResourceUtils.java` | `org.springframework.util.ResourceUtils` | |
-| `resource/AbstractFileResolvingResource.java` | `org.springframework.core.io.AbstractFileResolvingResource` | |
-| `resource/AbstractResource.java` | `org.springframework.core.io.AbstractResource` | |
-| `resource/Resource.java` | `org.springframework.core.io.Resource` | |
-| `resource/ClassPathResource.java` | `org.springframework.core.io.ClassPathResource` | |
-| `resource/InputStreamResource.java` | `org.springframework.core.io.InputStreamResource` | |
+| File | Upstream class | Original authors | Notes |
+|---|---|---|---|
+| `utils/StringUtils.java` | `org.springframework.util.StringUtils` | Rod Johnson, Juergen Hoeller, Keith Donald, Rob Harrop, Rick Evans, Arjen Poutsma | Subset of the upstream API. |
+| `utils/CollectionUtils.java` | `org.springframework.util.CollectionUtils` | Juergen Hoeller, Rob Harrop, Arjen Poutsma | |
+| `utils/ClassUtils.java` | `org.springframework.util.ClassUtils` | Juergen Hoeller, Keith Donald, Rob Harrop, Sam Brannen | |
+| `utils/Assert.java` | `org.springframework.util.Assert` | Keith Donald, Juergen Hoeller, Colin Sampaleanu, Rob Harrop | |
+| `utils/ObjectUtils.java` | `org.springframework.util.ObjectUtils` | Juergen Hoeller, Keith Donald, Rod Johnson, Rob Harrop, Chris Beams | |
+| `utils/ResourceUtils.java` | `org.springframework.util.ResourceUtils` | Juergen Hoeller | |
+| `resource/AbstractFileResolvingResource.java` | `org.springframework.core.io.AbstractFileResolvingResource` | Juergen Hoeller | |
+| `resource/AbstractResource.java` | `org.springframework.core.io.AbstractResource` | Juergen Hoeller | |
+| `resource/Resource.java` | `org.springframework.core.io.Resource` | Juergen Hoeller | |
+| `resource/ClassPathResource.java` | `org.springframework.core.io.ClassPathResource` | Juergen Hoeller, Sam Brannen | |
+| `resource/InputStreamResource.java` | `org.springframework.core.io.InputStreamResource` | Juergen Hoeller | |
 
 ## Apache Commons
 
 Copied from Apache Commons IO (ASF license header - "Licensed to the Apache Software
-Foundation" - rather than a literal `Copyright` line, plus `@author`/`@version`/`@since`
-tags naming Commons IO committers like Stephen Colebourne and pinning `Commons IO 1.1`/
-`2.2`). Spark does not currently depend on Commons IO, so replacing this would mean
-adding it as a new dependency, the same tradeoff as the Spring group below.
+Foundation" - rather than a literal `Copyright` line). The `@author` tags it carried, naming
+Commons IO committers, and its `@version`/`@since` tags were removed so that the whole codebase
+is consistent; the authors and the upstream versions are kept in the table below. Spark does not
+currently depend on Commons IO, so replacing this would mean adding it as a new dependency, the
+same tradeoff as the Spring group below.
 
-| File | Upstream class | Notes |
-|---|---|---|
-| `utils/IOUtils.java` | `org.apache.commons.io.IOUtils` | Subset of the upstream API. No `@implNote` yet. |
+| File | Upstream class | Original authors | Notes |
+|---|---|---|---|
+| `utils/IOUtils.java` | `org.apache.commons.io.IOUtils` | Peter Donald, Jeff Turner, Matthew Hawthorne, Stephen Colebourne, Gareth Davis, Ian Springer, Niall Pemberton, Sandy McArthur | Subset of the upstream API, from around Commons IO 2.2: its methods were marked `@since` Commons IO 1.1, 1.3 and 2.2, and the class `@version` was the CVS id `481854 2006-12-03`. No `@implNote` yet. |
 
 ## None of these are the Jetty 12 migration
 

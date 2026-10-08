@@ -39,8 +39,6 @@ import java.io.IOException;
 
 /**
  * Matches Spark routes and filters.
- *
- * @author Per Wendel
  */
 public class MatcherFilter implements Filter {
 

@@ -32,8 +32,6 @@ import java.util.EnumSet;
  * (typically a {@code MatcherFilter}). Wraps a {@link ServletContextHandler} so the
  * filter runs inside a real servlet context (sessions, request wrapping, etc.) while
  * still behaving as a single top-level {@link Handler} in the embedded server's chain.
- *
- * @author Per Wendel
  */
 public class JettyHandler extends Handler.Wrapper {
 

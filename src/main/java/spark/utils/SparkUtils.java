@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * Some utility methods
- *
- * @author Per Wendel
  */
 public final class SparkUtils {
 

@@ -21,15 +21,14 @@ import java.io.InputStream;
 
 /**
  * Simple interface for objects that are sources for an {@link InputStream}.
- * <p>This is the base interface for Spring's more extensive {@link Resource} interface.
+ * <p>This is the base interface for the more extensive {@link Resource} interface.
  * <p>For single-use streams, {@link InputStreamResource} can be used for any
- * given {@code InputStream}. Spring's ByteArrayResource or any
- * file-based {@code Resource} implementation can be used as a concrete
- * instance, allowing one to read the underlying content stream multiple times.
+ * given {@code InputStream}. Any file-based {@code Resource} implementation
+ * can be used as a concrete instance, allowing one to read the underlying
+ * content stream multiple times.
  * This makes this interface useful as an abstract content source for mail
  * attachments, for example.
  *
- * @author Juergen Hoeller
  * @see java.io.InputStream
  * @see Resource
  * @see InputStreamResource

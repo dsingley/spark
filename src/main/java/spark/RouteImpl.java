@@ -23,8 +23,6 @@ import spark.utils.Wrapper;
  * RouteImpl is created from a path, accept type and Route.
  * This encapsulates the information needed in the route
  * matcher in a single container.
- *
- * @author Per Wendel
  */
 public abstract class RouteImpl implements Route, Wrapper {
     static final String DEFAULT_ACCEPT_TYPE = "*/*";

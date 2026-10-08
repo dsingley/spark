@@ -27,8 +27,6 @@ import java.util.Random;
 
 /**
  * A simple RESTful example showing how to create, get, update and delete book resources.
- *
- * @author Per Wendel
  */
 public class Books {
 

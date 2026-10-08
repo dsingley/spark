@@ -21,11 +21,6 @@ package spark.utils;
  * Mainly for internal use within the framework.
  * <p>Thanks to Alex Ruiz for contributing several enhancements to this class!
  *
- * @author Juergen Hoeller
- * @author Keith Donald
- * @author Rod Johnson
- * @author Rob Harrop
- * @author Chris Beams
  *         Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
  */
 public abstract class ObjectUtils {

@@ -22,8 +22,6 @@ import java.io.IOException;
 
 /**
  * System tests for the Cookies support.
- *
- * @author dreambrother
  */
 @ExtendWith(SparkStopExtension.class)
 class CookiesIntegrationTest {
