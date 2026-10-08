@@ -26,8 +26,6 @@ package spark;
  * The primary purpose is to provide a way to create generic and reusable components for rendering
  * output using a Template Engine. For example, to render objects to HTML by using the Freemarker
  * template engine.
- *
- * @author alex
  */
 @FunctionalInterface
 public interface TemplateViewRoute {

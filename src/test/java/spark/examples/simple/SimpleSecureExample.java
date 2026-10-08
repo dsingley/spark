@@ -24,10 +24,8 @@ import static spark.Spark.secure;
 import spark.util.SparkTestUtil;
 
 /**
- * A simple example just showing some basic functionality.
- *
- * @author Peter Nicholls, based on (practically identical to in fact)
- *         {@link spark.examples.simple.SimpleExample} by Per Wendel
+ * A simple example just showing some basic functionality. It is practically identical to
+ * {@link spark.examples.simple.SimpleExample}, but serves HTTPS.
  */
 public class SimpleSecureExample {
 

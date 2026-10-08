@@ -18,8 +18,6 @@ package spark.examples.books;
 
 /**
  * Book domain class
- *
- * @author Per Wendel
  */
 public class Book {
     

@@ -25,8 +25,6 @@ import spark.route.HttpMethod;
  * <p>
  * Routes find these when handling a request, and {@link spark.Service#routes()} returns one for
  * every route and filter that has been mapped, which is handy for listing the routes at startup.
- *
- * @author Per Wendel
  */
 public class RouteMatch {
 

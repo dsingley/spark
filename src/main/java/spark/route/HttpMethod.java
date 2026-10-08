@@ -19,7 +19,9 @@ package spark.route;
 import java.util.HashMap;
 
 /**
- * @author Per Wendel
+ * The HTTP methods that routes can be mapped for, along with {@code before}, {@code after} and
+ * {@code afterafter}, which Spark's filters use internally so that they are matched in the same way
+ * as routes. {@link #unsupported} stands for any other method.
  */
 @SuppressWarnings("java:S115")  // ignore lowercase enum constants
 public enum HttpMethod {

@@ -19,8 +19,6 @@ package spark.route;
 
 /**
  * Holds the servlet routes.
- *
- * @author Per Wendel
  */
 public final class ServletRoutes {
 

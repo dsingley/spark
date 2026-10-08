@@ -21,8 +21,6 @@ package spark;
  * A TemplateViewRoute is built up by a path (for url-matching) and the implementation of the 'render' method.
  * TemplateViewRoute instead of returning the result of calling toString() as body, it returns the result of calling render method.
  * The primary purpose of this kind of Route is provide a way to create generic and reusable components for rendering output using a Template Engine. For example to render objects to html by using Freemarker template engine..
- *
- * @author alex
  */
 public abstract class TemplateViewRouteImpl extends RouteImpl {
 

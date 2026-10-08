@@ -27,9 +27,6 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * GZIP utility class.
- *
- * @author Edward Raff
- * @author Per Wendel
  */
 public class GzipUtils {
 

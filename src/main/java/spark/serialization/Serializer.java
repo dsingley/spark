@@ -21,8 +21,6 @@ import java.io.OutputStream;
 
 /**
  * Class that serializers and writes the result to given output stream.
- *
- * @author alex
  */
 public abstract class Serializer {
 

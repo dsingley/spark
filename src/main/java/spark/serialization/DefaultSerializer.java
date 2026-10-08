@@ -23,8 +23,6 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Serializer that writes the result of toString to output in UTF-8 encoding
- *
- * @author alex
  */
 class DefaultSerializer extends Serializer {
 
