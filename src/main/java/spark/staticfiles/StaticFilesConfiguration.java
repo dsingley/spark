@@ -35,9 +35,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: consider ETag support. Static files are served with Cache-Control and Expires headers (see
+// setExpireTimeSeconds), but nothing sets a validator such as ETag, so clients cannot revalidate a
+// cached file with a conditional request.
 /**
- * Holds the static file configuration.
- * TODO: ETAG ?
+ * The static file settings of a {@link spark.Service}, and the code that serves the files.
+ * <p>
+ * It holds where the static files are (a folder on the classpath and/or an external folder), the
+ * extra headers to send with them, such as Cache-Control, and the resource handlers that look
+ * files up. For each request, {@code consume} serves the matching file if there is one, and tells
+ * the caller whether it did, so that routes only handle the requests that were not for a static file.
  */
 public class StaticFilesConfiguration {
 

@@ -56,6 +56,10 @@ import java.util.function.Consumer;
  * ...
  * http.get("/hello", (q, a) {@literal ->} "Hello World");
  * </pre>
+ * Unlike the static methods of {@link Spark}, which all share one global instance, each instance
+ * is independent, which also makes it easier to test.
+ *
+ * @see Spark
  */
 public final class Service extends Routable {
     private static final Logger LOG = LoggerFactory.getLogger("spark.Spark");

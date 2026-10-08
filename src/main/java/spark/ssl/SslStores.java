@@ -17,7 +17,14 @@
 package spark.ssl;
 
 /**
- * SSL Stores
+ * The keystore and truststore settings used to serve HTTPS: where the stores are and their
+ * passwords, which certificate in the keystore to use, and whether clients have to present
+ * a certificate of their own (mutual TLS).
+ * <p>
+ * Instances are immutable and created with one of the {@code create} methods, normally by
+ * {@link spark.Service#secure(String, String, String, String)} and its overloads, and are then used to
+ * configure the embedded server's TLS. The truststore settings are only needed to verify client
+ * certificates.
  */
 public class SslStores {
 
@@ -132,42 +139,42 @@ public class SslStores {
     }
 
     /**
-     * @return keystoreFile
+     * @return the path of the keystore file
      */
     public String keystoreFile() {
         return keystoreFile;
     }
 
     /**
-     * @return keystorePassword
+     * @return the password of the keystore
      */
     public String keystorePassword() {
         return keystorePassword;
     }
 
     /**
-     * @return certAlias
+     * @return the alias of the certificate to use from the keystore, or null if none was given
      */
     public String certAlias() {
         return certAlias;
     }
 
     /**
-     * @return trustStoreFile
+     * @return the path of the truststore file, or null if there is none
      */
     public String trustStoreFile() {
         return truststoreFile;
     }
 
     /**
-     * @return trustStorePassword
+     * @return the password of the truststore, or null if there is none
      */
     public String trustStorePassword() {
         return truststorePassword;
     }
 
     /**
-     * @return needsClientCert
+     * @return true if clients must present a certificate
      */
     public boolean needsClientCert() {
         return needsClientCert;

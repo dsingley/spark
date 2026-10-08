@@ -8,7 +8,11 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Paths;
 
 /**
- * Created by Per Wendel on 2016-11-05.
+ * A global holder for the static files folders that were configured before each
+ * {@link spark.Service} had its own, which is why every method here is deprecated. Nothing in
+ * Spark uses it any more; to configure static files, use
+ * {@link spark.Service#staticFileLocation(String)} and
+ * {@link spark.Service#externalStaticFileLocation(String)}, or {@code Spark.staticFiles}.
  */
 public class StaticFilesFolder {
 
