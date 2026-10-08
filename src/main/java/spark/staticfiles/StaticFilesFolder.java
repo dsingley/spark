@@ -15,8 +15,9 @@ import java.nio.file.Paths;
  * @deprecated static file locations are no longer global; each {@link spark.Service} has its own.
  * Use {@link spark.Service#staticFileLocation(String)} and
  * {@link spark.Service#externalStaticFileLocation(String)}, or {@code Spark.staticFiles}.
+ * This class is scheduled for removal in 4.0.0.
  */
-@Deprecated(since = "3.0.0")
+@Deprecated(since = "3.0.0", forRemoval = true)
 public class StaticFilesFolder {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticFilesFolder.class);
