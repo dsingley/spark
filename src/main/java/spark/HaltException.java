@@ -26,7 +26,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class HaltException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
+    /** The HTTP status code to respond with. */
     private final int statusCode;
+
+    /** The response body, or {@code null} if none was given. */
     private final String body;
 
     HaltException() {

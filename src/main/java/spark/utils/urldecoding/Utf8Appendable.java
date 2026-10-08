@@ -40,11 +40,15 @@ import java.io.IOException;
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
 public abstract class Utf8Appendable {
+    /** The character appended in place of data that is not valid UTF-8. */
     public static final char REPLACEMENT = '\ufffd';
     private static final int UTF8_ACCEPT = 0;
     private static final int UTF8_REJECT = 12;
 
+    /** Where the decoded characters are appended. */
     protected final Appendable appendable;
+
+    /** The state of the decoder, which is the accepting state when no character is partly decoded. */
     protected int state = UTF8_ACCEPT;
 
     private static final byte[] BYTE_TABLE =
@@ -74,12 +78,23 @@ public abstract class Utf8Appendable {
 
     private int codep;
 
+    /**
+     * Creates an appendable.
+     *
+     * @param appendable where to append the decoded characters
+     */
     protected Utf8Appendable(Appendable appendable) {
         this.appendable = appendable;
     }
 
+    /**
+     * @return the number of characters appended so far
+     */
     public abstract int length();
 
+    /**
+     * Resets the decoder, discarding any character that is partly decoded.
+     */
     protected void reset() {
         state = UTF8_ACCEPT;
     }
@@ -94,6 +109,12 @@ public abstract class Utf8Appendable {
         }
     }
 
+    /**
+     * Appends a character.
+     *
+     * @param c the character
+     * @throws NotUtf8Exception if a multi-byte character is only partly decoded
+     */
     public void append(char c) {
         try {
             checkCharAppend();
@@ -103,6 +124,14 @@ public abstract class Utf8Appendable {
         }
     }
 
+    /**
+     * Appends part of a String.
+     *
+     * @param s      the String
+     * @param offset where in the String to start
+     * @param length how many characters to append
+     * @throws NotUtf8Exception if a multi-byte character is only partly decoded
+     */
     public void append(String s, int offset, int length) {
         try {
             checkCharAppend();
@@ -113,6 +142,13 @@ public abstract class Utf8Appendable {
     }
 
 
+    /**
+     * Appends one byte of UTF-8 encoded data. A character is appended once all the bytes that
+     * make it up have been received, which can take up to four calls.
+     *
+     * @param b the byte
+     * @throws NotUtf8Exception if the byte is not valid in the sequence being decoded
+     */
     public void append(byte b) {
         try {
             appendByte(b);
@@ -121,6 +157,13 @@ public abstract class Utf8Appendable {
         }
     }
 
+    /**
+     * Decodes one byte of UTF-8 encoded data, appending a character if it completes one.
+     *
+     * @param b the byte
+     * @throws IOException      if appending fails
+     * @throws NotUtf8Exception if the byte is not valid in the sequence being decoded
+     */
     protected void appendByte(byte b) throws IOException {
 
         if (b > 0 && state == UTF8_ACCEPT) {
@@ -156,17 +199,35 @@ public abstract class Utf8Appendable {
         }
     }
 
+    /**
+     * @return true if no multi-byte character is partly decoded
+     */
     public boolean isUtf8SequenceComplete() {
         return state == UTF8_ACCEPT;
     }
 
+    /**
+     * Thrown when data is not valid UTF-8.
+     */
     @SuppressWarnings("serial")
     public static class NotUtf8Exception extends IllegalArgumentException {
+
+        /**
+         * Creates the exception.
+         *
+         * @param reason why the data is not valid UTF-8
+         */
         public NotUtf8Exception(String reason) {
             super("Not valid UTF8! " + reason);
         }
     }
 
+    /**
+     * Checks that no multi-byte character is partly decoded. If one is, the replacement character
+     * is appended, the decoder is reset, and an exception is thrown.
+     *
+     * @throws NotUtf8Exception if a multi-byte character is only partly decoded
+     */
     protected void checkState() {
         if (!isUtf8SequenceComplete()) {
             codep = 0;

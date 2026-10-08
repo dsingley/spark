@@ -60,6 +60,7 @@ import java.util.function.Consumer;
 public final class Service extends Routable {
     private static final Logger LOG = LoggerFactory.getLogger("spark.Spark");
 
+    /** The port Spark listens on unless another is configured. */
     public static final int SPARK_DEFAULT_PORT = 4567;
     static final String DEFAULT_ACCEPT_TYPE = "*/*";
 
@@ -87,7 +88,10 @@ public final class Service extends Routable {
 
     private Object embeddedServerIdentifier = EmbeddedServers.defaultIdentifier();
 
+    /** Defines redirects, for example {@code redirect.get("/old", "/new")}. */
     public final Redirect redirect;
+
+    /** Configures static files: their location, expire time, custom headers and MIME types. */
     public final StaticFiles staticFiles;
 
     private final StaticFilesConfiguration staticFilesConfiguration;
@@ -640,9 +644,16 @@ public final class Service extends Routable {
         pathDeque.removeLast();
     }
 
+    /**
+     * The path prefix in effect for routes being defined: the paths given to the enclosing
+     * {@link #path(String, RouteGroup)} calls, joined together. Empty when not inside a group.
+     *
+     * @return the current path prefix
+     */
     public String getPaths() {
         return String.join("", pathDeque);
     }
+
     /**
      * @return all routes information from this service
      */
@@ -682,6 +693,14 @@ public final class Service extends Routable {
         routes.add(httpMethod + " '" + getPaths() + filter.getPath() + "'", filter.getAcceptType(), filter);
     }
 
+    /**
+     * Initializes this service: sets up routing and, unless running inside a servlet container,
+     * starts the embedded server on a background thread. Does nothing if it is already initialized.
+     * <p>
+     * It is called automatically when the first route or filter is defined, so it only needs to be
+     * called directly for a service that defines none, such as one that only has WebSocket handlers.
+     * Use {@link #awaitInitialization()} to wait until the server is up.
+     */
     public synchronized void init() {
         if (!initialized) {
 

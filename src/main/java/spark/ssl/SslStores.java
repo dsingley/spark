@@ -21,11 +21,22 @@ package spark.ssl;
  */
 public class SslStores {
 
+    /** The path of the keystore file. */
     protected final String keystoreFile;
+
+    /** The password of the keystore. */
     protected final String keystorePassword;
+
+    /** The alias of the certificate to use from the keystore, or null to use the default. */
     protected final String certAlias;
+
+    /** The path of the truststore file, or null if there is none. */
     protected final String truststoreFile;
+
+    /** The password of the truststore, or null if there is none. */
     protected final String truststorePassword;
+
+    /** Whether clients must present a certificate. */
     protected final boolean needsClientCert;
 
     /**
@@ -45,6 +56,17 @@ public class SslStores {
         return new SslStores(keystoreFile, keystorePassword, null, truststoreFile, truststorePassword, false);
     }
 
+    /**
+     * Creates a Stores instance that uses the given certificate alias and does not require client
+     * certificates.
+     *
+     * @param keystoreFile the keystoreFile
+     * @param keystorePassword the keystorePassword
+     * @param certAlias the alias of the certificate to use from the keystore
+     * @param truststoreFile the truststoreFile
+     * @param truststorePassword the truststorePassword
+     * @return the SslStores instance.
+     */
     public static SslStores create(String keystoreFile,
                                 String keystorePassword,
                                 String certAlias,
@@ -54,6 +76,16 @@ public class SslStores {
         return new SslStores(keystoreFile, keystorePassword, certAlias, truststoreFile, truststorePassword, false);
     }
 
+    /**
+     * Creates a Stores instance, optionally requiring client certificates.
+     *
+     * @param keystoreFile the keystoreFile
+     * @param keystorePassword the keystorePassword
+     * @param truststoreFile the truststoreFile
+     * @param truststorePassword the truststorePassword
+     * @param needsClientCert whether clients must present a certificate
+     * @return the SslStores instance.
+     */
     public static SslStores create(String keystoreFile,
                                    String keystorePassword,
                                    String truststoreFile,
@@ -63,6 +95,18 @@ public class SslStores {
         return new SslStores(keystoreFile, keystorePassword, null, truststoreFile, truststorePassword, needsClientCert);
     }
 
+    /**
+     * Creates a Stores instance that uses the given certificate alias, optionally requiring client
+     * certificates.
+     *
+     * @param keystoreFile the keystoreFile
+     * @param keystorePassword the keystorePassword
+     * @param certAlias the alias of the certificate to use from the keystore
+     * @param truststoreFile the truststoreFile
+     * @param truststorePassword the truststorePassword
+     * @param needsClientCert whether clients must present a certificate
+     * @return the SslStores instance.
+     */
     public static SslStores create(String keystoreFile,
                                    String keystorePassword,
                                    String certAlias,

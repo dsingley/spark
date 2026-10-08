@@ -43,9 +43,11 @@ public class SocketConnectorFactory {
     /**
      * Creates an ordinary, non-secured Jetty server.
      *
-     * @param server Jetty server
-     * @param host   host
-     * @param port   port
+     * @param server              Jetty server
+     * @param host                host
+     * @param port                port
+     * @param trustForwardHeaders whether to trust the HTTP headers commonly set by reverse proxies
+     *                            (for example, X-Forwarded-For)
      * @return - a server jetty
      */
     public static ServerConnector createSocketConnector(Server server, String host, int port, boolean trustForwardHeaders) {
@@ -65,6 +67,8 @@ public class SocketConnectorFactory {
      * @param sslStores the security sslStores.
      * @param host      host
      * @param port      port
+     * @param trustForwardHeaders whether to trust the HTTP headers commonly set by reverse proxies
+     *                            (for example, X-Forwarded-For)
      * @return a ssl socket jetty
      */
     public static ServerConnector createSecureSocketConnector(Server server,
@@ -86,6 +90,8 @@ public class SocketConnectorFactory {
      * @param sslContextFactory the SslContextFactory
      * @param host      host
      * @param port      port
+     * @param trustForwardHeaders whether to trust the HTTP headers commonly set by reverse proxies
+     *                            (for example, X-Forwarded-For)
      * @return a ssl socket jetty
      */
     public static ServerConnector createSecureSocketConnector(Server server,

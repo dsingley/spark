@@ -46,7 +46,9 @@ import java.util.function.Consumer;
  */
 public class Spark {
 
-    // Hide constructor
+    /**
+     * Hides the constructor: this class is used through its static methods, not instantiated.
+     */
     protected Spark() {
     }
 
@@ -898,6 +900,7 @@ public class Spark {
      *
      * @param exceptionClass the exception class
      * @param handler        The handler
+     * @param <T>            the type of exception the handler handles
      */
     public static <T extends Exception> void exception(Class<T> exceptionClass, ExceptionHandler<? super T> handler) {
         getInstance().exception(exceptionClass, handler);
@@ -909,6 +912,8 @@ public class Spark {
      * Immediately stops a request within a filter or route
      * NOTE: When using this don't catch exceptions of type HaltException, or if catched, re-throw otherwise
      * halt will not work
+     *
+     * @return never returns normally, because the {@link HaltException} is thrown
      */
     public static HaltException halt() {
         throw getInstance().halt();
@@ -920,6 +925,7 @@ public class Spark {
      * halt will not work
      *
      * @param status the status code
+     * @return never returns normally, because the {@link HaltException} is thrown
      */
     public static HaltException halt(int status) {
         throw getInstance().halt(status);
@@ -931,6 +937,7 @@ public class Spark {
      * halt will not work
      *
      * @param body The body content
+     * @return never returns normally, because the {@link HaltException} is thrown
      */
     public static HaltException halt(String body) {
         throw getInstance().halt(body);
@@ -943,6 +950,7 @@ public class Spark {
      *
      * @param status The status code
      * @param body   The body content
+     * @return never returns normally, because the {@link HaltException} is thrown
      */
     public static HaltException halt(int status, String body) {
         throw getInstance().halt(status, body);
@@ -1251,6 +1259,14 @@ public class Spark {
         getInstance().webSocket(path, handler);
     }
 
+    /**
+     * Maps the given path to the given WebSocket handler instance.
+     * <p>
+     * This is currently only available in the embedded server mode.
+     *
+     * @param path    the WebSocket path.
+     * @param handler the handler instance that will manage the WebSocket connection to the given path.
+     */
     public static void webSocket(String path, Object handler) {
         getInstance().webSocket(path, handler);
     }
@@ -1266,6 +1282,8 @@ public class Spark {
 
     /**
      * Maps 404 Not Found errors to the provided custom page
+     *
+     * @param page the content of the custom page
      */
     public static void notFound(String page) {
         getInstance().notFound(page);
@@ -1273,6 +1291,8 @@ public class Spark {
 
     /**
      * Maps 500 internal server errors to the provided custom page
+     *
+     * @param page the content of the custom page
      */
     public static void internalServerError(String page) {
         getInstance().internalServerError(page);
@@ -1280,6 +1300,8 @@ public class Spark {
 
     /**
      * Maps 404 Not Found errors to the provided route.
+     *
+     * @param route the route that renders the response
      */
     public static void notFound(Route route) {
         getInstance().notFound(route);
@@ -1287,6 +1309,8 @@ public class Spark {
 
     /**
      * Maps 500 internal server errors to the provided route.
+     *
+     * @param route the route that renders the response
      */
     public static void internalServerError(Route route) {
         getInstance().internalServerError(route);

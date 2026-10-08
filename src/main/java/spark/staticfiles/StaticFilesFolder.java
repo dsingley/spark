@@ -21,6 +21,7 @@ public class StaticFilesFolder {
     }
 
     /**
+     * @param folder the classpath folder with the static files
      * @deprecated static file locations are no longer global; use {@link spark.Service#staticFileLocation(String)}
      */
     @Deprecated(since = "2.9.0")
@@ -30,6 +31,7 @@ public class StaticFilesFolder {
     }
 
     /**
+     * @param folder the external folder with the static files
      * @deprecated static file locations are no longer global; use {@link spark.Service#externalStaticFileLocation(String)}
      */
     @Deprecated(since = "2.9.0")
@@ -41,6 +43,7 @@ public class StaticFilesFolder {
     }
 
     /**
+     * @return the classpath folder configured with {@link #localConfiguredTo(String)}
      * @deprecated static file locations are no longer global; each {@link spark.Service} now
      * has its own, which is not exposed via a getter
      */
@@ -50,6 +53,7 @@ public class StaticFilesFolder {
     }
 
     /**
+     * @return the external folder configured with {@link #externalConfiguredTo(String)}
      * @deprecated static file locations are no longer global; each {@link spark.Service} now
      * has its own, which is not exposed via a getter
      */

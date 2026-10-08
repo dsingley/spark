@@ -33,6 +33,11 @@ public class Utf8StringBuilder extends Utf8Appendable
 {
     final StringBuilder buffer;
 
+    /**
+     * Creates a builder.
+     *
+     * @param capacity the initial capacity of the underlying {@link StringBuilder}
+     */
     public Utf8StringBuilder(int capacity)
     {
         super(new StringBuilder(capacity));

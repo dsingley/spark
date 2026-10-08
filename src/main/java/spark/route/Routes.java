@@ -43,6 +43,11 @@ public class Routes {
 
     private final List<RouteEntry> routeEntries;
 
+    /**
+     * Creates a new, empty set of routes.
+     *
+     * @return the new routes
+     */
     public static Routes create() {
         return new Routes();
     }

@@ -55,6 +55,12 @@ public abstract class StringUtils {
     // General convenience methods for working with Strings
     //---------------------------------------------------------------------
 
+    /**
+     * Checks whether a character sequence is null, empty, or contains only whitespace.
+     *
+     * @param cs the character sequence to check, which may be null
+     * @return true if it is null, empty or only whitespace
+     */
     public static boolean isBlank(final CharSequence cs) {
         int strLen;
         if (cs == null || (strLen = cs.length()) == 0) {
@@ -68,6 +74,12 @@ public abstract class StringUtils {
         return true;
     }
 
+    /**
+     * Checks whether a character sequence has at least one character that is not whitespace.
+     *
+     * @param cs the character sequence to check, which may be null
+     * @return true if it is not null, not empty and not only whitespace
+     */
     public static boolean isNotBlank(final CharSequence cs) {
         return !isBlank(cs);
     }
@@ -365,6 +377,14 @@ public abstract class StringUtils {
         return collectionToDelimitedString(coll, delim, "", "");
     }
 
+    /**
+     * Converts bytes to a String using the named character set, or the platform default character
+     * set if the name is null or not supported.
+     *
+     * @param bytes    the bytes to convert
+     * @param encoding the name of the character set, which may be null
+     * @return the String
+     */
     public static String toString(byte[] bytes, String encoding) {
         String str;
 
@@ -382,6 +402,13 @@ public abstract class StringUtils {
         return str;
     }
 
+    /**
+     * Removes one trailing slash or backslash, if there is one, and then one leading slash, if there
+     * is one.
+     *
+     * @param string the String to trim
+     * @return the String without the slashes
+     */
     public static String removeLeadingAndTrailingSlashesFrom(String string) {
         
         var trimmed = string;

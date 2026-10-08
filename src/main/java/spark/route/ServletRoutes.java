@@ -29,6 +29,12 @@ public final class ServletRoutes {
     private ServletRoutes() {
     }
 
+    /**
+     * Gets the routes shared by all the Spark applications run from a servlet container, creating
+     * them the first time they are needed.
+     *
+     * @return the shared routes
+     */
     public static synchronized Routes get() {
         if (routes == null) {
             routes = new Routes();
