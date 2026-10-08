@@ -57,8 +57,6 @@ import java.io.Writer;
  * <p>
  * Origin of code: Excalibur.
  *
- * @version $Id: IOUtils.java 481854 2006-12-03 18:30:07Z scolebourne $
- *
  * Code copied from the Apache Commons IO source. Changes made (mostly removal of methods) by Per Wendel.
  */
 public final class IOUtils {
@@ -139,7 +137,6 @@ public final class IOUtils {
     * @return the number of bytes copied, or -1 if &gt; Integer.MAX_VALUE
     * @throws NullPointerException if the input or output is null
     * @throws IOException if an I/O error occurs
-    * @since Commons IO 1.1
     */
     public static int copy(final InputStream input, final OutputStream output) throws IOException {
         final long count = copyLarge(input, output);
@@ -161,7 +158,6 @@ public final class IOUtils {
     * @return the number of bytes copied
     * @throws NullPointerException if the input or output is null
     * @throws IOException if an I/O error occurs
-    * @since Commons IO 2.2
     */
     public static long copyLarge(final InputStream input, final OutputStream output)
         throws IOException {
@@ -188,7 +184,6 @@ public final class IOUtils {
      * @param output the <code>Writer</code> to write to
      * @throws NullPointerException if the input or output is null
      * @throws IOException          if an I/O error occurs
-     * @since Commons IO 1.1
      */
     public static void copy(InputStream input, Writer output)
         throws IOException {
@@ -216,7 +211,6 @@ public final class IOUtils {
      * @throws NullPointerException if the input or output is null
      * @throws IOException          if an I/O error occurs
      * @throws ArithmeticException  if the character count is too large
-     * @since Commons IO 1.1
      */
     public static int copy(Reader input, Writer output) throws IOException {
         long count = copyLarge(input, output);
@@ -237,7 +231,6 @@ public final class IOUtils {
      * @return the number of characters copied
      * @throws NullPointerException if the input or output is null
      * @throws IOException          if an I/O error occurs
-     * @since Commons IO 1.3
      */
     public static long copyLarge(Reader input, Writer output) throws IOException {
         var buffer = new char[DEFAULT_BUFFER_SIZE];

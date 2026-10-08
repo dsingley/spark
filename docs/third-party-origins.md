@@ -35,7 +35,7 @@ embedded server), so these are prime candidates for replacement with direct call
 
 | File | Upstream class | Notes |
 |---|---|---|
-| `utils/urldecoding/TypeUtil.java` | `org.eclipse.jetty.util.TypeUtil` | Hex parsing helpers only; upstream class is much larger. Has an `@implNote` (PR #259). |
+| `utils/urldecoding/TypeUtil.java` | `org.eclipse.jetty.util.TypeUtil` | Hex parsing helpers only; upstream class is much larger (its `@since` was Jetty 4.1). Has an `@implNote` (PR #259). |
 | `utils/urldecoding/UrlDecode.java` | `org.eclipse.jetty.util.URIUtil` (`decodePath` methods) | Extracted and renamed (`decodePath` -> `path`). Has an `@implNote` (this session). `decodeISO88591Path` was removed entirely in PR #264, matching Jetty's own current approach. |
 | `utils/urldecoding/Utf8Appendable.java` | `org.eclipse.jetty.util.Utf8Appendable` | No `@implNote` yet. |
 | `utils/urldecoding/Utf8StringBuilder.java` | `org.eclipse.jetty.util.Utf8StringBuilder` | No `@implNote` yet. |
@@ -70,15 +70,15 @@ rather than reusing one that's already there - a bigger tradeoff than the Jetty 
 ## Apache Commons
 
 Copied from Apache Commons IO (ASF license header - "Licensed to the Apache Software
-Foundation" - rather than a literal `Copyright` line, plus `@version`/`@since` tags pinning
-`Commons IO 1.1`/`2.2`). The `@author` tags it carried, naming Commons IO committers, were
-removed so that the whole codebase is consistent, and the names are kept in the table below.
-Spark does not currently depend on Commons IO, so replacing this would mean
-adding it as a new dependency, the same tradeoff as the Spring group below.
+Foundation" - rather than a literal `Copyright` line). The `@author` tags it carried, naming
+Commons IO committers, and its `@version`/`@since` tags were removed so that the whole codebase
+is consistent; the authors and the upstream versions are kept in the table below. Spark does not
+currently depend on Commons IO, so replacing this would mean adding it as a new dependency, the
+same tradeoff as the Spring group below.
 
 | File | Upstream class | Original authors | Notes |
 |---|---|---|---|
-| `utils/IOUtils.java` | `org.apache.commons.io.IOUtils` | Peter Donald, Jeff Turner, Matthew Hawthorne, Stephen Colebourne, Gareth Davis, Ian Springer, Niall Pemberton, Sandy McArthur | Subset of the upstream API. No `@implNote` yet. |
+| `utils/IOUtils.java` | `org.apache.commons.io.IOUtils` | Peter Donald, Jeff Turner, Matthew Hawthorne, Stephen Colebourne, Gareth Davis, Ian Springer, Niall Pemberton, Sandy McArthur | Subset of the upstream API, from around Commons IO 2.2: its methods were marked `@since` Commons IO 1.1, 1.3 and 2.2, and the class `@version` was the CVS id `481854 2006-12-03`. No `@implNote` yet. |
 
 ## None of these are the Jetty 12 migration
 

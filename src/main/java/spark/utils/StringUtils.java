@@ -89,7 +89,6 @@ public abstract class StringUtils {
      *
      * @param str the candidate String
      * @return if the String is empty
-     * @since 3.2.1
      */
     public static boolean isEmpty(Object str) {
         return (str == null || "".equals(str));

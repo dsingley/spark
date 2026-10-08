@@ -19,8 +19,6 @@ package spark.utils;
  * Miscellaneous class utility methods.
  * Mainly for internal use within the framework.
  *
- * @since 1.1
- *
  * Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.
  */
 public class ClassUtils {
