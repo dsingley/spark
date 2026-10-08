@@ -142,8 +142,7 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
                 return;
             }
 
-            service.stop();
-            if (!service.awaitStop(STOP_TIMEOUT)) {
+            if (!service.stopAndAwait(STOP_TIMEOUT)) {
                 LOG.warn("Spark did not stop within {}", STOP_TIMEOUT);
             }
         }

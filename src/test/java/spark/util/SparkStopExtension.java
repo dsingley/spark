@@ -20,7 +20,6 @@ public class SparkStopExtension implements AfterAllCallback {
 
     @Override
     public void afterAll(@NonNull ExtensionContext context) {
-        Spark.stop();
-        Spark.awaitStop(DEFAULT_TIMEOUT);
+        Spark.stopAndAwait(DEFAULT_TIMEOUT);
     }
 }
