@@ -18,8 +18,6 @@ package spark.servlet;
 
 /**
  * The application entry point when Spark is run in a servlet context.
- *
- * @author Per Wendel
  */
 public interface SparkApplication {
 

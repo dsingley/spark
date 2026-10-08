@@ -23,8 +23,6 @@ import spark.utils.Wrapper;
  * FilterImpl is created from a path, accept type and Filter.
  * This encapsulates the information needed in the route
  * matcher in a single container.
- *
- * @author Per Wendel
  */
 public abstract class FilterImpl implements Filter, Wrapper {
 

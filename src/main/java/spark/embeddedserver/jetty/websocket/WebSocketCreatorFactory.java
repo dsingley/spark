@@ -25,8 +25,6 @@ import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketCreator;
 /**
  * Factory class to create {@link JettyWebSocketCreator} implementations that
  * delegate to the given handler class.
- *
- * @author Ignasi Barrera
  */
 public class WebSocketCreatorFactory {
 

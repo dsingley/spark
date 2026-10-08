@@ -46,7 +46,6 @@ import java.util.function.Consumer;
  * state, for example to start and stop a server in a test, or to run more than one server in the
  * same JVM, create your own instances with {@link Service#ignite()} and use those instead.
  *
- * @author Per Wendel
  * @see Service
  */
 public class Spark {

@@ -40,8 +40,6 @@ import java.io.IOException;
  * Filter that can be configured to be used in a web.xml file.
  * Needs the init parameter 'applicationClass' set to the application class where
  * the adding of routes should be made.
- *
- * @author Per Wendel
  */
 public class SparkFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(SparkFilter.class);

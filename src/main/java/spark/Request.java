@@ -39,8 +39,6 @@ import java.util.TreeSet;
 
 /**
  * Provides information about the HTTP request
- *
- * @author Per Wendel
  */
 public class Request {
 

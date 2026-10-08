@@ -25,8 +25,6 @@ import java.util.regex.Pattern;
  * <br><br>
  * It is null safe, meaning that if a key does not exist, it does not throw NullPointerException,
  * it just returns null.
- *
- * @author fddayan
  */
 public class QueryParamsMap {
 

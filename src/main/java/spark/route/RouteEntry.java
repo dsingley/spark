@@ -20,8 +20,6 @@ import spark.utils.SparkUtils;
 
 /**
  * Class that holds information about routes
- *
- * @author Per Wendel
  */
 class RouteEntry {
 

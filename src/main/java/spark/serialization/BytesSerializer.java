@@ -29,8 +29,6 @@ import java.nio.ByteBuffer;
  * UnsupportedOperationException - and writes the whole backing array rather than just
  * the buffer's current position/limit window. This has been the behavior since this
  * class was introduced in 2015 and is documented here rather than changed.
- *
- * @author alex
  */
 class BytesSerializer extends Serializer {
 

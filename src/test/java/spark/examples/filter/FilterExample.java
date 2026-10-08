@@ -37,8 +37,6 @@ import java.util.Map;
  * <a href="http://localhost:4567/hello?user=foo&password=bar">http://localhost:4567/hello?user=foo&password=bar</a> the filter will accept the
  * request and the request will continue to the /hello route.
  * Note: There is also an "after filter" that adds a header to the response
- *
- * @author Per Wendel
  */
 public class FilterExample {
 

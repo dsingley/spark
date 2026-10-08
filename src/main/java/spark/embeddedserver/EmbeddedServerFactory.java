@@ -21,7 +21,11 @@ import spark.route.Routes;
 import spark.staticfiles.StaticFilesConfiguration;
 
 /**
- * @author Per Wendel
+ * Creates the {@link EmbeddedServer} that serves a Spark application's routes. Spark uses
+ * {@link spark.embeddedserver.jetty.EmbeddedJettyFactory} unless another is chosen: to use a
+ * different server, implement this interface, register it with
+ * {@link EmbeddedServers#add(Object, EmbeddedServerFactory)}, and select it with
+ * {@link spark.Service#embeddedServerIdentifier(Object)}.
  */
 public interface EmbeddedServerFactory {
 

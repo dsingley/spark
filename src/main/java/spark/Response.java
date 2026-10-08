@@ -27,8 +27,6 @@ import java.util.Date;
 
 /**
  * Provides functionality for modifying the response
- *
- * @author Per Wendel
  */
 public class Response {
 

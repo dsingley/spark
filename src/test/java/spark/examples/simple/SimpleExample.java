@@ -22,8 +22,6 @@ import static spark.Spark.post;
 
 /**
  * A simple example just showing some basic functionality
- *
- * @author Per Wendel
  */
 public class SimpleExample {
 

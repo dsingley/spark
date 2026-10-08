@@ -33,8 +33,6 @@ import java.net.URL;
  * resource resides in the file system, but not for resources in a JAR.
  * Always supports resolution as URL.
  *
- * @author Juergen Hoeller
- * @author Sam Brannen
  * @see ClassLoader#getResourceAsStream(String)
  * @see Class#getResourceAsStream(String)
  * Code copied from Spring source. Modifications made (mostly removal of methods) by Per Wendel.

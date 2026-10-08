@@ -19,8 +19,6 @@ package spark;
 /**
  * Model And View class is used to set the name of the view and the model object
  * to be rendered.
- *
- * @author alex
  */
 public class ModelAndView {
 

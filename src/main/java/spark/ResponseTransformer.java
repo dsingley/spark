@@ -18,8 +18,6 @@ package spark;
 
 /**
  * A ResponseTransformer holds the implementation of the 'render' method.
- *
- * @author alex
  */
 @FunctionalInterface
 public interface ResponseTransformer {

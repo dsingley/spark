@@ -37,8 +37,6 @@ import java.util.Optional;
 
 /**
  * Spark server implementation
- *
- * @author Per Wendel
  */
 public class EmbeddedJettyServer implements EmbeddedServer {
 
