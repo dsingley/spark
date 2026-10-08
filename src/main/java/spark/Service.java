@@ -101,6 +101,10 @@ public final class Service extends Routable {
     private final StaticFilesConfiguration staticFilesConfiguration;
     private final ExceptionMapper exceptionMapper = new ExceptionMapper();
 
+    // Guards the settings and the server's start and stop. It is private so that callers cannot
+    // interfere by synchronizing on a Service, which they could if the methods were synchronized.
+    private final Object lock = new Object();
+
     // default exception handler during initialization phase
     private Consumer<Exception> initExceptionHandler = e -> {
         LOG.error("ignite failed", e);
@@ -136,11 +140,13 @@ public final class Service extends Routable {
      *
      * @param obj the identifier passed to {@link EmbeddedServers}.
      */
-    public synchronized void embeddedServerIdentifier(Object obj) {
-        if (initialized) {
-            throwBeforeRouteMappingException();
+    public void embeddedServerIdentifier(Object obj) {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
+            embeddedServerIdentifier = obj;
         }
-        embeddedServerIdentifier = obj;
     }
 
     /**
@@ -149,8 +155,10 @@ public final class Service extends Routable {
      *
      * @return the identifier, or null for the default
      */
-    public synchronized Object embeddedServerIdentifier() {
-        return embeddedServerIdentifier;
+    public Object embeddedServerIdentifier() {
+        synchronized (lock) {
+            return embeddedServerIdentifier;
+        }
     }
 
     /**
@@ -161,13 +169,15 @@ public final class Service extends Routable {
      * @param ipAddress The ipAddress
      * @return the object with the IP address set
      */
-    public synchronized Service ipAddress(String ipAddress) {
-        if (initialized) {
-            throwBeforeRouteMappingException();
-        }
-        this.ipAddress = ipAddress;
+    public Service ipAddress(String ipAddress) {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
+            this.ipAddress = ipAddress;
 
-        return this;
+            return this;
+        }
     }
 
     /**
@@ -178,12 +188,14 @@ public final class Service extends Routable {
      * @param port The port number
      * @return the object with port set
      */
-    public synchronized Service port(int port) {
-        if (initialized) {
-            throwBeforeRouteMappingException();
+    public Service port(int port) {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
+            this.port = port;
+            return this;
         }
-        this.port = port;
-        return this;
     }
 
     /**
@@ -192,11 +204,13 @@ public final class Service extends Routable {
      * @return The port Spark server is listening on.
      * @throws IllegalStateException when the server is not started
      */
-    public synchronized int port() {
-        if (initialized) {
-            return port;
-        } else {
-            throw new IllegalStateException("This must be done after route mapping has begun");
+    public int port() {
+        synchronized (lock) {
+            if (initialized) {
+                return port;
+            } else {
+                throw new IllegalStateException("This must be done after route mapping has begun");
+            }
         }
     }
 
@@ -216,11 +230,13 @@ public final class Service extends Routable {
      * @param truststorePassword the trust store password
      * @return the object with connection set to be secure
      */
-    public synchronized Service secure(String keystoreFile,
+    public Service secure(String keystoreFile,
                                        String keystorePassword,
                                        String truststoreFile,
                                        String truststorePassword) {
-        return secure(keystoreFile, keystorePassword, null, truststoreFile, truststorePassword, false);
+        synchronized (lock) {
+            return secure(keystoreFile, keystorePassword, null, truststoreFile, truststorePassword, false);
+        }
     }
 
     /**
@@ -240,12 +256,14 @@ public final class Service extends Routable {
      * @param truststorePassword the trust store password
      * @return the object with connection set to be secure
      */
-    public synchronized Service secure(String keystoreFile,
+    public Service secure(String keystoreFile,
                                        String keystorePassword,
                                        String certAlias,
                                        String truststoreFile,
                                        String truststorePassword) {
-        return secure(keystoreFile, keystorePassword, certAlias, truststoreFile, truststorePassword, false);
+        synchronized (lock) {
+            return secure(keystoreFile, keystorePassword, certAlias, truststoreFile, truststorePassword, false);
+        }
     }
 
     /**
@@ -266,12 +284,14 @@ public final class Service extends Routable {
      * @param truststorePassword the trust store password
      * @return the object with connection set to be secure
      */
-    public synchronized Service secure(String keystoreFile,
+    public Service secure(String keystoreFile,
                                        String keystorePassword,
                                        String truststoreFile,
                                        String truststorePassword,
                                        boolean needsClientCert) {
-        return secure(keystoreFile, keystorePassword, null, truststoreFile, truststorePassword, needsClientCert);
+        synchronized (lock) {
+            return secure(keystoreFile, keystorePassword, null, truststoreFile, truststorePassword, needsClientCert);
+        }
     }
 
     /**
@@ -293,23 +313,25 @@ public final class Service extends Routable {
      * @param truststorePassword the trust store password
      * @return the object with connection set to be secure
      */
-    public synchronized Service secure(String keystoreFile,
+    public Service secure(String keystoreFile,
                                        String keystorePassword,
                                        String certAlias,
                                        String truststoreFile,
                                        String truststorePassword,
                                        boolean needsClientCert) {
-        if (initialized) {
-            throwBeforeRouteMappingException();
-        }
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
 
-        if (keystoreFile == null) {
-            throw new IllegalArgumentException(
-                    "Must provide a keystore file to run secured");
-        }
+            if (keystoreFile == null) {
+                throw new IllegalArgumentException(
+                        "Must provide a keystore file to run secured");
+            }
 
-        sslStores = SslStores.create(keystoreFile, keystorePassword, certAlias, truststoreFile, truststorePassword, needsClientCert);
-        return this;
+            sslStores = SslStores.create(keystoreFile, keystorePassword, certAlias, truststoreFile, truststorePassword, needsClientCert);
+            return this;
+        }
     }
 
     /**
@@ -325,13 +347,15 @@ public final class Service extends Routable {
      * @param sslContextFactory     a configured SslContextFactory
      * @return the object with connection set to be secure
      */
-    public synchronized Service secure(SslContextFactory.Server sslContextFactory) {
-        if (initialized) {
-            throwBeforeRouteMappingException();
-        }
+    public Service secure(SslContextFactory.Server sslContextFactory) {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
 
-        this.sslContextFactory = sslContextFactory;
-        return this;
+            this.sslContextFactory = sslContextFactory;
+            return this;
+        }
     }
 
     /**
@@ -340,8 +364,10 @@ public final class Service extends Routable {
      * @param maxThreads max nbr of threads.
      * @return the object with the embedded web server's thread pool configured
      */
-    public synchronized Service threadPool(int maxThreads) {
-        return threadPool(maxThreads, -1, -1);
+    public Service threadPool(int maxThreads) {
+        synchronized (lock) {
+            return threadPool(maxThreads, -1, -1);
+        }
     }
 
     /**
@@ -352,16 +378,18 @@ public final class Service extends Routable {
      * @param idleTimeoutMillis thread idle timeout (ms).
      * @return the object with the embedded web server's thread pool configured
      */
-    public synchronized Service threadPool(int maxThreads, int minThreads, int idleTimeoutMillis) {
-        if (initialized) {
-            throwBeforeRouteMappingException();
+    public Service threadPool(int maxThreads, int minThreads, int idleTimeoutMillis) {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
+
+            this.maxThreads = maxThreads;
+            this.minThreads = minThreads;
+            this.threadIdleTimeoutMillis = idleTimeoutMillis;
+
+            return this;
         }
-
-        this.maxThreads = maxThreads;
-        this.minThreads = minThreads;
-        this.threadIdleTimeoutMillis = idleTimeoutMillis;
-
-        return this;
     }
 
     /**
@@ -371,17 +399,19 @@ public final class Service extends Routable {
      * @param folder the folder in the classpath.
      * @return the object with the folder set
      */
-    public synchronized Service staticFileLocation(String folder) {
-        if (initialized && !isRunningFromServlet()) {
-            throwBeforeRouteMappingException();
-        }
+    public Service staticFileLocation(String folder) {
+        synchronized (lock) {
+            if (initialized && !isRunningFromServlet()) {
+                throwBeforeRouteMappingException();
+            }
 
-        if (!staticFilesConfiguration.isStaticResourcesSet()) {
-            staticFilesConfiguration.configure(folder);
-        } else {
-            LOG.warn("Static file location has already been set");
+            if (!staticFilesConfiguration.isStaticResourcesSet()) {
+                staticFilesConfiguration.configure(folder);
+            } else {
+                LOG.warn("Static file location has already been set");
+            }
+            return this;
         }
-        return this;
     }
 
     /**
@@ -391,17 +421,19 @@ public final class Service extends Routable {
      * @param externalFolder the external folder serving static files.
      * @return the object with the external folder set
      */
-    public synchronized Service externalStaticFileLocation(String externalFolder) {
-        if (initialized && !isRunningFromServlet()) {
-            throwBeforeRouteMappingException();
-        }
+    public Service externalStaticFileLocation(String externalFolder) {
+        synchronized (lock) {
+            if (initialized && !isRunningFromServlet()) {
+                throwBeforeRouteMappingException();
+            }
 
-        if (!staticFilesConfiguration.isExternalStaticResourcesSet()) {
-            staticFilesConfiguration.configureExternal(externalFolder);
-        } else {
-            LOG.warn("External static file location has already been set");
+            if (!staticFilesConfiguration.isExternalStaticResourcesSet()) {
+                staticFilesConfiguration.configureExternal(externalFolder);
+            } else {
+                LOG.warn("External static file location has already been set");
+            }
+            return this;
         }
-        return this;
     }
 
     /**
@@ -455,19 +487,21 @@ public final class Service extends Routable {
         addWebSocketHandler(path, new WebSocketHandlerInstanceWrapper(handler));
     }
 
-    private synchronized void addWebSocketHandler(String path, WebSocketHandlerWrapper handlerWrapper) {
-        if (initialized) {
-            throwBeforeRouteMappingException();
-        }
-        if (isRunningFromServlet()) {
-            throw new IllegalStateException("WebSockets are only supported in the embedded server");
-        }
-        requireNonNull(path, "WebSocket path cannot be null");
-        if (webSocketHandlers == null) {
-            webSocketHandlers = new HashMap<>();
-        }
+    private void addWebSocketHandler(String path, WebSocketHandlerWrapper handlerWrapper) {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
+            if (isRunningFromServlet()) {
+                throw new IllegalStateException("WebSockets are only supported in the embedded server");
+            }
+            requireNonNull(path, "WebSocket path cannot be null");
+            if (webSocketHandlers == null) {
+                webSocketHandlers = new HashMap<>();
+            }
 
-        webSocketHandlers.put(path, handlerWrapper);
+            webSocketHandlers.put(path, handlerWrapper);
+        }
     }
 
     /**
@@ -476,15 +510,17 @@ public final class Service extends Routable {
      * @param timeoutMillis The max idle timeout in milliseconds.
      * @return the object with max idle timeout set for WebSocket connections
      */
-    public synchronized Service webSocketIdleTimeoutMillis(long timeoutMillis) {
-        if (initialized) {
-            throwBeforeRouteMappingException();
+    public Service webSocketIdleTimeoutMillis(long timeoutMillis) {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
+            if (isRunningFromServlet()) {
+                throw new IllegalStateException("WebSockets are only supported in the embedded server");
+            }
+            webSocketIdleTimeoutMillis = timeoutMillis;
+            return this;
         }
-        if (isRunningFromServlet()) {
-            throw new IllegalStateException("WebSockets are only supported in the embedded server");
-        }
-        webSocketIdleTimeoutMillis = timeoutMillis;
-        return this;
     }
 
     /**
@@ -492,8 +528,10 @@ public final class Service extends Routable {
      *
      * @param page the custom 404 error page.
      */
-    public synchronized void notFound(String page) {
-        CustomErrorPages.add(404, page);
+    public void notFound(String page) {
+        synchronized (lock) {
+            CustomErrorPages.add(404, page);
+        }
     }
 
     /**
@@ -501,8 +539,10 @@ public final class Service extends Routable {
      *
      * @param page the custom 500 internal server error page.
      */
-    public synchronized void internalServerError(String page) {
-        CustomErrorPages.add(500, page);
+    public void internalServerError(String page) {
+        synchronized (lock) {
+            CustomErrorPages.add(500, page);
+        }
     }
 
     /**
@@ -510,8 +550,10 @@ public final class Service extends Routable {
      *
      * @param route the route to invoke for 404s
      */
-    public synchronized void notFound(Route route) {
-        CustomErrorPages.add(404, route);
+    public void notFound(Route route) {
+        synchronized (lock) {
+            CustomErrorPages.add(404, route);
+        }
     }
 
     /**
@@ -519,8 +561,10 @@ public final class Service extends Routable {
      *
      * @param route the route to invoke for 500s
      */
-    public synchronized void internalServerError(Route route) {
-        CustomErrorPages.add(500, route);
+    public void internalServerError(Route route) {
+        synchronized (lock) {
+            CustomErrorPages.add(500, route);
+        }
     }
 
     /**
@@ -553,11 +597,13 @@ public final class Service extends Routable {
     /**
      * Stops the Spark server and clears all routes.
      */
-    public synchronized void stop() {
-    	if (!initialized) {
-    		return;
-    	}
-        initiateStop();
+    public void stop() {
+        synchronized (lock) {
+            if (!initialized) {
+                return;
+            }
+            initiateStop();
+        }
     }
 
     /**
@@ -705,59 +751,61 @@ public final class Service extends Routable {
      * called directly for a service that defines none, such as one that only has WebSocket handlers.
      * Use {@link #awaitInitialization()} to wait until the server is up.
      */
-    public synchronized void init() {
-        if (!initialized) {
+    public void init() {
+        synchronized (lock) {
+            if (!initialized) {
 
-            initializeRouteMatcher();
+                initializeRouteMatcher();
 
-            if (!isRunningFromServlet()) {
-                new Thread(() -> {
-                  try {
-                    EmbeddedServers.initialize();
+                if (!isRunningFromServlet()) {
+                    new Thread(() -> {
+                      try {
+                        EmbeddedServers.initialize();
 
-                    if (embeddedServerIdentifier == null) {
-                        embeddedServerIdentifier = EmbeddedServers.defaultIdentifier();
-                    }
+                        if (embeddedServerIdentifier == null) {
+                            embeddedServerIdentifier = EmbeddedServers.defaultIdentifier();
+                        }
 
-                    server = EmbeddedServers.create(embeddedServerIdentifier,
-                                                    routes,
-                                                    exceptionMapper,
-                                                    staticFilesConfiguration,
-                                                    hasMultipleHandlers());
+                        server = EmbeddedServers.create(embeddedServerIdentifier,
+                                                        routes,
+                                                        exceptionMapper,
+                                                        staticFilesConfiguration,
+                                                        hasMultipleHandlers());
 
-                    server.configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis);
-                    server.trustForwardHeaders(trustForwardHeaders);
+                        server.configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis);
+                        server.trustForwardHeaders(trustForwardHeaders);
 
-                    if (sslContextFactory != null) {
-                        port = server.ignite(
-                            ipAddress,
-                            port,
-                            sslContextFactory,
-                            maxThreads,
-                            minThreads,
-                            threadIdleTimeoutMillis);
-                    } else {
-                        port = server.ignite(
-                            ipAddress,
-                            port,
-                            sslStores,
-                            maxThreads,
-                            minThreads,
-                            threadIdleTimeoutMillis);
-                    }
-                  } catch (Exception e) {
-                    initExceptionHandler.accept(e);
-                  }
-                    try {
-                        initLatch.countDown();
-                        server.join();
-                    } catch (InterruptedException e) {
-                        LOG.error("server interrupted", e);
-                        Thread.currentThread().interrupt();
-                    }
-                }).start();
+                        if (sslContextFactory != null) {
+                            port = server.ignite(
+                                ipAddress,
+                                port,
+                                sslContextFactory,
+                                maxThreads,
+                                minThreads,
+                                threadIdleTimeoutMillis);
+                        } else {
+                            port = server.ignite(
+                                ipAddress,
+                                port,
+                                sslStores,
+                                maxThreads,
+                                minThreads,
+                                threadIdleTimeoutMillis);
+                        }
+                      } catch (Exception e) {
+                        initExceptionHandler.accept(e);
+                      }
+                        try {
+                            initLatch.countDown();
+                            server.join();
+                        } catch (InterruptedException e) {
+                            LOG.error("server interrupted", e);
+                            Thread.currentThread().interrupt();
+                        }
+                    }).start();
+                }
+                initialized = true;
             }
-            initialized = true;
         }
     }
 
@@ -772,11 +820,13 @@ public final class Service extends Routable {
     /**
      * @return The approximate number of currently active threads in the embedded Jetty server
      */
-    public synchronized int activeThreadCount() {
-        if (server != null) {
-            return server.activeThreadCount();
+    public int activeThreadCount() {
+        synchronized (lock) {
+            if (server != null) {
+                return server.activeThreadCount();
+            }
+            return 0;
         }
-        return 0;
     }
 
     // EXCEPTION mapper
@@ -788,16 +838,18 @@ public final class Service extends Routable {
      * @param exceptionClass the exception class
      * @param handler        The handler
      */
-    public synchronized <T extends Exception> void exception(Class<T> exceptionClass, ExceptionHandler<? super T> handler) {
-        // wrap
-        var wrapper = new ExceptionHandlerImpl<>(exceptionClass) {
-            @Override
-            public void handle(T exception, Request request, Response response) {
-                handler.handle(exception, request, response);
-            }
-        };
+    public <T extends Exception> void exception(Class<T> exceptionClass, ExceptionHandler<? super T> handler) {
+        synchronized (lock) {
+            // wrap
+            var wrapper = new ExceptionHandlerImpl<>(exceptionClass) {
+                @Override
+                public void handle(T exception, Request request, Response response) {
+                    handler.handle(exception, request, response);
+                }
+            };
 
-        exceptionMapper.map(exceptionClass, wrapper);
+            exceptionMapper.map(exceptionClass, wrapper);
+        }
     }
 
     // HALT methods
@@ -860,13 +912,15 @@ public final class Service extends Routable {
      *
      * @return this service instance for chaining
      */
-    public synchronized Service trustForwardHeaders() {
-        if (initialized) {
-            throwBeforeRouteMappingException();
-        }
-        this.trustForwardHeaders = true;
+    public Service trustForwardHeaders() {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
+            this.trustForwardHeaders = true;
 
-        return this;
+            return this;
+        }
     }
 
     /**
@@ -876,13 +930,15 @@ public final class Service extends Routable {
      *
      * @return this service instance for chaining
      */
-    public synchronized Service untrustForwardHeaders() {
-        if (initialized) {
-            throwBeforeRouteMappingException();
-        }
-        this.trustForwardHeaders = false;
+    public Service untrustForwardHeaders() {
+        synchronized (lock) {
+            if (initialized) {
+                throwBeforeRouteMappingException();
+            }
+            this.trustForwardHeaders = false;
 
-        return this;
+            return this;
+        }
     }
 
     /**
