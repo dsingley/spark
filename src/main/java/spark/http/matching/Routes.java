@@ -21,7 +21,9 @@ import spark.RouteImpl;
 import spark.route.HttpMethod;
 
 /**
- * Created by Per Wendel on 2016-01-28.
+ * Runs the route that matches a request, as part of {@link MatcherFilter}: it finds the route,
+ * calls it, and records the content it returned. If no route matches a HEAD request but a GET route
+ * does, the response gets an empty body, so that HEAD works by default.
  */
 final class Routes {
 

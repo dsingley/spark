@@ -1,7 +1,11 @@
 package spark;
 
 /**
- * Created by Per Wendel on 2014-05-10.
+ * The code that handles the requests to a path, and returns the content of the response. A route is
+ * mapped to an HTTP method and a path, for example:
+ * <pre>
+ * get("/hello", (request, response) -> "Hello World");
+ * </pre>
  */
 @FunctionalInterface
 public interface Route {

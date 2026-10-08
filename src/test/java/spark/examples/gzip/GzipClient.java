@@ -8,9 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.zip.GZIPInputStream;
 
-/**
- * Created by Per Wendel on 2015-11-24.
- */
 public class GzipClient {
 
     public static String getAndDecompress(String url) throws Exception {

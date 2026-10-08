@@ -12,9 +12,6 @@ import org.slf4j.LoggerFactory;
 import spark.util.ServiceStopExtension;
 import spark.util.SparkTestUtil;
 
-/**
- * Created by Tom on 08/02/2017.
- */
 class ServicePortIntegrationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServicePortIntegrationTest.class);

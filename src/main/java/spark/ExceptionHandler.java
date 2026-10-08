@@ -1,7 +1,11 @@
 package spark;
 
 /**
- * Created by Per Wendel on 2014-05-10.
+ * Handles an exception that is thrown while a request is being handled, by writing a response for
+ * it. A handler is mapped to an exception type with {@code exception(Class, ExceptionHandler)}, on
+ * {@link Spark} or {@link Service}, and then also handles subclasses of that type.
+ *
+ * @param <T> the type of exception this handler handles
  */
 @FunctionalInterface
 public interface ExceptionHandler<T extends Exception> {
