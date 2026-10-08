@@ -35,9 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: consider ETag support. Static files are served with Cache-Control and Expires headers (see
-// setExpireTimeSeconds), but nothing sets a validator such as ETag, so clients cannot revalidate a
-// cached file with a conditional request.
 /**
  * The static file settings of a {@link spark.Service}, and the code that serves the files.
  * <p>
