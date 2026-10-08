@@ -35,6 +35,8 @@ abstract class Routable {
     protected abstract void addRoute(HttpMethod httpMethod, RouteImpl route);
 
     /**
+     * @param httpMethod the HTTP method
+     * @param route      the route implementation
      * @deprecated use {@link #addRoute(HttpMethod, RouteImpl)}
      */
     @Deprecated(since = "2.6.0")
@@ -49,6 +51,8 @@ abstract class Routable {
     protected abstract void addFilter(HttpMethod httpMethod, FilterImpl filter);
 
     /**
+     * @param httpMethod the HTTP method
+     * @param filter     the filter implementation
      * @deprecated use {@link #addFilter(HttpMethod, FilterImpl)}
      */
     @Deprecated(since = "2.6.0")
@@ -320,6 +324,7 @@ abstract class Routable {
     /**
      * Maps a filter to be executed after any matching routes even if the route throws any exception
      *
+     * @param path   The path the filter applies to
      * @param filter The filter
      */
     public void afterAfter(String path, Filter filter) {

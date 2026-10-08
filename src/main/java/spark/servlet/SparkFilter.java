@@ -46,6 +46,10 @@ import java.io.IOException;
 public class SparkFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(SparkFilter.class);
 
+    /**
+     * The name of the filter init parameter that holds the Spark application class, or several
+     * classes separated by commas.
+     */
     public static final String APPLICATION_CLASS_PARAM = "applicationClass";
 
     private String filterPath;

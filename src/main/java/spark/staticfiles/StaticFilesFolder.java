@@ -8,7 +8,11 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Paths;
 
 /**
- * Created by Per Wendel on 2016-11-05.
+ * A global holder for the static files folders that were configured before each
+ * {@link spark.Service} had its own, which is why every method here is deprecated. Nothing in
+ * Spark uses it any more; to configure static files, use
+ * {@link spark.Service#staticFileLocation(String)} and
+ * {@link spark.Service#externalStaticFileLocation(String)}, or {@code Spark.staticFiles}.
  */
 public class StaticFilesFolder {
 
@@ -21,6 +25,7 @@ public class StaticFilesFolder {
     }
 
     /**
+     * @param folder the classpath folder with the static files
      * @deprecated static file locations are no longer global; use {@link spark.Service#staticFileLocation(String)}
      */
     @Deprecated(since = "2.9.0")
@@ -30,6 +35,7 @@ public class StaticFilesFolder {
     }
 
     /**
+     * @param folder the external folder with the static files
      * @deprecated static file locations are no longer global; use {@link spark.Service#externalStaticFileLocation(String)}
      */
     @Deprecated(since = "2.9.0")
@@ -41,6 +47,7 @@ public class StaticFilesFolder {
     }
 
     /**
+     * @return the classpath folder configured with {@link #localConfiguredTo(String)}
      * @deprecated static file locations are no longer global; each {@link spark.Service} now
      * has its own, which is not exposed via a getter
      */
@@ -50,6 +57,7 @@ public class StaticFilesFolder {
     }
 
     /**
+     * @return the external folder configured with {@link #externalConfiguredTo(String)}
      * @deprecated static file locations are no longer global; each {@link spark.Service} now
      * has its own, which is not exposed via a getter
      */

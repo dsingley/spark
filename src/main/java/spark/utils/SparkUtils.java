@@ -26,11 +26,18 @@ import java.util.List;
  */
 public final class SparkUtils {
 
+    /** The path that filters mapped without a path use, which matches every path. */
     public static final String ALL_PATHS = "+/*paths";
 
     private SparkUtils() {
     }
 
+    /**
+     * Splits a route into its path segments, leaving out empty ones.
+     *
+     * @param route the route, for example {@code /users/:id}
+     * @return the segments, for example {@code [users, :id]}
+     */
     public static List<String> convertRouteToList(String route) {
         var pathArray = route.split("/");
         List<String> paths = new ArrayList<>();
@@ -42,10 +49,18 @@ public final class SparkUtils {
         return paths;
     }
 
+    /**
+     * @param routePart one segment of a route
+     * @return true if the segment is a path parameter, which starts with a colon, such as {@code :id}
+     */
     public static boolean isParam(String routePart) {
         return routePart.startsWith(":");
     }
 
+    /**
+     * @param routePart one segment of a route
+     * @return true if the segment is a splat, which is a single asterisk
+     */
     public static boolean isSplat(String routePart) {
         return routePart.equals("*");
     }

@@ -36,8 +36,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Holds the static file configuration.
- * TODO: ETAG ?
+ * The static file settings of a {@link spark.Service}, and the code that serves the files.
+ * <p>
+ * It holds where the static files are (a folder on the classpath and/or an external folder), the
+ * extra headers to send with them, such as Cache-Control, and the resource handlers that look
+ * files up. For each request, {@code consume} serves the matching file if there is one, and tells
+ * the caller whether it did, so that routes only handle the requests that were not for a static file.
  */
 public class StaticFilesConfiguration {
 
@@ -48,6 +52,7 @@ public class StaticFilesConfiguration {
     private boolean staticResourcesSet = false;
     private boolean externalStaticResourcesSet = false;
 
+    /** The configuration shared by the Spark applications that run from a servlet container. */
     public static final StaticFilesConfiguration servletInstance = new StaticFilesConfiguration();
 
     private final Map<String, String> customHeaders = new HashMap<>();
@@ -120,10 +125,16 @@ public class StaticFilesConfiguration {
         externalStaticResourcesSet = false;
     }
     
+    /**
+     * @return true if a static files location on the classpath has been configured
+     */
     public boolean isStaticResourcesSet() {
         return staticResourcesSet;
     }
     
+    /**
+     * @return true if an external static files location, outside the classpath, has been configured
+     */
     public boolean isExternalStaticResourcesSet() {
         return externalStaticResourcesSet;
     }
@@ -177,19 +188,41 @@ public class StaticFilesConfiguration {
         }
     }
 
+    /**
+     * Creates a new configuration with no static files location and no custom headers.
+     *
+     * @return the new configuration
+     */
     public static StaticFilesConfiguration create() {
         return new StaticFilesConfiguration();
     }
 
+    /**
+     * Makes clients cache static files for the given time, by setting the Cache-Control and Expires
+     * headers on responses for them.
+     *
+     * @param expireTimeSeconds how long, in seconds, clients may cache static files
+     */
     public void setExpireTimeSeconds(long expireTimeSeconds) {
         customHeaders.put("Cache-Control", "private, max-age=" + expireTimeSeconds);
         customHeaders.put("Expires", new Date(System.currentTimeMillis() + (expireTimeSeconds * 1000)).toString());
     }
 
+    /**
+     * Adds headers to add to responses for static files, replacing any that have the same name.
+     *
+     * @param headers the header names and values
+     */
     public void putCustomHeaders(Map<String, String> headers) {
         customHeaders.putAll(headers);
     }
 
+    /**
+     * Adds a header to add to responses for static files, replacing one with the same name.
+     *
+     * @param key   the header name
+     * @param value the header value
+     */
     public void putCustomHeader(String key, String value) {
         customHeaders.put(key, value);
     }

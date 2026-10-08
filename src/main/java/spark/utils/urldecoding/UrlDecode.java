@@ -31,15 +31,28 @@ public class UrlDecode {
     private UrlDecode() {
     }
 
-    /* ------------------------------------------------------------ */
-    /* Decode a URI path and strip parameters
+    /**
+     * Decodes a URI path, and strips its path parameters.
+     *
+     * @param path the URI path
+     * @return the decoded path
+     * @throws IllegalArgumentException if the path has a bad percent encoding or is not valid UTF-8
+     * @see #path(String, int, int)
      */
     public static String path(String path) {
         return path(path, 0, path.length());
     }
 
-    /* ------------------------------------------------------------ */
-    /* Decode a URI path and strip parameters of UTF-8 path
+    /**
+     * Decodes part of a URI path, and strips its path parameters. Escapes such as {@code %20} and
+     * {@code %u0020} are decoded as UTF-8, and a path parameter, which is a semicolon and the text
+     * after it up to the next slash, is removed.
+     *
+     * @param path   the URI path
+     * @param offset where in the path to start
+     * @param length how many characters of the path to decode
+     * @return the decoded path
+     * @throws IllegalArgumentException if the path has a bad percent encoding or is not valid UTF-8
      */
     public static String path(String path, int offset, int length) {
         try {

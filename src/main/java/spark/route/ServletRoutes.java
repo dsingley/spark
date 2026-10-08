@@ -29,6 +29,14 @@ public final class ServletRoutes {
     private ServletRoutes() {
     }
 
+    /**
+     * Gets the routes used when Spark runs inside a servlet container, creating them the first time
+     * they are needed. There is a single, static set: every {@link spark.Service} that is initialized
+     * while running from a servlet container registers its routes here, and
+     * {@link spark.servlet.SparkFilter} matches requests against them.
+     *
+     * @return the routes
+     */
     public static synchronized Routes get() {
         if (routes == null) {
             routes = new Routes();

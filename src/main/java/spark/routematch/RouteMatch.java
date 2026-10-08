@@ -19,6 +19,13 @@ package spark.routematch;
 import spark.route.HttpMethod;
 
 /**
+ * A route or filter that matched a request, along with how it matched. It holds the matched
+ * {@link #getTarget() target}, the path pattern it was mapped with, the URI that was requested,
+ * the accepted media type and the HTTP method.
+ * <p>
+ * Routes find these when handling a request, and {@link spark.Service#routes()} returns one for
+ * every route and filter that has been mapped, which is handy for listing the routes at startup.
+ *
  * @author Per Wendel
  */
 public class RouteMatch {
@@ -29,10 +36,27 @@ public class RouteMatch {
     private final String acceptType;
     private final HttpMethod httpMethod;
 
+    /**
+     * Creates a match that has no HTTP method.
+     *
+     * @param target     the matched route or filter
+     * @param matchUri   the path pattern of the matched route or filter
+     * @param requestUri the URI of the request
+     * @param acceptType the accepted media type
+     */
     public RouteMatch(Object target, String matchUri, String requestUri, String acceptType) {
         this(target, matchUri, requestUri, acceptType, null);
      }
 
+    /**
+     * Creates a match.
+     *
+     * @param target     the matched route or filter
+     * @param matchUri   the path pattern of the matched route or filter
+     * @param requestUri the URI of the request
+     * @param acceptType the accepted media type
+     * @param httpMethod the HTTP method of the matched route or filter, which may be null
+     */
     public RouteMatch(Object target, String matchUri, String requestUri, String acceptType, HttpMethod httpMethod) {
         super();
         this.target = target;
