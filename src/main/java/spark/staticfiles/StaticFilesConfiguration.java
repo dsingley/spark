@@ -29,11 +29,14 @@ import spark.utils.GzipUtils;
 import spark.utils.IOUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * The static file settings of a {@link spark.Service}, and the code that serves the files.
@@ -42,20 +45,28 @@ import java.util.Map;
  * extra headers to send with them, such as Cache-Control, and the resource handlers that look
  * files up. For each request, {@code consume} serves the matching file if there is one, and tells
  * the caller whether it did, so that routes only handle the requests that were not for a static file.
+ * <p>
+ * It is safe to change the configuration, for example to add a header, while requests are being served.
  */
 public class StaticFilesConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticFilesConfiguration.class);
 
-    private List<AbstractResourceHandler> staticResourceHandlers = null;
+    // Request threads read the handlers and the headers while they can be changed from other threads,
+    // so the handlers are in a list that is safe to iterate while it changes, and the headers are an
+    // immutable map that is replaced as a whole, which also makes changing several of them atomic.
+    private final List<AbstractResourceHandler> staticResourceHandlers = new CopyOnWriteArrayList<>();
+    private final AtomicReference<Map<String, String>> customHeaders = new AtomicReference<>(Map.of());
 
-    private boolean staticResourcesSet = false;
-    private boolean externalStaticResourcesSet = false;
+    private volatile boolean staticResourcesSet = false;
+    private volatile boolean externalStaticResourcesSet = false;
+
+    // Serializes the changes to the configuration. It is private, unlike the instance itself, which
+    // anyone can lock on through the public servletInstance.
+    private final Object lock = new Object();
 
     /** The configuration shared by the Spark applications that run from a servlet container. */
     public static final StaticFilesConfiguration servletInstance = new StaticFilesConfiguration();
-
-    private final Map<String, String> customHeaders = new HashMap<>();
 
     /**
      * Attempt consuming using either static resource handlers or jar resource handlers
@@ -85,28 +96,24 @@ public class StaticFilesConfiguration {
 
     private boolean consumeWithFileResourceHandlers(HttpServletRequest httpRequest,
                                                     HttpServletResponse httpResponse) throws IOException {
-        if (staticResourceHandlers != null) {
+        for (var staticResourceHandler : staticResourceHandlers) {
 
-            for (var staticResourceHandler : staticResourceHandlers) {
+            var resource = staticResourceHandler.getResource(httpRequest);
 
-                var resource = staticResourceHandler.getResource(httpRequest);
+            if (resource != null && resource.isReadable()) {
 
-                if (resource != null && resource.isReadable()) {
-
-                    if (MimeType.shouldGuess()) {
-                        httpResponse.setHeader(MimeType.CONTENT_TYPE, MimeType.fromResource(resource));
-                    }
-                    customHeaders.forEach(httpResponse::setHeader); //add all user-defined headers to response
-
-                    try (var inputStream = resource.getInputStream();
-                         var wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false)) {
-                        IOUtils.copy(inputStream, wrappedOutputStream);
-                    }
-
-                    return true;
+                if (MimeType.shouldGuess()) {
+                    httpResponse.setHeader(MimeType.CONTENT_TYPE, MimeType.fromResource(resource));
                 }
-            }
+                customHeaders.get().forEach(httpResponse::setHeader); //add all user-defined headers to response
 
+                try (var inputStream = resource.getInputStream();
+                     var wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false)) {
+                    IOUtils.copy(inputStream, wrappedOutputStream);
+                }
+
+                return true;
+            }
         }
         return false;
     }
@@ -115,14 +122,11 @@ public class StaticFilesConfiguration {
      * Clears all static file configuration
      */
     public void clear() {
-
-        if (staticResourceHandlers != null) {
+        synchronized (lock) {
             staticResourceHandlers.clear();
-            staticResourceHandlers = null;
+            staticResourcesSet = false;
+            externalStaticResourcesSet = false;
         }
-
-        staticResourcesSet = false;
-        externalStaticResourcesSet = false;
     }
     
     /**
@@ -144,18 +148,15 @@ public class StaticFilesConfiguration {
      *
      * @param folder the location
      */
-    public synchronized void configure(String folder) {
+    public void configure(String folder) {
         Assert.notNull(folder, "'folder' must not be null");
 
-        if (!staticResourcesSet) {
-
-            if (staticResourceHandlers == null) {
-                staticResourceHandlers = new ArrayList<>();
+        synchronized (lock) {
+            if (!staticResourcesSet) {
+                staticResourceHandlers.add(new ClassPathResourceHandler(folder, "index.html"));
+                LOG.info("StaticResourceHandler configured with folder = {}", folder);
+                staticResourcesSet = true;
             }
-
-            staticResourceHandlers.add(new ClassPathResourceHandler(folder, "index.html"));
-            LOG.info("StaticResourceHandler configured with folder = {}", folder);
-            staticResourcesSet = true;
         }
     }
 
@@ -164,27 +165,26 @@ public class StaticFilesConfiguration {
      *
      * @param folder the location
      */
-    public synchronized void configureExternal(String folder) {
+    public void configureExternal(String folder) {
         Assert.notNull(folder, "'folder' must not be null");
 
-        if (!externalStaticResourcesSet) {
-            try {
-                var resource = new ExternalResource(folder);
-                if (!resource.getFile().isDirectory()) {
-                    LOG.error("External Static resource location must be a folder");
-                    return;
+        synchronized (lock) {
+            if (!externalStaticResourcesSet) {
+                try {
+                    var resource = new ExternalResource(folder);
+                    if (!resource.getFile().isDirectory()) {
+                        LOG.error("External Static resource location must be a folder");
+                        return;
+                    }
+
+                    staticResourceHandlers.add(new ExternalResourceHandler(folder, "index.html"));
+                    LOG.info("External StaticResourceHandler configured with folder = {}", folder);
+                } catch (IOException e) {
+                    LOG.error("Error when creating external StaticResourceHandler", e);
                 }
 
-                if (staticResourceHandlers == null) {
-                    staticResourceHandlers = new ArrayList<>();
-                }
-                staticResourceHandlers.add(new ExternalResourceHandler(folder, "index.html"));
-                LOG.info("External StaticResourceHandler configured with folder = {}", folder);
-            } catch (IOException e) {
-                LOG.error("Error when creating external StaticResourceHandler", e);
+                externalStaticResourcesSet = true;
             }
-
-            externalStaticResourcesSet = true;
         }
     }
 
@@ -204,8 +204,10 @@ public class StaticFilesConfiguration {
      * @param expireTimeSeconds how long, in seconds, clients may cache static files
      */
     public void setExpireTimeSeconds(long expireTimeSeconds) {
-        customHeaders.put("Cache-Control", "private, max-age=" + expireTimeSeconds);
-        customHeaders.put("Expires", new Date(System.currentTimeMillis() + (expireTimeSeconds * 1000)).toString());
+        updateCustomHeaders(headers -> {
+            headers.put("Cache-Control", "private, max-age=" + expireTimeSeconds);
+            headers.put("Expires", new Date(System.currentTimeMillis() + (expireTimeSeconds * 1000)).toString());
+        });
     }
 
     /**
@@ -214,7 +216,7 @@ public class StaticFilesConfiguration {
      * @param headers the header names and values
      */
     public void putCustomHeaders(Map<String, String> headers) {
-        customHeaders.putAll(headers);
+        updateCustomHeaders(current -> current.putAll(headers));
     }
 
     /**
@@ -224,6 +226,20 @@ public class StaticFilesConfiguration {
      * @param value the header value
      */
     public void putCustomHeader(String key, String value) {
-        customHeaders.put(key, value);
+        updateCustomHeaders(headers -> headers.put(key, value));
+    }
+
+    /**
+     * Applies a change to a copy of the custom headers and then makes the copy the current headers, so
+     * that requests being served see either all of the change or none of it. If another thread changes
+     * the headers at the same time, the change is applied again to the newer headers, so no update is
+     * lost; this is why the change must only modify the map it is given.
+     */
+    private void updateCustomHeaders(Consumer<Map<String, String>> change) {
+        customHeaders.updateAndGet(current -> {
+            var copy = new HashMap<>(current);
+            change.accept(copy);
+            return Collections.unmodifiableMap(copy);
+        });
     }
 }

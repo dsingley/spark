@@ -18,9 +18,9 @@ package spark.staticfiles;
 
 import spark.resource.AbstractFileResolvingResource;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Configures and holds mappings from file extensions to MIME types.
@@ -34,7 +34,8 @@ public class MimeType {
 
     private static volatile boolean guessingOn = true;
 
-    private static final Map<String, String> MAPPINGS = new HashMap<>();
+    // Read by request threads, and changed by register, so it must be safe to use from several threads
+    private static final Map<String, String> MAPPINGS = new ConcurrentHashMap<>();
 
     static {
         MAPPINGS.put("au", "audio/basic");
@@ -102,7 +103,8 @@ public class MimeType {
     }
 
     /**
-     * Registers or overrides the MIME type mapped to the given file extension.
+     * Registers or overrides the MIME type mapped to the given file extension. It is safe to call this
+     * while requests are being served.
      *
      * @param extension the file extension, without a leading dot
      * @param mimeType  the MIME type to map it to
