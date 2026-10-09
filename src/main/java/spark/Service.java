@@ -464,19 +464,25 @@ public final class Service extends Routable {
     }
 
     /**
-     * Maps the given path to the given WebSocket handler class.
+     * Maps the given path to the given WebSocket handler class. A new instance of the class is created
+     * for each connection to the path, so each connection has its own handler. The class needs an
+     * accessible no-argument constructor.
      * <p>
      * This is currently only available in the embedded server mode.
      *
      * @param path         the WebSocket path.
      * @param handlerClass the handler class that will manage the WebSocket connection to the given path.
+     * @throws IllegalArgumentException if the class is not annotated as a WebSocket or has no accessible
+     *                                  no-argument constructor
      */
     public void webSocket(String path, Class<?> handlerClass) {
         addWebSocketHandler(path, new WebSocketHandlerClassWrapper(handlerClass));
     }
 
     /**
-     * Maps the given path to the given WebSocket handler instance.
+     * Maps the given path to the given WebSocket handler instance. The one instance manages all the
+     * connections to the path, so it has to be safe to use from several threads. To have a handler for each
+     * connection, map a handler class instead.
      * <p>
      * This is currently only available in the embedded server mode.
      *

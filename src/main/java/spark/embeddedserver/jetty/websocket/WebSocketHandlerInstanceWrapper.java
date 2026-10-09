@@ -3,7 +3,8 @@ package spark.embeddedserver.jetty.websocket;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Wraps a single WebSocket handler instance, which is shared by all connections to its path.
+ * Wraps a single WebSocket handler instance, which is shared by all connections to its path, so it has
+ * to be safe to use from several threads.
  */
 public class WebSocketHandlerInstanceWrapper implements WebSocketHandlerWrapper {
     

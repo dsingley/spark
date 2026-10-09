@@ -80,6 +80,17 @@ public void onConnect(Session session) { ... }
 `Service.webSocket(...)`'s own signature is unchanged — it still takes a handler class or
 instance.
 
+- **A handler *class* now gets a new instance for each connection.** Before, `webSocket(path,
+  HandlerClass.class)` created one instance when the path was mapped and used it for every
+  connection to that path, so instance fields were shared between clients. Now each connection gets
+  its own instance, as the class form suggests, and the class needs an accessible no-argument
+  constructor, which is checked when the path is mapped: a class that is abstract or lacks one now fails
+  there with an `IllegalArgumentException`, where before it failed with a `RuntimeException` when the
+  server started. If your handler relied on that sharing,
+  keep the state in a field that outlives the handler (a `static` field, or something you pass in), or
+  register an instance with `webSocket(path, handler)`, which still uses the one instance for every
+  connection and therefore has to be thread-safe.
+
 ## `web.xml` deployment (`SparkFilter`)
 
 If you deploy Spark as a filter in `web.xml` rather than the embedded server, your servlet
