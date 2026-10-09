@@ -91,6 +91,14 @@ instance.
   register an instance with `webSocket(path, handler)`, which still uses the one instance for every
   connection and therefore has to be thread-safe.
 
+## Static files: no `Expires` header
+
+`staticFiles.expireTime(seconds)` now sends only `Cache-Control: private, max-age=<seconds>`. It used to
+send an `Expires` header as well, but one computed once when `expireTime` was called, so it was in the
+past by the time the configured time had gone by. HTTP/1.1 clients and caches ignore `Expires` when
+`max-age` is present, so they are not affected. If something depends on seeing an `Expires` header, add
+your own with `staticFiles.header("Expires", value)`.
+
 ## `web.xml` deployment (`SparkFilter`)
 
 If you deploy Spark as a filter in `web.xml` rather than the embedded server, your servlet

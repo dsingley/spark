@@ -1006,7 +1006,8 @@ public final class Service extends Routable {
         }
 
         /**
-         * Sets the expire-time for static resources
+         * Makes clients cache static resources for the given time, by sending a Cache-Control header
+         * with that max-age. No Expires header is sent.
          *
          * @param seconds the expiry time in seconds
          */
