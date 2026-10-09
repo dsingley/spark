@@ -23,6 +23,9 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,6 +58,44 @@ class StaticFilesConfigurationTest {
                 () -> verify(response).setHeader("X-B", "2"),
                 () -> verify(response).setHeader("Cache-Control", "private, max-age=60"),
                 () -> verify(response).setHeader(eq("Expires"), anyString())
+        );
+    }
+
+    @Test
+    void setExpireTimeSeconds_shouldSendExpiresAsAnHttpDateThatIsThatFarAhead() throws IOException {
+        var config = StaticFilesConfiguration.create();
+        config.configure("/public");
+        config.setExpireTimeSeconds(3_600);
+        var expiresValues = new ArrayList<String>();
+        var response = responseCapturing("Expires", expiresValues);
+
+        config.consume(request(), response);
+
+        assertThat(expiresValues).singleElement().satisfies(expires -> assertAll(
+                () -> assertThat(expires).matches("[A-Z][a-z]{2}, \\d{2} [A-Z][a-z]{2} \\d{4} \\d{2}:\\d{2}:\\d{2} GMT"),
+                () -> assertThat(ZonedDateTime.parse(expires, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant())
+                        .isBetween(Instant.now().plusSeconds(3_590), Instant.now().plusSeconds(3_610))
+        ));
+    }
+
+    @Test
+    void setExpireTimeSeconds_shouldNotFail_andLimitExpiresToAYear_forAHugeTime() throws IOException {
+        var config = StaticFilesConfiguration.create();
+        config.configure("/public");
+        config.setExpireTimeSeconds(Long.MAX_VALUE);
+        var expiresValues = new ArrayList<String>();
+        var cacheControlValues = new ArrayList<String>();
+        var response = responseCapturing("Expires", expiresValues);
+        doAnswer(invocation -> cacheControlValues.add(invocation.getArgument(1)))
+                .when(response).setHeader(eq("Cache-Control"), anyString());
+
+        config.consume(request(), response);
+
+        assertAll(
+                () -> assertThat(cacheControlValues).containsExactly("private, max-age=" + Long.MAX_VALUE),
+                () -> assertThat(expiresValues).singleElement().satisfies(expires ->
+                        assertThat(ZonedDateTime.parse(expires, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant())
+                                .isBetween(Instant.now().plus(Duration.ofDays(364)), Instant.now().plus(Duration.ofDays(366))))
         );
     }
 
@@ -284,6 +325,13 @@ class StaticFilesConfigurationTest {
     private static HttpServletResponse response() {
         var response = mock(HttpServletResponse.class);
         stubOutputStream(response);
+        return response;
+    }
+
+    private static HttpServletResponse responseCapturing(String headerName, java.util.List<String> values) {
+        var response = response();
+        doAnswer(invocation -> values.add(invocation.getArgument(1)))
+                .when(response).setHeader(eq(headerName), anyString());
         return response;
     }
 
