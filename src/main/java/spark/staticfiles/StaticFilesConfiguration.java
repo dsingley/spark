@@ -29,10 +29,14 @@ import spark.utils.GzipUtils;
 import spark.utils.IOUtils;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -51,6 +55,14 @@ import java.util.function.Consumer;
 public class StaticFilesConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticFilesConfiguration.class);
+
+    // The format of an HTTP date, such as the value of the Expires header: for example
+    // "Fri, 09 Oct 2026 02:45:51 GMT", always in English and in GMT
+    private static final DateTimeFormatter HTTP_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.ENGLISH).withZone(ZoneOffset.UTC);
+
+    // HTTP/1.1 says servers should not send an Expires date more than a year in the future
+    private static final long MAX_EXPIRES_SECONDS = Duration.ofDays(365).toSeconds();
 
     // Request threads read the handlers and the headers while they can be changed from other threads,
     // so the handlers are in a list that is safe to iterate while it changes, and the headers are an
@@ -199,14 +211,15 @@ public class StaticFilesConfiguration {
 
     /**
      * Makes clients cache static files for the given time, by setting the Cache-Control and Expires
-     * headers on responses for them.
+     * headers on responses for them. The Expires date is at most a year ahead, as HTTP recommends.
      *
      * @param expireTimeSeconds how long, in seconds, clients may cache static files
      */
     public void setExpireTimeSeconds(long expireTimeSeconds) {
         updateCustomHeaders(headers -> {
             headers.put("Cache-Control", "private, max-age=" + expireTimeSeconds);
-            headers.put("Expires", new Date(System.currentTimeMillis() + (expireTimeSeconds * 1000)).toString());
+            var expires = Instant.now().plusSeconds(Math.min(expireTimeSeconds, MAX_EXPIRES_SECONDS));
+            headers.put("Expires", HTTP_DATE_FORMAT.format(expires));
         });
     }
 
