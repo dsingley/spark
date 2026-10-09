@@ -34,12 +34,13 @@ public interface EmbeddedServer {
      * and truststore.  If truststore is null, keystore is reused.
      *
      * @param host                    The address to listen on
-     * @param port                    - the port
+     * @param port                    - the port, or 0 to have the operating system choose a free one
      * @param sslStores               - The SSL sslStores.
      * @param maxThreads              - max nbr of threads.
      * @param minThreads              - min nbr of threads.
      * @param threadIdleTimeoutMillis - idle timeout (ms).
-     * @return The port number the server was launched on.
+     * @return The port number the server was launched on. If the given port was 0, this is the port that
+     *         was chosen, not 0.
      * @throws Exception if the server fails to start
      */
     // throws Exception is part of the public API; narrowing it would break existing implementations
@@ -68,12 +69,13 @@ public interface EmbeddedServer {
      * {@link SslContextFactory}
      *
      * @param host                    The address to listen on
-     * @param port                    - the port
+     * @param port                    - the port, or 0 to have the operating system choose a free one
      * @param sslContextFactory       - the SslContextFactory
      * @param maxThreads              - max nbr of threads.
      * @param minThreads              - min nbr of threads.
      * @param threadIdleTimeoutMillis - idle timeout (ms).
-     * @return The port number the server was launched on.
+     * @return The port number the server was launched on. If the given port was 0, this is the port that
+     *         was chosen, not 0.
      * @throws Exception if the server fails to start
      */
     // throws Exception is part of the public API; narrowing it would break existing implementations

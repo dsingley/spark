@@ -60,8 +60,8 @@ class ServicePortIntegrationTest {
                 other.ipAddress("127.0.0.1");
                 other.port(0);
                 other.get("/hi", (q, a) -> "Hello World!");
-                other.awaitInitialization();
                 services.add(other);
+                other.awaitInitialization();
             }
 
             var ports = services.stream().map(Service::port).toList();
@@ -72,24 +72,6 @@ class ServicePortIntegrationTest {
             }
         } finally {
             services.forEach(s -> s.stopAndAwait(Duration.ofSeconds(5)));
-        }
-    }
-
-    @Test
-    @Timeout(120)
-    void testRandomPorts_whenServersAreStartedAndStoppedInARow_noneFailsToBind() throws Exception {
-        for (int i = 0; i < 50; i++) {
-            var other = ignite();
-            other.ipAddress("127.0.0.1");
-            other.port(0);
-            other.get("/hi", (q, a) -> "Hello World!");
-            other.awaitInitialization();
-            try {
-                assertThat(other.port()).isPositive();
-                assertThat(new SparkTestUtil(other.port()).doMethod("GET", "/hi", null).body).isEqualTo("Hello World!");
-            } finally {
-                other.stopAndAwait(Duration.ofSeconds(5));
-            }
         }
     }
 

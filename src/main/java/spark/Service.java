@@ -184,7 +184,8 @@ public final class Service extends Routable {
      * Set the port that Spark should listen on. If not called, the default port
      * is 4567. This has to be called before any route mapping is done.
      * If provided port = 0, then the operating system chooses an available port when the server starts;
-     * {@link #port()} returns it once the server is initialized.
+     * {@link #port()} returns it once the server is initialized. If the server cannot bind, starting it
+     * fails, instead of falling back to port 4567 as Spark used to when it could not find a free port.
      *
      * @param port The port number
      * @return the object with port set
