@@ -17,19 +17,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -135,13 +135,15 @@ class StaticFilesConfigurationTest {
     }
 
     @Test
-    void noMethodIsSynchronized_soCallersCannotInterfereByLockingTheInstance() {
-        var synchronizedMethods = Arrays.stream(StaticFilesConfiguration.class.getDeclaredMethods())
-                .filter(method -> Modifier.isSynchronized(method.getModifiers()))
-                .map(Method::getName)
-                .toList();
+    void configureExternal_shouldOnlyMarkItSet_whenTheFolderWasConfigured(@TempDir Path tempDir) throws Exception {
+        var config = StaticFilesConfiguration.create();
+        var notAFolder = Files.createFile(tempDir.resolve("file.txt"));
 
-        assertThat(synchronizedMethods).isEmpty();
+        config.configureExternal(notAFolder.toString());
+        assertThat(config.isExternalStaticResourcesSet()).isFalse();
+
+        config.configureExternal(tempDir.toString());
+        assertThat(config.isExternalStaticResourcesSet()).isTrue();
     }
 
     @Test

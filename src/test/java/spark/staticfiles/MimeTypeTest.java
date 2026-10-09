@@ -1,6 +1,7 @@
 package spark.staticfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -11,6 +12,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 class MimeTypeTest {
+
+    @Test
+    void register_shouldRejectANullExtension() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> MimeType.register(null, "application/x-spark-test"))
+                .withMessage("'extension' must not be null");
+    }
+
+    @Test
+    void register_shouldRejectANullMimeType() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> MimeType.register("spark-test-null", null))
+                .withMessage("'mimeType' must not be null");
+    }
 
     @Test
     void register_shouldMapTheExtension() {
