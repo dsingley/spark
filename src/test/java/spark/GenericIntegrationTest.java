@@ -523,7 +523,9 @@ class GenericIntegrationTest {
             client.stop();
         }
 
-        var events = WebSocketTestHandler.events;
+        // Only this connection's events: another client, such as a browser tab on a local app that
+        // reconnects to port 4567, can also connect to the server while the test runs
+        var events = WebSocketTestHandler.eventsFor(websocket.getLocalPort());
         assertAll(
             () -> assertThat(events).hasSize(3),
             () -> assertThat(events.get(0)).isEqualTo("onConnect"),
