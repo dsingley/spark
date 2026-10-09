@@ -17,6 +17,7 @@
 package spark.embeddedserver.jetty;
 
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -29,8 +30,6 @@ import spark.embeddedserver.jetty.websocket.WebSocketCreatorFactory;
 import spark.embeddedserver.jetty.websocket.WebSocketHandlerWrapper;
 import spark.ssl.SslStores;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
@@ -40,7 +39,6 @@ import java.util.Optional;
  */
 public class EmbeddedJettyServer implements EmbeddedServer {
 
-    private static final int SPARK_DEFAULT_PORT = 4567;
     private static final String NAME = "Spark";
 
     private final JettyServerFactory serverFactory;
@@ -128,15 +126,6 @@ public class EmbeddedJettyServer implements EmbeddedServer {
                        int threadIdleTimeoutMillis) throws Exception {
         boolean hasCustomizedConnectors = false;
 
-        if (port == 0) {
-            try (var serverSocket = new ServerSocket(0)) {
-                port = serverSocket.getLocalPort();
-            } catch (IOException e) {
-                logger.error("Could not get first available port (port set to 0), using default: {}", SPARK_DEFAULT_PORT);
-                port = SPARK_DEFAULT_PORT;
-            }
-        }
-
         // Create instance of jetty server with either default or supplied queued thread pool
         if(threadPool == null) {
             server = serverFactory.create(maxThreads, minThreads, threadIdleTimeoutMillis);
@@ -166,13 +155,19 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         server.setHandler(handler);
 
         logger.info("== {} has ignited ...", NAME);
+
+        server.start();
+
+        // Port 0 is bound by the operating system when the server starts, so the port is only known now
+        if (port == 0) {
+            port = boundPort(server);
+        }
+
         if (hasCustomizedConnectors) {
             logger.info(">> Listening on Custom Server ports!");
         } else {
             logger.info(">> Listening on {}:{}", host, port);
         }
-
-        server.start();
 
         // The JettyWebSocketServerContainer is only created once the ServletContextHandler
         // inside JettyHandler actually starts (it's wired up via a ServletContainerInitializer),
@@ -187,6 +182,17 @@ public class EmbeddedJettyServer implements EmbeddedServer {
         }
 
         return port;
+    }
+
+    // The port of the first connector that listens on one, which is the one Spark created unless the
+    // application supplied its own connectors. 0 if there is none, as when a connector is not a network one.
+    private static int boundPort(Server server) {
+        for (var connector : server.getConnectors()) {
+            if (connector instanceof NetworkConnector networkConnector && networkConnector.getLocalPort() > 0) {
+                return networkConnector.getLocalPort();
+            }
+        }
+        return 0;
     }
 
     /**
