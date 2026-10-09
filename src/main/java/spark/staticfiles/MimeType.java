@@ -17,6 +17,7 @@
 package spark.staticfiles;
 
 import spark.resource.AbstractFileResolvingResource;
+import spark.utils.Assert;
 
 import java.util.Map;
 import java.util.Optional;
@@ -108,8 +109,11 @@ public class MimeType {
      *
      * @param extension the file extension, without a leading dot
      * @param mimeType  the MIME type to map it to
+     * @throws IllegalArgumentException if either argument is null
      */
     public static void register(String extension, String mimeType) {
+        Assert.notNull(extension, "'extension' must not be null");
+        Assert.notNull(mimeType, "'mimeType' must not be null");
         MAPPINGS.put(extension, mimeType);
     }
 
