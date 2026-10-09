@@ -187,9 +187,11 @@ public final class Service extends Routable {
      * {@link #port()} returns it once the server is initialized. If the server cannot bind, starting it
      * fails, instead of falling back to port 4567 as Spark used to when it could not find a free port.
      * <p>
-     * If the application supplies its own Jetty connectors, the port that {@link #port()} returns is only
-     * the port of the first of them when this is 0. For any other value it is the value given here, which
-     * is not necessarily a port that any of the application's connectors listens on.
+     * If the application supplies its own Jetty connectors, Spark does not open a connector of its own, so
+     * it never listens on a TCP port that the application did not ask for. The port that {@link #port()}
+     * returns is then only the port of the first of the application's connectors that listens on a TCP port,
+     * when this is 0, and 0 if none does, as with a Unix domain socket. For any other value it is the value
+     * given here, which is not necessarily a port that any of the application's connectors listens on.
      *
      * @param port The port number
      * @return the object with port set
