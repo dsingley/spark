@@ -192,6 +192,7 @@ public class EmbeddedJettyServer implements EmbeddedServer {
                 return networkConnector.getLocalPort();
             }
         }
+        logger.info(">> No connector listens on a TCP port, so the port is reported as 0");
         return 0;
     }
 
