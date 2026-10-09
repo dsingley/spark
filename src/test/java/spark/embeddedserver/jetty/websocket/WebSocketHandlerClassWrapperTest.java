@@ -47,6 +47,18 @@ class WebSocketHandlerClassWrapperTest {
                 .withMessageContaining("PrivateConstructorHandler");
     }
 
+    @Test
+    void shouldRejectAnAbstractClass_whenItIsWrapped() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new WebSocketHandlerClassWrapper(AbstractHandler.class))
+                .withMessageStartingWith("WebSocket handler class cannot be abstract: ")
+                .withMessageContaining("AbstractHandler");
+    }
+
+    @WebSocket
+    abstract static class AbstractHandler {
+    }
+
     @WebSocket
     static class Handler {
     }

@@ -21,12 +21,16 @@ import static java.util.Objects.requireNonNull;
 import org.eclipse.jetty.ee11.websocket.server.JettyServerUpgradeRequest;
 import org.eclipse.jetty.ee11.websocket.server.JettyServerUpgradeResponse;
 import org.eclipse.jetty.ee11.websocket.server.JettyWebSocketCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory class to create {@link JettyWebSocketCreator} implementations that
  * delegate to the given handler class.
  */
 public class WebSocketCreatorFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(WebSocketCreatorFactory.class);
 
     private WebSocketCreatorFactory() {
     }
@@ -53,7 +57,13 @@ public class WebSocketCreatorFactory {
 
         @Override
         public Object createWebSocket(JettyServerUpgradeRequest request, JettyServerUpgradeResponse response) {
-            return handlerWrapper.getHandler();
+            try {
+                return handlerWrapper.getHandler();
+            } catch (RuntimeException e) {
+                // Jetty would reject the upgrade without saying why, so say it here
+                LOG.error("Could not create the WebSocket handler for {}", request.getRequestURI(), e);
+                throw e;
+            }
         }
     }
 }

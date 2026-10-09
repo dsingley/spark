@@ -9,6 +9,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import spark.embeddedserver.jetty.websocket.WebSocketTestClient;
@@ -18,6 +19,7 @@ import java.net.URI;
 import java.util.IdentityHashMap;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -61,6 +63,14 @@ class WebSocketHandlerPerConnectionTest {
         }
     }
 
+    @BeforeEach
+    void resetRecordedConnections() {
+        CLASS_HANDLERS.clear();
+        INSTANCE_HANDLERS.clear();
+        CLASS_CONNECTIONS.set(0);
+        INSTANCE_CONNECTIONS.set(0);
+    }
+
     @Test
     void aHandlerClass_getsANewInstanceForEachConnection() throws Exception {
         connectAndClose("/class");
@@ -88,8 +98,11 @@ class WebSocketHandlerPerConnectionTest {
         var websocket = new WebSocketTestClient();
         try {
             client.start();
-            client.connect(websocket, URI.create("ws://127.0.0.1:" + PORT + path));
-            websocket.awaitClose(30, TimeUnit.SECONDS);
+            client.connect(websocket, URI.create("ws://127.0.0.1:" + PORT + path)).get(10, TimeUnit.SECONDS);
+            // The server has opened the connection by the time the close handshake finishes
+            if (!websocket.awaitClose(10, TimeUnit.SECONDS)) {
+                throw new TimeoutException("Connection to " + path + " was not closed");
+            }
         } finally {
             client.stop();
         }
