@@ -186,6 +186,10 @@ public final class Service extends Routable {
      * If provided port = 0, then the operating system chooses an available port when the server starts;
      * {@link #port()} returns it once the server is initialized. If the server cannot bind, starting it
      * fails, instead of falling back to port 4567 as Spark used to when it could not find a free port.
+     * <p>
+     * If the application supplies its own Jetty connectors, the port that {@link #port()} returns is only
+     * the port of the first of them when this is 0. For any other value it is the value given here, which
+     * is not necessarily a port that any of the application's connectors listens on.
      *
      * @param port The port number
      * @return the object with port set
@@ -202,9 +206,12 @@ public final class Service extends Routable {
 
     /**
      * Retrieves the port that Spark is listening on.
+     * <p>
+     * If the port was set to 0, call {@link #awaitInitialization()} first. The operating system chooses
+     * the port when the server starts, so until then this returns 0 instead of the port.
      *
      * @return The port Spark server is listening on.
-     * @throws IllegalStateException when the server is not started
+     * @throws IllegalStateException when route mapping has not begun, so the server has not been started
      */
     public int port() {
         synchronized (lock) {

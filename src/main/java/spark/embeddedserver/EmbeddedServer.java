@@ -40,7 +40,7 @@ public interface EmbeddedServer {
      * @param minThreads              - min nbr of threads.
      * @param threadIdleTimeoutMillis - idle timeout (ms).
      * @return The port number the server was launched on. If the given port was 0, this is the port that
-     *         was chosen, not 0.
+     *         was chosen, not 0. If the application supplied its own connectors, this is only done for port 0.
      * @throws Exception if the server fails to start
      */
     // throws Exception is part of the public API; narrowing it would break existing implementations
@@ -75,7 +75,7 @@ public interface EmbeddedServer {
      * @param minThreads              - min nbr of threads.
      * @param threadIdleTimeoutMillis - idle timeout (ms).
      * @return The port number the server was launched on. If the given port was 0, this is the port that
-     *         was chosen, not 0.
+     *         was chosen, not 0. If the application supplied its own connectors, this is only done for port 0.
      * @throws Exception if the server fails to start
      */
     // throws Exception is part of the public API; narrowing it would break existing implementations
