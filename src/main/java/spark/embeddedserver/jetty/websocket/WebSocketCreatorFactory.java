@@ -32,31 +32,28 @@ public class WebSocketCreatorFactory {
     }
 
     /**
-     * Creates a {@link JettyWebSocketCreator} that uses the given handler class/instance for
-     * the WebSocket connections.
+     * Creates a {@link JettyWebSocketCreator} that gets the handler for each WebSocket connection from the
+     * given wrapper: a new instance of the handler class for every connection, or the one handler instance
+     * for all of them, depending on what the wrapper wraps.
      *
      * @param handlerWrapper The wrapped handler to use to manage WebSocket connections.
      * @return The JettyWebSocketCreator.
      */
     public static JettyWebSocketCreator create(WebSocketHandlerWrapper handlerWrapper) {
-        return new SparkWebSocketCreator(handlerWrapper.getHandler());
+        return new SparkWebSocketCreator(handlerWrapper);
     }
 
     // Package protected to be visible to the unit tests
     static class SparkWebSocketCreator implements JettyWebSocketCreator {
-        private final Object handler;
+        private final WebSocketHandlerWrapper handlerWrapper;
 
-        private SparkWebSocketCreator(Object handler) {
-            this.handler = requireNonNull(handler, "handler cannot be null");
+        private SparkWebSocketCreator(WebSocketHandlerWrapper handlerWrapper) {
+            this.handlerWrapper = requireNonNull(handlerWrapper, "handlerWrapper cannot be null");
         }
 
         @Override
         public Object createWebSocket(JettyServerUpgradeRequest request, JettyServerUpgradeResponse response) {
-            return handler;
-        }
-
-        Object getHandler() {
-            return handler;
+            return handlerWrapper.getHandler();
         }
     }
 }
