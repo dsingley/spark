@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,12 +23,15 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
@@ -218,6 +222,47 @@ class StaticFilesConfigurationTest {
                 () -> assertThat(failures).isEmpty(),
                 () -> assertThat(served).hasPositiveValue()
         );
+    }
+
+    @Test
+    @Timeout(value = 60, unit = TimeUnit.SECONDS)
+    void putCustomHeader_shouldNotLoseHeaders_whenCalledFromSeveralThreadsAtOnce() throws Exception {
+        var config = StaticFilesConfiguration.create();
+        config.configure("/public");
+        var threads = 8;
+        var perThread = 250;
+        var start = new CountDownLatch(1);
+        var executor = Executors.newFixedThreadPool(threads);
+
+        try {
+            var futures = new ArrayList<Future<?>>();
+            for (var thread = 0; thread < threads; thread++) {
+                var threadNumber = thread;
+                futures.add(executor.submit(() -> {
+                    awaitStart(start);
+                    for (var i = 0; i < perThread; i++) {
+                        config.putCustomHeader("X-T" + threadNumber + "-" + i, "value");
+                    }
+                }));
+            }
+            start.countDown();
+            for (var future : futures) {
+                future.get(50, TimeUnit.SECONDS);
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+
+        var headerNames = ConcurrentHashMap.<String>newKeySet();
+        var response = response();
+        doAnswer(invocation -> headerNames.add(invocation.getArgument(0)))
+                .when(response).setHeader(anyString(), anyString());
+
+        config.consume(request(), response);
+
+        assertThat(headerNames.stream().filter(name -> name.startsWith("X-T")).count())
+                .describedAs("headers that were kept")
+                .isEqualTo((long) threads * perThread);
     }
 
     private static void awaitStart(CountDownLatch start) {

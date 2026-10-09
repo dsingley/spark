@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
@@ -55,7 +56,7 @@ public class StaticFilesConfiguration {
     // so the handlers are in a list that is safe to iterate while it changes, and the headers are an
     // immutable map that is replaced as a whole, which also makes changing several of them atomic.
     private final List<AbstractResourceHandler> staticResourceHandlers = new CopyOnWriteArrayList<>();
-    private volatile Map<String, String> customHeaders = Map.of();
+    private final AtomicReference<Map<String, String>> customHeaders = new AtomicReference<>(Map.of());
 
     private volatile boolean staticResourcesSet = false;
     private volatile boolean externalStaticResourcesSet = false;
@@ -104,7 +105,7 @@ public class StaticFilesConfiguration {
                 if (MimeType.shouldGuess()) {
                     httpResponse.setHeader(MimeType.CONTENT_TYPE, MimeType.fromResource(resource));
                 }
-                customHeaders.forEach(httpResponse::setHeader); //add all user-defined headers to response
+                customHeaders.get().forEach(httpResponse::setHeader); //add all user-defined headers to response
 
                 try (var inputStream = resource.getInputStream();
                      var wrappedOutputStream = GzipUtils.checkAndWrap(httpRequest, httpResponse, false)) {
@@ -230,13 +231,15 @@ public class StaticFilesConfiguration {
 
     /**
      * Applies a change to a copy of the custom headers and then makes the copy the current headers, so
-     * that requests being served see either all of the change or none of it.
+     * that requests being served see either all of the change or none of it. If another thread changes
+     * the headers at the same time, the change is applied again to the newer headers, so no update is
+     * lost; this is why the change must only modify the map it is given.
      */
     private void updateCustomHeaders(Consumer<Map<String, String>> change) {
-        synchronized (lock) {
-            var copy = new HashMap<>(customHeaders);
+        customHeaders.updateAndGet(current -> {
+            var copy = new HashMap<>(current);
             change.accept(copy);
-            customHeaders = Collections.unmodifiableMap(copy);
-        }
+            return Collections.unmodifiableMap(copy);
+        });
     }
 }
