@@ -1,7 +1,12 @@
 package spark.embeddedserver.jetty;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import org.eclipse.jetty.server.LocalConnector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -91,6 +96,65 @@ class EmbeddedJettyServerTest {
         // The WebSocketUpgradeFilter and its container are always installed (see JettyHandler),
         // regardless of whether the application registered any WebSocket routes.
         assertThat(handler.getWebSocketContainer()).isNotNull();
+    }
+
+    @Test
+    void testIgnite_whenPortIsZero_thenReturnsThePortTheOperatingSystemChose() throws Exception {
+        embeddedJettyServer = new EmbeddedJettyServer(new JettyServer(), newJettyHandler());
+
+        int port = embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
+
+        assertThat(port).isPositive();
+    }
+
+    @Test
+    void testIgnite_whenPortIsZeroAndConnectorsAreCustomized_thenReturnsThePortOfTheCustomConnector() throws Exception {
+        var customServer = new Server();
+        var customConnector = new ServerConnector(customServer);
+        customConnector.setHost("localhost");
+        customServer.addConnector(customConnector);
+        var factory = new JettyServerFactory() {
+            @Override
+            public Server create(int maxThreads, int minThreads, int threadTimeoutMillis) {
+                return customServer;
+            }
+
+            @Override
+            public Server create(ThreadPool threadPool) {
+                return customServer;
+            }
+        };
+        embeddedJettyServer = new EmbeddedJettyServer(factory, newJettyHandler());
+
+        int port = embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
+
+        assertThat(port).isPositive().isEqualTo(customConnector.getLocalPort());
+    }
+
+    @Test
+    void testIgnite_whenPortIsZeroAndNoConnectorListensOnATcpPort_thenReturnsZeroAndKeepsOnlyTheCustomConnector() throws Exception {
+        // A LocalConnector, like one for a Unix domain socket, has no TCP port
+        var customServer = new Server();
+        customServer.addConnector(new LocalConnector(customServer));
+        var factory = new JettyServerFactory() {
+            @Override
+            public Server create(int maxThreads, int minThreads, int threadTimeoutMillis) {
+                return customServer;
+            }
+
+            @Override
+            public Server create(ThreadPool threadPool) {
+                return customServer;
+            }
+        };
+        embeddedJettyServer = new EmbeddedJettyServer(factory, newJettyHandler());
+
+        int port = embeddedJettyServer.ignite("localhost", 0, (SslStores) null, 100, 10, 10000);
+
+        assertAll(
+                () -> assertThat(port).isZero(),
+                () -> assertThat(customServer.getConnectors()).hasSize(1).allMatch(c -> c instanceof LocalConnector)
+        );
     }
 
     private static JettyHandler newJettyHandler() {

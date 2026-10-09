@@ -128,8 +128,9 @@ new SparkServerExtension(https -> {
 });
 ```
 
-Spark listens on port 4567 by default. Choose a fixed port that is free on your machines; random
-ports (`port(0)`) are not reliable yet, see [#283](https://github.com/dsingley/spark/issues/283).
+Spark listens on port 4567 by default. Use a fixed port that is free on your machines, or `port(0)`
+to let the operating system choose a free one when the server starts. Read the port that was chosen
+with `extension.port()`, or `service.port()` in the initializer.
 
 ## Coming from sparkjava-testing
 
