@@ -93,18 +93,17 @@ class WebSocketHandlerPerConnectionTest {
         );
     }
 
+    // WebSocketTestClient sends a message as soon as it connects and then closes the connection itself,
+    // so waiting for the close waits for the whole exchange to finish
     private static void connectAndClose(String path) throws Exception {
-        var client = new WebSocketClient();
-        var websocket = new WebSocketTestClient();
-        try {
+        try (var client = new WebSocketClient()) {
+            var websocket = new WebSocketTestClient();
             client.start();
             client.connect(websocket, URI.create("ws://127.0.0.1:" + PORT + path)).get(10, TimeUnit.SECONDS);
             // The server has opened the connection by the time the close handshake finishes
             if (!websocket.awaitClose(10, TimeUnit.SECONDS)) {
                 throw new TimeoutException("Connection to " + path + " was not closed");
             }
-        } finally {
-            client.stop();
         }
     }
 }
