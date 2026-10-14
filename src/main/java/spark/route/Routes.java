@@ -220,7 +220,6 @@ public class Routes {
         return matchSet;
     }
 
-    // TODO: I believe this feature has impacted performance. Optimization?
     private RouteEntry findTargetWithGivenAcceptType(List<RouteEntry> routeMatches, String acceptType) {
         if (acceptType != null && !routeMatches.isEmpty()) {
             var acceptedMimeTypes = getAcceptedMimeTypes(routeMatches);
