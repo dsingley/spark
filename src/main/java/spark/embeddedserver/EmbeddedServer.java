@@ -64,7 +64,7 @@ public interface EmbeddedServer {
      * @param trust true to trust commonly-used reverse-proxy headers
      */
     default void trustForwardHeaders(boolean trust) {
-
+        // intentionally empty: an implementation that does not support this setting ignores it
     }
 
     /**
