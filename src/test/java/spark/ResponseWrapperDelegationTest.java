@@ -13,7 +13,6 @@ class ResponseWrapperDelegationTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-
         http.get("/204", (q, a) -> {
             a.status(204);
             return "";

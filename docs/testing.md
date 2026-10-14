@@ -111,7 +111,7 @@ initializes the server.
 
 Before your lambda runs, the extension sets the server to listen on `127.0.0.1` on a port chosen by the
 operating system, so tests never collide on a port and the server is not reachable from other machines.
-Read the port that was chosen with `extension.port()`, or `service.port()` in the lambda. To override
+Read the port that was chosen with `extension.port()` (or `starter.port()` when injected) once the server has started; it is not known inside the lambda. To override
 either setting, call `ipAddress` or `port` first thing in the lambda, before the first route:
 
 ```java
@@ -143,7 +143,7 @@ This is the same extension as the one in the archived
   nested class. Injection works as before, except that `runSpark` takes a `ServiceInitializer`, which
   may throw, so lifecycle methods that call it may need `throws Exception`.
 - The server now listens on `127.0.0.1` on a port chosen by the operating system, instead of Spark's
-  default of port 4567 on all addresses. Use `port()` to find out which, or call `ipAddress` and `port`
-  in the lambda to restore a fixed address.
+  default of port 4567 on all addresses. Use `port()` to find out which, or call `ipAddress("0.0.0.0")`
+  and `port(4567)` in the lambda to restore the old behavior.
 - The JUnit 4 `SparkServerRule` and its `ServiceInitializer` map to registering `SparkServerExtension`
   with `@RegisterExtension`: a static field replaces `@ClassRule`, and an instance field replaces `@Rule`.

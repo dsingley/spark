@@ -46,7 +46,6 @@ class DisableMimeGuessingTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-
         http.staticFiles.location("/public");
         http.staticFiles.externalLocation(System.getProperty("java.io.tmpdir"));
         http.staticFiles.disableMimeTypeGuessing();

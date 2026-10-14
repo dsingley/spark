@@ -26,7 +26,6 @@ class BodyAvailabilityTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-
         http.before("/hello", (req, res) -> {
             LOG.debug("before-req.body() = {}", req.body());
             beforeBody = req.body();

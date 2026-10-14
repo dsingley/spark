@@ -46,6 +46,9 @@ import java.util.Objects;
  * An extension created with an initializer does not inject {@link SparkStarter} parameters.
  *
  * <h2>Injected with {@code @ExtendWith}</h2>
+ * The server gets the same defaults as the registered form: the loopback address and a port chosen by
+ * the operating system, available from {@link SparkStarter#port()}.
+ * <p>
  * Annotate the test class with {@code @ExtendWith(SparkServerExtension.class)} and declare a
  * {@link SparkStarter} parameter on a lifecycle or test method. Call
  * {@link SparkStarter#runSpark(ServiceInitializer)} to start the server. Where the parameter is
@@ -94,7 +97,7 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
          * If the initializer throws, the service that was ignited is still stopped when this
          * instance is closed.
          *
-         * @param initializer configures the service, e.g. sets the port and defines routes
+         * @param initializer defines the routes and any configuration that differs from the defaults
          * @return this instance
          * @throws IllegalStateException if this instance already started a service, or the
          *                               initializer did not define any routes
@@ -181,7 +184,7 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
      * {@code @RegisterExtension}, on a static field for one server per class or an instance field for
      * one server per test.
      *
-     * @param initializer configures the service, e.g. sets the port and defines routes
+     * @param initializer defines the routes and any configuration that differs from the defaults
      */
     public SparkServerExtension(ServiceInitializer initializer) {
         this.initializer = Objects.requireNonNull(initializer, "initializer must not be null");

@@ -20,7 +20,6 @@ class CustomErrorPagesTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-
         http.get("/hello", (q, a) -> HELLO_WORLD);
 
         http.get("/raiseinternal", (q, a) -> {
