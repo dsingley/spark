@@ -54,14 +54,17 @@ public interface EmbeddedServer {
 
 
     /**
-     * Must be called before ignite()
+     * Sets whether to trust commonly-used reverse-proxy headers. Must be called before ignite().
      * <p>
-     * Must be its own default method to maintain backwards compatibility. Move to ignite method in 3.0.
+     * This is a separate method, not a parameter of ignite(), so that adding it did not break existing
+     * implementations. It does nothing by default, so an implementation that does not override it ignores
+     * the setting. Spark calls it with {@code true}, unless the application asked otherwise with
+     * {@link spark.Service#untrustForwardHeaders()}, before every call to ignite().
      *
      * @param trust true to trust commonly-used reverse-proxy headers
      */
     default void trustForwardHeaders(boolean trust) {
-
+        // intentionally empty: an implementation that does not support this setting ignores it
     }
 
     /**
