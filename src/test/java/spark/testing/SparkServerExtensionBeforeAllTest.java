@@ -6,17 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import spark.Service;
 import spark.testing.SparkServerExtension.SparkStarter;
 import spark.util.SparkTestUtil;
 
 @ExtendWith(SparkServerExtension.class)
 class SparkServerExtensionBeforeAllTest {
 
+    private static SparkStarter running;
+
     @BeforeAll
     static void startServer(SparkStarter starter) throws Exception {
-        starter.runSpark(http -> {
-            http.ipAddress("127.0.0.1");
+        running = starter.runSpark(http -> {
             http.get("/ping", (request, response) -> "pong");
             http.get("/health", (request, response) -> "healthy");
         });
@@ -24,7 +24,7 @@ class SparkServerExtensionBeforeAllTest {
 
     @Test
     void shouldHandlePingRequest() throws Exception {
-        var response = new SparkTestUtil(Service.SPARK_DEFAULT_PORT).get("/ping");
+        var response = new SparkTestUtil(running.port()).get("/ping");
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
@@ -34,7 +34,7 @@ class SparkServerExtensionBeforeAllTest {
 
     @Test
     void shouldHandleHealthRequest() throws Exception {
-        var response = new SparkTestUtil(Service.SPARK_DEFAULT_PORT).get("/health");
+        var response = new SparkTestUtil(running.port()).get("/health");
 
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),

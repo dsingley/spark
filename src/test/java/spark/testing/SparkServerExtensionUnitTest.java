@@ -1,6 +1,7 @@
 package spark.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -15,9 +16,16 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import spark.Service;
 import spark.testing.SparkServerExtension.SparkStarter;
+import spark.util.SparkTestUtil;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.Socket;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
 class SparkServerExtensionUnitTest {
@@ -89,6 +97,59 @@ class SparkServerExtensionUnitTest {
                         .describedAs("close() should not return until the service has stopped")
                         .isTrue()
         );
+    }
+
+    @Test
+    void shouldListenOnAnOperatingSystemChosenPort_WhenInitializerDoesNotSetIt() throws Exception {
+        try (var starter = new SparkStarter().runSpark(http -> http.get("/ping", (request, response) -> "pong"))) {
+            var response = new SparkTestUtil(starter.port()).get("/ping");
+
+            assertAll(
+                    () -> assertThat(starter.port()).isNotIn(0, Service.SPARK_DEFAULT_PORT),
+                    () -> assertThat(response.status).isEqualTo(200),
+                    () -> assertThat(response.body).isEqualTo("pong")
+            );
+        }
+    }
+
+    @Test
+    void shouldNotBeReachableOnNonLoopbackAddress_UnlessInitializerSetsIpAddress() throws Exception {
+        var address = nonLoopbackAddress();
+        assumeThat(address).describedAs("a non-loopback IPv4 address on this machine").isNotNull();
+
+        try (var loopbackOnly = new SparkStarter().runSpark(http -> http.get("/ping", (request, response) -> "pong"));
+             var allAddresses = new SparkStarter().runSpark(http -> {
+                 http.ipAddress("0.0.0.0");
+                 http.get("/ping", (request, response) -> "pong");
+             })) {
+            assertAll(
+                    () -> assertThat(canConnect(address, loopbackOnly.port())).isFalse(),
+                    () -> assertThat(canConnect(address, allAddresses.port())).isTrue()
+            );
+        }
+    }
+
+    private static InetAddress nonLoopbackAddress() throws IOException {
+        for (var networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+            if (!networkInterface.isUp()) {
+                continue;
+            }
+            for (var address : Collections.list(networkInterface.getInetAddresses())) {
+                if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
+                    return address;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static boolean canConnect(InetAddress address, int port) {
+        try (var socket = new Socket()) {
+            socket.connect(new InetSocketAddress(address, port), 2000);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @Test

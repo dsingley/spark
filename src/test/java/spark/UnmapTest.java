@@ -13,8 +13,6 @@ class UnmapTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-        http.ipAddress("127.0.0.1");
-        http.port(0);
         http.get("/tobeunmapped", (q, a) -> "tobeunmapped");
     });
 

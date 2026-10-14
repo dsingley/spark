@@ -30,9 +30,6 @@ class MultipleFiltersTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-        http.ipAddress("127.0.0.1");
-        http.port(0);
-
         // Spark's static before and after methods accept several filters; a Service takes them one at a time
         http.before("/user", INITIALIZE_COUNTER);
         http.before("/user", INCREMENT_COUNTER);

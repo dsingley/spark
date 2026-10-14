@@ -23,7 +23,9 @@ import java.util.Objects;
  * There are two ways to use it.
  *
  * <h2>Registered with {@code @RegisterExtension}</h2>
- * Create the extension with a {@link ServiceInitializer} that configures the server. A static field
+ * Create the extension with a {@link ServiceInitializer} that configures the server. The server
+ * listens on the loopback address on a port chosen by the operating system unless the initializer
+ * says otherwise; get the port from {@link #port()}. A static field
  * starts one server for all the tests in the class, before any {@code @BeforeAll} method of the test
  * class runs; an instance field starts a new server for each test, before any {@code @BeforeEach}
  * method of the test class runs:
@@ -32,7 +34,6 @@ import java.util.Objects;
  *
  *     {@literal @}RegisterExtension
  *     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
- *         http.port(56789);
  *         http.get("/ping", (request, response) -> "pong");
  *     });
  *
@@ -45,6 +46,9 @@ import java.util.Objects;
  * An extension created with an initializer does not inject {@link SparkStarter} parameters.
  *
  * <h2>Injected with {@code @ExtendWith}</h2>
+ * The server gets the same defaults as the registered form: the loopback address and a port chosen by
+ * the operating system, available from {@link SparkStarter#port()}.
+ * <p>
  * Annotate the test class with {@code @ExtendWith(SparkServerExtension.class)} and declare a
  * {@link SparkStarter} parameter on a lifecycle or test method. Call
  * {@link SparkStarter#runSpark(ServiceInitializer)} to start the server. Where the parameter is
@@ -57,7 +61,6 @@ import java.util.Objects;
  *     {@literal @}BeforeAll
  *     static void startServer(SparkStarter starter) throws Exception {
  *         starter.runSpark(http -> {
- *             http.port(56789);
  *             http.get("/ping", (request, response) -> "pong");
  *         });
  *     }
@@ -83,13 +86,18 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
          * Ignites a new {@link Service}, passes it to the given initializer so that it can be
          * configured, and then blocks until the service has been initialized.
          * <p>
+         * Before the initializer runs, the service is set to listen on the loopback address
+         * ({@code 127.0.0.1}) on a port chosen by the operating system, so tests do not collide on a
+         * port and the server is not reachable from other machines. The initializer can override
+         * either setting, and the chosen port is available from {@link #port()}.
+         * <p>
          * The initializer must define at least one route, because a service is only initialized once
          * its first route is defined. Otherwise this method fails with an {@link IllegalStateException}.
          * <p>
          * If the initializer throws, the service that was ignited is still stopped when this
          * instance is closed.
          *
-         * @param initializer configures the service, e.g. sets the port and defines routes
+         * @param initializer defines the routes and any configuration that differs from the defaults
          * @return this instance
          * @throws IllegalStateException if this instance already started a service, or the
          *                               initializer did not define any routes
@@ -102,6 +110,8 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
 
             var newService = Service.ignite();
             service = newService;
+            newService.ipAddress(DEFAULT_IP_ADDRESS);
+            newService.port(0);
             initializer.init(newService);
             newService.awaitInitialization();
             return this;
@@ -153,6 +163,8 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
     // Normally the server stops in a few milliseconds; this only bounds a shutdown that is stuck
     private static final Duration STOP_TIMEOUT = Duration.ofSeconds(5);
 
+    private static final String DEFAULT_IP_ADDRESS = "127.0.0.1";
+
     private static final Namespace NAMESPACE = create(SparkServerExtension.class);
 
     private final ServiceInitializer initializer;
@@ -172,7 +184,7 @@ public class SparkServerExtension implements ParameterResolver, BeforeAllCallbac
      * {@code @RegisterExtension}, on a static field for one server per class or an instance field for
      * one server per test.
      *
-     * @param initializer configures the service, e.g. sets the port and defines routes
+     * @param initializer defines the routes and any configuration that differs from the defaults
      */
     public SparkServerExtension(ServiceInitializer initializer) {
         this.initializer = Objects.requireNonNull(initializer, "initializer must not be null");
