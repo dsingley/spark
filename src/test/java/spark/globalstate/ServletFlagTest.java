@@ -2,19 +2,22 @@ package spark.globalstate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kiwiproject.reflect.KiwiReflection;
-import org.kiwiproject.reflect.RuntimeReflectionException;
-
-import java.lang.reflect.Field;
-import java.util.concurrent.atomic.AtomicBoolean;
+import spark.util.ServletStateReset;
 
 class ServletFlagTest {
 
     @BeforeEach
     void setUp() {
-        resetIsRunningFromServlet();
+        ServletStateReset.resetRunningFromServletFlag();
+    }
+
+    @AfterEach
+    void tearDown() {
+        // do not leave the flag set for the test classes that run after this one in the same JVM
+        ServletStateReset.resetRunningFromServletFlag();
     }
 
     @Test
@@ -26,20 +29,5 @@ class ServletFlagTest {
     void testIsRunningFromServlet_whenRunningFromServlet() {
         ServletFlag.runFromServlet();
         assertThat(ServletFlag.isRunningFromServlet()).isTrue();
-    }
-
-    private static void resetIsRunningFromServlet() {
-        var field = getIsRunningFromServletField();
-        field.setAccessible(true);
-        var fieldValue = KiwiReflection.getTypedFieldValue(null, field, AtomicBoolean.class);
-        fieldValue.set(false);
-    }
-
-    private static Field getIsRunningFromServletField() {
-        try {
-            return ServletFlag.class.getDeclaredField("isRunningFromServlet");
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeReflectionException(e);
-        }
     }
 }

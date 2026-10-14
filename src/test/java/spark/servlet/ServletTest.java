@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.util.ServletStateReset;
 import spark.util.SparkStopExtension;
 import spark.util.SparkTestUtil;
 
@@ -23,6 +24,8 @@ import spark.util.SparkTestUtil;
  * points it at {@link MyApp} (via the applicationClass init-param) as the application whose
  * routes it should serve.
  */
+// ServletStateReset is first so that its after-all callback runs last, after Spark has been stopped
+@ExtendWith(ServletStateReset.class)
 @ExtendWith(SparkStopExtension.class)
 class ServletTest {
 
