@@ -53,10 +53,6 @@ class BodyAvailabilityTest {
         LOG.debug("setup()");
 
         testUtil = new SparkTestUtil(SPARK.port());
-
-        beforeBody = null;
-        routeBody = null;
-        afterBody = null;
     }
 
     @AfterAll

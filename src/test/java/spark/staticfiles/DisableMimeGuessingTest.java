@@ -78,15 +78,17 @@ class DisableMimeGuessingTest {
 
     @AfterAll
     static void afterAll() throws Exception {
-        // disabling MIME type guessing is JVM-wide and cannot be undone through Spark, so undo it here for
-        // the test classes that run after this one in the same JVM
-        var guessingOn = MimeType.class.getDeclaredField("guessingOn");
-        guessingOn.setAccessible(true);
-        guessingOn.setBoolean(null, true);
-
-        if (tmpExternalFile != null) {
-            LOG.debug("tearDown().deleting: {}", tmpExternalFile);
-            tmpExternalFile.delete();
+        try {
+            if (tmpExternalFile != null) {
+                LOG.debug("tearDown().deleting: {}", tmpExternalFile);
+                tmpExternalFile.delete();
+            }
+        } finally {
+            // disabling MIME type guessing is JVM-wide and cannot be undone through Spark, so undo it here for
+            // the test classes that run after this one in the same JVM
+            var guessingOn = MimeType.class.getDeclaredField("guessingOn");
+            guessingOn.setAccessible(true);
+            guessingOn.setBoolean(null, true);
         }
     }
 

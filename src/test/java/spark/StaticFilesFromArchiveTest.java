@@ -65,6 +65,7 @@ class StaticFilesFromArchiveTest {
             }
         } finally {
             Thread.currentThread().setContextClassLoader(initialClassLoader);
+            ((URLClassLoader) classLoader).close();
         }
     }
 
