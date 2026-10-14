@@ -18,7 +18,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * clears it, so without a reset every later test class in the same JVM behaves as if it were running in
  * a servlet container. It is meant for test classes that deploy the filter.
  * <p>
- * Register it with {@code @ExtendWith(ServletStateReset.class)}. This is test-only code on purpose: a
+ * It cannot undo everything. The static {@code Spark} facade creates its {@code Service} the first time it
+ * is used, and a {@code Service} created while the flag is set keeps the servlet static files configuration
+ * for good. A test class whose application uses the static {@code Spark} methods in servlet mode, like
+ * {@code ServletTest}, can therefore still leave that singleton behind, so it should run in its own fork.
+ * <p>
+ * Register it first, before any extension that stops Spark, because JUnit runs after-all callbacks in
+ * reverse order and the reset should come last: {@code @ExtendWith(ServletStateReset.class)}. This is test-only code on purpose: a
  * public way to reset the servlet flag in {@code spark-core} could be called by an application running in
  * a servlet container, after which Spark would start an embedded server inside it.
  */
@@ -39,10 +45,14 @@ public class ServletStateReset implements BeforeAllCallback, AfterAllCallback {
      * running from a servlet container.
      */
     public static void reset() {
-        ServletRoutes.get().clear();
-        StaticFilesConfiguration.servletInstance.clear();
-        ExceptionMapper.getServletInstance().clear();
-        resetRunningFromServletFlag();
+        try {
+            ServletRoutes.get().clear();
+            StaticFilesConfiguration.servletInstance.clear();
+            ExceptionMapper.getServletInstance().clear();
+        } finally {
+            // the flag does the most harm if it is left set, so it is reset even if clearing fails
+            resetRunningFromServletFlag();
+        }
     }
 
     /**

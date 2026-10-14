@@ -24,8 +24,9 @@ import spark.util.SparkTestUtil;
  * points it at {@link MyApp} (via the applicationClass init-param) as the application whose
  * routes it should serve.
  */
-@ExtendWith(SparkStopExtension.class)
+// ServletStateReset is first so that its after-all callback runs last, after Spark has been stopped
 @ExtendWith(ServletStateReset.class)
+@ExtendWith(SparkStopExtension.class)
 class ServletTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServletTest.class);
