@@ -12,8 +12,6 @@ class FilterTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-        http.ipAddress("127.0.0.1");
-        http.port(0);
         http.before("/justfilter", (q, a) -> System.out.println("Filter matched"));
     });
 

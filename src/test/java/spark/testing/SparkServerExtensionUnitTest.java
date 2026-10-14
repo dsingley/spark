@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import spark.Service;
+import spark.util.SparkTestUtil;
 import spark.testing.SparkServerExtension.SparkStarter;
 
 import java.io.IOException;
@@ -89,6 +90,19 @@ class SparkServerExtensionUnitTest {
                         .describedAs("close() should not return until the service has stopped")
                         .isTrue()
         );
+    }
+
+    @Test
+    void shouldListenOnAnOperatingSystemChosenPortOnLoopback_WhenInitializerDoesNotSetThem() throws Exception {
+        try (var starter = new SparkStarter().runSpark(http -> http.get("/ping", (request, response) -> "pong"))) {
+            var response = new SparkTestUtil(starter.port()).get("/ping");
+
+            assertAll(
+                    () -> assertThat(starter.port()).isNotIn(0, Service.SPARK_DEFAULT_PORT),
+                    () -> assertThat(response.status).isEqualTo(200),
+                    () -> assertThat(response.body).isEqualTo("pong")
+            );
+        }
     }
 
     @Test

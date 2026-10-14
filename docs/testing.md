@@ -38,7 +38,7 @@ class RegisteredPingTest {
 
     @Test
     void shouldRespondToPing() throws Exception {
-        var uri = URI.create("http://localhost:" + SPARK.port() + "/ping");
+        var uri = URI.create("http://127.0.0.1:" + SPARK.port() + "/ping");
         var request = HttpRequest.newBuilder(uri).build();
 
         var response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
@@ -106,12 +106,16 @@ also inject `SparkStarter` parameters.
 ## Configuring the server
 
 The lambda is a `ServiceInitializer`, which receives the `Service` and may throw checked exceptions.
-Use the usual configuration methods. The port and address must be set before the first route, and the
-lambda must define at least one route, because that is what initializes the server:
+Use the usual configuration methods. The lambda must define at least one route, because that is what
+initializes the server.
+
+Before your lambda runs, the extension sets the server to listen on `127.0.0.1` on a port chosen by the
+operating system, so tests never collide on a port and the server is not reachable from other machines.
+Read the port that was chosen with `extension.port()`, or `service.port()` in the lambda. To override
+either setting, call `ipAddress` or `port` first thing in the lambda, before the first route:
 
 ```java
 new SparkServerExtension(http -> {
-    http.ipAddress("127.0.0.1");
     http.port(9876);
     http.get("/ping", (request, response) -> "pong");
 });
@@ -121,16 +125,12 @@ To serve HTTPS, configure a keystore (your client then has to trust its certific
 
 ```java
 new SparkServerExtension(https -> {
-    https.ipAddress("127.0.0.1");
-    https.port(9876);
     https.secure(keystorePath, keystorePassword, null, null);
     https.get("/ping", (request, response) -> "pong");
 });
 ```
 
-Spark listens on port 4567 by default. Use a fixed port that is free on your machines, or `port(0)`
-to let the operating system choose a free one when the server starts. Read the port that was chosen
-with `extension.port()`, or `service.port()` in the initializer.
+A fixed port is only worth setting when something outside the test needs to know it in advance.
 
 ## Coming from sparkjava-testing
 
@@ -142,5 +142,8 @@ This is the same extension as the one in the archived
 - `JavaSparkRunnerExtension` is now `spark.testing.SparkServerExtension`, and `SparkStarter` is still its
   nested class. Injection works as before, except that `runSpark` takes a `ServiceInitializer`, which
   may throw, so lifecycle methods that call it may need `throws Exception`.
+- The server now listens on `127.0.0.1` on a port chosen by the operating system, instead of Spark's
+  default of port 4567 on all addresses. Use `port()` to find out which, or call `ipAddress` and `port`
+  in the lambda to restore a fixed address.
 - The JUnit 4 `SparkServerRule` and its `ServiceInitializer` map to registering `SparkServerExtension`
   with `@RegisterExtension`: a static field replaces `@ClassRule`, and an instance field replaces `@Rule`.

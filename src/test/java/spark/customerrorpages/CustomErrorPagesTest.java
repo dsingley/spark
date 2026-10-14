@@ -20,8 +20,6 @@ class CustomErrorPagesTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-        http.ipAddress("127.0.0.1");
-        http.port(0);
 
         http.get("/hello", (q, a) -> HELLO_WORLD);
 
