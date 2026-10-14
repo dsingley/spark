@@ -2,51 +2,51 @@ package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.after;
-import static spark.Spark.exception;
-import static spark.Spark.get;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
-@ExtendWith(SparkStopExtension.class)
 class ResponseWrapperDelegationTest {
 
-    static SparkTestUtil testUtil;
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.ipAddress("127.0.0.1");
+        http.port(0);
 
-    @BeforeAll
-    static void beforeAll() {
-        testUtil = new SparkTestUtil(4567);
-
-        get("/204", (q, a) -> {
+        http.get("/204", (q, a) -> {
             a.status(204);
             return "";
         });
 
-        after("/204", (q, a) -> {
+        http.after("/204", (q, a) -> {
             if (a.status() == 204) {
                 a.status(200);
                 a.body("ok");
             }
         });
 
-        get("/json", (q, a) -> {
+        http.get("/json", (q, a) -> {
             a.type("application/json");
             return "{\"status\": \"ok\"}";
         });
 
-        after("/json", (q, a) -> {
+        http.after("/json", (q, a) -> {
             if ("application/json".equalsIgnoreCase(a.type())) {
                 a.type("text/plain");
             }
         });
 
-        exception(Exception.class, (exception, q, a) -> exception.printStackTrace());
+        http.exception(Exception.class, (exception, q, a) -> exception.printStackTrace());
+    });
 
-        Spark.awaitInitialization();
+    static SparkTestUtil testUtil;
+
+    @BeforeAll
+    static void beforeAll() {
+        testUtil = new SparkTestUtil(SPARK.port());
     }
 
     @Test

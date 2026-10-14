@@ -1,25 +1,27 @@
 package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.before;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
-@ExtendWith(SparkStopExtension.class)
 class FilterTest {
+
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.ipAddress("127.0.0.1");
+        http.port(0);
+        http.before("/justfilter", (q, a) -> System.out.println("Filter matched"));
+    });
+
     static SparkTestUtil testUtil;
 
     @BeforeAll
     static void beforeAll() {
-        testUtil = new SparkTestUtil(4567);
-
-        before("/justfilter", (q, a) -> System.out.println("Filter matched"));
-        awaitInitialization();
+        testUtil = new SparkTestUtil(SPARK.port());
     }
 
     @Test

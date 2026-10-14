@@ -2,19 +2,14 @@ package spark.customerrorpages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.get;
-import static spark.Spark.internalServerError;
-import static spark.Spark.notFound;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import spark.CustomErrorPages;
-import spark.Spark;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
-@ExtendWith(SparkStopExtension.class)
 class CustomErrorPagesTest {
 
     private static final String CUSTOM_NOT_FOUND = "custom not found 404";
@@ -23,29 +18,33 @@ class CustomErrorPagesTest {
     public static final String APPLICATION_JSON = "application/json";
     private static final String QUERY_PARAM_KEY = "qparkey";
 
-    static SparkTestUtil testUtil;
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.ipAddress("127.0.0.1");
+        http.port(0);
 
-    @BeforeAll
-    static void beforeAll() {
-        testUtil = new SparkTestUtil(4567);
+        http.get("/hello", (q, a) -> HELLO_WORLD);
 
-        get("/hello", (q, a) -> HELLO_WORLD);
-
-        get("/raiseinternal", (q, a) -> {
+        http.get("/raiseinternal", (q, a) -> {
             throw new Exception("");
         });
 
-        notFound(CUSTOM_NOT_FOUND);
+        http.notFound(CUSTOM_NOT_FOUND);
 
-        internalServerError((request, response) -> {
+        http.internalServerError((request, response) -> {
             if (request.queryParams(QUERY_PARAM_KEY) != null) {
                 throw new Exception();
             }
             response.type(APPLICATION_JSON);
             return CUSTOM_INTERNAL;
         });
+    });
 
-        Spark.awaitInitialization();
+    static SparkTestUtil testUtil;
+
+    @BeforeAll
+    static void beforeAll() {
+        testUtil = new SparkTestUtil(SPARK.port());
     }
 
     @Test
