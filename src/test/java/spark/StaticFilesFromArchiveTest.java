@@ -27,34 +27,45 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 
 class StaticFilesFromArchiveTest {
 
     private static SparkTestUtil testUtil;
+    private static Class<?> serviceClass;
+    private static Object service;
     private static ClassLoader classLoader;
     private static ClassLoader initialClassLoader;
 
     @BeforeAll
     static void beforeAll() throws Exception {
         setupClassLoader();
-        testUtil = new SparkTestUtil(4567);
 
-        var sparkClass = classLoader.loadClass("spark.Spark");
+        // Spark and the static resources come from a class loader of their own, so this uses that loader's
+        // Service (not the static Spark methods) and works with it through reflection
+        serviceClass = classLoader.loadClass("spark.Service");
+        service = serviceClass.getMethod("ignite").invoke(null);
 
-        var staticFileLocationMethod = sparkClass.getMethod("staticFileLocation", String.class);
-        staticFileLocationMethod.invoke(null, "/public-jar");
+        serviceClass.getMethod("ipAddress", String.class).invoke(service, "127.0.0.1");
+        serviceClass.getMethod("port", int.class).invoke(service, 0);
+        serviceClass.getMethod("staticFileLocation", String.class).invoke(service, "/public-jar");
+        serviceClass.getMethod("init").invoke(service);
+        serviceClass.getMethod("awaitInitialization").invoke(service);
 
-        var initMethod = sparkClass.getMethod("init");
-        initMethod.invoke(null);
-
-        var awaitInitializationMethod = sparkClass.getMethod("awaitInitialization");
-        awaitInitializationMethod.invoke(null);
+        var port = (int) serviceClass.getMethod("port").invoke(service);
+        testUtil = new SparkTestUtil(port);
     }
 
     @AfterAll
-    static void afterAll() {
-        Thread.currentThread().setContextClassLoader(initialClassLoader);
+    static void afterAll() throws Exception {
+        try {
+            if (service != null) {
+                serviceClass.getMethod("stopAndAwait", Duration.class).invoke(service, Duration.ofSeconds(5));
+            }
+        } finally {
+            Thread.currentThread().setContextClassLoader(initialClassLoader);
+        }
     }
 
     private static void setupClassLoader() throws Exception {

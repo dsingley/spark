@@ -2,27 +2,27 @@ package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.get;
-import static spark.Spark.unmap;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
-@ExtendWith(SparkStopExtension.class)
 class UnmapTest {
+
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.ipAddress("127.0.0.1");
+        http.port(0);
+        http.get("/tobeunmapped", (q, a) -> "tobeunmapped");
+    });
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
     static void beforeAll() {
-        testUtil = new SparkTestUtil(4567);
-
-        get("/tobeunmapped", (q, a) -> "tobeunmapped");
-        awaitInitialization();
+        testUtil = new SparkTestUtil(SPARK.port());
     }
 
     @Test
@@ -33,12 +33,12 @@ class UnmapTest {
                 () -> assertThat(response.body).isEqualTo("tobeunmapped")
         );
 
-        unmap("/tobeunmapped");
+        SPARK.service().unmap("/tobeunmapped");
 
         var afterUnmapResponse = testUtil.doMethod("GET", "/tobeunmapped", null);
         assertThat(afterUnmapResponse.status).isEqualTo(404);
 
-        get("/tobeunmapped", (q, a) -> "tobeunmapped");
+        SPARK.service().get("/tobeunmapped", (q, a) -> "tobeunmapped");
 
         var afterRemapResponse = testUtil.doMethod("GET", "/tobeunmapped", null);
         assertAll(
@@ -46,7 +46,7 @@ class UnmapTest {
                 () -> assertThat(afterRemapResponse.body).isEqualTo("tobeunmapped")
         );
 
-        unmap("/tobeunmapped", "get");
+        SPARK.service().unmap("/tobeunmapped", "get");
 
         var afterUnmapByMethodResponse = testUtil.doMethod("GET", "/tobeunmapped", null);
         assertThat(afterUnmapByMethodResponse.status).isEqualTo(404);

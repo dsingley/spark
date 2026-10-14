@@ -18,18 +18,15 @@ package spark.staticfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.get;
-import static spark.Spark.staticFiles;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Spark;
 import spark.examples.exception.NotFoundException;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 import java.io.File;
@@ -39,7 +36,6 @@ import java.io.IOException;
 /**
  * Test static files
  */
-@ExtendWith(SparkStopExtension.class)
 class DisableMimeGuessingTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(DisableMimeGuessingTest.class);
@@ -48,13 +44,29 @@ class DisableMimeGuessingTest {
     private static final String EXTERNAL_FILE_NAME_HTML = "externalFile.html";
     private static final String CONTENT_OF_EXTERNAL_FILE = "Content of external file";
 
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.ipAddress("127.0.0.1");
+        http.port(0);
+
+        http.staticFiles.location("/public");
+        http.staticFiles.externalLocation(System.getProperty("java.io.tmpdir"));
+        http.staticFiles.disableMimeTypeGuessing();
+
+        http.get("/hello", (q, a) -> FO_SHIZZY);
+
+        http.get("/*", (q, a) -> {
+            throw new NotFoundException();
+        });
+    });
+
     private static SparkTestUtil testUtil;
 
     private static File tmpExternalFile;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        testUtil = new SparkTestUtil(4567);
+        testUtil = new SparkTestUtil(SPARK.port());
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE_NAME_HTML);
 
@@ -62,22 +74,16 @@ class DisableMimeGuessingTest {
         writer.write(CONTENT_OF_EXTERNAL_FILE);
         writer.flush();
         writer.close();
-
-        staticFiles.location("/public");
-        staticFiles.externalLocation(System.getProperty("java.io.tmpdir"));
-        staticFiles.disableMimeTypeGuessing();
-
-        get("/hello", (q, a) -> FO_SHIZZY);
-
-        get("/*", (q, a) -> {
-            throw new NotFoundException();
-        });
-
-        Spark.awaitInitialization();
     }
 
     @AfterAll
-    static void afterAll() {
+    static void afterAll() throws Exception {
+        // disabling MIME type guessing is JVM-wide and cannot be undone through Spark, so undo it here for
+        // the test classes that run after this one in the same JVM
+        var guessingOn = MimeType.class.getDeclaredField("guessingOn");
+        guessingOn.setAccessible(true);
+        guessingOn.setBoolean(null, true);
+
         if (tmpExternalFile != null) {
             LOG.debug("tearDown().deleting: {}", tmpExternalFile);
             tmpExternalFile.delete();
@@ -100,7 +106,7 @@ class DisableMimeGuessingTest {
 
     @Test
     void testCustomMimeType() throws Exception {
-        staticFiles.registerMimeType("cxt", "custom-extension-type");
+        SPARK.service().staticFiles.registerMimeType("cxt", "custom-extension-type");
         assertThat(doGet("/img/file.cxt").headers.get("Content-Type")).isNull();
     }
 
