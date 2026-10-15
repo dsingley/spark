@@ -1,6 +1,7 @@
 package spark.embeddedserver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,15 +14,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
-import spark.Spark;
 import spark.embeddedserver.jetty.EmbeddedJettyFactory;
 import spark.embeddedserver.jetty.JettyServerFactory;
 import spark.ssl.SslStores;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
+import spark.testing.SparkServerExtension.SparkStarter;
+import spark.util.SparkTestUtil;
 
 import java.io.File;
 
-@ExtendWith(SparkStopExtension.class)
+@ExtendWith(SparkServerExtension.class)
 class EmbeddedServersTest {
 
     @TempDir
@@ -34,6 +36,10 @@ class EmbeddedServersTest {
         if (embeddedServer != null) {
             embeddedServer.extinguish();
         }
+
+        // The factories are registered JVM-wide and cannot be removed, so put back the default one that
+        // a test replaced; otherwise every server created later in this JVM would use the test's factory
+        EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new EmbeddedJettyFactory());
     }
 
     @Test
@@ -59,7 +65,7 @@ class EmbeddedServersTest {
     }
 
     @Test
-    void testAdd_whenConfigureRoutes_createsCustomServer() {
+    void testAdd_whenConfigureRoutes_createsCustomServer(SparkStarter starter) throws Exception {
         var requestLogFile = new File(temporaryFolder, "request.log");
         // Register custom server
         EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new EmbeddedJettyFactory(new JettyServerFactory() {
@@ -75,10 +81,16 @@ class EmbeddedServersTest {
                 return null;
             }
         }));
-        Spark.get("/", (request, response) -> "OK");
-        Spark.awaitInitialization();
+        starter.runSpark(http -> http.get("/", (request, response) -> "OK"));
 
         assertThat(requestLogFile).exists();
+
+        // and the server built by the custom factory actually serves the route
+        var response = new SparkTestUtil(starter.port()).get("/");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("OK")
+        );
     }
 
 }
