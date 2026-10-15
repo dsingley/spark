@@ -23,30 +23,34 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import spark.route.HttpMethod;
-import spark.util.ServiceStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 class MultipleServicesTest {
 
-    private static Service first;
-    private static Service second;
+    @RegisterExtension
+    static final SparkServerExtension FIRST = new SparkServerExtension(http -> {
+        http.get("/hello", (q, a) -> "Hello World!");
+    });
 
     @RegisterExtension
-    static ServiceStopExtension stopExtension = new ServiceStopExtension(() -> first, () -> second);
+    static final SparkServerExtension SECOND = new SparkServerExtension(http -> {
+        http.staticFileLocation("/public");
+        http.threadPool(40);
+
+        http.get("/hello", (q, a) -> "Hello World!");
+        http.get("/uniqueforsecond", (q, a) -> "Bompton");
+
+        http.redirect.any("/hi", "/hello");
+    });
 
     private static SparkTestUtil firstClient;
     private static SparkTestUtil secondClient;
 
     @BeforeAll
     static void beforeAll() {
-        firstClient = new SparkTestUtil(4567);
-        secondClient = new SparkTestUtil(1234);
-
-        first = igniteFirstService();
-        second = igniteSecondService();
-
-        first.awaitInitialization();
-        second.awaitInitialization();
+        firstClient = new SparkTestUtil(FIRST.port());
+        secondClient = new SparkTestUtil(SECOND.port());
     }
 
     @Test
@@ -99,7 +103,7 @@ class MultipleServicesTest {
 
     @Test
     void testGetAllRoutesFromBothServices(){
-        for (var routeMatch : first.routes()) {
+        for (var routeMatch : FIRST.service().routes()) {
             assertAll(
                     () -> assertThat(routeMatch.getAcceptType()).isEqualTo("*/*"),
                     () -> assertThat(routeMatch.getHttpMethod()).isEqualTo(HttpMethod.get),
@@ -109,7 +113,7 @@ class MultipleServicesTest {
             );
         }
 
-        for (var routeMatch : second.routes()) {
+        for (var routeMatch : SECOND.service().routes()) {
             assertAll(
                     () -> assertThat(routeMatch.getAcceptType()).isEqualTo("*/*"),
                     () -> assertThat(routeMatch.getHttpMethod()).isInstanceOf(HttpMethod.class),
@@ -119,29 +123,4 @@ class MultipleServicesTest {
             );
         }
     }
-
-    private static Service igniteFirstService() {
-
-        var service = Service.ignite();
-
-        service.get("/hello", (q, a) -> "Hello World!");
-
-        return service;
-    }
-
-    private static Service igniteSecondService() {
-
-        var service = Service.ignite()
-                .port(1234)
-                .staticFileLocation("/public")
-                .threadPool(40);
-
-        service.get("/hello", (q, a) -> "Hello World!");
-        service.get("/uniqueforsecond", (q, a) -> "Bompton");
-
-        service.redirect.any("/hi", "/hello");
-
-        return service;
-    }
-
 }
