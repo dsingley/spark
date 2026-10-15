@@ -56,8 +56,9 @@ class StaticFilesExternalTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-        // The files have to exist before the server starts, which is before any @BeforeAll method
-        createFiles();
+        // The folder has to exist when the location is configured, which is before any @BeforeAll method
+        directoryRoot = new File(System.getProperty("java.io.tmpdir"), "sparkish");
+        directoryRoot.mkdirs();
 
         http.staticFiles.externalLocation(directoryRoot.getPath());
 
@@ -76,13 +77,8 @@ class StaticFilesExternalTest {
     private static SparkTestUtil testUtil;
 
     @BeforeAll
-    static void beforeAll() {
+    static void beforeAll() throws IOException {
         testUtil = new SparkTestUtil(SPARK.port());
-    }
-
-    private static void createFiles() throws IOException {
-        directoryRoot = new File(System.getProperty("java.io.tmpdir"), "sparkish");
-        directoryRoot.mkdirs();
 
         tmpExternalFile1 = new File(directoryRoot, EXTERNAL_FILE_NAME_HTML);
 

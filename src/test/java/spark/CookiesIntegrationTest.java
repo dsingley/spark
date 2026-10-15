@@ -136,7 +136,7 @@ class CookiesIntegrationTest {
     }
 
     private void httpPost(String relativePath) {
-        var request = new HttpPost("http://127.0.0.1:" + SPARK.port() + relativePath);
+        var request = new HttpPost("http://localhost:" + SPARK.port() + relativePath);
         assertThatCode(() -> {
             int statusCode = httpClient.execute(request, HttpResponse::getCode);
             assertThat(statusCode).isEqualTo(200);
