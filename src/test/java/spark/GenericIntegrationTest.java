@@ -3,25 +3,14 @@ package spark;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.after;
-import static spark.Spark.afterAfter;
-import static spark.Spark.before;
-import static spark.Spark.exception;
-import static spark.Spark.externalStaticFileLocation;
-import static spark.Spark.get;
 import static spark.Spark.halt;
-import static spark.Spark.patch;
-import static spark.Spark.path;
-import static spark.Spark.post;
-import static spark.Spark.staticFileLocation;
-import static spark.Spark.webSocket;
 
 import org.eclipse.jetty.util.URIUtil;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.embeddedserver.jetty.websocket.WebSocketTestClient;
@@ -30,7 +19,7 @@ import spark.examples.exception.BaseException;
 import spark.examples.exception.JWGmeligMeylingException;
 import spark.examples.exception.NotFoundException;
 import spark.examples.exception.SubclassOfBaseException;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 import java.io.ByteArrayInputStream;
@@ -43,85 +32,72 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@ExtendWith(SparkStopExtension.class)
 class GenericIntegrationTest {
 
     private static final String NOT_FOUND_BRO = "Not found bro";
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericIntegrationTest.class);
 
-    static SparkTestUtil testUtil;
-    static File tmpExternalFile;
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.staticFileLocation("/public");
+        http.externalStaticFileLocation(System.getProperty("java.io.tmpdir"));
+        http.webSocket("/ws", WebSocketTestHandler.class);
 
-    @BeforeAll
-    static void beforeAll() throws IOException {
-        testUtil = new SparkTestUtil(4567);
+        http.before("/secretcontent/*", (q, a) -> halt(401, "Go Away!"));
 
-        tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), "externalFile.html");
+        http.before("/protected/*", "application/xml", (q, a) -> halt(401, "Go Away!"));
 
-        var writer = new FileWriter(tmpExternalFile);
-        writer.write("Content of external file");
-        writer.flush();
-        writer.close();
+        http.before("/protected/*", "application/json", (q, a) -> halt(401, "{\"message\": \"Go Away!\"}"));
 
-        staticFileLocation("/public");
-        externalStaticFileLocation(System.getProperty("java.io.tmpdir"));
-        webSocket("/ws", WebSocketTestHandler.class);
+        http.get("/hi", "application/json", (q, a) -> "{\"message\": \"Hello World\"}");
+        http.get("/hi", (q, a) -> "Hello World!");
+        http.get("/binaryhi", (q, a) -> "Hello World!".getBytes());
+        http.get("/bytebufferhi", (q, a) -> ByteBuffer.wrap("Hello World!".getBytes()));
+        http.get("/inputstreamhi", (q, a) -> new ByteArrayInputStream("Hello World!".getBytes(UTF_8)));
+        http.get("/param/:param", (q, a) -> "echo: " + q.params(":param"));
 
-        before("/secretcontent/*", (q, a) -> halt(401, "Go Away!"));
-
-        before("/protected/*", "application/xml", (q, a) -> halt(401, "Go Away!"));
-
-        before("/protected/*", "application/json", (q, a) -> halt(401, "{\"message\": \"Go Away!\"}"));
-
-        get("/hi", "application/json", (q, a) -> "{\"message\": \"Hello World\"}");
-        get("/hi", (q, a) -> "Hello World!");
-        get("/binaryhi", (q, a) -> "Hello World!".getBytes());
-        get("/bytebufferhi", (q, a) -> ByteBuffer.wrap("Hello World!".getBytes()));
-        get("/inputstreamhi", (q, a) -> new ByteArrayInputStream("Hello World!".getBytes(UTF_8)));
-        get("/param/:param", (q, a) -> "echo: " + q.params(":param"));
-
-        path("/firstPath", () -> {
-            before("/*", (q, a) -> a.header("before-filter-ran", "true"));
-            get("/test", (q, a) -> "Single path-prefix works");
-            path("/secondPath", () -> {
-                get("/test", (q, a) -> "Nested path-prefix works");
-                path("/thirdPath", () -> get("/test", (q, a) -> "Very nested path-prefix works"));
+        http.path("/firstPath", () -> {
+            http.before("/*", (q, a) -> a.header("before-filter-ran", "true"));
+            http.get("/test", (q, a) -> "Single path-prefix works");
+            http.path("/secondPath", () -> {
+                http.get("/test", (q, a) -> "Nested path-prefix works");
+                http.path("/thirdPath", () -> http.get("/test", (q, a) -> "Very nested path-prefix works"));
             });
         });
 
-        get("/paramandwild/:param/stuff/*", (q, a) -> "paramandwild: " + q.params(":param") + q.splat()[0]);
-        get("/paramwithmaj/:paramWithMaj", (q, a) -> "echo: " + q.params(":paramWithMaj"));
+        http.get("/paramandwild/:param/stuff/*", (q, a) -> "paramandwild: " + q.params(":param") + q.splat()[0]);
+        http.get("/paramwithmaj/:paramWithMaj", (q, a) -> "echo: " + q.params(":paramWithMaj"));
 
-        get("/templateView", (q, a) -> new ModelAndView("Hello", "my view"), new TemplateEngine() {
+        http.get("/templateView", (q, a) -> new ModelAndView("Hello", "my view"), new TemplateEngine() {
             @Override
             public String render(ModelAndView modelAndView) {
                 return modelAndView.getModel() + " from " + modelAndView.getViewName();
             }
         });
 
-        get("/", (q, a) -> "Hello Root!");
+        http.get("/", (q, a) -> "Hello Root!");
 
-        post("/poster", (q, a) -> {
+        http.post("/poster", (q, a) -> {
             var body = q.body();
             a.status(201); // created
             return "Body was: " + body;
         });
 
-        post("/post_via_get", (q, a) -> {
+        http.post("/post_via_get", (q, a) -> {
             a.status(201); // created
             return "Method Override Worked";
         });
 
-        get("/post_via_get", (q, a) -> "Method Override Did Not Work");
+        http.get("/post_via_get", (q, a) -> "Method Override Did Not Work");
 
-        patch("/patcher", (q, a) -> {
+        http.patch("/patcher", (q, a) -> {
             var body = q.body();
             a.status(200);
             return "Body was: " + body;
         });
 
-        get("/session_reset", (q, a) -> {
+        http.get("/session_reset", (q, a) -> {
             var key = "session_reset";
             var session = q.session();
             session.attribute(key, "11111");
@@ -131,9 +107,9 @@ class GenericIntegrationTest {
             return session.attribute(key);
         });
 
-        get("/ip", (request, response) -> request.ip());
+        http.get("/ip", (request, response) -> request.ip());
 
-        after("/hi", (q, a) -> {
+        http.after("/hi", (q, a) -> {
 
             if (q.requestMethod().equalsIgnoreCase("get")) {
                 assertThat(a.body()).isNotNull();
@@ -142,46 +118,58 @@ class GenericIntegrationTest {
             a.header("after", "foobar");
         });
 
-        get("/throwexception", (q, a) -> {
+        http.get("/throwexception", (q, a) -> {
             throw new UnsupportedOperationException();
         });
 
-        get("/throwsubclassofbaseexception", (q, a) -> {
+        http.get("/throwsubclassofbaseexception", (q, a) -> {
             throw new SubclassOfBaseException();
         });
 
-        get("/thrownotfound", (q, a) -> {
+        http.get("/thrownotfound", (q, a) -> {
             throw new NotFoundException();
         });
 
-        get("/throwmeyling", (q, a) -> {
+        http.get("/throwmeyling", (q, a) -> {
             throw new JWGmeligMeylingException();
         });
 
-        exception(JWGmeligMeylingException.class, (meylingException, q, a) -> a.body(meylingException.trustButVerify()));
+        http.exception(JWGmeligMeylingException.class, (meylingException, q, a) -> a.body(meylingException.trustButVerify()));
 
-        exception(UnsupportedOperationException.class, (exception, q, a) -> a.body("Exception handled"));
+        http.exception(UnsupportedOperationException.class, (exception, q, a) -> a.body("Exception handled"));
 
-        exception(BaseException.class, (exception, q, a) -> a.body("Exception handled"));
+        http.exception(BaseException.class, (exception, q, a) -> a.body("Exception handled"));
 
-        exception(NotFoundException.class, (exception, q, a) -> {
+        http.exception(NotFoundException.class, (exception, q, a) -> {
             a.status(404);
             a.body(NOT_FOUND_BRO);
         });
 
-        get("/exception", (request, response) -> {
+        http.get("/exception", (request, response) -> {
             throw new RuntimeException();
         });
 
-        afterAfter("/exception", (request, response) -> response.body("done executed for exception"));
+        http.afterAfter("/exception", (request, response) -> response.body("done executed for exception"));
 
-        post("/nice", (request, response) -> "nice response");
+        http.post("/nice", (request, response) -> "nice response");
 
-        afterAfter("/nice", (request, response) -> response.header("post-process", "nice done response"));
+        http.afterAfter("/nice", (request, response) -> response.header("post-process", "nice done response"));
 
-        afterAfter((request, response) -> response.header("post-process-all", "nice done response after all"));
+        http.afterAfter((request, response) -> response.header("post-process-all", "nice done response after all"));
+    });
 
-        Spark.awaitInitialization();
+    static SparkTestUtil testUtil;
+    static File tmpExternalFile;
+
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        testUtil = new SparkTestUtil(SPARK.port());
+
+        tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), "externalFile.html");
+
+        try (var writer = new FileWriter(tmpExternalFile)) {
+            writer.write("Content of external file");
+        }
     }
 
     @AfterAll
@@ -391,7 +379,7 @@ class GenericIntegrationTest {
     }
 
     private static void registerEchoRoute(final String routePart) {
-        get("/tworoutes/" + routePart + "/:param", (q, a) -> routePart + " route: " + q.params(":param"));
+        SPARK.service().get("/tworoutes/" + routePart + "/:param", (q, a) -> routePart + " route: " + q.params(":param"));
     }
 
     private static void assertEchoRoute(String routePart) throws Exception {
@@ -511,7 +499,7 @@ class GenericIntegrationTest {
 
     @Test
     void testWebSocketConversation() throws Exception {
-        var uri = "ws://localhost:4567/ws";
+        var uri = "ws://localhost:" + SPARK.port() + "/ws";
         var client = new WebSocketClient();
         var websocket = new WebSocketTestClient();
 
@@ -523,8 +511,7 @@ class GenericIntegrationTest {
             client.stop();
         }
 
-        // Only this connection's events: another client, such as a browser tab on a local app that
-        // reconnects to port 4567, can also connect to the server while the test runs
+        // Only this connection's events, because the handler records the events of every connection
         var events = WebSocketTestHandler.eventsFor(websocket.getLocalPort());
         assertAll(
             () -> assertThat(events).hasSize(3),

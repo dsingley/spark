@@ -7,27 +7,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static spark.Spark.after;
-import static spark.Spark.afterAfter;
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.before;
-import static spark.Spark.get;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import spark.routematch.RouteMatch;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@ExtendWith(SparkStopExtension.class)
 class RequestTest {
 
     private static final String THE_SERVLET_PATH = "/the/servlet/path";
@@ -37,7 +32,24 @@ class RequestTest {
     private static final String AFTER_MATCHED_ROUTE = "/users/:after";
     private static final String AFTERAFTER_MATCHED_ROUTE = "/users/:afterafter";
 
-    private static SparkTestUtil http;
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.before(BEFORE_MATCHED_ROUTE, (q, a) -> {
+            System.out.println("before filter matched");
+            shouldBeAbleToGetTheMatchedPathInBeforeFilter(q);
+        });
+        http.get(THE_MATCHED_ROUTE, (q, a) -> "Get filter matched");
+        http.after(AFTER_MATCHED_ROUTE, (q, a) -> {
+            System.out.println("after filter matched");
+            shouldBeAbleToGetTheMatchedPathInAfterFilter(q);
+        });
+        http.afterAfter(AFTERAFTER_MATCHED_ROUTE, (q, a) -> {
+            System.out.println("afterafter filter matched");
+            shouldBeAbleToGetTheMatchedPathInAfterAfterFilter(q);
+        });
+    });
+
+    private static SparkTestUtil testUtil;
 
     HttpServletRequest servletRequest;
     HttpSession httpSession;
@@ -46,35 +58,20 @@ class RequestTest {
     RouteMatch routeMatch;
     RouteMatch routeMatchWithParams;
 
+    @BeforeAll
+    static void beforeAll() {
+        testUtil = new SparkTestUtil(SPARK.port());
+    }
+
     @BeforeEach
     void setUp() {
         routeMatch = new RouteMatch(null, "/hi", "/hi", "text/html", null);
         routeMatchWithParams = new RouteMatch(null, "/users/:username", "/users/bob", "text/html", null);
 
-        http = new SparkTestUtil(4567);
-
-        before(BEFORE_MATCHED_ROUTE, (q, a) -> {
-            System.out.println("before filter matched");
-            shouldBeAbleToGetTheMatchedPathInBeforeFilter(q);
-        });
-        get(THE_MATCHED_ROUTE, (q,a)-> "Get filter matched");
-        after(AFTER_MATCHED_ROUTE, (q, a) -> {
-            System.out.println("after filter matched");
-            shouldBeAbleToGetTheMatchedPathInAfterFilter(q);
-        });
-        afterAfter(AFTERAFTER_MATCHED_ROUTE, (q, a) -> {
-            System.out.println("afterafter filter matched");
-            shouldBeAbleToGetTheMatchedPathInAfterAfterFilter(q);
-        });
-
-        awaitInitialization();
-
-
         servletRequest = mock(HttpServletRequest.class);
         httpSession = mock(HttpSession.class);
 
         request = new Request(routeMatch, servletRequest);
-
     }
 
     @Test
@@ -133,26 +130,27 @@ class RequestTest {
     }
 
     @Test
-    void shouldBeAbleToGetTheMatchedPath() {
+    void shouldBeAbleToGetTheMatchedPath() throws Exception {
         var req = new Request(routeMatchWithParams, servletRequest);
         assertThat(req.matchedPath()).isEqualTo(THE_MATCHED_ROUTE);
-        try {
-            http.get("/users/bob");
-        } catch (Exception e) {
-            // TODO - something...
-            e.printStackTrace();
-        }
+
+        // The filters assert the matched path of their own route; a failed assertion makes the response a 500
+        var response = testUtil.get("/users/bob");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("Get filter matched")
+        );
     }
 
-    public void shouldBeAbleToGetTheMatchedPathInBeforeFilter(Request q) {
+    private static void shouldBeAbleToGetTheMatchedPathInBeforeFilter(Request q) {
         assertThat(q.matchedPath()).isEqualTo(BEFORE_MATCHED_ROUTE);
     }
 
-    public void shouldBeAbleToGetTheMatchedPathInAfterFilter(Request q) {
+    private static void shouldBeAbleToGetTheMatchedPathInAfterFilter(Request q) {
         assertThat(q.matchedPath()).isEqualTo(AFTER_MATCHED_ROUTE);
     }
 
-    public void shouldBeAbleToGetTheMatchedPathInAfterAfterFilter(Request q) {
+    private static void shouldBeAbleToGetTheMatchedPathInAfterAfterFilter(Request q) {
         assertThat(q.matchedPath()).isEqualTo(AFTERAFTER_MATCHED_ROUTE);
     }
 

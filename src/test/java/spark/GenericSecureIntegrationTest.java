@@ -2,67 +2,61 @@ package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.after;
-import static spark.Spark.before;
-import static spark.Spark.get;
 import static spark.Spark.halt;
-import static spark.Spark.patch;
-import static spark.Spark.post;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 import java.util.Map;
 
-@ExtendWith(SparkStopExtension.class)
 class GenericSecureIntegrationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericSecureIntegrationTest.class);
 
-    static SparkTestUtil testUtil;
-
-    @BeforeAll
-    static void beforeAll() {
-        testUtil = new SparkTestUtil(4567);
-
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
         // note that the keystore stuff is retrieved from SparkTestUtil which
         // respects JVM params for keystore, password
         // but offers a default included store if not.
-        Spark.secure(SparkTestUtil.getKeyStoreLocation(),
-                     SparkTestUtil.getKeystorePassword(), null, null);
+        http.secure(SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(), null, null);
 
-        before("/protected/*", (request, response) -> halt(401, "Go Away!"));
+        http.before("/protected/*", (request, response) -> halt(401, "Go Away!"));
 
-        get("/hi", (request, response) -> "Hello World!");
+        http.get("/hi", (request, response) -> "Hello World!");
 
-        get("/ip", (request, response) -> request.ip());
+        http.get("/ip", (request, response) -> request.ip());
 
-        get("/:param", (request, response) -> "echo: " + request.params(":param"));
+        http.get("/:param", (request, response) -> "echo: " + request.params(":param"));
 
-        get("/paramwithmaj/:paramWithMaj", (request, response) -> "echo: " + request.params(":paramWithMaj"));
+        http.get("/paramwithmaj/:paramWithMaj", (request, response) -> "echo: " + request.params(":paramWithMaj"));
 
-        get("/", (request, response) -> "Hello Root!");
+        http.get("/", (request, response) -> "Hello Root!");
 
-        post("/poster", (request, response) -> {
+        http.post("/poster", (request, response) -> {
             var body = request.body();
             response.status(201); // created
             return "Body was: " + body;
         });
 
-        patch("/patcher", (request, response) -> {
+        http.patch("/patcher", (request, response) -> {
             var body = request.body();
             response.status(200);
             return "Body was: " + body;
         });
 
-        after("/hi", (request, response) -> response.header("after", "foobar"));
+        http.after("/hi", (request, response) -> response.header("after", "foobar"));
+    });
 
-        Spark.awaitInitialization();
+    static SparkTestUtil testUtil;
+
+    @BeforeAll
+    static void beforeAll() {
+        testUtil = new SparkTestUtil(SPARK.port());
     }
 
     @Test
