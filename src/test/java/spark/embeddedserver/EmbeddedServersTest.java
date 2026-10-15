@@ -1,6 +1,7 @@
 package spark.embeddedserver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,7 @@ import spark.embeddedserver.jetty.JettyServerFactory;
 import spark.ssl.SslStores;
 import spark.testing.SparkServerExtension;
 import spark.testing.SparkServerExtension.SparkStarter;
+import spark.util.SparkTestUtil;
 
 import java.io.File;
 
@@ -82,6 +84,13 @@ class EmbeddedServersTest {
         starter.runSpark(http -> http.get("/", (request, response) -> "OK"));
 
         assertThat(requestLogFile).exists();
+
+        // and the server built by the custom factory actually serves the route
+        var response = new SparkTestUtil(starter.port()).get("/");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("OK")
+        );
     }
 
 }
