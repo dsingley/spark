@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -48,12 +49,19 @@ class RequestTest {
         });
     });
 
+    private static SparkTestUtil testUtil;
+
     HttpServletRequest servletRequest;
     HttpSession httpSession;
     Request request;
 
     RouteMatch routeMatch;
     RouteMatch routeMatchWithParams;
+
+    @BeforeAll
+    static void beforeAll() {
+        testUtil = new SparkTestUtil(SPARK.port());
+    }
 
     @BeforeEach
     void setUp() {
@@ -127,7 +135,7 @@ class RequestTest {
         assertThat(req.matchedPath()).isEqualTo(THE_MATCHED_ROUTE);
 
         // The filters assert the matched path of their own route; a failed assertion makes the response a 500
-        var response = new SparkTestUtil(SPARK.port()).get("/users/bob");
+        var response = testUtil.get("/users/bob");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Get filter matched")

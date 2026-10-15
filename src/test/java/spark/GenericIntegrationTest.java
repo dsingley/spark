@@ -499,7 +499,7 @@ class GenericIntegrationTest {
 
     @Test
     void testWebSocketConversation() throws Exception {
-        var uri = "ws://127.0.0.1:" + SPARK.port() + "/ws";
+        var uri = "ws://localhost:" + SPARK.port() + "/ws";
         var client = new WebSocketClient();
         var websocket = new WebSocketTestClient();
 

@@ -17,10 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Records the events of each WebSocket connection separately, by the port the client connected from.
  * <p>
- * The test server listens on a fixed port (Spark's default), so other clients on the machine can
- * connect to it too, for example a browser tab that was left open on an application that reconnects to
- * that port. Recording the events of every connection together would let such a client change what a
- * test sees, so a test looks only at the events of its own connection: see {@link #eventsFor(int)}.
+ * A new handler instance is created for each connection but they all record into one static map, so
+ * a test looks only at the events of its own connection: see {@link #eventsFor(int)}. That also keeps
+ * a stray client, such as one that happens to connect to the test server's port, from changing what a
+ * test sees.
  */
 @WebSocket
 public class WebSocketTestHandler {

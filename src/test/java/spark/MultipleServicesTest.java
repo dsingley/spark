@@ -102,7 +102,12 @@ class MultipleServicesTest {
     }
 
     @Test
-    void testGetAllRoutesFromBothServices(){
+    void testGetAllRoutesFromBothServices() {
+        assertAll(
+                () -> assertThat(FIRST.service().routes()).isNotEmpty(),
+                () -> assertThat(SECOND.service().routes()).isNotEmpty()
+        );
+
         for (var routeMatch : FIRST.service().routes()) {
             assertAll(
                     () -> assertThat(routeMatch.getAcceptType()).isEqualTo("*/*"),
