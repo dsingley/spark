@@ -20,11 +20,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>
  * It cannot undo everything. The static {@code Spark} facade creates its {@code Service} the first time it
  * is used, and a {@code Service} created while the flag is set keeps the servlet static files configuration
- * for good. A test class whose application uses the static {@code Spark} methods in servlet mode, like
- * {@code ServletTest}, can therefore still leave that singleton behind, so it should run in its own fork.
+ * for good. An application deployed in a test must therefore use its own {@code Service.ignite()} instance
+ * rather than the static {@code Spark} methods, as {@code MyApp} does, or it leaves that singleton behind
+ * and the test class should run in its own fork.
  * <p>
- * Register it first, before any extension that stops Spark, because JUnit runs after-all callbacks in
- * reverse order and the reset should come last: {@code @ExtendWith(ServletStateReset.class)}. This is test-only code on purpose: a
+ * Register it with {@code @ExtendWith(ServletStateReset.class)}. This is test-only code on purpose: a
  * public way to reset the servlet flag in {@code spark-core} could be called by an application running in
  * a servlet container, after which Spark would start an embedded server inside it.
  */
