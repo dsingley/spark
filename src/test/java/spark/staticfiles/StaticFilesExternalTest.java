@@ -19,19 +19,15 @@ package spark.staticfiles;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.exception;
-import static spark.Spark.get;
-import static spark.Spark.staticFiles;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Spark;
 import spark.examples.exception.NotFoundException;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 import java.io.File;
@@ -42,7 +38,6 @@ import java.net.URLEncoder;
 /**
  * Test external static files
  */
-@ExtendWith(SparkStopExtension.class)
 class StaticFilesExternalTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticFilesExternalTest.class);
@@ -54,26 +49,42 @@ class StaticFilesExternalTest {
 
     private static final String CONTENT_OF_EXTERNAL_FILE = "Content of external file";
 
-    private static SparkTestUtil testUtil;
-
     private static File directoryRoot;
     private static File tmpExternalFile1;
     private static File tmpExternalFile2;
     private static File folderOutsideStaticFiles;
 
-    @BeforeAll
-    static void beforeAll() throws IOException {
-        testUtil = new SparkTestUtil(4567);
-
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        // The folder has to exist when the location is configured, which is before any @BeforeAll method
         directoryRoot = new File(System.getProperty("java.io.tmpdir"), "sparkish");
         directoryRoot.mkdirs();
 
+        http.staticFiles.externalLocation(directoryRoot.getPath());
+
+        http.get("/hello", (q, a) -> FO_SHIZZY);
+
+        http.get("/*", (q, a) -> {
+            throw new NotFoundException();
+        });
+
+        http.exception(NotFoundException.class, (e, request, response) -> {
+            response.status(404);
+            response.body(NOT_FOUND_BRO);
+        });
+    });
+
+    private static SparkTestUtil testUtil;
+
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        testUtil = new SparkTestUtil(SPARK.port());
+
         tmpExternalFile1 = new File(directoryRoot, EXTERNAL_FILE_NAME_HTML);
 
-        var writer = new FileWriter(tmpExternalFile1);
-        writer.write(CONTENT_OF_EXTERNAL_FILE);
-        writer.flush();
-        writer.close();
+        try (var writer = new FileWriter(tmpExternalFile1)) {
+            writer.write(CONTENT_OF_EXTERNAL_FILE);
+        }
 
         folderOutsideStaticFiles = new File(directoryRoot.getAbsolutePath() + "/../dumpsterstuff");
         folderOutsideStaticFiles.mkdirs();
@@ -81,21 +92,6 @@ class StaticFilesExternalTest {
         var newFilePath = directoryRoot.getAbsolutePath() + "/../dumpsterstuff/Spark.class";
         tmpExternalFile2 = new File(newFilePath);
         tmpExternalFile2.createNewFile();
-
-        staticFiles.externalLocation(directoryRoot.getPath());
-
-        get("/hello", (q, a) -> FO_SHIZZY);
-
-        get("/*", (q, a) -> {
-            throw new NotFoundException();
-        });
-
-        exception(NotFoundException.class, (e, request, response) -> {
-            response.status(404);
-            response.body(NOT_FOUND_BRO);
-        });
-
-        Spark.awaitInitialization();
     }
 
     @AfterAll

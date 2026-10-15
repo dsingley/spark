@@ -3,7 +3,6 @@ package spark;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static spark.Spark.halt;
-import static spark.Spark.post;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.config.RequestConfig;
@@ -12,21 +11,17 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.HttpResponse;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 
 import java.io.IOException;
 
 /**
  * System tests for the Cookies support.
  */
-@ExtendWith(SparkStopExtension.class)
 class CookiesIntegrationTest {
-
-    private static final String DEFAULT_HOST_URL = "http://localhost:4567";
 
     private CloseableHttpClient httpClient;
 
@@ -42,21 +37,21 @@ class CookiesIntegrationTest {
             .build();
     }
 
-    @BeforeAll
-    static void beforeAll() {
-        post("/assertNoCookies", (request, response) -> {
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.post("/assertNoCookies", (request, response) -> {
             if (!request.cookies().isEmpty()) {
                 halt(500);
             }
             return "";
         });
 
-        post("/setCookie", (request, response) -> {
+        http.post("/setCookie", (request, response) -> {
             response.cookie(request.queryParams("cookieName"), request.queryParams("cookieValue"));
             return "";
         });
 
-        post("/assertHasCookie", (request, response) -> {
+        http.post("/assertHasCookie", (request, response) -> {
             var cookieValue = request.cookie(request.queryParams("cookieName"));
             if (!request.queryParams("cookieValue").equals(cookieValue)) {
                 halt(500);
@@ -64,7 +59,7 @@ class CookiesIntegrationTest {
             return "";
         });
 
-        post("/removeCookie", (request, response) -> {
+        http.post("/removeCookie", (request, response) -> {
             var cookieName = request.queryParams("cookieName");
             var cookieValue = request.cookie(cookieName);
             if (!request.queryParams("cookieValue").equals(cookieValue)) {
@@ -74,14 +69,14 @@ class CookiesIntegrationTest {
             return "";
         });
 
-        post("/path/setCookieWithPath", (request, response) -> {
+        http.post("/path/setCookieWithPath", (request, response) -> {
             var cookieName = request.queryParams("cookieName");
             var cookieValue = request.queryParams("cookieValue");
             response.cookie("/path", cookieName, cookieValue, -1, false);
             return "";
-        }) ;
+        });
 
-        post("/path/removeCookieWithPath", (request, response) -> {
+        http.post("/path/removeCookieWithPath", (request, response) -> {
             var cookieName = request.queryParams("cookieName");
             var cookieValue = request.cookie(cookieName);
             if (!request.queryParams("cookieValue").equals(cookieValue)) {
@@ -89,17 +84,15 @@ class CookiesIntegrationTest {
             }
             response.removeCookie("/path", cookieName);
             return "";
-        }) ;
+        });
 
-        post("/path/assertNoCookies", (request, response) -> {
+        http.post("/path/assertNoCookies", (request, response) -> {
             if (!request.cookies().isEmpty()) {
                 halt(500);
             }
             return "";
         });
-
-        Spark.awaitInitialization();
-    }
+    });
 
     @AfterEach
     void tearDown() throws IOException {
@@ -143,7 +136,7 @@ class CookiesIntegrationTest {
     }
 
     private void httpPost(String relativePath) {
-        var request = new HttpPost(DEFAULT_HOST_URL + relativePath);
+        var request = new HttpPost("http://localhost:" + SPARK.port() + relativePath);
         assertThatCode(() -> {
             int statusCode = httpClient.execute(request, HttpResponse::getCode);
             assertThat(statusCode).isEqualTo(200);

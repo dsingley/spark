@@ -17,19 +17,16 @@
 package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static spark.Spark.after;
-import static spark.Spark.get;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 /**
  * Validates and shows the "rules" for how response "body" is set.
  */
-@ExtendWith(SparkStopExtension.class)
 public class ResponseBodyTest {
 
     public static final String HELLO = "/hello";
@@ -42,56 +39,57 @@ public class ResponseBodyTest {
     public static final String DOLLAR_11AB = "$11ab";
     public static final String GALLUS_SCANDALUM = "gallus scandalum";
 
-    private static SparkTestUtil http;
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.get(HELLO, (q, a) -> HELLO_WORLD);
 
-    @BeforeAll
-    static void beforeAll() {
-        http = new SparkTestUtil(4567);
-
-        get(HELLO, (q, a) -> HELLO_WORLD);
-
-        after(HELLO, (q, a) -> {
+        http.after(HELLO, (q, a) -> {
             var body = a.body();
             assertThat(body).isEqualTo(HELLO_WORLD);
         });
 
-        get(SPECIAL, (q, a) -> {
+        http.get(SPECIAL, (q, a) -> {
             a.body(XIDXUS);
             return "";
         });
 
-        after(SPECIAL, (q, a) -> {
+        http.after(SPECIAL, (q, a) -> {
             var body = a.body();
             assertThat(body).isEqualTo(XIDXUS);
         });
 
-        get(PORAKATIKAOKAO, (q, a) -> {
+        http.get(PORAKATIKAOKAO, (q, a) -> {
             a.body(GALLUS_SCANDALUM);
             return null;
         });
 
-        after(PORAKATIKAOKAO, (q, a) -> {
+        http.after(PORAKATIKAOKAO, (q, a) -> {
             var body = a.body();
             assertThat(body).isEqualTo(GALLUS_SCANDALUM);
         });
 
-        get(MAXIME, (q, a) -> {
+        http.get(MAXIME, (q, a) -> {
             a.body(XIDXUS);
             return DOLLAR_11AB;
         });
 
-        after(MAXIME, (q, a) -> {
+        http.after(MAXIME, (q, a) -> {
             var body = a.body();
             assertThat(body).isEqualTo(DOLLAR_11AB);
         });
+    });
 
-        Spark.awaitInitialization();
+    private static SparkTestUtil testUtil;
+
+    @BeforeAll
+    static void beforeAll() {
+        testUtil = new SparkTestUtil(SPARK.port());
     }
 
     @Test
     void testHELLO() {
         try {
-            var response = http.get(HELLO);
+            var response = testUtil.get(HELLO);
             assertThat(response.status).isEqualTo(200);
             assertThat(response.body).isEqualTo(HELLO_WORLD);
         } catch (Throwable e) {
@@ -102,7 +100,7 @@ public class ResponseBodyTest {
     @Test
     void testSPECIAL() {
         try {
-            var response = http.get(SPECIAL);
+            var response = testUtil.get(SPECIAL);
             assertThat(response.status).isEqualTo(200);
             assertThat(response.body).isEqualTo(XIDXUS);
         } catch (Throwable e) {
@@ -113,7 +111,7 @@ public class ResponseBodyTest {
     @Test
     void testPORAKATIKAOKAO() {
         try {
-            var response = http.get(PORAKATIKAOKAO);
+            var response = testUtil.get(PORAKATIKAOKAO);
             assertThat(response.status).isEqualTo(200);
             assertThat(response.body).isEqualTo(GALLUS_SCANDALUM);
         } catch (Throwable e) {
@@ -124,7 +122,7 @@ public class ResponseBodyTest {
     @Test
     void testMAXIME() {
         try {
-            var response = http.get(MAXIME);
+            var response = testUtil.get(MAXIME);
             assertThat(response.status).isEqualTo(200);
             assertThat(response.body).isEqualTo(DOLLAR_11AB);
         } catch (Throwable e) {

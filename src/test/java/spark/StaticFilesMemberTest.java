@@ -18,18 +18,15 @@ package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.exception;
-import static spark.Spark.get;
-import static spark.Spark.staticFiles;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.examples.exception.NotFoundException;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 import java.io.File;
@@ -40,7 +37,6 @@ import java.util.Map;
 /**
  * Test static files
  */
-@ExtendWith(SparkStopExtension.class)
 class StaticFilesMemberTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaticFilesMemberTest.class);
@@ -52,36 +48,36 @@ class StaticFilesMemberTest {
 
     private static final String CONTENT_OF_EXTERNAL_FILE = "Content of external file";
 
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.staticFiles.location("/public");
+        http.staticFiles.externalLocation(System.getProperty("java.io.tmpdir"));
+
+        http.get("/hello", (q, a) -> FO_SHIZZY);
+
+        http.get("/*", (q, a) -> {
+            throw new NotFoundException();
+        });
+
+        http.exception(NotFoundException.class, (e, request, response) -> {
+            response.status(404);
+            response.body(NOT_FOUND_BRO);
+        });
+    });
+
     private static SparkTestUtil testUtil;
 
     private static File tmpExternalFile;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        testUtil = new SparkTestUtil(4567);
+        testUtil = new SparkTestUtil(SPARK.port());
 
         tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE_NAME_HTML);
 
-        var writer = new FileWriter(tmpExternalFile);
-        writer.write(CONTENT_OF_EXTERNAL_FILE);
-        writer.flush();
-        writer.close();
-
-        staticFiles.location("/public");
-        staticFiles.externalLocation(System.getProperty("java.io.tmpdir"));
-
-        get("/hello", (q, a) -> FO_SHIZZY);
-
-        get("/*", (q, a) -> {
-            throw new NotFoundException();
-        });
-
-        exception(NotFoundException.class, (e, request, response) -> {
-            response.status(404);
-            response.body(NOT_FOUND_BRO);
-        });
-
-        Spark.awaitInitialization();
+        try (var writer = new FileWriter(tmpExternalFile)) {
+            writer.write(CONTENT_OF_EXTERNAL_FILE);
+        }
     }
 
     @AfterAll
@@ -149,7 +145,7 @@ class StaticFilesMemberTest {
 
     @Test
     void testStaticFileHeaders() throws Exception {
-        staticFiles.headers(Map.of(
+        SPARK.service().staticFiles.headers(Map.of(
                 "Server", "Microsoft Word",
                 "Cache-Control", "private, max-age=600"));
         var response = testUtil.doMethod("GET", "/pages/index.html", null);
@@ -163,7 +159,7 @@ class StaticFilesMemberTest {
 
     @Test
     void testStaticFileExpireTime() throws Exception {
-        staticFiles.expireTime(600);
+        SPARK.service().staticFiles.expireTime(600);
         var response = testUtil.doMethod("GET", "/pages/index.html", null);
         assertThat(response.headers).containsEntry("Cache-Control", "private, max-age=600");
 

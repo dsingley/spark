@@ -18,45 +18,43 @@ package spark;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.get;
-import static spark.Spark.redirect;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 /**
  * Tests the redirect utility methods in {@link spark.Redirect}
  */
-@ExtendWith(SparkStopExtension.class)
 class RedirectTest {
 
     private static final String REDIRECTED = "Redirected";
+
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.get("/hello", (request, response) -> REDIRECTED);
+
+        http.redirect.get("/hi", "/hello");
+        http.redirect.post("/hi", "/hello");
+        http.redirect.put("/hi", "/hello");
+        http.redirect.delete("/hi", "/hello");
+        http.redirect.any("/any", "/hello");
+
+        http.redirect.get("/hiagain", "/hello", Redirect.Status.USE_PROXY);
+        http.redirect.post("/hiagain", "/hello", Redirect.Status.USE_PROXY);
+        http.redirect.put("/hiagain", "/hello", Redirect.Status.USE_PROXY);
+        http.redirect.delete("/hiagain", "/hello", Redirect.Status.USE_PROXY);
+        http.redirect.any("/anyagain", "/hello", Redirect.Status.USE_PROXY);
+    });
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
     static void beforeAll() {
-        testUtil = new SparkTestUtil(4567);
+        testUtil = new SparkTestUtil(SPARK.port());
         testUtil.setFollowRedirectStrategy(301, 302); // don't set the others to be able to verify affect of Redirect.Status
-
-        get("/hello", (request, response) -> REDIRECTED);
-
-        redirect.get("/hi", "/hello");
-        redirect.post("/hi", "/hello");
-        redirect.put("/hi", "/hello");
-        redirect.delete("/hi", "/hello");
-        redirect.any("/any", "/hello");
-
-        redirect.get("/hiagain", "/hello", Redirect.Status.USE_PROXY);
-        redirect.post("/hiagain", "/hello", Redirect.Status.USE_PROXY);
-        redirect.put("/hiagain", "/hello", Redirect.Status.USE_PROXY);
-        redirect.delete("/hiagain", "/hello", Redirect.Status.USE_PROXY);
-        redirect.any("/anyagain", "/hello", Redirect.Status.USE_PROXY);
-
-        Spark.awaitInitialization();
     }
 
     @Test
