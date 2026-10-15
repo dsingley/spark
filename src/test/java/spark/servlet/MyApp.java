@@ -1,15 +1,8 @@
 package spark.servlet;
 
-import static spark.Spark.after;
-import static spark.Spark.before;
-import static spark.Spark.externalStaticFileLocation;
-import static spark.Spark.get;
-import static spark.Spark.halt;
-import static spark.Spark.post;
-import static spark.Spark.staticFileLocation;
-
 import java.io.File;
 import java.io.FileWriter;
+import spark.Service;
 
 public class MyApp implements SparkApplication {
 
@@ -19,9 +12,12 @@ public class MyApp implements SparkApplication {
 
     @Override
     public synchronized void init() {
+        // an instance rather than the static Spark methods, so no singleton outlives this test in a shared JVM
+        var http = Service.ignite();
+
         try {
-            externalStaticFileLocation(System.getProperty("java.io.tmpdir"));
-            staticFileLocation("/public");
+            http.externalStaticFileLocation(System.getProperty("java.io.tmpdir"));
+            http.staticFileLocation("/public");
 
             tmpExternalFile = new File(System.getProperty("java.io.tmpdir"), EXTERNAL_FILE);
             var writer = new FileWriter(tmpExternalFile);
@@ -32,21 +28,21 @@ public class MyApp implements SparkApplication {
             e.printStackTrace();
         }
 
-        before("/protected/*", (request, response) -> halt(401, "Go Away!"));
+        http.before("/protected/*", (request, response) -> http.halt(401, "Go Away!"));
 
-        get("/hi", (request, response) -> "Hello World!");
+        http.get("/hi", (request, response) -> "Hello World!");
 
-        get("/:param", (request, response) -> "echo: " + request.params(":param"));
+        http.get("/:param", (request, response) -> "echo: " + request.params(":param"));
 
-        get("/", (request, response) -> "Hello Root!");
+        http.get("/", (request, response) -> "Hello Root!");
 
-        post("/poster", (request, response) -> {
+        http.post("/poster", (request, response) -> {
             var body = request.body();
             response.status(201); // created
             return "Body was: " + body;
         });
 
-        after("/hi", (request, response) -> response.header("after", "foobar"));
+        http.after("/hi", (request, response) -> response.header("after", "foobar"));
 
         try {
             Thread.sleep(500);
