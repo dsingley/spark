@@ -100,7 +100,12 @@ public class EmbeddedServers {
     }
 
     /**
-     * Adds an Embedded server factory for the provided identifier.
+     * Adds an Embedded server factory for the provided identifier. If a factory is already registered for
+     * that identifier, including the default one for {@link Identifiers#JETTY}, it is replaced.
+     * <p>
+     * The factories are shared by the whole JVM and cannot be removed. Replacing the factory of the default
+     * identifier therefore changes the server that every {@link spark.Service} created afterwards uses,
+     * until it is replaced again.
      *
      * @param identifier the identifier
      * @param factory    the factory
