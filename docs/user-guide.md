@@ -65,7 +65,8 @@ http.get("/say/*/to/*", (request, response) ->
         "Say " + request.splat()[0] + " to " + request.splat()[1]);
 ```
 
-A route that returns `null` sends an empty body.
+To send an empty body, return an empty string. A route that returns `null` without redirecting or
+halting is treated as not found and responds with a 404.
 
 ## Request and response
 
@@ -203,7 +204,8 @@ ResponseTransformer json = model -> new Gson().toJson(model);
 http.get("/hello", "application/json", (request, response) -> new Message("Hello World"), json);
 ```
 
-To use one for every route, set a default; a route can still pass its own to override it:
+To use one for every route, set a default; a route can still pass its own to override it. The
+default applies only to routes added after the call, so set it first:
 
 ```java
 http.defaultResponseTransformer(json);   // json is the transformer defined above
@@ -301,7 +303,7 @@ All of these must be called before the first route is added (or before `init()`)
 
 ```java
 http.ipAddress("127.0.0.1");     // bind address; default is all interfaces
-http.port(8080);                 // default is 4567; 0 picks a free port, readable with http.port() once started
+http.port(8080);                 // default is 4567; 0 picks a free port, readable with http.port() after awaitInitialization()
 http.threadPool(40);             // max threads; or threadPool(max, min, idleTimeoutMillis)
 ```
 
@@ -313,9 +315,11 @@ real address along, and both work with no configuration:
 
 - **The proxy protocol (v1 and v2).** A TCP load balancer, such as an AWS network load balancer,
   sends a short preamble with the client's address before the HTTP request. Every connector accepts
-  it, and `request.ip()` returns that address. A connection with no preamble works as usual.
+  it, and `request.ip()` returns that address. A connection with no preamble works as usual. This
+  cannot be turned off.
 - **The `X-Forwarded-For` header.** A load balancer that understands HTTP, such as an AWS application
-  load balancer, adds the header, and `request.ip()` returns it.
+  load balancer, adds the header, and `request.ip()` returns it. This is on by default; call
+  `http.untrustForwardHeaders()` before adding routes to ignore these headers.
 
 See the [proxy protocol example](examples.md#proxy-protocol), which you can run and try with curl.
 
@@ -344,10 +348,10 @@ The static API is a single global server. For production applications we recomme
 - **Easy to inject and swap.** Put your routes in a method or class that receives the `Service`, and tests can pass in whatever they need.
 - **Clearer code.** The server is an object you create, configure and stop explicitly; there is no hidden singleton or `import static`.
 - **More than one server per JVM.** For example, a public port plus an admin or metrics port, each with its own port, TLS and thread pool.
-- **A clean lifecycle.** You can `stop()` a `Service` and ignite a new one; the static singleton does not restart cleanly.
+- **Independent lifecycles.** You can stop one `Service` and ignite another without touching shared global state.
 - **Fits your application's lifecycle.** Create the `Service` from your configuration or DI container and stop it from a shutdown hook.
 
 ## Testing
 
-`spark.testing.SparkServerExtension` starts a `Service` on a free port for each test class and stops
+`spark.testing.SparkServerExtension` starts a `Service` on a free port, once per test class when registered in a `static` field, and stops
 it afterwards. See [testing.md](testing.md).
