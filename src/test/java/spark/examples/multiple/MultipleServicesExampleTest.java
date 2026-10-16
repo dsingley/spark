@@ -6,31 +6,24 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import spark.Service;
-import spark.util.ServiceStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 class MultipleServicesExampleTest {
 
-    private static Service first;
-    private static Service second;
+    @RegisterExtension
+    static final SparkServerExtension FIRST = new SparkServerExtension(MultipleServices::configureFirst);
 
     @RegisterExtension
-    static ServiceStopExtension stopExtension = new ServiceStopExtension(() -> first, () -> second);
+    static final SparkServerExtension SECOND = new SparkServerExtension(MultipleServices::configureSecond);
 
     private static SparkTestUtil firstClient;
     private static SparkTestUtil secondClient;
 
     @BeforeAll
     static void beforeAll() {
-        firstClient = new SparkTestUtil(4567);
-        secondClient = new SparkTestUtil(1234);
-
-        first = MultipleServices.igniteFirstService();
-        second = MultipleServices.igniteSecondService();
-
-        first.awaitInitialization();
-        second.awaitInitialization();
+        firstClient = new SparkTestUtil(FIRST.port());
+        secondClient = new SparkTestUtil(SECOND.port());
     }
 
     @Test
