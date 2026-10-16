@@ -304,9 +304,23 @@ http.port(8080);                 // default is 4567; 0 picks a free port, readab
 http.threadPool(40);             // max threads; or threadPool(max, min, idleTimeoutMillis)
 ```
 
-Jetty connections accept [proxy protocol v1 and v2](https://www.haproxy.org/download/2.6/doc/proxy-protocol.txt),
-so when the application sits behind a load balancer that sends it, such as an AWS network load
-balancer, `request.ip()` is the real client's address instead of the load balancer's.
+### Behind a load balancer
+
+By default a server only knows the address of whatever connected to it, so behind a load balancer
+`request.ip()` is the load balancer's address, not the client's. Two standard mechanisms pass the
+real address along, and both work with no configuration:
+
+- **The proxy protocol (v1 and v2).** A TCP load balancer, such as an AWS network load balancer,
+  sends a short preamble with the client's address before the HTTP request. Every connector accepts
+  it, and `request.ip()` returns that address. A connection with no preamble works as usual.
+- **The `X-Forwarded-For` header.** A load balancer that understands HTTP, such as an AWS application
+  load balancer, adds the header, and `request.ip()` returns it.
+
+See the [proxy protocol example](examples.md#proxy-protocol), which you can run and try with curl.
+
+Both are trusted from whoever sends them, so a client that can reach the application directly can
+claim any address. If you rely on `request.ip()` for something like an allow-list, make the
+application reachable only through the load balancer, for example with security groups.
 
 ## The static API
 
