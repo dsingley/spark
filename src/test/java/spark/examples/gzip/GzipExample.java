@@ -16,9 +16,7 @@
  */
 package spark.examples.gzip;
 
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.get;
-import static spark.Spark.staticFileLocation;
+import spark.Service;
 
 /**
  * Example showing off the different GZIP features in Spark.
@@ -31,27 +29,26 @@ public class GzipExample {
     private static final String PATH = "/zipped";
 
     public static void main(String[] args) throws Exception {
-        addStaticFileLocation();
-        addRoutes();
-        awaitInitialization();
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+        http.awaitInitialization();
 
-        var response = getAndDecompress();
+        var response = getAndDecompress(http.port());
         System.out.println("response = " + response);
     }
 
-    public static void addRoutes() {
-        get("/hello", (q, a) -> FO_SHIZZY);
-        get(PATH, (req, resp) -> {
+    static void run(Service http) {
+        http.staticFileLocation("/public");
+
+        http.get("/hello", (q, a) -> FO_SHIZZY);
+        http.get(PATH, (req, resp) -> {
             resp.header("Content-Encoding", "gzip");
             return CONTENT;
         });
     }
 
-    public static void addStaticFileLocation() {
-        staticFileLocation("/public");
-    }
-
-    public static String getAndDecompress() throws Exception {
-        return GzipClient.getAndDecompress("http://localhost:4567" + PATH);
+    public static String getAndDecompress(int port) throws Exception {
+        return GzipClient.getAndDecompress("http://localhost:" + port + PATH);
     }
 }
