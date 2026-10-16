@@ -22,6 +22,23 @@ This starts an embedded server on `localhost:4567` (unless noted otherwise below
 running and issue the `curl` commands listed for that example in another terminal; stop the
 server with `Ctrl+C` when done.
 
+To use a different port, set the `port` system property, for example
+`mvn exec:java -Dexec.mainClass=spark.examples.hello.HelloWorld -Dport=8080`, and adjust the
+`curl` URLs accordingly. (The multiple services example takes `-Dport` for the first service and
+`-Dport2` for the second.)
+
+## How the examples are written
+
+The examples use the instance style, `Service.ignite()`, rather than the static `Spark` methods,
+because that is how a real application should be built. Each example's `main` ignites a
+`Service`, sets its port from the `port` system property (defaulting to 4567), and passes it to
+a `run(Service)` method that defines the routes. A real application might read its port from a
+configuration file instead.
+
+Separating the routes from `main` is also what lets each example's test start the same routes
+with `SparkServerExtension` on a port chosen by the operating system, so the tests don't compete
+for port 4567 and all run in the same JVM. See [testing.md](testing.md).
+
 Don't add `-q` — Maven's quiet mode also silences the example's own log output (`before`/`after`
 filter logging in particular relies on it).
 
