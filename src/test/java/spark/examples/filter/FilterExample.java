@@ -16,13 +16,9 @@
  */
 package spark.examples.filter;
 
-import static spark.Spark.after;
-import static spark.Spark.before;
-import static spark.Spark.get;
-import static spark.Spark.halt;
 
-import java.util.HashMap;
 import java.util.Map;
+import spark.Service;
 
 /**
  * Example showing a very simple (and stupid) authentication filter that is
@@ -40,28 +36,30 @@ import java.util.Map;
  */
 public class FilterExample {
 
-    private static final Map<String, String> USERNAME_PASSWORDS = new HashMap<>();
-
     public static void main(String[] args) {
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+    }
 
-        USERNAME_PASSWORDS.put("foo", "bar");
-        USERNAME_PASSWORDS.put("admin", "admin");
+    static void run(Service http) {
+        var usernamePasswords = Map.of("foo", "bar", "admin", "admin");
 
-        before((request, response) -> {
+        http.before((request, response) -> {
             var user = request.queryParams("user");
             var password = request.queryParams("password");
 
-            var dbPassword = USERNAME_PASSWORDS.get(user);
+            var dbPassword = usernamePasswords.get(user);
             if (!(password != null && password.equals(dbPassword))) {
-                halt(401, "You are not welcome here!!!");
+                http.halt(401, "You are not welcome here!!!");
             }
         });
 
-        before("/hello", (request, response) -> response.header("Foo", "Set by second before filter"));
+        http.before("/hello", (request, response) -> response.header("Foo", "Set by second before filter"));
 
-        get("/hello", (request, response) -> "Hello World!");
+        http.get("/hello", (request, response) -> "Hello World!");
 
-        after("/hello", (request, response) -> response.header("spark", "added by after-filter"));
+        http.after("/hello", (request, response) -> response.header("spark", "added by after-filter"));
 
     }
 }

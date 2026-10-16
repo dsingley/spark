@@ -16,12 +16,9 @@
  */
 package spark.examples.filter;
 
-import static spark.Spark.after;
-import static spark.Spark.before;
-import static spark.Spark.get;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Service;
 
 
 public class DummyFilter {
@@ -29,11 +26,17 @@ public class DummyFilter {
     private static final Logger LOG = LoggerFactory.getLogger(DummyFilter.class);
 
     public static void main(String[] args) {
-        before((request, response) -> LOG.info("Before"));
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+    }
 
-        get("/hello", (request, response) -> "Hello World!");
+    static void run(Service http) {
+        http.before((request, response) -> LOG.info("Before"));
 
-        after((request, response) -> LOG.info("After"));
+        http.get("/hello", (request, response) -> "Hello World!");
+
+        http.after((request, response) -> LOG.info("After"));
     }
 
 }

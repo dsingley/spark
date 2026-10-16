@@ -16,16 +16,21 @@
  */
 package spark.examples.filter;
 
-import static spark.Spark.before;
-import static spark.Spark.halt;
+import spark.Service;
 
 
 public class FilterExampleWildcard {
 
     public static void main(String[] args) {
-        before("/protected/*", (request, response) -> {
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+    }
+
+    static void run(Service http) {
+        http.before("/protected/*", (request, response) -> {
             // ... check if authenticated
-            halt(401, "Go Away!");
+            http.halt(401, "Go Away!");
         });
     }
 
