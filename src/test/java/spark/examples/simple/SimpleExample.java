@@ -16,9 +16,7 @@
  */
 package spark.examples.simple;
 
-import static spark.Spark.get;
-import static spark.Spark.halt;
-import static spark.Spark.post;
+import spark.Service;
 
 /**
  * A simple example just showing some basic functionality
@@ -26,40 +24,39 @@ import static spark.Spark.post;
 public class SimpleExample {
 
     public static void main(String[] args) {
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+    }
 
-        //  port(5678); <- Uncomment this if you want spark to listen on a port different from 4567
+    static void run(Service http) {
+        http.get("/hello", (request, response) -> "Hello World!");
 
-        get("/hello", (request, response) -> "Hello World!");
+        http.post("/hello", (request, response) -> "Hello World: " + request.body());
 
-        post("/hello", (request, response) -> "Hello World: " + request.body());
-
-        get("/private", (request, response) -> {
+        http.get("/private", (request, response) -> {
             response.status(401);
             return "Go Away!!!";
         });
 
-        get("/users/:name", (request, response) -> "Selected user: " + request.params(":name"));
+        http.get("/users/:name", (request, response) -> "Selected user: " + request.params(":name"));
 
-        get("/news/:section", (request, response) -> {
+        http.get("/news/:section", (request, response) -> {
             response.type("text/xml");
             return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><news>" + request.params("section") + "</news>";
         });
 
-        get("/protected", (request, response) -> {
-            halt(403, "I don't think so!!!");
+        http.get("/protected", (request, response) -> {
+            http.halt(403, "I don't think so!!!");
             return null;
         });
 
-        get("/redirect", (request, response) -> {
+        http.get("/redirect", (request, response) -> {
             response.redirect("/news/world");
             return null;
         });
 
-        get("/", (request, response) -> "root");
-
-
-
+        http.get("/", (request, response) -> "root");
     }
-
 
 }
