@@ -8,19 +8,19 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.Spark;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 
 import java.net.URI;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-@ExtendWith(SparkStopExtension.class)
 class WebSocketExampleTest {
+
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(WebSocketExample::run);
 
     @WebSocket
     public static class EchoingClient {
@@ -46,18 +46,12 @@ class WebSocketExampleTest {
         }
     }
 
-    @BeforeAll
-    static void beforeAll() {
-        WebSocketExample.main(null);
-        Spark.awaitInitialization();
-    }
-
     @Test
     void echoesMessage() throws Exception {
         try (var client = new WebSocketClient()) {
             var echoingClient = new EchoingClient("hello ws");
             client.start();
-            client.connect(echoingClient, URI.create("ws://localhost:4567/echo"));
+            client.connect(echoingClient, URI.create("ws://localhost:" + SPARK.port() + "/echo"));
             assertThat(echoingClient.awaitMessage()).isEqualTo("hello ws");
         }
     }
@@ -67,7 +61,7 @@ class WebSocketExampleTest {
         try (var client = new WebSocketClient()) {
             var echoingClient = new EchoingClient("PING");
             client.start();
-            client.connect(echoingClient, URI.create("ws://localhost:4567/ping"));
+            client.connect(echoingClient, URI.create("ws://localhost:" + SPARK.port() + "/ping"));
             assertThat(echoingClient.awaitMessage()).isEqualTo("PONG");
         }
     }

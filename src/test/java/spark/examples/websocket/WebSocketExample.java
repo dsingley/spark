@@ -16,14 +16,19 @@
  */
 package spark.examples.websocket;
 
-import static spark.Spark.init;
-import static spark.Spark.webSocket;
+import spark.Service;
 
 public class WebSocketExample {
 
     public static void main(String[] args) {
-        webSocket("/echo", EchoWebSocket.class);
-        webSocket("/ping", PingWebSocket.class);
-        init();
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+    }
+
+    static void run(Service http) {
+        http.webSocket("/echo", EchoWebSocket.class);
+        http.webSocket("/ping", PingWebSocket.class);
+        http.init();
     }
 }
