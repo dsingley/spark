@@ -266,15 +266,3 @@ curl http://localhost:4567/books/$ID
 curl -X DELETE http://localhost:4567/books/$ID
 curl http://localhost:4567/books/$ID   # 404, deleted
 ```
-
-## Syntactic sugar
-
-| | |
-|---|---|
-| Class | `spark.examples.sugar.SugarExample` |
-| What it shows | Extending `Spark` (see `spark.examples.sugar.http`) to add a route-definition shorthand. |
-
-```
-curl http://localhost:4567/hi
-curl http://localhost:4567/hello
-```
