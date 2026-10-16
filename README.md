@@ -11,6 +11,8 @@ Spark - a tiny web framework for Java
 
 Requires Java 17+. The embedded server is Jetty 12.1 (EE11, `jakarta.servlet`).
 
+A maintained fork of [perwendel/spark](https://github.com/perwendel/spark).
+
 Getting started
 ---------------
 
@@ -46,13 +48,3 @@ Documentation
 - [Examples](docs/examples.md) — runnable example applications
 - [Testing](docs/testing.md) — `spark.testing.SparkServerExtension`, a JUnit Jupiter extension that starts and stops a server for your tests
 - [Migrating to Jetty 12](MIGRATING.md) — upgrade notes
-
-Forked from https://github.com/perwendel/spark
-----------------------------------------------
-
-Changes:
-
-- a secure `Service` can be configured with a `SslContextFactory` instance to allow full TLS configuration (including wanting but not needing client certificates)
-- Jetty connections are configured with [proxy protocol v2](https://www.haproxy.org/download/2.6/doc/proxy-protocol.txt) support to allow access to client IP addresses through AWS network load balancers
-- migrated the embedded server to Jetty 12.1 (EE11); requires Java 17+ — see [MIGRATING.md](MIGRATING.md)
-- includes a JUnit Jupiter extension, `spark.testing.SparkServerExtension`, for testing — see [docs/testing.md](docs/testing.md)

@@ -304,8 +304,9 @@ http.port(8080);                 // default is 4567; 0 picks a free port, readab
 http.threadPool(40);             // max threads; or threadPool(max, min, idleTimeoutMillis)
 ```
 
-Jetty connections accept [proxy protocol v2](https://www.haproxy.org/download/2.6/doc/proxy-protocol.txt),
-so client IP addresses are visible behind AWS network load balancers.
+Jetty connections accept [proxy protocol v1 and v2](https://www.haproxy.org/download/2.6/doc/proxy-protocol.txt),
+so when the application sits behind a load balancer that sends it, such as an AWS network load
+balancer, `request.ip()` is the real client's address instead of the load balancer's.
 
 ## The static API
 
