@@ -252,8 +252,9 @@ http.get("/cookies", (request, response) -> {
 
 ## Static files
 
-Serve files from the classpath, or from a directory on disk. Static files are served only when no
-route matches the request.
+Serve files from the classpath, or from a directory on disk. Static files are checked first: a
+request for an existing file is served without running any filters or routes, so don't rely on a
+`before` filter (for authentication, say) to protect them.
 
 ```java
 http.staticFiles.location("/public");                  // classpath folder
