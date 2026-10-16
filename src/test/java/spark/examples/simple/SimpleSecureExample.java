@@ -16,11 +16,7 @@
  */
 package spark.examples.simple;
 
-import static spark.Spark.get;
-import static spark.Spark.halt;
-import static spark.Spark.post;
-import static spark.Spark.secure;
-
+import spark.Service;
 import spark.util.SparkTestUtil;
 
 /**
@@ -30,13 +26,11 @@ import spark.util.SparkTestUtil;
 public class SimpleSecureExample {
 
     public static void main(String[] args) {
+        var http = Service.ignite();
+        var port = Integer.getInteger("port", 4567);
+        http.port(port);
 
-        // port(5678); <- Uncomment this if you want spark to listen on a
-        // port different from 4567.
-
-        secure(
-                SparkTestUtil.getKeyStoreLocation(),
-                SparkTestUtil.getKeystorePassword(), null, null);
+        configure(http);
 
         var caCertLocation = SparkTestUtil.getCaCertificateLocation();
         System.out.printf(
@@ -45,38 +39,47 @@ public class SimpleSecureExample {
                 Truststore: %s (password: %s)
                 CA cert:    %s
                 
-                Try: curl --cacert %s https://localhost:4567/hello%n""", SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(),
+                Try: curl --cacert %s https://localhost:%d/hello%n""", SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(),
                 SparkTestUtil.getTrustStoreLocation(), SparkTestUtil.getTrustStorePassword(),
                 caCertLocation,
-                caCertLocation);
+                caCertLocation, port);
+    }
 
-        get("/hello", (request, response) -> "Hello Secure World!");
+    /**
+     * Sets up TLS with the generated keystore, as {@code main} does, and defines the routes.
+     */
+    static void configure(Service http) {
+        http.secure(
+                SparkTestUtil.getKeyStoreLocation(),
+                SparkTestUtil.getKeystorePassword(), null, null);
 
-        post("/hello", (request, response) -> "Hello Secure World: " + request.body());
+        http.get("/hello", (request, response) -> "Hello Secure World!");
 
-        get("/private", (request, response) -> {
+        http.post("/hello", (request, response) -> "Hello Secure World: " + request.body());
+
+        http.get("/private", (request, response) -> {
             response.status(401);
             return "Go Away!!!";
         });
 
-        get("/users/:name", (request, response) -> "Selected user: " + request.params(":name"));
+        http.get("/users/:name", (request, response) -> "Selected user: " + request.params(":name"));
 
-        get("/news/:section", (request, response) -> {
+        http.get("/news/:section", (request, response) -> {
             response.type("text/xml");
             return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><news>"
                     + request.params("section") + "</news>";
         });
 
-        get("/protected", (request, response) -> {
-            halt(403, "I don't think so!!!");
+        http.get("/protected", (request, response) -> {
+            http.halt(403, "I don't think so!!!");
             return null;
         });
 
-        get("/redirect", (request, response) -> {
+        http.get("/redirect", (request, response) -> {
             response.redirect("/news/world");
             return null;
         });
 
-        get("/", (request, response) -> "root");
+        http.get("/", (request, response) -> "root");
     }
 }
