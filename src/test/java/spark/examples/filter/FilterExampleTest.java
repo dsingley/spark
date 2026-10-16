@@ -5,26 +5,34 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.Spark;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
-@ExtendWith(SparkStopExtension.class)
 class FilterExampleTest {
+
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(FilterExample::run);
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
     static void beforeAll() {
-        testUtil = new SparkTestUtil(4567);
-        FilterExample.main(null);
-        Spark.awaitInitialization();
+        testUtil = new SparkTestUtil(SPARK.port());
     }
 
     @Test
     void rejectsBadCredentials() throws Exception {
         var response = testUtil.doMethod("GET", "/hello?user=some&password=guy", null);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(401),
+                () -> assertThat(response.body).isEqualTo("You are not welcome here!!!")
+        );
+    }
+
+    @Test
+    void rejectsMissingCredentials() throws Exception {
+        var response = testUtil.doMethod("GET", "/hello", null);
         assertAll(
                 () -> assertThat(response.status).isEqualTo(401),
                 () -> assertThat(response.body).isEqualTo("You are not welcome here!!!")
