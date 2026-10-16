@@ -21,7 +21,8 @@ import spark.Service;
 
 /**
  * Example showing a very simple (and stupid) authentication filter that is
- * executed before all other resources.
+ * executed before all other resources. The URLs below assume the default port, 4567; use
+ * {@code -Dport=...} to change it.
  * <p>
  * When requesting the resource with e.g.,
  * <a href="http://localhost:4567/hello?user=some&password=guy">http://localhost:4567/hello?user=some&password=guy</a> the filter will stop the
