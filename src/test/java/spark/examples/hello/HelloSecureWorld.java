@@ -9,22 +9,33 @@ import spark.util.SparkTestUtil;
  */
 public class HelloSecureWorld {
     public static void main(String[] args) {
+        if (args.length != 0 && args.length != 2) {
+            System.err.println("Usage: HelloSecureWorld [keystoreFile keystorePassword]");
+            System.exit(1);
+        }
+
         var http = Service.ignite();
         var port = Integer.getInteger("port", 4567);
         http.port(port);
 
+        configure(http, args);
+
         if (args.length == 0) {
-            http.secure(SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(), null, null);
             System.out.printf("""
                 Using generated keystore: %s
                 
                 Try: curl --cacert %s https://localhost:%d/hello%n""", SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getCaCertificateLocation(), port);
-        } else if (args.length == 2) {
-            http.secure(args[0], args[1], null, null);
+        }
+    }
+
+    /**
+     * Sets up TLS from the command line arguments, as {@code main} does, and defines the routes.
+     */
+    static void configure(Service http, String[] args) {
+        if (args.length == 0) {
+            http.secure(SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(), null, null);
         } else {
-            System.err.println("Usage: HelloSecureWorld [keystoreFile keystorePassword]");
-            System.exit(1);
-            return;
+            http.secure(args[0], args[1], null, null);
         }
 
         run(http);

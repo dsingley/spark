@@ -12,10 +12,7 @@ import spark.util.SparkTestUtil;
 class HelloSecureWorldExampleTest {
 
     @RegisterExtension
-    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-        http.secure(SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(), null, null);
-        HelloSecureWorld.run(http);
-    });
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> HelloSecureWorld.configure(http, new String[0]));
 
     private static SparkTestUtil testUtil;
 
