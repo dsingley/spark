@@ -283,3 +283,23 @@ curl http://localhost:4567/books/$ID
 curl -X DELETE http://localhost:4567/books/$ID
 curl http://localhost:4567/books/$ID   # 404, deleted
 ```
+
+## Proxy protocol
+
+| | |
+|---|---|
+| Class | `spark.examples.proxy.ProxyProtocolExample` |
+| What it shows | Every connector accepts the [proxy protocol](https://www.haproxy.org/download/2.6/doc/proxy-protocol.txt), so behind a TCP load balancer (such as an AWS network load balancer) `request.ip()` is the real client's address. |
+
+With no arguments the example starts the server, plays the part of a load balancer by connecting to it
+with and without a PROXY preamble, prints the address `request.ip()` returned each time, and exits.
+To run only the server and try it with curl (8.2 or later), pass `serve`:
+
+```
+mvn exec:java -Dexec.mainClass=spark.examples.proxy.ProxyProtocolExample -Dexec.args=serve
+```
+
+```
+curl http://localhost:4567/ip                                                                  # the address curl connected from
+curl --haproxy-protocol --haproxy-clientip 203.0.113.7 http://localhost:4567/ip                # 203.0.113.7
+```
