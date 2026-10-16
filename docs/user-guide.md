@@ -322,8 +322,14 @@ public class HelloWorld {
 }
 ```
 
-It is a single global server, though, so it can't be restarted cleanly or run twice in one JVM. Real
-applications should use a `Service`, which can be configured, tested and stopped independently.
+The static API is a single global server. For production applications we recommend `Service`:
+
+- **No global state.** Each test can start its own server on a free port, which is what lets a whole test suite share one JVM.
+- **Easy to inject and swap.** Put your routes in a method or class that receives the `Service`, and tests can pass in whatever they need.
+- **Clearer code.** The server is an object you create, configure and stop explicitly; there is no hidden singleton or `import static`.
+- **More than one server per JVM.** For example, a public port plus an admin or metrics port, each with its own port, TLS and thread pool.
+- **A clean lifecycle.** You can `stop()` a `Service` and ignite a new one; the static singleton does not restart cleanly.
+- **Fits your application's lifecycle.** Create the `Service` from your configuration or DI container and stop it from a shutdown hook.
 
 ## Testing
 

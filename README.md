@@ -32,9 +32,12 @@ public class HelloWorld {
 
 Run it and visit http://localhost:4567/hello.
 
-`Service.ignite()` creates an independent server, so an application can be configured, tested and
-stopped without sharing global state. The static `Spark` class (`import static spark.Spark.*;`) still
-works and suits small apps and tutorials, but real applications should use `Service`.
+The static `Spark` class (`import static spark.Spark.*;`) still works and is fine for small apps and
+tutorials. For production applications we recommend `Service`, because:
+
+- it has no global state, so tests can start their own server on a free port
+- the `Service` is an object you can pass to your code, so routes and their dependencies are easy to swap in tests
+- it is clearer what is going on: the server is created, configured and stopped explicitly
 
 Documentation
 -------------
