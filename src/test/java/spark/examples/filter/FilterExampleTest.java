@@ -31,6 +31,15 @@ class FilterExampleTest {
     }
 
     @Test
+    void rejectsMissingCredentials() throws Exception {
+        var response = testUtil.doMethod("GET", "/hello", null);
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(401),
+                () -> assertThat(response.body).isEqualTo("You are not welcome here!!!")
+        );
+    }
+
+    @Test
     void acceptsGoodCredentials() throws Exception {
         var response = testUtil.doMethod("GET", "/hello?user=foo&password=bar", null);
         assertAll(

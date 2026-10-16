@@ -16,8 +16,7 @@
  */
 package spark.examples.filter;
 
-
-import java.util.Map;
+import java.util.HashMap;
 import spark.Service;
 
 /**
@@ -43,7 +42,9 @@ public class FilterExample {
     }
 
     static void run(Service http) {
-        var usernamePasswords = Map.of("foo", "bar", "admin", "admin");
+        var usernamePasswords = new HashMap<String, String>();
+        usernamePasswords.put("foo", "bar");
+        usernamePasswords.put("admin", "admin");
 
         http.before((request, response) -> {
             var user = request.queryParams("user");
