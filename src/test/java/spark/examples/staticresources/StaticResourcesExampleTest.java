@@ -5,21 +5,20 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import spark.Spark;
-import spark.util.SparkStopExtension;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
-@ExtendWith(SparkStopExtension.class)
 class StaticResourcesExampleTest {
+
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(StaticResources::run);
 
     private static SparkTestUtil testUtil;
 
     @BeforeAll
     static void beforeAll() {
-        testUtil = new SparkTestUtil(4567);
-        StaticResources.main(null);
-        Spark.awaitInitialization();
+        testUtil = new SparkTestUtil(SPARK.port());
     }
 
     @Test

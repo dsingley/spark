@@ -16,8 +16,7 @@
  */
 package spark.examples.staticresources;
 
-import static spark.Spark.get;
-import static spark.Spark.staticFiles;
+import spark.Service;
 
 /**
  * Example showing how serve static resources.
@@ -25,10 +24,15 @@ import static spark.Spark.staticFiles;
 public class StaticResources {
 
     public static void main(String[] args) {
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+    }
 
+    static void run(Service http) {
         // Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
-        staticFiles.location("/public");
+        http.staticFiles.location("/public");
 
-        get("/hello", (request, response) -> "Hello World!");
+        http.get("/hello", (request, response) -> "Hello World!");
     }
 }
