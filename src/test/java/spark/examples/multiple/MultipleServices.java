@@ -20,31 +20,31 @@ import spark.Service;
 
 /**
  * This example shows how to correctly use the Spark instance API which allows for multiple services.
- * The factory method 'service()' should be statically imported from the Spark class.
+ * The first service listens on port 4567 and the second on port 1234; use {@code -Dport=...} to change
+ * the port of the first service and {@code -Dport2=...} to change the second.
  */
 public class MultipleServices {
 
     public static void main(String[] args) {
-        igniteFirstService();
-        igniteSecondService();
+        var first = Service.ignite();
+        first.port(Integer.getInteger("port", 4567));
+        configureFirst(first);
+
+        var second = Service.ignite();
+        second.port(Integer.getInteger("port2", 1234));
+        configureSecond(second);
     }
 
-    public static Service igniteFirstService() {
-        var service = Service.ignite();
+    static void configureFirst(Service service) {
         service.get("/hello", (q, a) -> "Hello World!");
-        return service;
     }
 
-    public static Service igniteSecondService() {
-        var service = Service.ignite()
-                .port(1234)
-                .staticFileLocation("/public")
-                .threadPool(40);
+    static void configureSecond(Service service) {
+        service.staticFileLocation("/public").threadPool(40);
 
         service.get("/hello", (q, a) -> "Hello World!");
 
         service.redirect.any("/hi", "/hello");
-        return service;
     }
 
 }
