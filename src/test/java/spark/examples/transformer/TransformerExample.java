@@ -1,11 +1,17 @@
 package spark.examples.transformer;
 
-import static spark.Spark.get;
+import spark.Service;
 
 public class TransformerExample {
 
     public static void main(String[] args) {
-        get("/hello", "application/json", (request, response) -> new MyMessage("Hello World"), new JsonTransformer());
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+    }
+
+    static void run(Service http) {
+        http.get("/hello", "application/json", (request, response) -> new MyMessage("Hello World"), new JsonTransformer());
     }
 
 }
