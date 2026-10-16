@@ -1,22 +1,25 @@
 package spark.examples.transformer;
 
-import static spark.Spark.defaultResponseTransformer;
-import static spark.Spark.get;
-
 import spark.ResponseTransformer;
+import spark.Service;
 
 public class DefaultTransformerExample {
 
+    private static final ResponseTransformer json = new JsonTransformer();
+
     public static void main(String[] args) {
-
-        defaultResponseTransformer(json);
-
-        get("/hello", "application/json", (request, response) -> new MyMessage("Hello World"));
-
-        get("/hello2", "application/json", (request, response) -> new MyMessage("Hello World"),
-            model -> "custom transformer");
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
     }
 
-    private static final ResponseTransformer json = new JsonTransformer();
+    static void run(Service http) {
+        http.defaultResponseTransformer(json);
+
+        http.get("/hello", "application/json", (request, response) -> new MyMessage("Hello World"));
+
+        http.get("/hello2", "application/json", (request, response) -> new MyMessage("Hello World"),
+            model -> "custom transformer");
+    }
 
 }
