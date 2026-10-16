@@ -387,8 +387,6 @@
                     https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html
                     -->
                     <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
-                    <forkCount>1</forkCount>
-                    <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
             
