@@ -3,17 +3,13 @@ package spark.examples.books;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static spark.Spark.after;
-import static spark.Spark.before;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Spark;
-import spark.util.SparkStopExtension;
+import spark.testing.SparkServerExtension;
 import spark.utils.IOUtils;
 
 import java.io.FileNotFoundException;
@@ -23,29 +19,24 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-@ExtendWith(SparkStopExtension.class)
 class BooksExampleTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(BooksExampleTest.class);
-
-    private static final int PORT = 4567;
 
     private static final String AUTHOR = "FOO";
     private static final String TITLE = "BAR";
     private static final String NEW_TITLE = "SPARK";
 
+    @RegisterExtension
+    static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
+        http.before((request, response) -> response.header("FOZ", "BAZ"));
+
+        Books.run(http);
+
+        http.after((request, response) -> response.header("FOO", "BAR"));
+    });
+
     private String bookId;
-
-    @BeforeAll
-    static void beforeAll() {
-        before((request, response) -> response.header("FOZ", "BAZ"));
-
-        Books.main(null);
-
-        after((request, response) -> response.header("FOO", "BAR"));
-
-        Spark.awaitInitialization();
-    }
 
     @AfterEach
     void tearDown() {
@@ -163,7 +154,7 @@ class BooksExampleTest {
 
     private static void getResponse(String requestMethod, String path, UrlResponse response)
             throws IOException {
-        var url = new URL("http://localhost:" + PORT + path);
+        var url = new URL("http://localhost:" + SPARK.port() + path);
         var connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(requestMethod);
         connection.connect();
