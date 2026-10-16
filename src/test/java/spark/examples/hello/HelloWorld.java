@@ -16,14 +16,18 @@
  */
 package spark.examples.hello;
 
-import static spark.Spark.get;
+import spark.Service;
 
 public class HelloWorld {
 
     public static void main(String[] args) {
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));
+        run(http);
+    }
 
-        get("/hello", (request, response) -> "Hello World!");
-
+    static void run(Service http) {
+        http.get("/hello", (request, response) -> "Hello World!");
     }
 
 }

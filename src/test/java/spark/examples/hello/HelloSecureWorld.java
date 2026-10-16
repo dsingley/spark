@@ -1,8 +1,6 @@
 package spark.examples.hello;
 
-import static spark.Spark.get;
-import static spark.Spark.secure;
-
+import spark.Service;
 import spark.util.SparkTestUtil;
 
 /**
@@ -11,22 +9,39 @@ import spark.util.SparkTestUtil;
  */
 public class HelloSecureWorld {
     public static void main(String[] args) {
+        if (args.length != 0 && args.length != 2) {
+            System.err.println("Usage: HelloSecureWorld [keystoreFile keystorePassword]");
+            System.exit(1);
+        }
+
+        var http = Service.ignite();
+        var port = Integer.getInteger("port", 4567);
+        http.port(port);
+
+        configure(http, args);
 
         if (args.length == 0) {
-            secure(SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(), null, null);
             System.out.printf("""
                 Using generated keystore: %s
                 
-                Try: curl --cacert %s https://localhost:4567/hello%n""", SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getCaCertificateLocation());
-        } else if (args.length == 2) {
-            secure(args[0], args[1], null, null);
+                Try: curl --cacert %s https://localhost:%d/hello%n""", SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getCaCertificateLocation(), port);
+        }
+    }
+
+    /**
+     * Sets up TLS from the command line arguments, as {@code main} does, and defines the routes.
+     */
+    static void configure(Service http, String[] args) {
+        if (args.length == 0) {
+            http.secure(SparkTestUtil.getKeyStoreLocation(), SparkTestUtil.getKeystorePassword(), null, null);
         } else {
-            System.err.println("Usage: HelloSecureWorld [keystoreFile keystorePassword]");
-            System.exit(1);
-            return;
+            http.secure(args[0], args[1], null, null);
         }
 
-        get("/hello", (request, response) -> "Hello Secure World!");
+        run(http);
+    }
 
+    static void run(Service http) {
+        http.get("/hello", (request, response) -> "Hello Secure World!");
     }
 }
