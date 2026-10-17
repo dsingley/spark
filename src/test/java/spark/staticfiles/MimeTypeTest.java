@@ -43,7 +43,7 @@ class MimeTypeTest {
         config.registerMimeType("json", "application/x-custom-json");
 
         assertThat(config.mimeTypeFor("data.json")).isEqualTo("application/x-custom-json");
-        assertThat(MimeType.fromPathInfo("data.json")).isEqualTo("application/json");
+        assertThat(StaticFilesConfiguration.create().mimeTypeFor("data.json")).isEqualTo("application/json");
     }
 
     @Test
@@ -58,8 +58,8 @@ class MimeTypeTest {
     }
 
     @Test
-    void fromPathInfo_shouldFallBackToOctetStream_forAnUnknownExtension() {
-        assertThat(MimeType.fromPathInfo("/files/data.spark-test-unknown")).isEqualTo("application/octet-stream");
+    void mimeTypeFor_shouldFallBackToOctetStream_forAnUnknownExtension() {
+        assertThat(StaticFilesConfiguration.create().mimeTypeFor("/files/data.spark-test-unknown")).isEqualTo("application/octet-stream");
     }
 
     @Test

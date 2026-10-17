@@ -107,8 +107,12 @@ of static files for every `Service` in the JVM, including ones created later. Th
 `Service` they were called on, like the rest of the `staticFiles` settings. If you run several services and
 relied on one call applying to all of them, make the call on each service.
 
-The public static methods `MimeType.register(...)` and `MimeType.disableGuessing()` are gone. Use the
+The public static methods `MimeType.register(...)`, `MimeType.disableGuessing()` and
+`MimeType.fromResource(...)` are gone, because the registered mappings no longer live in `MimeType`. Use the
 `staticFiles` methods instead.
+
+When Spark runs as a filter in a servlet container (`SparkFilter`), all services share one static files
+configuration, as they do for every other `staticFiles` setting, so the settings are then shared too.
 
 ## `web.xml` deployment (`SparkFilter`)
 
