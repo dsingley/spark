@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -56,6 +57,10 @@ public class StaticFilesConfiguration {
     // immutable map that is replaced as a whole, which also makes changing several of them atomic.
     private final List<AbstractResourceHandler> staticResourceHandlers = new CopyOnWriteArrayList<>();
     private final AtomicReference<Map<String, String>> customHeaders = new AtomicReference<>(Map.of());
+
+    // Read by request threads, and changed by registerMimeType, so it must be safe to use from several threads
+    private final Map<String, String> registeredMimeTypes = new ConcurrentHashMap<>();
+    private volatile boolean mimeTypeGuessing = true;
 
     private volatile boolean staticResourcesSet = false;
     private volatile boolean externalStaticResourcesSet = false;
@@ -101,8 +106,8 @@ public class StaticFilesConfiguration {
 
             if (resource != null && resource.isReadable()) {
 
-                if (MimeType.shouldGuess()) {
-                    httpResponse.setHeader(MimeType.CONTENT_TYPE, MimeType.fromResource(resource));
+                if (mimeTypeGuessing) {
+                    httpResponse.setHeader(MimeType.CONTENT_TYPE, MimeType.fromResource(resource, registeredMimeTypes));
                 }
                 customHeaders.get().forEach(httpResponse::setHeader); //add all user-defined headers to response
 
@@ -239,5 +244,37 @@ public class StaticFilesConfiguration {
             change.accept(copy);
             return Collections.unmodifiableMap(copy);
         });
+    }
+
+    /**
+     * Maps a file extension to a MIME type for the static files served by this configuration, replacing
+     * any previous mapping for the extension, including a built-in one. It is safe to call this while
+     * requests are being served.
+     *
+     * @param extension the file extension, without a leading dot
+     * @param mimeType  the MIME type to map it to
+     * @throws IllegalArgumentException if either argument is null
+     */
+    public void registerMimeType(String extension, String mimeType) {
+        Assert.notNull(extension, "'extension' must not be null");
+        Assert.notNull(mimeType, "'mimeType' must not be null");
+        registeredMimeTypes.put(extension, mimeType);
+    }
+
+    /**
+     * Stops setting the {@code Content-Type} header of static files from their file extension.
+     */
+    public void disableMimeTypeGuessing() {
+        mimeTypeGuessing = false;
+    }
+
+    /**
+     * Resolves the MIME type this configuration would send for the given filename.
+     *
+     * @param filename the name of the file
+     * @return the registered or built-in MIME type, or {@code application/octet-stream} if unknown
+     */
+    String mimeTypeFor(String filename) {
+        return MimeType.getMimeType(filename, registeredMimeTypes);
     }
 }

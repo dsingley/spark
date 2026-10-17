@@ -14,24 +14,47 @@ import java.util.concurrent.TimeUnit;
 class MimeTypeTest {
 
     @Test
-    void register_shouldRejectANullExtension() {
+    void registerMimeType_shouldRejectANullExtension() {
+        var config = StaticFilesConfiguration.create();
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> MimeType.register(null, "application/x-spark-test"))
+                .isThrownBy(() -> config.registerMimeType(null, "application/x-spark-test"))
                 .withMessage("'extension' must not be null");
     }
 
     @Test
-    void register_shouldRejectANullMimeType() {
+    void registerMimeType_shouldRejectANullMimeType() {
+        var config = StaticFilesConfiguration.create();
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> MimeType.register("spark-test-null", null))
+                .isThrownBy(() -> config.registerMimeType("spark-test-null", null))
                 .withMessage("'mimeType' must not be null");
     }
 
     @Test
-    void register_shouldMapTheExtension() {
-        MimeType.register("spark-test-one", "application/x-spark-test-one");
+    void registerMimeType_shouldMapTheExtension() {
+        var config = StaticFilesConfiguration.create();
+        config.registerMimeType("spark-test-one", "application/x-spark-test-one");
 
-        assertThat(MimeType.fromPathInfo("/files/data.spark-test-one")).isEqualTo("application/x-spark-test-one");
+        assertThat(config.mimeTypeFor("/files/data.spark-test-one")).isEqualTo("application/x-spark-test-one");
+    }
+
+    @Test
+    void registerMimeType_shouldOverrideABuiltInMapping() {
+        var config = StaticFilesConfiguration.create();
+        config.registerMimeType("json", "application/x-custom-json");
+
+        assertThat(config.mimeTypeFor("data.json")).isEqualTo("application/x-custom-json");
+        assertThat(MimeType.fromPathInfo("data.json")).isEqualTo("application/json");
+    }
+
+    @Test
+    void registerMimeType_shouldOnlyAffectTheConfigurationItWasCalledOn() {
+        var first = StaticFilesConfiguration.create();
+        var second = StaticFilesConfiguration.create();
+
+        first.registerMimeType("spark-test-two", "application/x-spark-test-two");
+
+        assertThat(first.mimeTypeFor("data.spark-test-two")).isEqualTo("application/x-spark-test-two");
+        assertThat(second.mimeTypeFor("data.spark-test-two")).isEqualTo("application/octet-stream");
     }
 
     @Test
@@ -41,7 +64,8 @@ class MimeTypeTest {
 
     @Test
     @Timeout(value = 60, unit = TimeUnit.SECONDS)
-    void register_shouldNotLoseMappings_whenCalledFromSeveralThreadsAtOnce() throws Exception {
+    void registerMimeType_shouldNotLoseMappings_whenCalledFromSeveralThreadsAtOnce() throws Exception {
+        var config = StaticFilesConfiguration.create();
         var threads = 8;
         var perThread = 1_000;
         var start = new CountDownLatch(1);
@@ -54,7 +78,7 @@ class MimeTypeTest {
                 futures.add(executor.submit(() -> {
                     start.await();
                     for (var i = 0; i < perThread; i++) {
-                        MimeType.register("spark-test-" + threadNumber + "-" + i, "application/x-" + threadNumber + "-" + i);
+                        config.registerMimeType("spark-test-" + threadNumber + "-" + i, "application/x-" + threadNumber + "-" + i);
                     }
                     return null;
                 }));
@@ -71,7 +95,7 @@ class MimeTypeTest {
         for (var thread = 0; thread < threads; thread++) {
             for (var i = 0; i < perThread; i++) {
                 var extension = "spark-test-" + thread + "-" + i;
-                if (!MimeType.fromPathInfo("/f." + extension).equals("application/x-" + thread + "-" + i)) {
+                if (!config.mimeTypeFor("/f." + extension).equals("application/x-" + thread + "-" + i)) {
                     missing.add(extension);
                 }
             }

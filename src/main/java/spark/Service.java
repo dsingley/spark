@@ -32,7 +32,6 @@ import spark.route.Routes;
 import spark.route.ServletRoutes;
 import spark.routematch.RouteMatch;
 import spark.ssl.SslStores;
-import spark.staticfiles.MimeType;
 import spark.staticfiles.StaticFilesConfiguration;
 
 import java.time.Duration;
@@ -1028,20 +1027,22 @@ public final class Service extends Routable {
         }
 
         /**
-         * Maps an extension to a mime-type. This will overwrite any previous mappings.
+         * Maps an extension to a mime-type for the static files of this service only. This will overwrite any
+         * previous mappings for the extension, including the built-in ones.
          *
          * @param extension the extension to be mapped
          * @param mimeType  the mime-type for the extension
          */
         public void registerMimeType(String extension, String mimeType) {
-            MimeType.register(extension, mimeType);
+            staticFilesConfiguration.registerMimeType(extension, mimeType);
         }
 
         /**
-         * Disables the automatic setting of the {@code Content-Type} header made from a guess based on extension.
+         * Disables the automatic setting of the {@code Content-Type} header made from a guess based on extension,
+         * for the static files of this service only.
          */
         public void disableMimeTypeGuessing() {
-            MimeType.disableGuessing();
+            staticFilesConfiguration.disableMimeTypeGuessing();
         }
 
     }

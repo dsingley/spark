@@ -107,7 +107,6 @@ class StaticFilesTest {
 
     @Test
     void testCustomMimeType() throws Exception {
-        // The mapping is JVM-wide and cannot be removed again (#318)
         SPARK.service().staticFiles.registerMimeType("cxt", "custom-extension-type");
         assertThat(doGet("/img/file.cxt").headers).containsEntry("Content-Type", "custom-extension-type");
     }

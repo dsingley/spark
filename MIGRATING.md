@@ -99,6 +99,17 @@ past by the time the configured time had gone by. HTTP/1.1 clients and caches ig
 `max-age` is present, so they are not affected. If something depends on seeing an `Expires` header, add
 your own with `staticFiles.header("Expires", value)`.
 
+## MIME type settings are per `Service`
+
+`staticFiles.registerMimeType(...)` and `staticFiles.disableMimeTypeGuessing()` used to change a
+static field, so setting them on one `Service` (or through the static `Spark` API) changed the `Content-Type`
+of static files for every `Service` in the JVM, including ones created later. They now apply only to the
+`Service` they were called on, like the rest of the `staticFiles` settings. If you run several services and
+relied on one call applying to all of them, make the call on each service.
+
+The public static methods `MimeType.register(...)` and `MimeType.disableGuessing()` are gone. Use the
+`staticFiles` methods instead.
+
 ## `web.xml` deployment (`SparkFilter`)
 
 If you deploy Spark as a filter in `web.xml` rather than the embedded server, your servlet
