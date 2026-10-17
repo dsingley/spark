@@ -47,7 +47,7 @@ class MimeTypePerServiceTest {
     }
 
     @Test
-    void registeredMimeTypesApplyOnlyToTheServiceThatRegisteredThem() throws Exception {
+    void registeredMimeTypesApplyOnlyToTheServiceThatRegisteredThem() {
         assertAll(
                 () -> assertThat(contentType(customized, "/img/file.cxt")).isEqualTo("custom-extension-type"),
                 () -> assertThat(contentType(defaults, "/img/file.cxt")).isEqualTo("application/octet-stream"),
@@ -56,7 +56,7 @@ class MimeTypePerServiceTest {
     }
 
     @Test
-    void overridingABuiltInMimeTypeApplyOnlyToTheServiceThatDidIt() throws Exception {
+    void overridingABuiltInMimeTypeApplyOnlyToTheServiceThatDidIt() {
         assertAll(
                 () -> assertThat(contentType(customized, "/pages/index.html")).isEqualTo("text/x-custom-html"),
                 () -> assertThat(contentType(defaults, "/pages/index.html")).startsWith("text/html")
@@ -64,7 +64,7 @@ class MimeTypePerServiceTest {
     }
 
     @Test
-    void disablingGuessingAppliesOnlyToTheServiceThatDidIt() throws Exception {
+    void disablingGuessingAppliesOnlyToTheServiceThatDidIt() {
         assertAll(
                 () -> assertThat(contentType(noGuessing, "/pages/index.html")).isNull(),
                 () -> assertThat(contentType(customized, "/pages/index.html")).isNotNull(),

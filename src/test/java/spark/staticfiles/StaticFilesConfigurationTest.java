@@ -85,7 +85,7 @@ class StaticFilesConfigurationTest {
     }
 
     @Test
-    void clear_shouldRemoveTheConfiguredFolders() throws IOException {
+    void clear_shouldRemoveTheConfiguredFolders() {
         var config = StaticFilesConfiguration.create();
         config.configure("/public");
 
