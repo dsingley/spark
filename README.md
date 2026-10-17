@@ -9,14 +9,42 @@ Spark - a tiny web framework for Java
 </dependency>
 ```
 
-Forked from https://github.com/perwendel/spark
+Requires Java 17+. The embedded server is Jetty 12.1 (EE11, `jakarta.servlet`).
 
-Changes:
+A maintained fork of [perwendel/spark](https://github.com/perwendel/spark).
 
-- a secure <code>Service</code> can be configured with a <code>SslContextFactory</code> instance to allow full TLS configuration (including wanting but not needing client certificates)
-- Jetty connections are configured with [proxy protocol v2](https://www.haproxy.org/download/2.6/doc/proxy-protocol.txt) support to allow access to client IP addresses through AWS network load balancers
-- migrated the embedded server to Jetty 12.1 (EE11); requires Java 17+ — see [MIGRATING.md](MIGRATING.md) for upgrade notes 
-- includes a JUnit Jupiter extension, `spark.testing.SparkServerExtension`, that starts and stops a Spark server for your tests — see [docs/testing.md](docs/testing.md)
+Getting started
+---------------
 
-Runnable examples covering routes, filters, sessions, static files, TLS, WebSockets, and more
-live in this repo's test sources — see [docs/examples.md](docs/examples.md) for how to run them.
+```java
+import spark.Service;
+
+public class HelloWorld {
+
+    public static void main(String[] args) {
+        var http = Service.ignite();
+        http.port(Integer.getInteger("port", 4567));   // or read the port from your own configuration
+
+        http.get("/hello", (request, response) -> "Hello World!");
+
+        http.awaitInitialization();
+    }
+}
+```
+
+Run it and visit http://localhost:4567/hello.
+
+The static `Spark` class (`import static spark.Spark.*;`) still works and is fine for small apps and
+tutorials. For production applications we recommend `Service`, because:
+
+- it has no global state, so tests can start their own server on a free port
+- the `Service` is an object you can pass to your code, so routes and their dependencies are easy to swap in tests
+- it is clearer what is going on: the server is created, configured and stopped explicitly
+
+Documentation
+-------------
+
+- [User guide](docs/user-guide.md) — routes, filters, sessions, static files, WebSockets, HTTPS, and more
+- [Examples](docs/examples.md) — runnable example applications
+- [Testing](docs/testing.md) — `spark.testing.SparkServerExtension`, a JUnit Jupiter extension that starts and stops a server for your tests
+- [Migrating to Jetty 12](MIGRATING.md) — upgrade notes
