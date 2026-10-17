@@ -206,9 +206,7 @@ public class Spark {
      */
 
     public static void before(String path, Filter... filters) {
-        for (var filter : filters) {
-            getInstance().before(path, filter);
-        }
+        getInstance().before(path, filters);
     }
 
     /**
@@ -229,9 +227,7 @@ public class Spark {
      */
 
     public static void after(String path, Filter... filters) {
-        for (var filter : filters) {
-            getInstance().after(path, filter);
-        }
+        getInstance().after(path, filters);
     }
 
     // BEGIN route/filter mapping with accept type
@@ -342,9 +338,7 @@ public class Spark {
      * @param filters The filters
      */
     public static void before(Filter... filters) {
-        for (var filter : filters) {
-            getInstance().before(filter);
-        }
+        getInstance().before(filters);
     }
 
     /**
@@ -353,9 +347,7 @@ public class Spark {
      * @param filters The filters
      */
     public static void after(Filter... filters) {
-        for (var filter : filters) {
-            getInstance().after(filter);
-        }
+        getInstance().after(filters);
     }
 
     /**
@@ -366,9 +358,7 @@ public class Spark {
      * @param filters    The filters
      */
     public static void before(String path, String acceptType, Filter... filters) {
-        for (var filter : filters) {
-            getInstance().before(path, acceptType, filter);
-        }
+        getInstance().before(path, acceptType, filters);
     }
 
 
@@ -380,9 +370,7 @@ public class Spark {
      * @param filters    The filters
      */
     public static void after(String path, String acceptType, Filter... filters) {
-        for (var filter : filters) {
-            getInstance().after(path, acceptType, filter);
-        }
+        getInstance().after(path, acceptType, filters);
     }
 
     /**

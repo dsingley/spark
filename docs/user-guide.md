@@ -147,6 +147,12 @@ http.before("/hello", (request, response) -> response.header("Foo", "Set by seco
 http.after("/hello", (request, response) -> response.header("spark", "added by after-filter"));
 ```
 
+`before` and `after` accept several filters in one call, and run them in the order given:
+
+```java
+http.before("/hello", authenticate, logRequest);
+```
+
 `afterAfter` filters run after everything else, including `after` filters and exception handling,
 which makes them a good place for logging or for headers that must always be present.
 

@@ -3,6 +3,8 @@ package spark;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -10,7 +12,7 @@ import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 /**
- * Basic test to ensure that multiple before and after filters can be mapped to a route.
+ * Basic test to ensure that multiple before and after filters can be mapped to a route with one call.
  */
 class MultipleFiltersTest {
 
@@ -30,13 +32,9 @@ class MultipleFiltersTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-        // Spark's static before and after methods accept several filters; a Service takes them one at a time
-        http.before("/user", INITIALIZE_COUNTER);
-        http.before("/user", INCREMENT_COUNTER);
-        http.before("/user", LOAD_USER);
+        http.before("/user", INITIALIZE_COUNTER, INCREMENT_COUNTER, LOAD_USER);
 
-        http.after("/user", INCREMENT_COUNTER);
-        http.after("/user", (req, res) -> {
+        http.after("/user", INCREMENT_COUNTER, (req, res) -> {
             int counter = req.attribute("counter");
             assertThat(counter).isEqualTo(2);
         });
@@ -48,7 +46,33 @@ class MultipleFiltersTest {
             assertThat((int) request.attribute("counter")).isEqualTo(1);
             return ((User) request.attribute("user")).name();
         });
+
+        // filters without a path apply to every request, in the order given; each one records itself
+        // in a request attribute and the after filters append to the response body
+        http.before(trace("b1"), trace("b2"));
+        http.after(
+                (request, response) -> response.body(response.body() + ",a1"),
+                (request, response) -> response.body(response.body() + ",a2"));
+
+        // filters with an accept type apply only to requests that accept that type
+        http.before("/typed", "application/json", trace("t1"), trace("t2"));
+        http.after("/typed", "application/json",
+                (request, response) -> response.body(response.body() + ",t3"),
+                (request, response) -> response.body(response.body() + ",t4"));
+        http.get("/typed", (request, response) -> String.join(",", request.<List<String>>attribute("trace")));
+        http.get("/other", (request, response) -> String.join(",", request.<List<String>>attribute("trace")));
     });
+
+    private static Filter trace(String name) {
+        return (request, response) -> {
+            List<String> trace = request.attribute("trace");
+            if (trace == null) {
+                trace = new ArrayList<>();
+                request.attribute("trace", trace);
+            }
+            trace.add(name);
+        };
+    }
 
     private static SparkTestUtil http;
 
@@ -74,7 +98,27 @@ class MultipleFiltersTest {
         var response = http.get("/user");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
-                () -> assertThat(response.body).isEqualTo("Kevin")
+                // the after filters without a path also run for /user and append to the body
+                () -> assertThat(response.body).isEqualTo("Kevin,a1,a2")
+        );
+    }
+
+    @Test
+    void filtersWithoutPathApplyToEveryRequestInOrder() throws Exception {
+        var response = http.get("/other");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.body).isEqualTo("b1,b2,a1,a2")
+        );
+    }
+
+    @Test
+    void filtersWithAcceptTypeApplyOnlyToMatchingRequests() throws Exception {
+        var matching = http.doMethod("GET", "/typed", null, "application/json");
+        var other = http.doMethod("GET", "/typed", null, "text/plain");
+        assertAll(
+                () -> assertThat(matching.body).isEqualTo("b1,b2,t1,t2,a1,a2,t3,t4"),
+                () -> assertThat(other.body).isEqualTo("b1,b2,a1,a2")
         );
     }
 }
