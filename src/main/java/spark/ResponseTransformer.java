@@ -30,7 +30,7 @@ public interface ResponseTransformer {
      * @throws java.lang.Exception when render fails
      */
     // throws Exception is part of the public API; narrowing it would break existing implementations
-    @SuppressWarnings("java:S112")
+    @SuppressWarnings({ "java:S112", "RedundantThrows" })
     String render(Object model) throws Exception;
 
 }
