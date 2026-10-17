@@ -3,6 +3,8 @@ package spark;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -45,23 +47,32 @@ class MultipleFiltersTest {
             return ((User) request.attribute("user")).name();
         });
 
-        // filters without a path apply to every request, in the order given
-        http.before(
-                (request, response) -> response.header("X-Before", "first"),
-                (request, response) -> response.header("X-Before", response.raw().getHeader("X-Before") + ",second"));
+        // filters without a path apply to every request, in the order given; each one records itself
+        // in a request attribute and the after filters append to the response body
+        http.before(trace("b1"), trace("b2"));
         http.after(
-                (request, response) -> response.header("X-After", "first"),
-                (request, response) -> response.header("X-After", response.raw().getHeader("X-After") + ",second"));
+                (request, response) -> response.body(response.body() + ",a1"),
+                (request, response) -> response.body(response.body() + ",a2"));
 
         // filters with an accept type apply only to requests that accept that type
-        http.before("/typed", "application/json",
-                (request, response) -> response.header("X-Typed-Before", "1"),
-                (request, response) -> response.header("X-Typed-Before", response.raw().getHeader("X-Typed-Before") + "2"));
+        http.before("/typed", "application/json", trace("t1"), trace("t2"));
         http.after("/typed", "application/json",
-                (request, response) -> response.header("X-Typed-After", "1"),
-                (request, response) -> response.header("X-Typed-After", response.raw().getHeader("X-Typed-After") + "2"));
-        http.get("/typed", (request, response) -> "typed");
+                (request, response) -> response.body(response.body() + ",t3"),
+                (request, response) -> response.body(response.body() + ",t4"));
+        http.get("/typed", (request, response) -> String.join(",", request.<List<String>>attribute("trace")));
+        http.get("/other", (request, response) -> String.join(",", request.<List<String>>attribute("trace")));
     });
+
+    private static Filter trace(String name) {
+        return (request, response) -> {
+            List<String> trace = request.attribute("trace");
+            if (trace == null) {
+                trace = new ArrayList<>();
+                request.attribute("trace", trace);
+            }
+            trace.add(name);
+        };
+    }
 
     private static SparkTestUtil http;
 
@@ -87,17 +98,17 @@ class MultipleFiltersTest {
         var response = http.get("/user");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
-                () -> assertThat(response.body).isEqualTo("Kevin")
+                // the after filters without a path also run for /user and append to the body
+                () -> assertThat(response.body).isEqualTo("Kevin,a1,a2")
         );
     }
 
     @Test
     void filtersWithoutPathApplyToEveryRequestInOrder() throws Exception {
-        var response = http.get("/typed");
+        var response = http.get("/other");
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
-                () -> assertThat(response.headers.get("X-Before")).isEqualTo("first,second"),
-                () -> assertThat(response.headers.get("X-After")).isEqualTo("first,second")
+                () -> assertThat(response.body).isEqualTo("b1,b2,a1,a2")
         );
     }
 
@@ -106,9 +117,8 @@ class MultipleFiltersTest {
         var matching = http.doMethod("GET", "/typed", null, "application/json");
         var other = http.doMethod("GET", "/typed", null, "text/plain");
         assertAll(
-                () -> assertThat(matching.headers.get("X-Typed-Before")).isEqualTo("12"),
-                () -> assertThat(matching.headers.get("X-Typed-After")).isEqualTo("12"),
-                () -> assertThat(other.headers).doesNotContainKeys("X-Typed-Before", "X-Typed-After")
+                () -> assertThat(matching.body).isEqualTo("b1,b2,t1,t2,a1,a2,t3,t4"),
+                () -> assertThat(other.body).isEqualTo("b1,b2,a1,a2")
         );
     }
 }

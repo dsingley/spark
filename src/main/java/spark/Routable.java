@@ -161,6 +161,18 @@ abstract class Routable {
     }
 
     /**
+     * Maps one or many filters to be executed before any matching routes, in the order given
+     *
+     * @param path    the path
+     * @param filters The filters
+     */
+    public void before(String path, Filter... filters) {
+        for (var filter : filters) {
+            before(path, filter);
+        }
+    }
+
+    /**
      * Maps a filter to be executed after any matching routes
      *
      * @param path   the path
@@ -168,6 +180,18 @@ abstract class Routable {
      */
     public void after(String path, Filter filter) {
         addFilter(HttpMethod.after, FilterImpl.create(path, filter));
+    }
+
+    /**
+     * Maps one or many filters to be executed after any matching routes, in the order given
+     *
+     * @param path    the path
+     * @param filters The filters
+     */
+    public void after(String path, Filter... filters) {
+        for (var filter : filters) {
+            after(path, filter);
+        }
     }
 
     // BEGIN route/filter mapping with accept type
@@ -282,12 +306,34 @@ abstract class Routable {
     }
 
     /**
+     * Maps one or many filters to be executed before any matching routes, in the order given
+     *
+     * @param filters The filters
+     */
+    public void before(Filter... filters) {
+        for (var filter : filters) {
+            before(filter);
+        }
+    }
+
+    /**
      * Maps a filter to be executed after any matching routes
      *
      * @param filter The filter
      */
     public void after(Filter filter) {
         addFilter(HttpMethod.after, FilterImpl.create(SparkUtils.ALL_PATHS, filter));
+    }
+
+    /**
+     * Maps one or many filters to be executed after any matching routes, in the order given
+     *
+     * @param filters The filters
+     */
+    public void after(Filter... filters) {
+        for (var filter : filters) {
+            after(filter);
+        }
     }
 
     /**
@@ -302,6 +348,19 @@ abstract class Routable {
     }
 
     /**
+     * Maps one or many filters to be executed before any matching routes, in the order given
+     *
+     * @param path       the path
+     * @param acceptType the accepted media type
+     * @param filters    The filters
+     */
+    public void before(String path, String acceptType, Filter... filters) {
+        for (var filter : filters) {
+            before(path, acceptType, filter);
+        }
+    }
+
+    /**
      * Maps a filter to be executed after any matching routes
      *
      * @param path       the path
@@ -310,6 +369,19 @@ abstract class Routable {
      */
     public void after(String path, String acceptType, Filter filter) {
         addFilter(HttpMethod.after, FilterImpl.create(path, acceptType, filter));
+    }
+
+    /**
+     * Maps one or many filters to be executed after any matching routes, in the order given
+     *
+     * @param path       the path
+     * @param acceptType the accepted media type
+     * @param filters    The filters
+     */
+    public void after(String path, String acceptType, Filter... filters) {
+        for (var filter : filters) {
+            after(path, acceptType, filter);
+        }
     }
 
     /**
@@ -329,78 +401,6 @@ abstract class Routable {
      */
     public void afterAfter(String path, Filter filter) {
         addFilter(HttpMethod.afterafter, FilterImpl.create(path, filter));
-    }
-
-    /**
-     * Maps one or many filters to be executed before any matching routes, in the order given
-     *
-     * @param filters The filters
-     */
-    public void before(Filter... filters) {
-        for (var filter : filters) {
-            before(filter);
-        }
-    }
-
-    /**
-     * Maps one or many filters to be executed after any matching routes, in the order given
-     *
-     * @param filters The filters
-     */
-    public void after(Filter... filters) {
-        for (var filter : filters) {
-            after(filter);
-        }
-    }
-
-    /**
-     * Maps one or many filters to be executed before any matching routes, in the order given
-     *
-     * @param path    the path
-     * @param filters The filters
-     */
-    public void before(String path, Filter... filters) {
-        for (var filter : filters) {
-            before(path, filter);
-        }
-    }
-
-    /**
-     * Maps one or many filters to be executed after any matching routes, in the order given
-     *
-     * @param path    the path
-     * @param filters The filters
-     */
-    public void after(String path, Filter... filters) {
-        for (var filter : filters) {
-            after(path, filter);
-        }
-    }
-
-    /**
-     * Maps one or many filters to be executed before any matching routes, in the order given
-     *
-     * @param path       the path
-     * @param acceptType the accepted media type
-     * @param filters    The filters
-     */
-    public void before(String path, String acceptType, Filter... filters) {
-        for (var filter : filters) {
-            before(path, acceptType, filter);
-        }
-    }
-
-    /**
-     * Maps one or many filters to be executed after any matching routes, in the order given
-     *
-     * @param path       the path
-     * @param acceptType the accepted media type
-     * @param filters    The filters
-     */
-    public void after(String path, String acceptType, Filter... filters) {
-        for (var filter : filters) {
-            after(path, acceptType, filter);
-        }
     }
 
     // END route/filter mapping with accept type

@@ -147,7 +147,7 @@ http.before("/hello", (request, response) -> response.header("Foo", "Set by seco
 http.after("/hello", (request, response) -> response.header("spark", "added by after-filter"));
 ```
 
-Several filters can be mapped in one call, and run in the order given:
+`before` and `after` accept several filters in one call, and run them in the order given:
 
 ```java
 http.before("/hello", authenticate, logRequest);
