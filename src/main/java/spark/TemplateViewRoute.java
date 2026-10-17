@@ -39,7 +39,7 @@ public interface TemplateViewRoute {
      * @throws java.lang.Exception when handle fails
      */
     // throws Exception is part of the public API; narrowing it would break existing implementations
-    @SuppressWarnings("java:S112")
+    @SuppressWarnings({ "java:S112", "RedundantThrows" })
     ModelAndView handle(Request request, Response response) throws Exception;
 
 }
