@@ -331,6 +331,78 @@ abstract class Routable {
         addFilter(HttpMethod.afterafter, FilterImpl.create(path, filter));
     }
 
+    /**
+     * Maps one or many filters to be executed before any matching routes, in the order given
+     *
+     * @param filters The filters
+     */
+    public void before(Filter... filters) {
+        for (var filter : filters) {
+            before(filter);
+        }
+    }
+
+    /**
+     * Maps one or many filters to be executed after any matching routes, in the order given
+     *
+     * @param filters The filters
+     */
+    public void after(Filter... filters) {
+        for (var filter : filters) {
+            after(filter);
+        }
+    }
+
+    /**
+     * Maps one or many filters to be executed before any matching routes, in the order given
+     *
+     * @param path    the path
+     * @param filters The filters
+     */
+    public void before(String path, Filter... filters) {
+        for (var filter : filters) {
+            before(path, filter);
+        }
+    }
+
+    /**
+     * Maps one or many filters to be executed after any matching routes, in the order given
+     *
+     * @param path    the path
+     * @param filters The filters
+     */
+    public void after(String path, Filter... filters) {
+        for (var filter : filters) {
+            after(path, filter);
+        }
+    }
+
+    /**
+     * Maps one or many filters to be executed before any matching routes, in the order given
+     *
+     * @param path       the path
+     * @param acceptType the accepted media type
+     * @param filters    The filters
+     */
+    public void before(String path, String acceptType, Filter... filters) {
+        for (var filter : filters) {
+            before(path, acceptType, filter);
+        }
+    }
+
+    /**
+     * Maps one or many filters to be executed after any matching routes, in the order given
+     *
+     * @param path       the path
+     * @param acceptType the accepted media type
+     * @param filters    The filters
+     */
+    public void after(String path, String acceptType, Filter... filters) {
+        for (var filter : filters) {
+            after(path, acceptType, filter);
+        }
+    }
+
     // END route/filter mapping with accept type
 
     // BEGIN Template View Routes

@@ -10,7 +10,7 @@ import spark.testing.SparkServerExtension;
 import spark.util.SparkTestUtil;
 
 /**
- * Basic test to ensure that multiple before and after filters can be mapped to a route.
+ * Basic test to ensure that multiple before and after filters can be mapped to a route with one call.
  */
 class MultipleFiltersTest {
 
@@ -30,13 +30,9 @@ class MultipleFiltersTest {
 
     @RegisterExtension
     static final SparkServerExtension SPARK = new SparkServerExtension(http -> {
-        // Spark's static before and after methods accept several filters; a Service takes them one at a time
-        http.before("/user", INITIALIZE_COUNTER);
-        http.before("/user", INCREMENT_COUNTER);
-        http.before("/user", LOAD_USER);
+        http.before("/user", INITIALIZE_COUNTER, INCREMENT_COUNTER, LOAD_USER);
 
-        http.after("/user", INCREMENT_COUNTER);
-        http.after("/user", (req, res) -> {
+        http.after("/user", INCREMENT_COUNTER, (req, res) -> {
             int counter = req.attribute("counter");
             assertThat(counter).isEqualTo(2);
         });
@@ -48,6 +44,23 @@ class MultipleFiltersTest {
             assertThat((int) request.attribute("counter")).isEqualTo(1);
             return ((User) request.attribute("user")).name();
         });
+
+        // filters without a path apply to every request, in the order given
+        http.before(
+                (request, response) -> response.header("X-Before", "first"),
+                (request, response) -> response.header("X-Before", response.raw().getHeader("X-Before") + ",second"));
+        http.after(
+                (request, response) -> response.header("X-After", "first"),
+                (request, response) -> response.header("X-After", response.raw().getHeader("X-After") + ",second"));
+
+        // filters with an accept type apply only to requests that accept that type
+        http.before("/typed", "application/json",
+                (request, response) -> response.header("X-Typed-Before", "1"),
+                (request, response) -> response.header("X-Typed-Before", response.raw().getHeader("X-Typed-Before") + "2"));
+        http.after("/typed", "application/json",
+                (request, response) -> response.header("X-Typed-After", "1"),
+                (request, response) -> response.header("X-Typed-After", response.raw().getHeader("X-Typed-After") + "2"));
+        http.get("/typed", (request, response) -> "typed");
     });
 
     private static SparkTestUtil http;
@@ -75,6 +88,27 @@ class MultipleFiltersTest {
         assertAll(
                 () -> assertThat(response.status).isEqualTo(200),
                 () -> assertThat(response.body).isEqualTo("Kevin")
+        );
+    }
+
+    @Test
+    void filtersWithoutPathApplyToEveryRequestInOrder() throws Exception {
+        var response = http.get("/typed");
+        assertAll(
+                () -> assertThat(response.status).isEqualTo(200),
+                () -> assertThat(response.headers.get("X-Before")).isEqualTo("first,second"),
+                () -> assertThat(response.headers.get("X-After")).isEqualTo("first,second")
+        );
+    }
+
+    @Test
+    void filtersWithAcceptTypeApplyOnlyToMatchingRequests() throws Exception {
+        var matching = http.doMethod("GET", "/typed", null, "application/json");
+        var other = http.doMethod("GET", "/typed", null, "text/plain");
+        assertAll(
+                () -> assertThat(matching.headers.get("X-Typed-Before")).isEqualTo("12"),
+                () -> assertThat(matching.headers.get("X-Typed-After")).isEqualTo("12"),
+                () -> assertThat(other.headers).doesNotContainKeys("X-Typed-Before", "X-Typed-After")
         );
     }
 }
