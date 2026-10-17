@@ -17,7 +17,6 @@
 package spark.staticfiles;
 
 import spark.resource.AbstractFileResolvingResource;
-import spark.utils.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
