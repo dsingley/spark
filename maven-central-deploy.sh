@@ -55,11 +55,11 @@ while getopts 'hnst' opt; do
   esac
 done
 
-# ensure the current branch is ossrh, main, master, or a release branch
-echo "Checking branch is 'ossrh', 'main', 'master', or starts with 'release/'"
+# ensure the current branch is main or a release branch
+echo "Checking branch is 'main' or starts with 'release/'"
 current_branch=$(git rev-parse --abbrev-ref HEAD)
-if [ "$current_branch" != 'ossrh' ] && [ "$current_branch" != 'main' ] && [ "$current_branch" != 'master' ] && [[ ! "$current_branch" =~ ^release/ ]]; then
-  echo "WARNING: Must be on ossrh, main, master, or a branch starting with 'release/' to release"
+if [ "$current_branch" != 'main' ] && [[ ! "$current_branch" =~ ^release/ ]]; then
+  echo "WARNING: Must be on main or a branch starting with 'release/' to release"
   exit 1
 fi
 echo "Branch is OK [${current_branch}]"
