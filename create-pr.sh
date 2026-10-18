@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# create-pr.sh — open a PR against dsingley/spark's ossrh branch
+# create-pr.sh — open a PR against dsingley/spark's main branch
 #
 # Solves the recurring GitHub UI annoyance where "Compare & pull request"
-# defaults to the upstream fork (apache/spark or similar) and master
-# instead of dsingley/spark + ossrh. This script always targets the
+# defaults to the upstream fork (apache/spark or similar) instead of
+# dsingley/spark + main. This script always targets the
 # right repo/branch explicitly via `gh pr create`.
 #
 # Usage:
@@ -15,9 +15,9 @@
 #   ./create-pr.sh -a sleberknight -m 3.0.0 -l "code cleanup"  # defaults shown explicitly
 #   ./create-pr.sh -l ""                         # pass "" to omit assignee/milestone/label
 #
-# Env overrides (useful once ossrh is renamed to main):
+# Env overrides:
 #   TARGET_REPO=dsingley/spark
-#   TARGET_BASE=ossrh
+#   TARGET_BASE=main
 #   ASSIGNEE=sleberknight,dsingley
 #   MILESTONE=3.0.0
 #   LABEL="code cleanup"
@@ -25,7 +25,7 @@
 set -euo pipefail
 
 TARGET_REPO="${TARGET_REPO:-dsingley/spark}"
-TARGET_BASE="${TARGET_BASE:-ossrh}"
+TARGET_BASE="${TARGET_BASE:-main}"
 ASSIGNEE="${ASSIGNEE:-sleberknight,dsingley}"
 MILESTONE="${MILESTONE:-3.0.0}"
 LABEL="${LABEL:-code cleanup}"

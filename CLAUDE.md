@@ -4,25 +4,19 @@ Guidance for Claude Code sessions working in this repository.
 
 ## What this repo is
 
-A fork of [dsingley/spark](https://github.com/dsingley/spark), itself a fork of the
-original, now-abandoned [perwendel/spark](https://github.com/perwendel/spark) — a
-micro web framework for Java. Published as `com.dsingley.sparkjava:spark-core`.
+The `dsingley/spark` repository: a fork of the original, now-abandoned
+[perwendel/spark](https://github.com/perwendel/spark) — a micro web framework for
+Java. Published as `com.dsingley.sparkjava:spark-core`.
 
 ## Branching
 
-- **`ossrh` is this fork's default branch** — all current work happens here, and it's
-  the branch dsingley intends to eventually use for a Maven Central (OSSRH) release.
-  PRs target `ossrh`. GitHub's `Closes #N` / `Fixes #N` auto-close works normally
-  since this is the default branch.
-- The upstream repo, [dsingley/spark](https://github.com/dsingley/spark), still has
-  `master` as its default branch — that's independent of this fork's setting, so keep
-  it in mind when eventually opening a PR back upstream (the base branch there may
-  not be `ossrh`).
-- **Actually cutting an OSSRH/Maven Central release can only happen from upstream**,
-  not this fork — the `com.dsingley.sparkjava` groupId and OSSRH publishing rights
-  belong to dsingley's account. This fork can prepare everything short of that (version
-  bumps, changelogs, verifying the release plugin config), but the real `mvn deploy`
-  to Central has to run after this fork's work merges back upstream.
+- **`main` is the default branch** — all current work happens here, and PRs target
+  it. GitHub's `Closes #N` / `Fixes #N` auto-close works normally since this is the
+  default branch.
+- **`legacy`** is the old `master` branch, kept for history. Don't base work on it.
+  (Both were renamed on 2026-10-18; `main` used to be called `ossrh`.)
+- Releases to Maven Central are cut from `main` by the repository owner, using
+  `maven-central-deploy.sh`; don't bump the pom version or tag a release unprompted.
 - This repo is configured for **squash merges only**, with the squash commit message
   defaulting to "PR title and description" — so PR titles and descriptions should be
   written as the commit message they'll become.
@@ -38,7 +32,7 @@ Working conventions for this migration:
 - Issues are filed incrementally, phase by phase, not all up front — later phases
   depend on findings from earlier spikes and would otherwise need rewriting.
 - One PR per issue, kept small and single-concern. When an issue depends on another
-  not yet merged into `ossrh`, its branch is based on the dependency's branch (a
+  not yet merged into `main`, its branch is based on the dependency's branch (a
   stacked PR) rather than waiting.
 - The core goal is minimizing changes visible to applications that depend on
   `spark-core` — see the roadmap's external-impact ledger for what is and isn't
