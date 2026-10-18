@@ -12,15 +12,16 @@
 #   ./create-pr.sh -t "My title" -b "My body"    # explicit title/body
 #   ./create-pr.sh -t "My title"                 # title only, opens $EDITOR for body
 #   ./create-pr.sh --draft                       # open as a draft PR
-#   ./create-pr.sh -a sleberknight -m 3.0.0 -l "code cleanup"  # defaults shown explicitly
-#   ./create-pr.sh -l ""                         # pass "" to omit assignee/milestone/label
+#   ./create-pr.sh -a sleberknight -m 3.0.0      # defaults shown explicitly
+#   ./create-pr.sh -l "code cleanup"             # add a label (none by default)
+#   ./create-pr.sh -m ""                         # pass "" to omit that field (also -a "" for no assignee)
 #
 # Env overrides:
 #   TARGET_REPO=dsingley/spark
 #   TARGET_BASE=main
 #   ASSIGNEE=sleberknight,dsingley
 #   MILESTONE=3.0.0
-#   LABEL="code cleanup"
+#   LABEL=            (no label by default, e.g. LABEL="code cleanup")
 
 set -euo pipefail
 
@@ -28,7 +29,7 @@ TARGET_REPO="${TARGET_REPO:-dsingley/spark}"
 TARGET_BASE="${TARGET_BASE:-main}"
 ASSIGNEE="${ASSIGNEE:-sleberknight,dsingley}"
 MILESTONE="${MILESTONE:-3.0.0}"
-LABEL="${LABEL:-code cleanup}"
+LABEL="${LABEL:-}"
 
 TITLE=""
 BODY=""
