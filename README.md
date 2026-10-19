@@ -9,7 +9,7 @@ Spark - a tiny web framework for Java
 </dependency>
 ```
 
-Requires Java 17+. The embedded server is Jetty 12.1 (EE11, `jakarta.servlet`).
+Find the latest version on [Maven Central](https://central.sonatype.com/artifact/com.dsingley.sparkjava/spark-core). Requires Java 17+. The embedded server is Jetty 12.1 (EE11, `jakarta.servlet`).
 
 A maintained fork of [perwendel/spark](https://github.com/perwendel/spark).
 
@@ -47,4 +47,4 @@ Documentation
 - [User guide](docs/user-guide.md) — routes, filters, sessions, static files, WebSockets, HTTPS, and more
 - [Examples](docs/examples.md) — runnable example applications
 - [Testing](docs/testing.md) — `spark.testing.SparkServerExtension`, a JUnit Jupiter extension that starts and stops a server for your tests
-- [Migrating to Jetty 12](MIGRATING.md) — upgrade notes
+- [Migrating to 3.0.0](MIGRATING.md) — upgrade notes

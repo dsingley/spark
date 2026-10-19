@@ -106,8 +106,8 @@ also inject `SparkStarter` parameters.
 ## Configuring the server
 
 The lambda is a `ServiceInitializer`, which receives the `Service` and may throw checked exceptions.
-Use the usual configuration methods. The lambda must define at least one route, because that is what
-initializes the server.
+Use the usual configuration methods. The lambda should define at least one route, because that is what
+initializes the server; if it defines none (for example, only WebSocket handlers), call `init()` at the end.
 
 Before your lambda runs, the extension sets the server to listen on `127.0.0.1` on a port chosen by the
 operating system, so tests never collide on a port and the server is not reachable from other machines.

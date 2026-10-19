@@ -1,12 +1,12 @@
-# Migrating to Jetty 12
+# Migrating to 3.0.0
 
-This fork's embedded server was migrated from Jetty 9.4 (`javax.servlet`, Java 8) to Jetty
-12.1 (`jakarta.servlet`, EE11, Java 17). The migration was scoped to minimize externally-visible
+Version 3.0.0 moves the embedded server from Jetty 9.4 (`javax.servlet`, Java 8) to Jetty 12.1
+(`jakarta.servlet`, EE11, Java 17). The migration was scoped to minimize externally-visible
 breakage, but a few changes are unavoidable — Jetty 12 doesn't ship the old namespace, and it
 requires a newer JDK outright. This page covers every change that can affect application code.
 
-Everything else — the routing DSL, filters, static files, sessions, exception mapping — is
-unchanged.
+Everything else — the routing DSL, filters, sessions, exception mapping — is unchanged. New
+features are described in the release notes.
 
 ## JDK 17 minimum
 
@@ -120,3 +120,58 @@ If you deploy Spark as a filter in `web.xml` rather than the embedded server, yo
 container needs to support Jakarta Servlet 6.1 (e.g. Tomcat 11+, or another EE11-capable
 container). This deployment mode is uncommon — most Spark applications run embedded as a
 standalone `java -jar` uber jar and are unaffected by this requirement.
+
+## URI handling
+
+Jetty 12 rejects ambiguous URIs by default, for example one with an encoded slash (`%2F`) inside a path
+segment. Spark configures the server to accept them, as it always has, so applications see no change here.
+There is currently no setting to make the server stricter. See
+[URI handling](docs/user-guide.md#uri-handling) in the user guide.
+
+## Other public servlet types
+
+Every other public method that took or returned a `javax.servlet` type now uses the `jakarta.servlet`
+type, for example `SparkFilter`, `MatcherFilter`, `QueryParamsMap`, `RequestResponseFactory` and
+`StaticFilesConfiguration.consume`. Application code rarely calls these directly.
+
+## Custom embedded servers
+
+If you plug in your own `EmbeddedServer` (with `EmbeddedServers.add`), note that:
+
+- `ignite(...)` now takes a `SslContextFactory.Server` where it took a `SslContextFactory`.
+- `configureWebSockets(Map, Optional<Long>)` is deprecated in favor of `configureWebSockets(Map, Long)`,
+  which takes `null` for no idle timeout. The old method still exists.
+
+The Jetty-specific classes in `spark.embeddedserver.jetty` (`EmbeddedJettyServer`, `JettyHandler`,
+`HttpRequestWrapper` and so on) were rewritten for Jetty 12, and their constructors and overridden methods
+use the Jetty 12 types. They are internal, so code that extends or calls them directly has to be
+adapted.
+
+## Internal classes and utility methods
+
+A few public classes and methods that were only meant for Spark's own use were narrowed or removed.
+Application code that uses Spark's documented API is not affected:
+
+- `spark.http.matching.Halt` is now package-private.
+- `spark.embeddedserver.jetty.websocket.WebSocketServletContextHandlerFactory` is removed.
+- The utility classes in `spark.utils`, plus `TypeUtil` and `UrlDecode`, have private constructors, and these
+  unused methods and constants are removed: `Assert.hasLength` and `Assert.notEmpty(Object[], String)`,
+  `ClassUtils.forName`, `ClassUtils.resolvePrimitiveClassName` and `ClassUtils.ARRAY_SUFFIX`,
+  `IOUtils.LINE_SEPARATOR`, `ResourceUtils.getFile`, `ResourceUtils.getURL` and
+  `ResourceUtils.URL_PROTOCOL_VFSZIP`, `StringUtils.isNotEmpty` and `TypeUtil.toString(byte[], int)`.
+- `RequestWrapper` and `ResponseWrapper` no longer override `equals` and `hashCode`.
+
+## Deprecations
+
+Still available, but deprecated in 3.0.0:
+
+- The `MatcherFilter` constructor with the unused `externalContainer` parameter; use the constructor that
+  takes an `UnmatchedRequestHandling`.
+- `StaticFilesFolder`, which is scheduled for removal in 4.0.0.
+- `configureWebSockets(Map, Optional<Long>)` on `EmbeddedServer` and `EmbeddedJettyServer`, as described
+  above.
+
+## No OSGi bundle
+
+The jar is now packaged as a plain jar. It no longer carries the OSGi manifest headers it used to have, so
+it cannot be used as an OSGi bundle directly.
