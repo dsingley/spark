@@ -121,6 +121,13 @@ container needs to support Jakarta Servlet 6.1 (e.g. Tomcat 11+, or another EE11
 container). This deployment mode is uncommon — most Spark applications run embedded as a
 standalone `java -jar` uber jar and are unaffected by this requirement.
 
+## URI handling
+
+Jetty 12 rejects ambiguous URIs by default, for example one with an encoded slash (`%2F`) inside a path
+segment. Spark configures the server to accept them, as it always has, so applications see no change here.
+There is currently no setting to make the server stricter. See
+[URI handling](docs/user-guide.md#uri-handling) in the user guide.
+
 ## Other public servlet types
 
 Every other public method that took or returned a `javax.servlet` type now uses the `jakarta.servlet`

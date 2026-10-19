@@ -333,6 +333,18 @@ Both are trusted from whoever sends them, so a client that can reach the applica
 claim any address. If you rely on `request.ip()` for something like an allow-list, make the
 application reachable only through the load balancer, for example with security groups.
 
+### URI handling
+
+Jetty 12 rejects some ambiguous URIs by default, such as an encoded slash (`%2F`) inside a path segment,
+path parameters (`/files/x;id=1`) and empty segments (`/files//x`). Spark has always accepted them, so
+it configures the server to keep doing so: `/files/a%2Fb` matches `/files/:name` with `name` set to
+`a/b`. There is currently no setting to make the server stricter.
+
+Because of that, don't rely on the server to turn such URIs away. If a proxy or a filter decides what a
+request may do from its path (for example, a rule for everything under `/admin`), make sure it compares
+the path the way Spark's routes see it, not the raw text of the URL. Static files are not affected:
+a request that tries to leave the static files folder is refused.
+
 ## The static API
 
 The static `Spark` class (`import static spark.Spark.*;`) still works, and is convenient for tiny
