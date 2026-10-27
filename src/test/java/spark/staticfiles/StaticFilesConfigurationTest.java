@@ -214,9 +214,13 @@ class StaticFilesConfigurationTest {
                     }
                 }
             });
-            // Clears and reconfigures the folder now and then
+            // Clears and reconfigures the folder now and then, once the readers have served a file, so
+            // that a slow machine can't let them finish while the folder happens to be cleared
             executor.submit(() -> {
                 awaitStart(start);
+                while (served.get() == 0 && readersDone.getCount() > 0) {
+                    Thread.onSpinWait();
+                }
                 while (readersDone.getCount() > 0) {
                     try {
                         config.clear();
