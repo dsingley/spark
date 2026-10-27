@@ -1,6 +1,11 @@
 Spark - a tiny web framework for Java
 ======================================
 
+[![Build](https://img.shields.io/github/actions/workflow/status/dsingley/spark/push.yml?branch=main&label=build)](https://github.com/dsingley/spark/actions/workflows/push.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
+[![Java 17+](https://img.shields.io/badge/Java-17%2B-blue)](https://adoptium.net/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.dsingley.sparkjava/spark-core)](https://central.sonatype.com/artifact/com.dsingley.sparkjava/spark-core)
+
 ```xml
 <dependency>
     <groupId>com.dsingley.sparkjava</groupId>
