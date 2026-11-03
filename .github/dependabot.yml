@@ -10,6 +10,7 @@ updates:
             - dsingley
         reviewers:
             - dsingley
+        milestone: 1   # the number of the 3.0.0 milestone; update it at each release
 
     -   package-ecosystem: github-actions
         directory: /
@@ -21,3 +22,4 @@ updates:
             - dsingley
         reviewers:
             - dsingley
+        milestone: 1   # the number of the 3.0.0 milestone; update it at each release
