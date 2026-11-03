@@ -1,0 +1,24 @@
+name: Dependabot milestone
+on:
+    pull_request:
+        types: [ opened, reopened ]
+permissions:
+    issues: write
+    pull-requests: write
+jobs:
+    milestone:
+        # Dependabot cannot be told which milestone to use without a fixed milestone number in
+        # dependabot.yml, so this picks the lowest-numbered open milestone when its pull request is opened
+        if: github.event.pull_request.user.login == 'dependabot[bot]'
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Set the milestone
+                env:
+                    GH_TOKEN: ${{ github.token }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                run: |
+                    milestone=$(gh api "repos/$REPO/milestones" --jq 'sort_by(.number) | .[0].number // empty')
+                    if [ -n "$milestone" ]; then
+                        gh api --method PATCH "repos/$REPO/issues/$PR_NUMBER" --field milestone="$milestone"
+                    fi
