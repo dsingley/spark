@@ -45,7 +45,7 @@
 
         <!-- Required dependency versions -->
         <slf4j.version>2.0.20</slf4j.version>
-        <jetty.version>12.1.14</jetty.version>
+        <jetty.version>12.1.15</jetty.version>
         <jspecify.version>1.0.1</jspecify.version>
 
         <!-- Test dependency versions -->
